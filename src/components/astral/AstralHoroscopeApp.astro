@@ -1,0 +1,372 @@
+---
+import type { AstralSign } from '../../data/astralYear';
+import { buildAstralHoroscopeProfile, determineAstralSign } from '../../data/astralHoroscope';
+
+interface Props {
+  signs: AstralSign[];
+}
+
+const { signs } = Astro.props;
+
+const monthOptions = [
+  { value: 1, label: 'January', days: 31 },
+  { value: 2, label: 'February', days: 29 },
+  { value: 3, label: 'March', days: 31 },
+  { value: 4, label: 'April', days: 30 },
+  { value: 5, label: 'May', days: 31 },
+  { value: 6, label: 'June', days: 30 },
+  { value: 7, label: 'July', days: 31 },
+  { value: 8, label: 'August', days: 31 },
+  { value: 9, label: 'September', days: 30 },
+  { value: 10, label: 'October', days: 31 },
+  { value: 11, label: 'November', days: 30 },
+  { value: 12, label: 'December', days: 31 },
+];
+
+const initialSign = signs[0];
+const profilesBySlug = Object.fromEntries(
+  signs.map((sign) => [sign.slug, buildAstralHoroscopeProfile({ sign: sign.slug })]),
+);
+const initialProfile = profilesBySlug[initialSign.slug];
+const dateLookup = Object.fromEntries(
+  monthOptions.flatMap((month) =>
+    Array.from({ length: month.days }, (_, index) => index + 1).map((day) => [
+      `${month.value}-${day}`,
+      determineAstralSign(month.value, day).slug,
+    ]),
+  ),
+);
+const appData = { profiles: profilesBySlug, months: monthOptions, dateLookup };
+---
+
+<div class="astral-app-shell">
+  <div class="grid gap-8 lg:grid-cols-[minmax(0,0.88fr)_minmax(0,1.12fr)] lg:items-start">
+    <section class="veil-panel astral-control-panel">
+      <p class="eyebrow">Choose your entry</p>
+      <h2 class="mt-4 text-[1.95rem] leading-tight md:text-[2.35rem]">Generate a grounded horoscope.</h2>
+      <p class="mt-4 max-w-xl text-base leading-7 text-slate-200">
+        This app reads signs the way the book does: as earthly weather, body tone, social motion, pressure, and repair.
+        Pick your sign directly or let the date finder resolve it for you.
+      </p>
+
+      <div class="mt-8 grid gap-5">
+        <div class="astral-input-card">
+          <label class="astral-label" for="astral-sign-select">By sign</label>
+          <select id="astral-sign-select" class="astral-select">
+            {signs.map((sign) => (
+              <option value={sign.slug}>{sign.name} · {sign.dateLabel}</option>
+            ))}
+          </select>
+          <p class="mt-3 text-sm leading-6 text-slate-400">
+            Use this when you already know the sign you want the reading built around.
+          </p>
+        </div>
+
+        <div class="astral-input-card">
+          <label class="astral-label" for="astral-month-select">By birth month and day</label>
+          <div class="mt-3 grid gap-3 sm:grid-cols-[minmax(0,1fr)_120px]">
+            <select id="astral-month-select" class="astral-select">
+              {monthOptions.map((month) => (
+                <option value={month.value}>{month.label}</option>
+              ))}
+            </select>
+            <select id="astral-day-select" class="astral-select">
+              {Array.from({ length: monthOptions[0].days }, (_, index) => index + 1).map((day) => (
+                <option value={day}>{day}</option>
+              ))}
+            </select>
+          </div>
+          <div class="mt-4 flex flex-wrap gap-3">
+            <button id="astral-date-submit" type="button" class="button-primary">Read by birth date</button>
+            <button id="astral-date-reset" type="button" class="button-secondary">Return to sign picker</button>
+          </div>
+          <p id="astral-entry-mode" class="mt-3 text-sm leading-6 text-slate-400">
+            Currently showing the direct sign reading.
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-8 grid gap-4 sm:grid-cols-2">
+        <div class="astral-mini-card">
+          <p class="astral-mini-label">Method</p>
+          <p class="mt-2 text-sm leading-6 text-slate-200">
+            Not prophecy from elsewhere. The reading stays with season, temperament, relation, and embodied rhythm.
+          </p>
+        </div>
+        <div class="astral-mini-card">
+          <p class="astral-mini-label">Output</p>
+          <p class="mt-2 text-sm leading-6 text-slate-200">
+            Each result gives a key note, a live pressure, a caution, and a ritual small enough to enact.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <aside class="veil-panel astral-result-panel" aria-live="polite" aria-atomic="true">
+      <div class="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <p id="astral-result-mode" class="astral-mini-label">Reading</p>
+          <h3 id="astral-result-sign" class="mt-3 text-[2rem] leading-tight md:text-[2.55rem]">{initialProfile.sign.name}</h3>
+          <p id="astral-result-range" class="mt-2 text-sm uppercase tracking-[0.18em] text-slate-400">
+            {initialProfile.sign.dateLabel} · {initialProfile.sign.element}
+          </p>
+        </div>
+        <div class="astral-glyph-orbit">
+          <span id="astral-result-glyph" class="astral-result-glyph">{initialProfile.sign.glyph}</span>
+        </div>
+      </div>
+
+      <p id="astral-result-summary" class="mt-6 text-lg leading-8 text-slate-100">{initialProfile.summary}</p>
+      <p id="astral-result-message" class="mt-4 text-base leading-7 text-slate-300">{initialProfile.message}</p>
+
+      <div class="mt-8 grid gap-4 md:grid-cols-2">
+        <article class="astral-reading-card">
+          <p class="astral-mini-label">Key note</p>
+          <p id="astral-result-note" class="mt-2 text-base leading-7 text-slate-200">{initialProfile.keyNote}</p>
+        </article>
+        <article class="astral-reading-card">
+          <p class="astral-mini-label">Season mood</p>
+          <p id="astral-result-civic" class="mt-2 text-base leading-7 text-slate-200">{initialProfile.seasonMood}</p>
+        </article>
+        <article class="astral-reading-card">
+          <p class="astral-mini-label">Body feeling</p>
+          <p id="astral-result-body" class="mt-2 text-base leading-7 text-slate-200">{initialProfile.bodyFeeling}</p>
+        </article>
+        <article class="astral-reading-card">
+          <p class="astral-mini-label">How it moves</p>
+          <p id="astral-result-social" class="mt-2 text-base leading-7 text-slate-200">{initialProfile.movementPattern}</p>
+        </article>
+      </div>
+
+      <div class="mt-4 grid gap-4 md:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
+        <article class="astral-shadow-card">
+          <p class="astral-mini-label">Watch for</p>
+          <p id="astral-result-shadow" class="mt-2 text-sm leading-6 text-slate-200">{initialProfile.shadow}</p>
+        </article>
+        <article class="astral-ritual-card">
+          <p class="astral-mini-label">Small ritual</p>
+          <p id="astral-result-ritual" class="mt-2 text-base leading-7 text-slate-100">{initialProfile.ritual}</p>
+        </article>
+      </div>
+
+      <div class="mt-6 astral-guidance-strip">
+        <p class="astral-mini-label">Grounded guidance</p>
+        <ul id="astral-result-guidance" class="mt-3 space-y-2 text-sm leading-6 text-slate-200">
+          {initialProfile.guidance.map((line) => (
+            <li>{line}</li>
+          ))}
+        </ul>
+      </div>
+    </aside>
+  </div>
+
+  <script is:inline type="application/json" id="astral-app-data" set:html={JSON.stringify(appData)}></script>
+  <script is:inline>
+    const dataElement = document.getElementById('astral-app-data');
+
+    if (dataElement) {
+      const data = JSON.parse(dataElement.textContent || '{}');
+      const profiles = data.profiles || {};
+      const months = data.months || [];
+      const dateLookup = data.dateLookup || {};
+
+      const signSelect = document.getElementById('astral-sign-select');
+      const monthSelect = document.getElementById('astral-month-select');
+      const daySelect = document.getElementById('astral-day-select');
+      const submitDateButton = document.getElementById('astral-date-submit');
+      const resetDateButton = document.getElementById('astral-date-reset');
+
+      const modeLabel = document.getElementById('astral-result-mode');
+      const entryMode = document.getElementById('astral-entry-mode');
+      const signName = document.getElementById('astral-result-sign');
+      const signRange = document.getElementById('astral-result-range');
+      const signGlyph = document.getElementById('astral-result-glyph');
+      const summary = document.getElementById('astral-result-summary');
+      const message = document.getElementById('astral-result-message');
+      const note = document.getElementById('astral-result-note');
+      const civic = document.getElementById('astral-result-civic');
+      const body = document.getElementById('astral-result-body');
+      const social = document.getElementById('astral-result-social');
+      const shadow = document.getElementById('astral-result-shadow');
+      const ritual = document.getElementById('astral-result-ritual');
+      const guidance = document.getElementById('astral-result-guidance');
+
+      const daysForMonth = (month) => months.find((entry) => entry.value === month)?.days || 31;
+
+      const rebuildDays = (month, currentDay) => {
+        const limit = daysForMonth(month);
+        const nextDay = Math.min(currentDay, limit);
+        daySelect.innerHTML = '';
+
+        for (let day = 1; day <= limit; day += 1) {
+          const option = document.createElement('option');
+          option.value = String(day);
+          option.textContent = String(day);
+          daySelect.appendChild(option);
+        }
+
+        daySelect.value = String(nextDay);
+      };
+
+      const initialSlug = signSelect?.value || Object.keys(profiles)[0];
+
+      const renderReading = (profile, sourceLabel) => {
+        if (!profile) {
+          return;
+        }
+
+        signSelect.value = profile.sign.slug;
+        modeLabel.textContent = sourceLabel;
+        entryMode.textContent =
+          sourceLabel === 'Birth date reading'
+            ? `Resolved from ${monthSelect.options[monthSelect.selectedIndex].text} ${daySelect.value}.`
+            : 'Currently showing the direct sign reading.';
+
+        signName.textContent = profile.sign.name;
+        signRange.textContent = `${profile.sign.dateLabel} · ${profile.sign.element}`;
+        signGlyph.textContent = profile.sign.glyph;
+        summary.textContent = profile.summary;
+        message.textContent = profile.message;
+        note.textContent = profile.keyNote;
+        civic.textContent = profile.seasonMood;
+        body.textContent = profile.bodyFeeling;
+        social.textContent = profile.movementPattern;
+        shadow.textContent = profile.shadow;
+        ritual.textContent = profile.ritual;
+
+        guidance.innerHTML = '';
+        profile.guidance.forEach((line) => {
+          const item = document.createElement('li');
+          item.textContent = line;
+          guidance.appendChild(item);
+        });
+      };
+
+      signSelect?.addEventListener('change', () => {
+        const profile = profiles[signSelect.value];
+        if (profile) {
+          renderReading(profile, 'Direct sign reading');
+        }
+      });
+
+      monthSelect?.addEventListener('change', () => {
+        rebuildDays(Number(monthSelect.value), Number(daySelect.value || 1));
+      });
+
+      submitDateButton?.addEventListener('click', () => {
+        const slug = dateLookup[`${monthSelect.value}-${daySelect.value}`];
+        renderReading(profiles[slug] || profiles[initialSlug], 'Birth date reading');
+      });
+
+      resetDateButton?.addEventListener('click', () => {
+        renderReading(profiles[signSelect.value] || profiles[initialSlug], 'Direct sign reading');
+      });
+
+      rebuildDays(Number(monthSelect?.value || 1), Number(daySelect?.value || 1));
+      renderReading(profiles[initialSlug], 'Direct sign reading');
+    }
+  </script>
+</div>
+
+<style>
+  .astral-app-shell {
+    position: relative;
+  }
+
+  .astral-control-panel,
+  .astral-result-panel {
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at top right, rgba(209, 181, 255, 0.12), transparent 34%),
+      linear-gradient(180deg, rgba(11, 8, 24, 0.92) 0%, rgba(18, 13, 34, 0.96) 100%);
+  }
+
+  .astral-control-panel::before,
+  .astral-result-panel::before {
+    content: '';
+    position: absolute;
+    inset: -20% auto auto -10%;
+    width: 14rem;
+    height: 14rem;
+    border-radius: 999px;
+    background: radial-gradient(circle, rgba(110, 200, 214, 0.12) 0%, rgba(110, 200, 214, 0) 72%);
+    pointer-events: none;
+  }
+
+  .astral-input-card,
+  .astral-mini-card,
+  .astral-reading-card,
+  .astral-shadow-card,
+  .astral-ritual-card,
+  .astral-guidance-strip {
+    border-radius: 1.3rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+    padding: 1rem 1.05rem;
+  }
+
+  .astral-label,
+  .astral-mini-label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+
+  .astral-select {
+    width: 100%;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(8, 6, 18, 0.9);
+    color: var(--color-moon);
+    padding: 0.95rem 1rem;
+    font-size: 0.96rem;
+    line-height: 1.5;
+  }
+
+  .astral-select:focus-visible {
+    outline: none;
+    border-color: rgba(171, 140, 255, 0.9);
+    box-shadow: 0 0 0 3px rgba(171, 140, 255, 0.2);
+  }
+
+  .astral-glyph-orbit {
+    display: grid;
+    place-items: center;
+    width: 5.3rem;
+    height: 5.3rem;
+    border-radius: 1.55rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background:
+      radial-gradient(circle at center, rgba(209, 181, 255, 0.22), rgba(209, 181, 255, 0) 65%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.06),
+      0 18px 34px rgba(0, 0, 0, 0.24);
+  }
+
+  .astral-result-glyph {
+    font-size: 2.4rem;
+    line-height: 1;
+    color: var(--color-accent);
+  }
+
+  .astral-guidance-strip ul {
+    margin: 0;
+    padding-left: 1rem;
+  }
+
+  @media (max-width: 768px) {
+    .astral-glyph-orbit {
+      width: 4.6rem;
+      height: 4.6rem;
+    }
+
+    .astral-result-glyph {
+      font-size: 2rem;
+    }
+  }
+</style>

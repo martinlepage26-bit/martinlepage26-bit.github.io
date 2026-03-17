@@ -1,0 +1,195 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionIntro from '../../components/SectionIntro.astro';
+import AstralGlossaryGrid from '../../components/astral/AstralGlossaryGrid.astro';
+import { zodiacSigns } from '../../data/astralYear';
+import { buildCanonical } from '../../lib/seo';
+
+const pageDescription =
+  'A companion glossary for Breath of the Astral Year, defining the 12 signs through competence, civic weather, body register, social pattern, shadow, and ritual.';
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: 'Astral Glossary',
+  description: pageDescription,
+  url: buildCanonical('/astral-year/glossary/'),
+};
+---
+
+<BaseLayout
+  title="Astral Glossary"
+  description={pageDescription}
+  canonical="/astral-year/glossary/"
+  structuredData={structuredData}
+>
+  <section class="relative overflow-hidden border-b border-white/10">
+    <div class="section-shell relative glossary-hero-shell">
+      <div class="glossary-orbit glossary-orbit-one"></div>
+      <div class="glossary-orbit glossary-orbit-two"></div>
+
+      <div class="grid gap-10 lg:grid-cols-[minmax(0,1.08fr)_minmax(320px,0.92fr)] lg:items-end">
+        <div class="relative z-10 max-w-4xl">
+          <p class="eyebrow">Companion guide</p>
+          <h1 class="mt-5">Astral Glossary</h1>
+          <p class="mt-6 max-w-3xl text-lg leading-8 text-slate-100 md:text-xl">
+            Breath of the Astral Year reads the zodiac as a grounded language for earthly life. This glossary names
+            what each sign is for, how it feels in the body, how it moves through relations, and where it can fray.
+          </p>
+          <div class="mt-8 flex flex-wrap gap-3">
+            <a class="button-primary" href="#astral-glossary-grid">Browse the signs</a>
+            <a class="button-secondary" href="/astral-year/app/">Open the Astral app</a>
+            <a class="button-secondary" href="/astral-year/">Back to the book page</a>
+          </div>
+          <p class="mt-5 max-w-2xl text-sm leading-6 text-slate-300">
+            Use this page as a reading key. The sign language here is descriptive rather than predictive, and each
+            entry stays close to the book&apos;s vocabulary.
+          </p>
+        </div>
+
+        <div class="veil-panel relative z-10 glossary-manifest-panel">
+          <p class="eyebrow">How to read it</p>
+          <div class="mt-5 grid gap-4">
+            <div class="glossary-mini-card">
+              <p class="glossary-mini-label">Competence</p>
+              <p class="mt-2 text-base leading-7 text-slate-200">
+                The sign&apos;s practical talent, the kind of movement it knows how to make well.
+              </p>
+            </div>
+            <div class="glossary-mini-card">
+              <p class="glossary-mini-label">Civic weather</p>
+              <p class="mt-2 text-base leading-7 text-slate-200">
+                The public atmosphere the sign names: rupture, reciprocity, structure, release, and similar climates.
+              </p>
+            </div>
+            <div class="glossary-mini-card">
+              <p class="glossary-mini-label">Body and relation</p>
+              <p class="mt-2 text-base leading-7 text-slate-200">
+                Body register, social pattern, shadow, and ritual tell you how the sign behaves when lived, strained,
+                or carried forward.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-shell border-y border-white/8 bg-white/4">
+    <SectionIntro
+      eyebrow="Reading guide"
+      title="The glossary works as a translation layer."
+      description="It turns each sign into a compact set of definitions that future horoscope output can use without becoming vague or generic."
+    />
+
+    <div class="mt-12 grid gap-6 lg:grid-cols-3">
+      <article class="veil-panel glossary-guide-card">
+        <p class="glossary-guide-label">1. Competence</p>
+        <p class="mt-3 text-base leading-7 text-slate-200">
+          Start with what the sign does well. That is the sign&apos;s most useful motion, not its marketing line.
+        </p>
+      </article>
+      <article class="veil-panel glossary-guide-card">
+        <p class="glossary-guide-label">2. Weather</p>
+        <p class="mt-3 text-base leading-7 text-slate-200">
+          The civic theme and body register show the sign&apos;s climate in public life and in lived sensation.
+        </p>
+      </article>
+      <article class="veil-panel glossary-guide-card">
+        <p class="glossary-guide-label">3. Pressure</p>
+        <p class="mt-3 text-base leading-7 text-slate-200">
+          Shadow and ritual keep the language honest. They mark where the sign bends badly and how it can be used
+          again without flattening into cliché.
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <section class="section-shell">
+    <SectionIntro
+      eyebrow="The signs"
+      title="Twelve entries, grouped by element."
+      description="Fire, earth, air, and water set the larger climate. Each sign then gives that climate a more exact voice."
+    />
+
+    <div class="mt-12">
+      <AstralGlossaryGrid signs={zodiacSigns} />
+    </div>
+  </section>
+
+  <section class="section-shell border-t border-white/8">
+    <div class="grid gap-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.95fr)]">
+      <article class="veil-panel">
+        <p class="eyebrow">Why it matters</p>
+        <h2 class="mt-4 text-[1.4rem] md:text-[1.72rem]">This is the book&apos;s vocabulary bank.</h2>
+        <p class="mt-4 text-base leading-7 text-slate-200">
+          The glossary keeps the project from collapsing into loose horoscope prose. It gives each sign a stable
+          profile so future pages can generate interpretations that still sound like Breath of the Astral Year.
+        </p>
+      </article>
+      <article class="veil-panel">
+        <p class="eyebrow">Use case</p>
+        <h2 class="mt-4 text-[1.4rem] md:text-[1.72rem]">Reference, then reuse.</h2>
+        <p class="mt-4 text-base leading-7 text-slate-200">
+          Read the sign once as a glossary entry. Use it again as a source for horoscope copy, app copy, or any later
+          Astral interface that needs the language to stay grounded.
+        </p>
+      </article>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .glossary-hero-shell {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .glossary-orbit {
+    position: absolute;
+    border-radius: 999px;
+    border: 1px solid rgba(201, 149, 47, 0.16);
+    pointer-events: none;
+    filter: drop-shadow(0 0 24px rgba(201, 149, 47, 0.08));
+  }
+
+  .glossary-orbit-one {
+    width: min(74vw, 760px);
+    height: min(74vw, 760px);
+    top: -8rem;
+    right: -14rem;
+    background: radial-gradient(circle, rgba(201, 149, 47, 0.12) 0%, rgba(201, 149, 47, 0) 64%);
+  }
+
+  .glossary-orbit-two {
+    width: min(44vw, 360px);
+    height: min(44vw, 360px);
+    left: -4rem;
+    bottom: -5rem;
+    background: radial-gradient(circle, rgba(108, 143, 202, 0.14) 0%, rgba(108, 143, 202, 0) 58%);
+  }
+
+  .glossary-manifest-panel {
+    background:
+      radial-gradient(circle at top right, rgba(201, 149, 47, 0.12), transparent 36%),
+      linear-gradient(160deg, rgba(18, 13, 34, 0.9), rgba(36, 20, 57, 0.92));
+  }
+
+  .glossary-mini-card,
+  .glossary-guide-card {
+    border-radius: 1.1rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+    padding: 1rem 1.05rem;
+  }
+
+  .glossary-mini-label,
+  .glossary-guide-label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-aqua);
+  }
+</style>
