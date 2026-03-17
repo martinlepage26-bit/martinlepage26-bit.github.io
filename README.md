@@ -141,12 +141,12 @@ This project is intentionally **not empty**. It includes seeded papers, projects
 
 No fake employers, degrees, or awards were invented.
 
-## Book-Stage Project Framing
+## Book-Stage Work Framing
 
-The seeded project entries preserve the editorial distinctions you specified:
+The seeded book-stage entries preserve the editorial distinctions you specified:
 
 - **The Weather Beneath the Walls**: closest to a real publishable book
-- **Who's the Boob, Who's the Trap?**: serious nonfiction scaffold with crossover governance potential
+- **Who's the Boob, Who's the Trap?**: publication-stage book manuscript with crossover governance potential
 - **Alchemy of the Wound**: full manuscript needing developmental containment
 - **Legitimacy Machines / Altars of Control**: proposal-plus-architecture project, not yet a finished manuscript
 
