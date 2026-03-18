@@ -4,37 +4,67 @@ import FilterBar from '../../components/FilterBar.astro';
 import SectionIntro from '../../components/SectionIntro.astro';
 import WritingCard from '../../components/WritingCard.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { collectTags, estimateReadingMinutes, sortByDate } from '../../lib/content';
+import { collectTags, contentSlug, estimateReadingMinutes, sortByDate, sortByTitle } from '../../lib/content';
 import { siteMeta } from '../../data/site';
 
 const writings = sortByDate(await getCollection('writings', ({ data }) => !data.draft));
+const allProjects = await getCollection('projects');
+const amazonBooks = sortByTitle(allProjects.filter((project) => /\bamazon\b/i.test(project.data.status)));
 const tags = collectTags(writings);
 ---
 
 <BaseLayout
-  title="Writing and Essays"
-  description="Essays, reflections, notes, and public-facing writing by Martin Lepage."
+  title="Writings"
+  description="Essays, reflections, notes, and published book pages by Martin Lepage."
 >
   <section class="section-shell">
     <SectionIntro
-      eyebrow="Writing"
-      title="Essays and notes."
-      description="Public writing, criticism, and reflections, with links back to HEXA."
+      eyebrow="Writings"
+      title="Essays, notes, and books."
+      description="Public writing, criticism, reflections, and the published book pages gathered in one place."
     />
 
     <ul class="bullet-links mt-6">
       <li><a class="link-inline" href={siteMeta.substack}>Visit HEXA</a></li>
+      <li><a class="link-inline" href="#books">Browse the books</a></li>
       {siteMeta.siteUrl && <li><a class="link-inline" href="/rss.xml">Subscribe by RSS</a></li>}
     </ul>
 
     <div class="mt-10">
-      <FilterBar scopeId="writings" tags={tags} searchPlaceholder="Search writing" />
+      <FilterBar scopeId="writings" tags={tags} searchPlaceholder="Search writings" />
     </div>
 
     <div class="mt-10 grid gap-6 lg:grid-cols-2" data-filter-scope="writings">
       {writings.map((writing) => (
         <WritingCard writing={writing} readingMinutes={estimateReadingMinutes(writing.body ?? '')} />
       ))}
+    </div>
+
+    <div id="books" class="mt-20">
+      <SectionIntro
+        eyebrow="Books"
+        title="Published books with details and links."
+        description="These self-published titles stay visible here with confirmed descriptions, companion pages, and stored outbound links."
+      />
+
+      <div class="mt-10 grid gap-6 lg:grid-cols-2">
+        {amazonBooks.map((book) => (
+          <article class="card-link">
+            <div class="space-y-2">
+              <p class="eyebrow">{book.data.status}</p>
+              <h3 class="text-[1.06rem] leading-tight md:text-[1.28rem]">{book.data.title}</h3>
+              <p class="text-sm text-slate-200">{book.data.subtitle}</p>
+            </div>
+            <p class="max-w-[58ch] text-base text-slate-200">{book.data.description}</p>
+            <div class="flex flex-wrap gap-3 text-sm font-semibold text-accent">
+              <a class="link-inline" href={`/projects/${contentSlug(book.id)}/`}>Read details</a>
+              {book.data.links.map((link) => (
+                <a class="link-inline" href={link.url}>{link.label}</a>
+              ))}
+            </div>
+          </article>
+        ))}
+      </div>
     </div>
   </section>
 </BaseLayout>

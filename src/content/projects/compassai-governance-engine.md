@@ -1,27 +1,25 @@
 ---
 title: "CompassAI"
-subtitle: "A governance engine prototype for orientation, judgment, and review"
+subtitle: "Governance intake and review app in development"
 year: 2026
-status: "Prototype governance engine"
-description: "A prototype build oriented around governance decision-making, directional clarity, and structured review."
-role: "Builder"
+status: "App in development · 72% complete"
+description: "A governance intake, assessment, and output generation app in development built around directional clarity, structured review, and decision support."
+role: "Creator"
 outputs:
-  - "Prototype governance interface"
-  - "Logic and architecture experiments"
-  - "Positioning around oversight and guidance"
+  - "Governance intake workflow"
+  - "Assessment and review logic"
+  - "Output generation concept"
 tags:
   - AI governance
-  - Product prototype
+  - App in development
   - Systems design
   - Oversight
+  - Decision support
 featured: false
 image: "/assets/isometric-grid-corner.png"
 imageAlt: "A grid-based motif suggesting directional governance, oversight, and systems design."
-links:
-  - label: "GitHub"
-    url: "https://github.com/martinlepage26-bit/CompassAI"
+links: []
 ---
+*CompassAI* names the governance side of the apps in development: intake, assessment, and output generation shaped as a readable review surface rather than a black-box engine.
 
-*CompassAI* extends the governance side of the portfolio into a more explicitly product-shaped prototype. The title suggests direction, navigation, and institutional orientation, which makes it a useful companion to the more documentation-heavy practice work.
-
-As public materials expand, this page can grow to include screenshots, a demo, or a fuller README.
+The public page stays intentionally bounded. It presents CompassAI as an app in development with substantial development behind it, while keeping the visible claim focused on governance intake, judgment support, and structured review.

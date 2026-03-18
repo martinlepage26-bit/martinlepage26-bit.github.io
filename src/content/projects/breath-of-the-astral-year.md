@@ -31,4 +31,4 @@ links:
 
 The subtitle, *Astrology as a grammar of collective life*, sets the public framing used here. It keeps the focus on signs, seasons, and social life without collapsing the book into a technical manual or a proof-heavy astrological system.
 
-The companion pages on this site now extend that public language in two directions: a sign glossary that makes the symbolic lexicon explicit, and an Astral app that turns the same vocabulary into a readable horoscope experience. They should be read as part of the published title&apos;s web presence rather than as evidence that the book is still only a manuscript.
+The companion pages on this site now extend that public language in two directions: a sign glossary that makes the symbolic lexicon explicit, and an Astral app that turns the same vocabulary into a readable seasonal experience. They should be read as part of the published title&apos;s web presence rather than as evidence that the book is still only a manuscript.

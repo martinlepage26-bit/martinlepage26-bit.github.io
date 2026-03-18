@@ -22,13 +22,38 @@ export const siteMeta = {
 export const navigation = [
   { href: '/', label: 'Home' },
   { href: '/about/', label: 'About' },
-  { href: '/papers/', label: 'Papers' },
+  { href: '/papers/', label: 'Publications' },
   { href: '/projects/', label: 'Projects' },
-  { href: '/writing/', label: 'Writing' },
+  { href: '/writing/', label: 'Writings' },
   { href: '/talks/', label: 'Talks' },
   { href: '/resume/', label: 'Resume' },
   { href: '/contact/', label: 'Contact' },
 ] as const;
+
+export const publicProjectOrder = [
+  'the-scythe-already-in-motion',
+  'legitimacy-machines-altars-of-control',
+  'the-sealed-card-protocol',
+  'master-annotated-thematic-bibliography',
+  'astrology-as-social-grammar',
+  'bonded-intelligence-under-constraint',
+  'lotus',
+  'scriptorium',
+] as const;
+
+export const hiddenProjectArchiveSlugs = [
+  'agency-social-positioning-tool',
+  'astral',
+  'govern-ai-practice',
+  'from-ai-anxiety-to-recursive-governance-under-constraint',
+  'governess-suite',
+  'recurso',
+  'socialcompass-agatha',
+  'the-violet-gem',
+  'the-witches-road',
+] as const;
+
+export const projectArchivePromotedPaperSlugs = ['whos-the-boob-whos-the-trap'] as const;
 
 export const heroFacts = [
   'PhD, Religious Sciences',
@@ -48,19 +73,19 @@ export const homeHighlights = [
   },
   {
     eyebrow: 'For academic readers',
-    title: 'Papers and research context',
+    title: 'Publications and research context',
     description:
-      'Browse publications, talks, and the research questions that connect ritual, media, and legitimacy.',
+      'Browse published academic work, talks, and the research questions that connect ritual, media, and legitimacy.',
     href: '/papers/',
-    cta: 'Browse papers',
+    cta: 'Browse publications',
   },
   {
     eyebrow: 'For editors and media',
-    title: 'Essays and public writing',
+    title: 'Writings and books',
     description:
-      'Go to essays, criticism, and profile material for interviews, editorial work, or general readers.',
+      'Go to essays, criticism, notes, and the public-facing book pages for interviews, editorial work, or general readers.',
     href: '/writing/',
-    cta: 'Read the writing',
+    cta: 'Read the writings',
   },
 ] as const;
 

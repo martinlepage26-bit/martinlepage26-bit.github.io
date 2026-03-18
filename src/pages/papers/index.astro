@@ -8,27 +8,30 @@ import { collectTags, isPublishedPaper, sortByYear } from '../../lib/content';
 import { researchOverview, researchProfile } from '../../data/research';
 import { siteMeta } from '../../data/site';
 
-const allPapers = sortByYear(await getCollection('papers'));
-const publishedPapers = allPapers.filter(isPublishedPaper);
-const manuscriptPapers = allPapers.filter((paper) => !isPublishedPaper(paper));
-const papers = [...publishedPapers, ...manuscriptPapers];
-const tags = collectTags(allPapers);
-const paperYears = allPapers.map((paper) => paper.data.year);
-const archiveStartYear = Math.min(...paperYears);
-const archiveEndYear = Math.max(...paperYears);
+const publications = sortByYear((await getCollection('papers')).filter(isPublishedPaper));
+const tags = collectTags(publications);
+const paperYears = publications
+  .map((paper) => paper.data.year)
+  .filter((year): year is number => typeof year === 'number');
+const archiveStartYear = paperYears.length > 0 ? Math.min(...paperYears) : undefined;
+const archiveEndYear = paperYears.length > 0 ? Math.max(...paperYears) : undefined;
 const archiveSpan =
-  archiveStartYear === archiveEndYear ? `${archiveStartYear}` : `${archiveStartYear}-${archiveEndYear}`;
+  archiveStartYear && archiveEndYear
+    ? archiveStartYear === archiveEndYear
+      ? `${archiveStartYear}`
+      : `${archiveStartYear}-${archiveEndYear}`
+    : 'Selected years';
 ---
 
 <BaseLayout
-  title="Papers and Publications"
-  description="A selected index of Martin Lepage's papers, chapters, and work in progress, with Academia.edu as the larger public archive."
+  title="Publications"
+  description="A selected index of Martin Lepage's published academic work, with Academia.edu as the larger public archive."
 >
   <section class="section-shell">
     <SectionIntro
-      eyebrow="Papers and publications"
-      title="Papers, chapters, and work in progress."
-      description="This site offers a selected index of the research. Academia.edu holds the larger archive."
+      eyebrow="Publications"
+      title="Published academic work."
+      description="This page keeps the published record visible. Unpublished papers, manuscripts, and book-stage work now live under Projects."
     />
 
     <div class="mt-8 grid gap-6 xl:grid-cols-[minmax(0,1.35fr)_minmax(0,0.65fr)]">
@@ -36,12 +39,12 @@ const archiveSpan =
         <p class="eyebrow">Canonical archive</p>
         <h2 class="mt-3 text-[1.42rem] md:text-[1.62rem]">The full paper archive is on Academia.edu.</h2>
         <p class="mt-4 max-w-[58ch] text-base text-slate-200">
-          Use this page as a guide. Published work appears first, work in progress stays visible, and each entry shows
-          its status clearly. For the larger public list, use Academia.edu.
+          Use this page as a guide to the published record. For the larger outward-facing archive, use Academia.edu. For
+          unpublished papers, books in progress, and apps in development, go to Projects.
         </p>
         <div class="mt-6 flex flex-wrap gap-3">
           <a class="button-primary" href={siteMeta.academia}>Open Academia.edu</a>
-          <a class="button-secondary" href="#paper-archive">Browse this site index</a>
+          <a class="button-secondary" href="#publication-archive">Browse this site index</a>
         </div>
       </article>
 
@@ -53,13 +56,13 @@ const archiveSpan =
         </article>
         <article class="veil-panel">
           <p class="eyebrow">Published</p>
-          <p class="mt-4 text-[1.7rem] font-semibold text-moon">{publishedPapers.length}</p>
+          <p class="mt-4 text-[1.7rem] font-semibold text-moon">{publications.length}</p>
           <p class="mt-2 text-sm text-slate-300">Entries presented as published articles or chapters.</p>
         </article>
         <article class="veil-panel">
-          <p class="eyebrow">Manuscript-stage</p>
-          <p class="mt-4 text-[1.7rem] font-semibold text-moon">{manuscriptPapers.length}</p>
-          <p class="mt-2 text-sm text-slate-300">Records kept visible while circulation and publication paths develop.</p>
+          <p class="eyebrow">In progress</p>
+          <p class="mt-4 text-[1.7rem] font-semibold text-moon">Projects</p>
+          <p class="mt-2 text-sm text-slate-300">Unpublished papers, books, and apps in development are grouped in the Projects archive.</p>
         </article>
       </div>
     </div>
@@ -78,20 +81,20 @@ const archiveSpan =
       ))}
     </div>
 
-    <div class="mt-14" id="paper-archive">
+    <div class="mt-14" id="publication-archive">
       <SectionIntro
         eyebrow="On-site index"
-        title="Search the papers here."
-        description="Published work appears first, and work in progress stays visible with clear status labels."
+        title="Search the publications here."
+        description="This index focuses on published articles and chapters."
       />
     </div>
 
     <div class="mt-8">
-      <FilterBar scopeId="papers" tags={tags} searchPlaceholder="Search papers, chapters, and manuscripts" />
+      <FilterBar scopeId="papers" tags={tags} searchPlaceholder="Search publications" />
     </div>
 
     <div class="mt-10 grid gap-6 lg:grid-cols-2" data-filter-scope="papers">
-      {papers.map((paper) => <PublicationCard paper={paper} />)}
+      {publications.map((paper) => <PublicationCard paper={paper} />)}
     </div>
   </section>
 </BaseLayout>

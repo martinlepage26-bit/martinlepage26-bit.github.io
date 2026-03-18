@@ -1,12 +1,13 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import { clampText, contentSlug } from '../lib/content';
+import { clampText, contentSlug, joinDistinctText } from '../lib/content';
 
 interface Props {
   paper: CollectionEntry<'papers'>;
 }
 
 const { paper } = Astro.props;
+const publicationMeta = joinDistinctText([paper.data.venue, paper.data.status]);
 ---
 
 <article data-filter-item data-tags={paper.data.tags.join('|').toLowerCase()} data-search={`${paper.data.title} ${paper.data.venue} ${paper.data.abstract} ${paper.data.tags.join(' ')}`.toLowerCase()}>
@@ -16,14 +17,14 @@ const { paper } = Astro.props;
         <p class="eyebrow">{paper.data.type}</p>
         <h3 class="mt-3 text-[1rem] leading-tight md:text-[1.22rem]">{paper.data.title}</h3>
       </div>
-      <span class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">
-        {paper.data.year}
-      </span>
+      {paper.data.year && (
+        <span class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">
+          {paper.data.year}
+        </span>
+      )}
     </div>
 
-    <p class="text-sm uppercase tracking-[0.14em] text-slate-400">
-      {paper.data.venue} · {paper.data.status}
-    </p>
+    <p class="text-sm uppercase tracking-[0.14em] text-slate-400">{publicationMeta}</p>
     <p class="max-w-[58ch] text-base text-slate-200">{clampText(paper.data.abstract, 240)}</p>
     <span class="mt-auto text-sm font-semibold text-accent group-hover:text-moon">
       View record

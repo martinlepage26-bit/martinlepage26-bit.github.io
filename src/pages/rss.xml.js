@@ -9,7 +9,7 @@ export async function GET(context) {
 
   if (!site) {
     return new Response(
-      '<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel><title>Martin Lepage - Writing</title><description>RSS feed unavailable until a public site URL is configured.</description><link>/</link></channel></rss>',
+      '<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel><title>Martin Lepage - Writings</title><description>RSS feed unavailable until a public site URL is configured.</description><link>/</link></channel></rss>',
       {
         status: 200,
         headers: {
@@ -20,7 +20,7 @@ export async function GET(context) {
   }
 
   return rss({
-    title: `${siteMeta.name} - Writing`,
+    title: `${siteMeta.name} - Writings`,
     description: 'Essays, reflections, and public-facing writing by Martin Lepage.',
     site,
     items: writings

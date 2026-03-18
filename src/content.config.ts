@@ -23,7 +23,7 @@ const papers = defineCollection({
   type: 'content',
   schema: z.object({
     title: z.string(),
-    year: z.number().int(),
+    year: z.number().int().optional(),
     venue: z.string(),
     status: z.string(),
     type: z.string(),

@@ -27,12 +27,12 @@ const structuredData = buildArticleSchema({
 
 <BaseLayout title={writing.data.title} description={writing.data.description} canonical={canonical} structuredData={structuredData}>
   <EntryHero
-    eyebrow="Writing"
+    eyebrow="Writings"
     title={writing.data.title}
     description={writing.data.description}
     meta={`${formatDate(writing.data.date)} · ${minutes} min read`}
     backHref="/writing/"
-    backLabel="Back to writing"
+    backLabel="Back to writings"
     tags={writing.data.tags}
     links={writing.data.externalUrl ? [{ label: writing.data.externalLabel ?? 'External link', url: writing.data.externalUrl }] : []}
   />

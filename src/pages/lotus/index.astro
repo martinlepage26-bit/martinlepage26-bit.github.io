@@ -1,0 +1,227 @@
+---
+import LotusWorkbench from '../../components/lotus/LotusWorkbench.astro';
+import SectionIntro from '../../components/SectionIntro.astro';
+import { lotusBoundaryCards, lotusSignalGroups, lotusSurfaces } from '../../data/lotus';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { buildCanonical } from '../../lib/seo';
+
+const pageDescription =
+  'Lotus is a local-first note-scoring app that reads text through agency, strategy, governance, operational, creative, and meaning signals.';
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'Lotus',
+  description: pageDescription,
+  applicationCategory: 'ResearchApplication',
+  url: buildCanonical('/lotus/'),
+  creator: {
+    '@type': 'Person',
+    name: 'Martin Lepage',
+  },
+};
+---
+
+<BaseLayout title="Lotus" description={pageDescription} canonical="/lotus/" structuredData={structuredData}>
+  <section class="relative overflow-hidden border-b border-[rgba(36,27,23,0.12)]">
+    <div class="section-shell relative lotus-hero-shell">
+      <div class="lotus-hero-orbit lotus-hero-orbit-one"></div>
+      <div class="lotus-hero-orbit lotus-hero-orbit-two"></div>
+      <div class="grid gap-10 lg:grid-cols-[minmax(0,1.08fr)_minmax(320px,0.92fr)] lg:items-end">
+        <div class="relative z-10 max-w-4xl">
+          <p class="eyebrow">Lotus</p>
+          <h1 class="mt-5">A note-scoring app for agency, governance, strategy, and meaning.</h1>
+          <p class="mt-6 max-w-3xl text-lg leading-8 text-slate-100 md:text-xl">
+            Lotus is the canonical public name for the local-first scoring line inside the Agency repo. On the website,
+            it becomes a bounded browser workbench that scores pasted text through six signal groups rather than hiding
+            the method behind a vague assistant surface.
+          </p>
+          <div class="mt-8 flex flex-wrap gap-3">
+            <a class="button-primary" href="#lotus-workbench">Open the workbench</a>
+            <a class="button-secondary" href="/projects/bonded-intelligence-under-constraint/">Read the framework paper</a>
+            <a class="button-secondary" href="/projects/lotus/">Open the project record</a>
+          </div>
+        </div>
+
+        <div class="veil-panel relative z-10 lotus-hero-card">
+          <p class="eyebrow">Public boundary</p>
+          <div class="mt-5 grid gap-4">
+            <div class="lotus-hero-mini-card">
+              <p class="lotus-hero-label">Canonical</p>
+              <p class="mt-2 text-base leading-7 text-slate-200">
+                <strong>Lotus</strong> is the public app. The old all-caps styling and the older Agency LOTUS label are
+                legacy naming, not separate products.
+              </p>
+            </div>
+            <div class="lotus-hero-mini-card">
+              <p class="lotus-hero-label">Compatibility</p>
+              <p class="mt-2 text-base leading-7 text-slate-200">
+                <code>flowerapp</code> remains only as a compatibility package and CLI alias in the repo. It is not a
+                second public-facing app line.
+              </p>
+            </div>
+            <div class="lotus-hero-mini-card">
+              <p class="lotus-hero-label">Web layer</p>
+              <p class="mt-2 text-base leading-7 text-slate-200">
+                This site scores pasted text in the browser. Local note ingestion, file imports, and deeper workspace
+                review remain in the desktop and repo-side execution layer.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-shell border-y border-[rgba(36,27,23,0.08)] bg-[rgba(251,246,239,0.28)]">
+    <SectionIntro
+      eyebrow="Lotus surfaces"
+      title="One public app line, several bounded surfaces."
+      description="The website makes the consolidation explicit: one canonical Lotus line, a connected framework paper, and a browser-side workbench shaped by the desktop scoring logic."
+    />
+
+    <div class="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+      {lotusSurfaces.map((item) => (
+        <article class="veil-panel h-full">
+          <p class="eyebrow">{item.eyebrow}</p>
+          <h2 class="mt-4 text-[1.08rem] md:text-[1.2rem]">{item.title}</h2>
+          <p class="mt-4 text-base leading-7 text-slate-200">{item.description}</p>
+          <div class="mt-5">
+            <a class="link-inline" href={item.href}>{item.cta}</a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section id="lotus-workbench" class="section-shell">
+    <SectionIntro
+      eyebrow="Workbench"
+      title="Run the canonical signal logic in the browser."
+      description="The public surface keeps the scope narrow and explicit: score the note, inspect which signal groups fired, and export a bounded markdown summary."
+    />
+
+    <div class="mt-12">
+      <LotusWorkbench />
+    </div>
+  </section>
+
+  <section class="section-shell border-y border-[rgba(36,27,23,0.08)] bg-[rgba(251,246,239,0.28)]">
+    <SectionIntro
+      eyebrow="Signal library"
+      title="Six signal groups govern the current score."
+      description="The browser workbench follows the same group structure as the canonical Lotus note scorer: strategic, governance, operational, agency, creative, and meaning."
+    />
+
+    <div class="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+      {lotusSignalGroups.map((group) => (
+        <article class="veil-panel h-full">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <p class="eyebrow">{group.label}</p>
+              <h2 class="mt-4 text-[1.08rem] md:text-[1.18rem]">{group.description}</h2>
+            </div>
+            <span class="lotus-weight-badge">{group.weight}</span>
+          </div>
+          <p class="mt-5 text-sm uppercase tracking-[0.18em] text-slate-400">Representative terms</p>
+          <p class="mt-3 text-base leading-7 text-slate-200">{group.terms.slice(0, 5).join(', ')}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section id="lotus-boundary" class="section-shell">
+    <SectionIntro
+      eyebrow="Boundary and lineage"
+      title="Consolidated without pretending the layers are identical."
+      description="The public site now presents Lotus as one coherent app line while preserving the differences between public naming, compatibility layers, and the deeper local-first execution stack."
+    />
+
+    <div class="mt-12 grid gap-6 lg:grid-cols-3">
+      {lotusBoundaryCards.map((item) => (
+        <article class="veil-panel h-full">
+          <h2 class="text-[1.08rem] md:text-[1.18rem]">{item.title}</h2>
+          <p class="mt-4 text-base leading-7 text-slate-200">{item.body}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <style>
+    .lotus-hero-shell {
+      position: relative;
+      isolation: isolate;
+    }
+
+    .lotus-hero-orbit {
+      position: absolute;
+      pointer-events: none;
+      border-radius: 999px;
+      border: 1px solid rgba(92, 117, 106, 0.16);
+    }
+
+    .lotus-hero-orbit-one {
+      width: min(84vw, 960px);
+      height: 19rem;
+      top: -5rem;
+      right: -18rem;
+      transform: rotate(-8deg);
+      background: linear-gradient(90deg, rgba(92, 117, 106, 0.1), rgba(92, 117, 106, 0));
+    }
+
+    .lotus-hero-orbit-two {
+      width: min(48vw, 420px);
+      height: min(48vw, 420px);
+      left: -7rem;
+      bottom: -6rem;
+      background: radial-gradient(circle, rgba(189, 138, 81, 0.14) 0%, rgba(189, 138, 81, 0) 62%);
+    }
+
+    .lotus-hero-card {
+      padding-top: 1.55rem;
+    }
+
+    .lotus-hero-mini-card {
+      border-radius: 1rem;
+      border: 1px solid rgba(36, 27, 23, 0.12);
+      background: linear-gradient(180deg, rgba(251, 246, 239, 0.72), rgba(237, 238, 244, 0.54));
+      padding: 1rem;
+      box-shadow: 0 18px 34px rgba(17, 23, 38, 0.06);
+    }
+
+    .lotus-hero-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #728c7b;
+    }
+
+    .lotus-hero-label::before {
+      content: '';
+      width: 0.55rem;
+      height: 0.55rem;
+      border-radius: 999px;
+      border: 1px solid rgba(92, 117, 106, 0.36);
+      background: rgba(92, 117, 106, 0.14);
+    }
+
+    .lotus-weight-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 2.3rem;
+      height: 2.3rem;
+      border-radius: 999px;
+      background: rgba(189, 138, 81, 0.12);
+      color: var(--color-heading);
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+  </style>
+</BaseLayout>

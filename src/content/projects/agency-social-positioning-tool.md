@@ -1,14 +1,14 @@
 ---
 title: "Agency Repository"
-subtitle: "The umbrella repository that now houses Lotus and Scripto"
+subtitle: "The umbrella repository that now houses Lotus and Scriptorium"
 year: 2026
 status: "Repository umbrella / working archive"
-description: "The umbrella repository name for the local-first app lines currently centered on Lotus and Scripto."
+description: "The umbrella repository name for the local-first app lines currently centered on Lotus and Scriptorium."
 role: "Builder and maintainer"
 outputs:
   - "Umbrella repository"
   - "Lotus app home"
-  - "Scripto app home"
+  - "Scriptorium app home"
 tags:
   - Repository
   - Local-first
@@ -24,4 +24,4 @@ links:
 
 The `Agency` name now matters mostly as repository infrastructure. It is the git home and umbrella frame that holds the local-first app lines, rather than the current public-facing product name of a single app.
 
-Within that repository, *Lotus* is the social agency scoring app and *Scripto* is the archive-sorting line whose current desktop surface is *Dr. Sort-Academic Helper*. Keeping `Agency` visible on the site still helps because it explains why those tools live together in one codebase, but the clearer public story is now about the separate apps rather than a single app called Agency.
+Within that repository, *Lotus* is the agency scoring app and *Scriptorium* is the archive-sorting line whose desktop-facing companion is *Dr. Sort*. Keeping `Agency` visible on the site still helps because it explains why those tools live together in one codebase, but the clearer public story is now about the separate apps rather than a single app called Agency.

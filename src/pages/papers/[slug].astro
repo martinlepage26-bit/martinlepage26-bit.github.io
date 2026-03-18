@@ -3,7 +3,7 @@ import { getCollection, render } from 'astro:content';
 import EntryHero from '../../components/EntryHero.astro';
 import { siteMeta } from '../../data/site';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { contentSlug, isPublishedStatus } from '../../lib/content';
+import { contentSlug, isPublishedStatus, joinDistinctText } from '../../lib/content';
 import { buildArticleSchema, buildCanonical } from '../../lib/seo';
 
 export async function getStaticPaths() {
@@ -17,10 +17,9 @@ export async function getStaticPaths() {
 const { paper } = Astro.props;
 const { Content } = await render(paper);
 const canonical = `/papers/${contentSlug(paper.id)}/`;
-const meta = [String(paper.data.year), paper.data.venue, paper.data.status].filter(
-  (value, index, values) => values.indexOf(value) === index,
-).join(' · ');
-const structuredData = isPublishedStatus(paper.data.status)
+const meta = joinDistinctText([paper.data.year, paper.data.venue, paper.data.status]);
+const isPublished = isPublishedStatus(paper.data.status);
+const structuredData = isPublished
   ? buildArticleSchema({
       title: paper.data.title,
       description: paper.data.abstract,
@@ -37,8 +36,8 @@ const structuredData = isPublishedStatus(paper.data.status)
     title={paper.data.title}
     description={paper.data.abstract}
     meta={meta}
-    backHref="/papers/"
-    backLabel="Back to publications"
+    backHref={isPublished ? '/papers/' : '/projects/'}
+    backLabel={isPublished ? 'Back to publications' : 'Back to projects'}
     tags={paper.data.tags}
     links={paper.data.links}
   />

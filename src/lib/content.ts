@@ -43,6 +43,25 @@ export function clampText(text: string, maxLength = 220) {
   return `${text.slice(0, maxLength).trimEnd()}...`;
 }
 
+export function joinDistinctText(parts: Array<string | number | undefined | null>) {
+  return parts
+    .map((part) => (typeof part === 'number' ? String(part) : part?.trim()))
+    .filter((part): part is string => Boolean(part))
+    .filter((part, index, values) => values.indexOf(part) === index)
+    .join(' · ');
+}
+
+export function orderEntriesBySlug<T extends { id: string }>(items: T[], order: readonly string[]) {
+  const bySlug = new Map(items.map((item) => [contentSlug(item.id), item]));
+  return order
+    .map((slug) => bySlug.get(slug))
+    .filter((item): item is T => Boolean(item));
+}
+
+export function sortByTitle<T extends { data: { title: string } }>(items: T[]) {
+  return [...items].sort((a, b) => a.data.title.localeCompare(b.data.title));
+}
+
 export function contentSlug(id: string) {
   return id.replace(/\.(md|mdx)$/i, '');
 }

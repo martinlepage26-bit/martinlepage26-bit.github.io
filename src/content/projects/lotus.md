@@ -1,33 +1,35 @@
 ---
 title: "Lotus"
-subtitle: "A local-first social agency scoring app for notes"
+subtitle: "Local-first note scoring app in development"
 year: 2026
-status: "Local-first desktop app"
-description: "A standalone local-first app for scoring notes across agency, strategy, governance, operational, creative, and meaning signals."
-role: "Builder"
+status: "App in development · browser workbench"
+description: "A local-first note scoring app in development across agency, strategy, governance, operational, creative, and meaning signals."
+role: "Creator"
 outputs:
-  - "Standalone desktop note-scoring app"
-  - "Lotus CLI and localhost web surface"
-  - "Local-first archive and review workflow"
+  - "Canonical note-scoring model"
+  - "Browser-side scoring workbench"
+  - "Local-first desktop and CLI line"
 tags:
-  - Desktop app
+  - App in development
   - Local-first
-  - Social agency
+  - Agency scoring
   - Archive systems
   - Research tooling
   - Note scoring
 featured: false
 image: "/assets/geometric-motif-bottomleft.png"
-imageAlt: "A local-first scoring app for reading notes through social agency, strategy, governance, and meaning signals."
+imageAlt: "A local-first scoring app for reading notes through agency, strategy, governance, and meaning signals."
 links:
+  - label: "Open Lotus"
+    url: "/lotus/"
+  - label: "Read the framework paper"
+    url: "/projects/bonded-intelligence-under-constraint/"
   - label: "GitHub repo"
     url: "https://github.com/martinlepage26-bit/Agency"
-  - label: "Lotus app source"
-    url: "https://github.com/martinlepage26-bit/Agency/tree/main/lotus"
 ---
 
-*Lotus* belongs on the site because it shows a more operational side of the practice: not just interpretation or governance language, but a working local-first app for handling live note material.
+*Lotus* belongs in the project archive because it shows the scoring side of the apps in development: a way to read notes through agency, strategy, governance, operational, creative, and meaning-oriented signals.
 
-Inside the `Agency` repository, Lotus now stands on its own rather than as a mixed workspace beside other app ideas. It accepts Markdown and text uploads, scores them across agency, strategic, governance, operational, creative, and meaning-oriented dimensions, and keeps the review loop local to the user’s machine.
+The public framing stays modest. *Lotus* is presented here as a local-first app in development with a clear governing logic and an active development direction, not as a finished SaaS platform.
 
-The right framing for now is modest and concrete. This is a working local-first desktop app with a compatible CLI and lightweight localhost web surface in the same repository. It is not a SaaS product and it is not being presented here as one. The `martin.govern-ai.ca` presence should act as a clear public pointer to the project and its source, while the app itself remains honest about being local-first software.
+The website workbench now consolidates the public naming. *Lotus* is the app. The older `flowerapp` package name and Agency LOTUS label remain compatibility residue in the repo rather than separate public products.

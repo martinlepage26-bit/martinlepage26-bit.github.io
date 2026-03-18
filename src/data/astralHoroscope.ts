@@ -95,7 +95,7 @@ function normalizeSign(input: AstralHoroscopeRequest): AstralSign {
   }
 
   if (input.month == null || input.day == null) {
-    throw new Error('Astral horoscope requests need either a sign slug or a month/day pair.');
+    throw new Error('Astral reading requests need either a sign slug or a month/day pair.');
   }
 
   if (!isValidMonthDay(input.month, input.day)) {

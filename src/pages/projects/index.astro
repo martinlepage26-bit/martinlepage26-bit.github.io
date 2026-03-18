@@ -2,31 +2,83 @@
 import { getCollection } from 'astro:content';
 import FilterBar from '../../components/FilterBar.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
+import PublicationCard from '../../components/PublicationCard.astro';
 import SectionIntro from '../../components/SectionIntro.astro';
+import { hiddenProjectArchiveSlugs, projectArchivePromotedPaperSlugs } from '../../data/site';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { collectTags, sortByYear } from '../../lib/content';
+import { collectTags, contentSlug, isPublishedPaper, sortByYear } from '../../lib/content';
 
-const projects = sortByYear(await getCollection('projects'));
-const tags = collectTags(projects);
+const allProjects = sortByYear(await getCollection('projects'));
+const hiddenProjectArchiveSlugSet = new Set<string>(hiddenProjectArchiveSlugs);
+const promotedPaperSlugSet = new Set<string>(projectArchivePromotedPaperSlugs);
+const projects = allProjects.filter(
+  (project) =>
+    !/\bamazon\b/i.test(project.data.status) && !hiddenProjectArchiveSlugSet.has(contentSlug(project.id)),
+);
+const allPapers = sortByYear(await getCollection('papers'));
+const unpublishedPapers = allPapers.filter(
+  (paper) => !isPublishedPaper(paper) && !promotedPaperSlugSet.has(contentSlug(paper.id)),
+);
+const tags = collectTags([...projects, ...unpublishedPapers]);
 ---
 
 <BaseLayout
   title="Projects"
-  description="Governance work, books, and digital projects by Martin Lepage."
+  description="An archive of unpublished books, papers, apps in development, and research builds by Martin Lepage."
 >
   <section class="section-shell">
     <SectionIntro
       eyebrow="Projects"
-      title="Projects, with status kept clear."
-      description="Governance work, books, long-form writing, and digital experiments in one place."
+      title="Unpublished books, papers, apps in development, and research builds."
+      description="Projects now collects the in-progress archive. Published academic work lives under Publications, and published Amazon books live under Writings."
     />
 
-    <div class="mt-10">
-      <FilterBar scopeId="projects" tags={tags} searchPlaceholder="Search projects" />
+    <div class="mt-10 grid gap-4 sm:grid-cols-3">
+      <article class="veil-panel">
+        <p class="eyebrow">Books and builds</p>
+        <p class="mt-4 text-[1.7rem] font-semibold text-moon">{projects.length}</p>
+        <p class="mt-2 text-sm text-slate-300">Project records, book-stage work, frameworks, and apps in development.</p>
+      </article>
+      <article class="veil-panel">
+        <p class="eyebrow">Unpublished papers</p>
+        <p class="mt-4 text-[1.7rem] font-semibold text-moon">{unpublishedPapers.length}</p>
+        <p class="mt-2 text-sm text-slate-300">Manuscripts and unpublished research records kept visible here.</p>
+      </article>
+      <article class="veil-panel">
+        <p class="eyebrow">Published elsewhere</p>
+        <p class="mt-4 text-[1.7rem] font-semibold text-moon">Writings</p>
+        <p class="mt-2 text-sm text-slate-300">Published books with Amazon links now sit on the Writings page.</p>
+      </article>
     </div>
 
-    <div class="mt-10 grid gap-6 lg:grid-cols-2" data-filter-scope="projects">
-      {projects.map((project) => <ProjectCard project={project} />)}
+    <div class="mt-10">
+      <FilterBar scopeId="projects" tags={tags} searchPlaceholder="Search projects, manuscripts, and apps in development" />
+    </div>
+
+    <div class="mt-10 space-y-16" data-filter-scope="projects">
+      <section>
+        <SectionIntro
+          eyebrow="Project archive"
+          title="Books, apps in development, and research builds."
+          description="This section includes the working archive rather than only a curated shortlist."
+        />
+
+        <div class="mt-10 grid gap-6 lg:grid-cols-2">
+          {projects.map((project) => <ProjectCard project={project} />)}
+        </div>
+      </section>
+
+      <section>
+        <SectionIntro
+          eyebrow="Unpublished papers"
+          title="Manuscripts and unpublished research."
+          description="These records stay public, but they now live under Projects until they become publication records."
+        />
+
+        <div class="mt-10 grid gap-6 lg:grid-cols-2">
+          {unpublishedPapers.map((paper) => <PublicationCard paper={paper} />)}
+        </div>
+      </section>
     </div>
   </section>
 </BaseLayout>

@@ -6,43 +6,48 @@ import ProjectCard from '../components/ProjectCard.astro';
 import PublicationCard from '../components/PublicationCard.astro';
 import SectionIntro from '../components/SectionIntro.astro';
 import WritingCard from '../components/WritingCard.astro';
+import { biography, hiddenProjectArchiveSlugs, homeHighlights, projectArchivePromotedPaperSlugs, publicProjectOrder, siteMeta } from '../data/site';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { contentSlug, estimateReadingMinutes, sortByDate, sortByYear } from '../lib/content';
-import { biography, homeHighlights, siteMeta } from '../data/site';
+import { contentSlug, estimateReadingMinutes, isPublishedPaper, orderEntriesBySlug, sortByDate, sortByTitle, sortByYear } from '../lib/content';
 
 const papers = sortByYear(await getCollection('papers'));
-const projects = sortByYear(await getCollection('projects'));
+const allProjects = await getCollection('projects');
+const hiddenProjectArchiveSlugSet = new Set<string>(hiddenProjectArchiveSlugs);
+const promotedPaperSlugSet = new Set<string>(projectArchivePromotedPaperSlugs);
+const projects = orderEntriesBySlug(allProjects, publicProjectOrder);
+const amazonBooks = sortByTitle(allProjects.filter((project) => /\bamazon\b/i.test(project.data.status)));
+const unpublishedProjects = allProjects.filter(
+  (project) =>
+    !/\bamazon\b/i.test(project.data.status) && !hiddenProjectArchiveSlugSet.has(contentSlug(project.id)),
+);
 const writings = sortByDate(await getCollection('writings', ({ data }) => !data.draft));
 const talks = sortByDate(await getCollection('talks'));
 
-const featuredPapers = papers.filter((entry) => entry.data.featured).slice(0, 2);
-const featuredProjects = projects.filter((entry) => entry.data.featured).slice(0, 2);
+const publishedPapers = papers.filter(isPublishedPaper);
+const unpublishedPapers = papers.filter(
+  (entry) => !isPublishedPaper(entry) && !promotedPaperSlugSet.has(contentSlug(entry.id)),
+);
+const featuredPapers = publishedPapers.filter((entry) => entry.data.featured).slice(0, 2);
+const featuredProjects = projects.slice(0, 2);
+const remainingProjects = projects.slice(2);
 const featuredWriting = writings.filter((entry) => entry.data.featured).slice(0, 2);
 const featuredTalks = talks.filter((entry) => entry.data.featured).slice(0, 3);
-const symbolicProjectOrder = [
-  'the-violet-gem',
-  'socialcompass-agatha',
-  'from-ai-anxiety-to-recursive-governance-under-constraint',
-  'the-sealed-card-protocol',
-];
-const symbolicProjects = symbolicProjectOrder
-  .map((slug) => projects.find((entry) => entry.id.replace(/\.md$/i, '') === slug))
-  .filter((project): project is NonNullable<typeof project> => Boolean(project));
+const projectArchiveCount = unpublishedProjects.length + unpublishedPapers.length;
 const homeStats = [
   {
-    value: papers.length,
+    value: publishedPapers.length,
     label: 'Publications',
-    description: 'Published and in-progress research, with status shown clearly.',
+    description: 'Published academic work presented as publication records.',
   },
   {
-    value: projects.length,
+    value: projectArchiveCount,
     label: 'Projects',
-    description: 'Governance work, books, and digital projects in one archive.',
+    description: 'Unpublished books, papers, apps in development, and research builds.',
   },
   {
     value: writings.length,
-    label: 'Essays',
-    description: 'Public writing, criticism, and notes.',
+    label: 'Writings',
+    description: 'Essays, criticism, notes, and linked book pages.',
   },
   {
     value: talks.length,
@@ -109,7 +114,7 @@ const homeStats = [
       <SectionIntro
         eyebrow="Featured publications"
         title="Research on ritual, gender, media, and governance."
-        description="Published and in-progress research, with status kept clear."
+        description="Published academic work from the on-site publications archive."
       />
     </div>
 
@@ -127,8 +132,8 @@ const homeStats = [
       <div>
         <SectionIntro
           eyebrow="Projects"
-          title="Projects in governance, books, and digital work."
-          description="An archive of advisory, writing, and experimental work."
+          title="Projects, papers, and research builds."
+          description="A curated public archive rather than a full internal working list."
         />
 
         <div class="mt-3">
@@ -141,15 +146,15 @@ const homeStats = [
       </div>
 
       <aside class="veil-panel">
-        <p class="eyebrow">Developing works</p>
-        <h2 class="mt-3 text-[1.42rem] md:text-[1.62rem]">Books and symbolic work in public preview.</h2>
+        <p class="eyebrow">Also listed</p>
+        <h2 class="mt-3 text-[1.42rem] md:text-[1.62rem]">Additional items in the current public archive.</h2>
         <p class="mt-4 text-base text-slate-200">
-          These entries show the book and symbolic side of the practice without pretending they are finished
-          publications.
+          These entries stay concise on purpose and point to the rest of the project list without reopening the full
+          older archive.
         </p>
 
         <ul class="mt-8 space-y-3">
-          {symbolicProjects.map((project) => (
+          {remainingProjects.map((project) => (
             <li>
               <a
                 class="block border-t border-[rgba(35,27,53,0.12)] py-4 transition hover:translate-x-1 hover:border-[rgba(127,83,178,0.28)]"
@@ -176,16 +181,49 @@ const homeStats = [
   </section>
 
   <section class="section-shell border-y border-[rgba(36,27,23,0.08)] bg-[rgba(251,246,239,0.28)]">
-    <div class="grid gap-8 xl:grid-cols-[minmax(0,1.35fr)_360px]">
+    <div class="grid gap-8 xl:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
       <div>
         <SectionIntro
-          eyebrow="Writing"
-          title="Essays and criticism."
-          description="Public writing, notes, and longer essays."
+          eyebrow="Books on Amazon"
+          title="Published books, listed separately."
+          description="Self-published Amazon titles stay visible here and on the Writings page without being folded into the unpublished project archive."
         />
 
         <div class="mt-3">
-          <a class="link-inline" href="/writing/">Read the writing archive</a>
+          <a class="link-inline" href="/writing/#books">Browse all books</a>
+        </div>
+      </div>
+
+      <div class="veil-panel">
+        <ul class="space-y-3">
+          {amazonBooks.map((project) => (
+            <li>
+              <a
+                class="block border-t border-[rgba(35,27,53,0.12)] py-4 transition hover:translate-x-1 hover:border-[rgba(127,83,178,0.28)]"
+                href={`/projects/${contentSlug(project.id)}/`}
+              >
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-accent/90">{project.data.status}</p>
+                <h3 class="mt-2 text-[0.96rem] md:text-[1.04rem]">{project.data.title}</h3>
+                <p class="mt-2 text-sm leading-6 text-slate-300">{project.data.subtitle}</p>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-shell border-y border-[rgba(36,27,23,0.08)] bg-[rgba(251,246,239,0.28)]">
+    <div class="grid gap-8 xl:grid-cols-[minmax(0,1.35fr)_360px]">
+      <div>
+        <SectionIntro
+          eyebrow="Writings"
+          title="Essays, notes, and books."
+          description="Public writing, criticism, notes, and companion book pages."
+        />
+
+        <div class="mt-3">
+          <a class="link-inline" href="/writing/">Read the writings</a>
         </div>
 
         <div class="mt-12 grid gap-6 lg:grid-cols-2">

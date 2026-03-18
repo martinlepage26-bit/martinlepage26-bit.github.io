@@ -1,0 +1,756 @@
+---
+import { buildLotusAssessment, lotusDefaultState, lotusSampleNotes, lotusSignalGroups } from '../../data/lotus';
+
+const defaultState = {
+  ...lotusDefaultState,
+  sample: lotusSampleNotes[0]?.slug ?? '',
+};
+
+const initialAssessment = buildLotusAssessment(defaultState);
+const appData = {
+  defaultState,
+  sampleNotes: lotusSampleNotes,
+  signalGroups: lotusSignalGroups,
+};
+---
+
+<div class="lotus-workbench">
+  <div class="grid gap-8 lg:grid-cols-[minmax(320px,0.92fr)_minmax(0,1.08fr)] lg:items-start">
+    <section class="veil-panel lotus-control-panel">
+      <p class="eyebrow">Canonical Lotus logic</p>
+      <h2 class="mt-4 text-[1.56rem] leading-tight md:text-[1.82rem]">Score a note through agency, governance, strategy, and meaning.</h2>
+      <p class="mt-4 max-w-xl text-base leading-7 text-slate-200">
+        This public workbench ports the canonical Lotus note-scoring logic into the browser. Paste markdown or plain
+        text, keep the title if you want, and the page scores the note against the same six signal groups used in the
+        standalone app line.
+      </p>
+
+      <div class="mt-8 grid gap-5">
+        <div class="lotus-input-card">
+          <label class="lotus-label" for="lotus-title-input">Note title</label>
+          <input
+            id="lotus-title-input"
+            class="lotus-input"
+            type="text"
+            value={defaultState.title}
+            placeholder="Optional title. Lotus can infer one from the note."
+          />
+        </div>
+
+        <div class="lotus-input-card">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <label class="lotus-label" for="lotus-text-input">Note body</label>
+            <p class="text-xs uppercase tracking-[0.18em] text-slate-400">Markdown or plain text</p>
+          </div>
+          <textarea id="lotus-text-input" class="lotus-input lotus-textarea">{defaultState.text}</textarea>
+          <p class="mt-3 text-sm leading-6 text-slate-400">
+            The browser workbench strips markdown noise before scoring. No text is uploaded or saved by this public
+            surface.
+          </p>
+        </div>
+
+        <div class="lotus-input-card">
+          <p class="lotus-label">Load a public sample</p>
+          <div class="mt-4 lotus-sample-row">
+            {lotusSampleNotes.map((sample, index) => (
+              <button
+                type="button"
+                class="lotus-sample-button"
+                data-lotus-sample={sample.slug}
+                data-selected={index === 0 ? 'true' : 'false'}
+              >
+                {sample.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-8 flex flex-wrap gap-3">
+        <button id="lotus-score-button" type="button" class="button-primary">Score note</button>
+        <button id="lotus-reset-button" type="button" class="button-secondary">Reset default sample</button>
+      </div>
+
+      <div class="mt-8 grid gap-4 sm:grid-cols-2">
+        <div class="lotus-mini-card">
+          <p class="lotus-mini-label">Naming</p>
+          <p class="mt-2 text-sm leading-6 text-slate-200">
+            Lotus is the public app name. The older <code>flowerapp</code> namespace remains only for compatibility.
+          </p>
+        </div>
+        <div class="lotus-mini-card">
+          <p class="lotus-mini-label">Boundary</p>
+          <p class="mt-2 text-sm leading-6 text-slate-200">
+            The website scores pasted text only. File imports and local note libraries still belong to the desktop and
+            repo-side execution layer.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <aside class="veil-panel lotus-result-panel" aria-live="polite" aria-atomic="true">
+      <div class="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <p id="lotus-source-label" class="lotus-mini-label">Default sample</p>
+          <h3 id="lotus-result-title" class="mt-3 text-[1.52rem] leading-tight md:text-[1.92rem]">{initialAssessment.title}</h3>
+          <p class="mt-2 text-sm uppercase tracking-[0.18em] text-slate-400">Browser-side Lotus score</p>
+        </div>
+        <div class="lotus-mark-orbit">
+          <span class="lotus-mark-glyph">L</span>
+        </div>
+      </div>
+
+      <p id="lotus-result-summary" class="mt-6 text-lg leading-8 text-slate-100">{initialAssessment.summary}</p>
+
+      <div class="mt-8 lotus-metric-grid">
+        <article class="lotus-metric-card">
+          <p class="lotus-mini-label">Agency score</p>
+          <p class="lotus-metric-value"><span id="lotus-agency-score">{initialAssessment.agencyScore}</span><small>/100</small></p>
+        </article>
+        <article class="lotus-metric-card">
+          <p class="lotus-mini-label">Creative score</p>
+          <p class="lotus-metric-value"><span id="lotus-creative-score">{initialAssessment.creativeScore}</span><small>/100</small></p>
+        </article>
+        <article class="lotus-metric-card">
+          <p class="lotus-mini-label">Active signals</p>
+          <p class="lotus-metric-value"><span id="lotus-active-signal-count">{initialAssessment.activeSignals.length}</span><small>groups</small></p>
+        </article>
+        <article class="lotus-metric-card">
+          <p class="lotus-mini-label">Matched terms</p>
+          <p class="lotus-metric-value"><span id="lotus-matched-term-count">{initialAssessment.totalMatchedTerms}</span><small>terms</small></p>
+        </article>
+      </div>
+
+      <article class="mt-6 lotus-guidance-strip">
+        <p class="lotus-mini-label">Active signal strip</p>
+        <div id="lotus-active-signals" class="mt-3 lotus-pill-row">
+          {initialAssessment.activeSignals.length ? (
+            initialAssessment.activeSignals.map((signal) => <span class="lotus-pill">{signal}</span>)
+          ) : (
+            <span class="lotus-pill lotus-pill-muted">No matched groups yet</span>
+          )}
+        </div>
+      </article>
+
+      <div class="mt-6 lotus-signal-grid">
+        {initialAssessment.groups.map((group) => (
+          <article class="lotus-signal-card" data-lotus-group={group.slug} data-active={group.score > 0 ? 'true' : 'false'}>
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <p class="lotus-mini-label">{group.label}</p>
+                <p class="mt-2 text-sm leading-6 text-slate-300">{group.description}</p>
+              </div>
+              <p class="lotus-signal-score"><span data-lotus-group-score={group.slug}>{group.score}</span><small>/100</small></p>
+            </div>
+            <p class="mt-4 text-xs uppercase tracking-[0.18em] text-slate-400">Matched terms</p>
+            <div class="mt-3 lotus-pill-row" data-lotus-group-matches={group.slug}>
+              {group.matchedTerms.length ? (
+                group.matchedTerms.map((term) => <span class="lotus-pill">{term}</span>)
+              ) : (
+                <span class="lotus-pill lotus-pill-muted">None yet</span>
+              )}
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <div class="mt-6 grid gap-4 md:grid-cols-[minmax(0,0.78fr)_minmax(0,1.22fr)]">
+        <article class="lotus-reading-card">
+          <p class="lotus-mini-label">Boundary</p>
+          <p id="lotus-result-boundary" class="mt-2 text-sm leading-6 text-slate-200">{initialAssessment.boundary}</p>
+        </article>
+        <article class="lotus-reading-card">
+          <p class="lotus-mini-label">Normalized note preview</p>
+          <pre id="lotus-preview" class="lotus-preview">{initialAssessment.excerpt || 'Paste a note to see the normalized preview.'}</pre>
+        </article>
+      </div>
+
+      <div class="mt-6 lotus-export-shell">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <p class="lotus-mini-label">Markdown export</p>
+          <div class="flex flex-wrap items-center gap-3">
+            <button id="lotus-copy-button" type="button" class="button-secondary">Copy score</button>
+            <span id="lotus-copy-status" class="text-xs uppercase tracking-[0.18em] text-slate-400">Ready</span>
+          </div>
+        </div>
+        <textarea id="lotus-export" class="lotus-export" readonly>{initialAssessment.exportMarkdown}</textarea>
+      </div>
+    </aside>
+  </div>
+
+  <script is:inline type="application/json" id="lotus-app-data" set:html={JSON.stringify(appData)}></script>
+  <script is:inline>
+    const lotusDataElement = document.getElementById('lotus-app-data');
+
+    if (lotusDataElement) {
+      const lotusData = JSON.parse(lotusDataElement.textContent || '{}');
+      const signalGroups = lotusData.signalGroups || [];
+      const sampleNotes = lotusData.sampleNotes || [];
+      const defaultState = lotusData.defaultState || {};
+
+      const titleInput = document.getElementById('lotus-title-input');
+      const textInput = document.getElementById('lotus-text-input');
+      const scoreButton = document.getElementById('lotus-score-button');
+      const resetButton = document.getElementById('lotus-reset-button');
+      const copyButton = document.getElementById('lotus-copy-button');
+      const copyStatus = document.getElementById('lotus-copy-status');
+      const sampleButtons = Array.from(document.querySelectorAll('[data-lotus-sample]'));
+
+      const sourceLabel = document.getElementById('lotus-source-label');
+      const resultTitle = document.getElementById('lotus-result-title');
+      const resultSummary = document.getElementById('lotus-result-summary');
+      const agencyScore = document.getElementById('lotus-agency-score');
+      const creativeScore = document.getElementById('lotus-creative-score');
+      const activeSignalCount = document.getElementById('lotus-active-signal-count');
+      const matchedTermCount = document.getElementById('lotus-matched-term-count');
+      const activeSignals = document.getElementById('lotus-active-signals');
+      const boundary = document.getElementById('lotus-result-boundary');
+      const preview = document.getElementById('lotus-preview');
+      const exportField = document.getElementById('lotus-export');
+
+      const cleanCandidateText = (value) =>
+        (value || '')
+          .replace(/\s+/g, ' ')
+          .trim()
+          .replace(/^[|_\-.\s]+|[|_\-.\s]+$/g, '')
+          .replace(/^\d{1,4}\s+(?=[A-Za-z])/u, '')
+          .replace(/^[ .;:\-|]+|[ .;:\-|]+$/g, '');
+
+      const normalizeForMatch = (text) =>
+        (text || '')
+          .normalize('NFKD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .toLowerCase()
+          .replace(/[_\-.]+/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim();
+
+      const normalizeCompact = (text) => (normalizeForMatch(text).match(/[a-z0-9]+/g) || []).join(' ');
+
+      const containsCompactPhrase = (compactText, pattern) => {
+        const compactPattern = normalizeCompact(pattern);
+        if (!compactPattern) {
+          return false;
+        }
+        return ` ${compactText} `.includes(` ${compactPattern} `);
+      };
+
+      const normalizeMarkdownText = (text) =>
+        (text || '')
+          .replace(/```[\s\S]*?```/g, ' ')
+          .replace(/`([^`]+)`/g, '$1')
+          .replace(/!\[[^\]]*\]\([^)]+\)/g, ' ')
+          .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+          .replace(/^\s{0,3}#+\s*/gm, '')
+          .replace(/^\s*[-*+]\s+/gm, '')
+          .replace(/^\s*\d+\.\s+/gm, '')
+          .replace(/^\s*>\s*/gm, '')
+          .replace(/\|/g, ' ')
+          .split(/\r?\n/)
+          .map((line) => line.replace(/\s+/g, ' ').trim())
+          .filter(Boolean)
+          .join('\n');
+
+      const extractMarkdownParts = (text) => {
+        const lines = (text || '').split(/\r?\n/);
+        let metaTitle = '';
+        let body = text || '';
+
+        if (lines[0]?.trim() === '---') {
+          const frontMatter = [];
+          for (let index = 1; index < Math.min(lines.length, 40); index += 1) {
+            const line = lines[index];
+            if (line.trim() === '---') {
+              body = lines.slice(index + 1).join('\n');
+              break;
+            }
+            frontMatter.push(line);
+          }
+
+          for (const line of frontMatter) {
+            const match = line.match(/^([^:]+):(.*)$/);
+            if (!match) {
+              continue;
+            }
+
+            const key = normalizeForMatch(match[1]);
+            const value = cleanCandidateText(match[2].trim().replace(/^["']|["']$/g, ''));
+            if (key === 'title' && value) {
+              metaTitle = value;
+              break;
+            }
+          }
+        }
+
+        if (!metaTitle) {
+          for (const line of body.split(/\r?\n/)) {
+            const stripped = line.trim();
+            if (stripped.startsWith('#')) {
+              metaTitle = cleanCandidateText(stripped.replace(/^#+\s*/, ''));
+              break;
+            }
+          }
+        }
+
+        return {
+          metaTitle,
+          body,
+          cleanedText: normalizeMarkdownText(body),
+        };
+      };
+
+      const inferLotusTitle = (title, text) => {
+        const manualTitle = cleanCandidateText(title);
+        if (manualTitle) {
+          return manualTitle;
+        }
+
+        const extracted = extractMarkdownParts(text);
+        if (extracted.metaTitle) {
+          return extracted.metaTitle;
+        }
+
+        for (const line of extracted.cleanedText.split('\n')) {
+          const cleaned = cleanCandidateText(line);
+          if (cleaned && cleaned.length >= 6) {
+            return cleaned;
+          }
+        }
+
+        return 'Untitled Lotus note';
+      };
+
+      const scoreGroup = (text, group) => {
+        const compactText = normalizeCompact(text);
+        const matchedTerms = (group.terms || []).filter((term) => containsCompactPhrase(compactText, term));
+        return {
+          score: Math.min(matchedTerms.length * Number(group.weight || 0), 100),
+          matchedTerms,
+        };
+      };
+
+      const joinHumanList = (values) => {
+        if (values.length <= 1) {
+          return values[0] || '';
+        }
+        if (values.length === 2) {
+          return `${values[0]} and ${values[1]}`;
+        }
+        return `${values.slice(0, -1).join(', ')}, and ${values[values.length - 1]}`;
+      };
+
+      const buildAssessment = (state) => {
+        const rawText = state.text || '';
+        const extracted = extractMarkdownParts(rawText);
+        const resolvedTitle = inferLotusTitle(state.title, rawText);
+        const cleanedText = extracted.cleanedText;
+        const fullText = [resolvedTitle, cleanedText.slice(0, 24000)].join('\n');
+
+        const groups = signalGroups.map((group) => {
+          const result = scoreGroup(fullText, group);
+          return {
+            ...group,
+            score: result.score,
+            matchedTerms: result.matchedTerms,
+          };
+        });
+
+        const bySlug = Object.fromEntries(groups.map((group) => [group.slug, group]));
+        const overallAgencyScore = Math.min(
+          100,
+          Math.round(
+            (bySlug.agency?.score || 0) * 0.28 +
+              (bySlug.strategic?.score || 0) * 0.22 +
+              (bySlug.governance?.score || 0) * 0.22 +
+              (bySlug.operational?.score || 0) * 0.18 +
+              (bySlug.meaning?.score || 0) * 0.1,
+          ),
+        );
+        const overallCreativeScore = Math.min(
+          100,
+          Math.round((bySlug.creative?.score || 0) * 0.6 + (bySlug.meaning?.score || 0) * 0.4),
+        );
+        const activeGroups = groups.filter((group) => group.matchedTerms.length > 0).map((group) => group.label);
+        const dominantGroups = [...groups]
+          .sort((left, right) => right.score - left.score)
+          .filter((group) => group.score > 0)
+          .slice(0, 3);
+        const totalMatchedTerms = groups.reduce((sum, group) => sum + group.matchedTerms.length, 0);
+        const summary = dominantGroups.length
+          ? `This note currently reads strongest through ${joinHumanList(dominantGroups.map((group) => group.label))} signals.`
+          : 'This note does not yet strongly activate the Lotus signal library. Add more concrete governance, agency, operational, creative, or meaning-rich language to shift the score.';
+        const boundaryText =
+          'The website workbench scores only the text pasted into the browser. The canonical desktop and local repo line still owns file imports, local workspaces, and deeper note review.';
+        const exportMarkdown = [
+          `# Lotus note score: ${resolvedTitle}`,
+          '',
+          `- agency score: ${overallAgencyScore}/100`,
+          `- creative score: ${overallCreativeScore}/100`,
+          `- active signals: ${activeGroups.length ? activeGroups.join(', ') : 'none yet'}`,
+          `- matched terms: ${totalMatchedTerms}`,
+          '',
+          '## Signal groups',
+          ...groups.flatMap((group) => [
+            `### ${group.label}`,
+            `- score: ${group.score}/100`,
+            `- matched terms: ${group.matchedTerms.length ? group.matchedTerms.join(', ') : 'none yet'}`,
+            '',
+          ]),
+          '## Summary',
+          summary,
+          '',
+          '## Boundary',
+          boundaryText,
+        ].join('\n');
+
+        return {
+          title: resolvedTitle,
+          excerpt: cleanedText.slice(0, 720),
+          agencyScore: overallAgencyScore,
+          creativeScore: overallCreativeScore,
+          activeSignals: activeGroups,
+          totalMatchedTerms,
+          groups,
+          summary,
+          boundary: boundaryText,
+          exportMarkdown,
+        };
+      };
+
+      const setSelectedSample = (slug) => {
+        sampleButtons.forEach((button) => {
+          button.dataset.selected = button.dataset.lotusSample === slug ? 'true' : 'false';
+        });
+      };
+
+      const renderPills = (container, values, emptyLabel) => {
+        if (!container) {
+          return;
+        }
+
+        container.innerHTML = '';
+        const list = values.length ? values : [emptyLabel];
+        list.forEach((value, index) => {
+          const pill = document.createElement('span');
+          pill.className = `lotus-pill${values.length ? '' : ' lotus-pill-muted'}`;
+          pill.textContent = value;
+          if (!values.length && index === 0) {
+            pill.dataset.empty = 'true';
+          }
+          container.appendChild(pill);
+        });
+      };
+
+      const renderAssessment = (assessment, label) => {
+        sourceLabel.textContent = label;
+        resultTitle.textContent = assessment.title;
+        resultSummary.textContent = assessment.summary;
+        agencyScore.textContent = String(assessment.agencyScore);
+        creativeScore.textContent = String(assessment.creativeScore);
+        activeSignalCount.textContent = String(assessment.activeSignals.length);
+        matchedTermCount.textContent = String(assessment.totalMatchedTerms);
+        boundary.textContent = assessment.boundary;
+        preview.textContent = assessment.excerpt || 'Paste a note to see the normalized preview.';
+        exportField.value = assessment.exportMarkdown;
+
+        renderPills(activeSignals, assessment.activeSignals, 'No matched groups yet');
+
+        assessment.groups.forEach((group) => {
+          const scoreNode = document.querySelector(`[data-lotus-group-score="${group.slug}"]`);
+          const matchNode = document.querySelector(`[data-lotus-group-matches="${group.slug}"]`);
+          const cardNode = document.querySelector(`[data-lotus-group="${group.slug}"]`);
+
+          if (scoreNode) {
+            scoreNode.textContent = String(group.score);
+          }
+
+          if (cardNode) {
+            cardNode.dataset.active = group.score > 0 ? 'true' : 'false';
+          }
+
+          renderPills(matchNode, group.matchedTerms, 'None yet');
+        });
+      };
+
+      const collectState = () => ({
+        title: titleInput?.value || '',
+        text: textInput?.value || '',
+      });
+
+      const renderCurrentNote = () => {
+        setSelectedSample('');
+        renderAssessment(buildAssessment(collectState()), 'Current browser note');
+      };
+
+      const applySample = (slug) => {
+        const sample = sampleNotes.find((entry) => entry.slug === slug) || sampleNotes[0];
+        if (!sample) {
+          return;
+        }
+
+        titleInput.value = sample.title;
+        textInput.value = sample.text;
+        setSelectedSample(sample.slug);
+        renderAssessment(buildAssessment(sample), `Loaded sample: ${sample.label}`);
+      };
+
+      titleInput?.addEventListener('input', renderCurrentNote);
+      textInput?.addEventListener('input', renderCurrentNote);
+      scoreButton?.addEventListener('click', renderCurrentNote);
+
+      resetButton?.addEventListener('click', () => {
+        titleInput.value = defaultState.title || '';
+        textInput.value = defaultState.text || '';
+        setSelectedSample(defaultState.sample || sampleNotes[0]?.slug || '');
+        renderAssessment(buildAssessment(defaultState), 'Default sample');
+      });
+
+      sampleButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          applySample(button.dataset.lotusSample || '');
+        });
+      });
+
+      copyButton?.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(exportField.value);
+          copyStatus.textContent = 'Copied';
+          window.setTimeout(() => {
+            copyStatus.textContent = 'Ready';
+          }, 1800);
+        } catch (error) {
+          copyStatus.textContent = 'Copy failed';
+          window.setTimeout(() => {
+            copyStatus.textContent = 'Ready';
+          }, 1800);
+        }
+      });
+
+      if (defaultState.sample) {
+        applySample(defaultState.sample);
+      } else if (sampleNotes[0]) {
+        applySample(sampleNotes[0].slug);
+      } else {
+        renderAssessment(buildAssessment(defaultState), 'Current browser note');
+      }
+    }
+  </script>
+</div>
+
+<style>
+  .lotus-workbench {
+    position: relative;
+  }
+
+  .lotus-control-panel,
+  .lotus-result-panel {
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at top left, rgba(105, 138, 120, 0.14), transparent 34%),
+      radial-gradient(circle at right bottom, rgba(189, 138, 81, 0.12), transparent 28%),
+      linear-gradient(180deg, rgba(251, 246, 239, 0.52) 0%, rgba(251, 246, 239, 0.16) 100%);
+  }
+
+  .lotus-control-panel::before,
+  .lotus-result-panel::before {
+    content: '';
+    position: absolute;
+    inset: -20% auto auto -10%;
+    width: 14rem;
+    height: 14rem;
+    border-radius: 999px;
+    background: radial-gradient(circle, rgba(105, 138, 120, 0.1) 0%, rgba(105, 138, 120, 0) 72%);
+    pointer-events: none;
+  }
+
+  .lotus-input-card,
+  .lotus-mini-card,
+  .lotus-guidance-strip,
+  .lotus-reading-card {
+    border-top: 1px solid rgba(36, 27, 23, 0.12);
+    padding: 1rem 0;
+  }
+
+  .lotus-label,
+  .lotus-mini-label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #728c7b;
+  }
+
+  .lotus-input,
+  .lotus-export {
+    width: 100%;
+    border: 1px solid rgba(58, 70, 54, 0.16);
+    border-radius: 1rem;
+    background: rgba(252, 250, 246, 0.8);
+    padding: 0.95rem 1rem;
+    color: var(--color-ink);
+    transition: border-color 0.18s ease, box-shadow 0.18s ease;
+  }
+
+  .lotus-input:focus,
+  .lotus-export:focus {
+    outline: none;
+    border-color: rgba(105, 138, 120, 0.48);
+    box-shadow: 0 0 0 3px rgba(105, 138, 120, 0.1);
+  }
+
+  .lotus-textarea,
+  .lotus-export {
+    min-height: 18rem;
+    resize: vertical;
+  }
+
+  .lotus-sample-row,
+  .lotus-pill-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+  }
+
+  .lotus-sample-button,
+  .lotus-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    border-radius: 999px;
+    padding: 0.45rem 0.82rem;
+    font-size: 0.8rem;
+  }
+
+  .lotus-sample-button {
+    border: 1px solid rgba(58, 70, 54, 0.16);
+    background: rgba(252, 250, 246, 0.68);
+    color: var(--color-ink);
+    transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+  }
+
+  .lotus-sample-button:hover {
+    transform: translateY(-1px);
+    border-color: rgba(105, 138, 120, 0.38);
+  }
+
+  .lotus-sample-button[data-selected='true'] {
+    border-color: rgba(105, 138, 120, 0.54);
+    background: rgba(105, 138, 120, 0.12);
+    box-shadow: 0 12px 24px rgba(105, 138, 120, 0.12);
+  }
+
+  .lotus-mark-orbit {
+    display: grid;
+    place-items: center;
+    width: 4.5rem;
+    height: 4.5rem;
+    border-radius: 999px;
+    border: 1px solid rgba(189, 138, 81, 0.32);
+    background: radial-gradient(circle, rgba(252, 250, 246, 0.92) 0%, rgba(251, 246, 239, 0.32) 72%);
+  }
+
+  .lotus-mark-glyph {
+    font-family: var(--font-display);
+    font-size: 1.85rem;
+    color: #6b7f70;
+  }
+
+  .lotus-metric-grid,
+  .lotus-signal-grid {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .lotus-metric-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .lotus-signal-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .lotus-metric-card,
+  .lotus-signal-card {
+    border: 1px solid rgba(58, 70, 54, 0.12);
+    border-radius: 1.2rem;
+    background: rgba(252, 250, 246, 0.64);
+    padding: 1rem;
+  }
+
+  .lotus-signal-card[data-active='true'] {
+    border-color: rgba(105, 138, 120, 0.38);
+    box-shadow: 0 16px 30px rgba(105, 138, 120, 0.08);
+  }
+
+  .lotus-metric-value,
+  .lotus-signal-score {
+    display: flex;
+    align-items: baseline;
+    gap: 0.2rem;
+    font-family: var(--font-display);
+    color: var(--color-heading);
+  }
+
+  .lotus-metric-value {
+    margin-top: 0.7rem;
+    font-size: 2rem;
+    line-height: 1;
+  }
+
+  .lotus-signal-score {
+    font-size: 1.35rem;
+    line-height: 1;
+  }
+
+  .lotus-metric-value small,
+  .lotus-signal-score small {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .lotus-pill {
+    background: rgba(189, 138, 81, 0.12);
+    color: var(--color-heading);
+  }
+
+  .lotus-pill-muted {
+    background: rgba(58, 70, 54, 0.08);
+    color: var(--color-muted);
+  }
+
+  .lotus-preview,
+  .lotus-export {
+    margin-top: 0.85rem;
+    font-family: var(--font-mono);
+    font-size: 0.84rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+  }
+
+  .lotus-preview {
+    min-height: 10rem;
+    overflow: auto;
+    border: 1px solid rgba(58, 70, 54, 0.12);
+    border-radius: 1rem;
+    background: rgba(252, 250, 246, 0.62);
+    padding: 1rem;
+    color: var(--color-ink);
+  }
+
+  @media (max-width: 920px) {
+    .lotus-signal-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .lotus-metric-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

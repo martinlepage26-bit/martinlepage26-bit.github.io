@@ -1,27 +1,25 @@
 ---
-title: "Legitimacy Machines / Altars of Control"
-subtitle: "Proposal-plus-architecture project on screens, wonder, and governance training"
+title: "Legitimacy Machines, Altars of Control: Governing Wonder & Training Power Across Screen Worlds"
+subtitle: "A developing book project on wonder, authority, and screen worlds"
 year: 2026
-status: "Proposal and architecture project"
-description: "A developing book architecture on how screen worlds train affective recognition of authority before institutions ever justify that authority analytically."
-role: "Author and researcher"
+status: "Developing book project"
+description: "A book-stage project on how screen worlds govern wonder and train recognition of power before institutions fully justify themselves."
+role: "Author"
 outputs:
-  - "Proposal architecture"
-  - "Working chapter on legitimacy and screen worlds"
-  - "Sample chapter set in development"
+  - "Book architecture"
+  - "Conceptual framing"
+  - "Current research notes"
 tags:
   - media studies
-  - AI governance
   - legitimacy
   - screen cultures
-  - proposal architecture
-featured: false
-image: "/images/placeholders/legitimacy-machines-altars-of-control.jpg"
-imageAlt: "Concept cover treatment for Legitimacy Machines / Altars of Control."
+  - governance
+  - wonder
+featured: true
+image: "/assets/geometric-motif-bottomleft.png"
+imageAlt: "A developing book project on wonder, legitimacy, and training power across screen worlds."
 links: []
 ---
-This project can already be described conceptually because a working chapter inside the broader AI governance draft sets out a clear argument: authority becomes emotionally believable through wonder, ritualized recognition, dashboards, portals, and other screen forms before it becomes analytically justified.
+This book-stage project studies how screen worlds govern wonder and train recognition of authority. It follows the affective side of power: the way legitimacy is rehearsed through media forms, repeated interfaces, ritual framing, and the visual atmosphere of control.
 
-At the same time, the project should not be presented as a finished manuscript. The available source material supports the user's direction exactly: it is best understood as proposal plus architecture, with a strong conceptual spine but without a complete chapter set ready to claim full manuscript status.
-
-On the site, that makes this a useful "current work" entry rather than a finished-book claim. It shows direction, method, and argument while leaving room for the project to become fuller later.
+The public entry stays intentionally short. It marks the project as a developing book rather than a finished manuscript and keeps the emphasis on direction, method, and scope.

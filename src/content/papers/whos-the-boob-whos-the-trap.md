@@ -1,8 +1,8 @@
 ---
 title: "Who's the Boob, Who's the Trap?"
 year: 2026
-venue: "Book manuscript in development"
-status: "Publication work in development"
+venue: "Unpublished book manuscript"
+status: "In development"
 type: "Book manuscript"
 abstract: "A book-length AI governance manuscript that uses the trap as a structural model for how institutions prearrange harm, distribute burden, and narrow the terms of appeal."
 tags:
@@ -12,7 +12,7 @@ tags:
   - Institutional critique
   - Public policy
 featured: false
-citation: "Lepage, Martin. \"Who's the Boob, Who's the Trap?\" Book manuscript in development, 2026."
+citation: "Lepage, Martin. \"Who's the Boob, Who's the Trap?\" Unpublished book manuscript in development, 2026."
 links: []
 ---
 
@@ -22,4 +22,4 @@ Its strongest through-line is an anti-trap model of governance: institutions sho
 
 The title's provocation is intentional and requires framing. "Boob" is not being used as a personal insult, but as a structural position inside systems of misrecognition, blame, and distributed capture. That rhetorical wager is part of the manuscript's argument, not a detachable flourish.
 
-This entry is presented as publication work in development rather than as a finished book. The manuscript already has a serious governing argument and substantial material, but further editorial containment is still needed to sharpen audience, chapter economy, and final package.
+This entry stays visible as in-progress work rather than as a publication. The manuscript already has a serious governing argument and substantial material, but further editorial containment is still needed to sharpen audience, chapter economy, and final package.
