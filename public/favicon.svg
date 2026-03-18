@@ -1,19 +1,42 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
   <title id="title">Martin Lepage site icon</title>
-  <desc id="desc">A restrained monogram icon with a horizon line and beacon form.</desc>
+  <desc id="desc">A split ML monogram with a dark M and a violet L.</desc>
   <defs>
-    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
-      <stop offset="0%" stop-color="#0b1320" />
-      <stop offset="100%" stop-color="#162437" />
+    <linearGradient id="violetFill" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3f046e" />
+      <stop offset="58%" stop-color="#6310af" />
+      <stop offset="100%" stop-color="#7b1ddd" />
     </linearGradient>
-    <linearGradient id="signal" x1="0" x2="1" y1="0" y2="1">
-      <stop offset="0%" stop-color="#7469d8" />
-      <stop offset="100%" stop-color="#8ce5f2" />
-    </linearGradient>
+    <filter id="violetGlow" x="-80%" y="-80%" width="260%" height="260%">
+      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#7b1ddd" flood-opacity=".34" />
+      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#7b1ddd" flood-opacity=".14" />
+    </filter>
   </defs>
-  <rect width="128" height="128" rx="28" fill="url(#bg)" />
-  <path d="M64 18 104 64 64 110 24 64Z" fill="none" stroke="rgba(238,246,255,.2)" stroke-width="2.5" />
-  <path d="M30 84c9-11 20-16 34-16s25 5 34 16" fill="none" stroke="rgba(238,246,255,.32)" stroke-width="3" stroke-linecap="round" />
-  <path d="M64 32 78 49H68v27H60V49H50Z" fill="url(#signal)" />
-  <path d="M46 92V40h6l12 21 12-21h6v52h-6V52L65 72h-2L52 52v40Z" fill="#eef6ff" />
+
+  <text
+    x="16"
+    y="87"
+    fill="#06070b"
+    font-family="'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Georgia, serif"
+    font-size="78"
+    font-style="italic"
+    font-weight="700"
+    letter-spacing="-4"
+  >
+    M
+  </text>
+
+  <text
+    x="60"
+    y="87"
+    fill="url(#violetFill)"
+    filter="url(#violetGlow)"
+    font-family="'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Georgia, serif"
+    font-size="82"
+    font-style="italic"
+    font-weight="700"
+    letter-spacing="-3"
+  >
+    L
+  </text>
 </svg>

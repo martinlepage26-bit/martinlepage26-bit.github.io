@@ -1,5 +1,5 @@
 ---
-import { heroFacts, siteMeta } from '../data/site';
+import { heroFacts } from '../data/site';
 import BackgroundTreatment from './BackgroundTreatment.astro';
 ---
 
@@ -20,11 +20,12 @@ import BackgroundTreatment from './BackgroundTreatment.astro';
         and what do people experience once it becomes real?
       </p>
       <div class="mt-8 flex flex-wrap gap-3">
-        <a class="button-primary" href="/projects/">Explore projects</a>
+        <a class="button-primary" href="/projects/">View governance work</a>
         <a class="button-secondary" href="/papers/">Read publications</a>
       </div>
       <ul class="bullet-links mt-6">
         <li><a class="link-inline" href="/resume/">View resume</a></li>
+        <li><a class="link-inline" href="/contact/">Contact</a></li>
       </ul>
       <ul class="bullet-facts mt-8">
         {heroFacts.map((fact) => (
@@ -35,19 +36,19 @@ import BackgroundTreatment from './BackgroundTreatment.astro';
 
     <aside class="veil-panel space-y-4 lg:mt-10 lg:pl-2">
       <div>
-        <p class="eyebrow">At a glance</p>
-        <h2 class="mt-4 text-[1.2rem] md:text-[1.36rem]">One site for different audiences.</h2>
+        <p class="eyebrow">Start here</p>
+        <h2 class="mt-4 text-[1.2rem] md:text-[1.36rem]">Governance first, with research and writing alongside it.</h2>
         <p class="mt-4 text-base leading-7 text-slate-200">
-          Academic readers, editorial collaborators, and governance teams can all use the same site without losing the
-          difference between those kinds of work.
+          Governance teams usually start with projects, the resume, or contact. Academic and editorial readers can move
+          directly into papers, writing, and talks.
         </p>
       </div>
 
       <ul class="bullet-links">
-        <li><strong>Focus:</strong> AI governance, documentation, and reviewable systems.</li>
-        <li><strong>Also here:</strong> Research and writing on legitimacy, media, ritual, and symbolic systems.</li>
-        <li><strong>Base:</strong> {siteMeta.location}</li>
-        <li><strong>Work shared here:</strong> Publications, advisory work, essays, and talks.</li>
+        <li><a class="link-inline" href="/projects/">Governance projects and practice</a></li>
+        <li><a class="link-inline" href="/resume/">Resume and CV</a></li>
+        <li><a class="link-inline" href="/papers/">Papers and talks</a></li>
+        <li><a class="link-inline" href="/writing/">Essays and public writing</a></li>
       </ul>
     </aside>
   </div>

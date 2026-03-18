@@ -71,6 +71,11 @@ const homeStats = [
         <p class="text-base text-slate-200">
           That question shapes the governance work, research, books, and essays gathered here.
         </p>
+        <ul class="bullet-links">
+          <li><a class="link-inline" href="/projects/">Start with governance work</a></li>
+          <li><a class="link-inline" href="/resume/">Open the resume</a></li>
+          <li><a class="link-inline" href="/contact/">Get in touch</a></li>
+        </ul>
         <a class="link-inline" href="/about/">Read the fuller biography</a>
       </div>
     </div>
@@ -88,9 +93,12 @@ const homeStats = [
     <div class="mt-12 grid gap-6 md:grid-cols-3">
       {homeHighlights.map((item) => (
         <article class="veil-panel h-full">
-          <p class="eyebrow">Mode of work</p>
+          <p class="eyebrow">{item.eyebrow}</p>
           <h3 class="mt-3 text-[1.24rem] md:text-[1.38rem]">{item.title}</h3>
           <p class="mt-4 text-base text-slate-200">{item.description}</p>
+          <div class="mt-5">
+            <a class="link-inline" href={item.href}>{item.cta}</a>
+          </div>
         </article>
       ))}
     </div>

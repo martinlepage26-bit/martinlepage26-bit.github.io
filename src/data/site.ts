@@ -39,19 +39,28 @@ export const heroFacts = [
 
 export const homeHighlights = [
   {
-    title: 'Governance advisory',
+    eyebrow: 'For governance teams',
+    title: 'Governance work and documentation',
     description:
-      'AI governance work for teams that need clearer decisions, better documentation, and easier review.',
+      'Start with the practice side: advisory projects, documentation work, and reviewable systems.',
+    href: '/projects/',
+    cta: 'Open governance work',
   },
   {
-    title: 'Interpretive research',
+    eyebrow: 'For academic readers',
+    title: 'Papers and research context',
     description:
-      'Research on ritual, media, gender, and how institutions make power feel real.',
+      'Browse publications, talks, and the research questions that connect ritual, media, and legitimacy.',
+    href: '/papers/',
+    cta: 'Browse papers',
   },
   {
-    title: 'Books and essays',
+    eyebrow: 'For editors and media',
+    title: 'Essays and public writing',
     description:
-      'Books and essays written for readers both inside and outside academic spaces.',
+      'Go to essays, criticism, and profile material for interviews, editorial work, or general readers.',
+    href: '/writing/',
+    cta: 'Read the writing',
   },
 ] as const;
 
