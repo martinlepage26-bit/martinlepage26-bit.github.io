@@ -9,7 +9,7 @@ import { biography, researchInterests, timeline } from '../data/site';
 <BaseLayout title="About" description={biography.intro}>
   <section class="relative overflow-hidden border-b border-[rgba(36,27,23,0.12)]">
     <BackgroundTreatment variant="hero" />
-    <div class="section-shell relative grid gap-10 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-center">
+    <div class="section-shell relative grid gap-10 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-center">
       <div>
         <SectionIntro
           eyebrow="About"
@@ -23,15 +23,15 @@ import { biography, researchInterests, timeline } from '../data/site';
         </div>
       </div>
 
-      <figure class="veil-panel relative overflow-hidden">
-        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(127,83,178,0.14),transparent_34%),linear-gradient(180deg,rgba(255,255,255,0.12),transparent_48%)]"></div>
-        <div class="relative overflow-hidden border border-[rgba(36,27,23,0.08)] bg-[linear-gradient(180deg,rgba(251,246,239,0.8),rgba(251,246,239,0.32))]">
+      <figure class="veil-panel relative mx-auto w-full max-w-[18.5rem] overflow-hidden lg:mx-0 lg:justify-self-end">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(95,95,178,0.1),transparent_34%),linear-gradient(180deg,rgba(255,255,255,0.08),transparent_48%)]"></div>
+        <div class="relative overflow-hidden border border-[rgba(17,23,38,0.08)] bg-[linear-gradient(180deg,rgba(245,241,237,0.82),rgba(245,241,237,0.26))]">
           <img
             src="/assets/portrait.png"
             alt="Portrait of Martin Lepage"
-            class="h-full min-h-[30rem] w-full object-cover object-center"
+            class="aspect-[4/5] w-full object-cover object-center"
           />
-          <div class="absolute inset-x-0 bottom-0 bg-[linear-gradient(180deg,transparent,rgba(23,17,13,0.7))] p-6">
+          <div class="absolute inset-x-0 bottom-0 bg-[linear-gradient(180deg,transparent,rgba(17,23,38,0.76))] p-5">
             <p class="eyebrow">Martin Lepage</p>
             <p class="mt-2 max-w-xs text-sm leading-6 text-slate-100">
               Working across ritual studies, media analysis, public writing, and legitimacy-focused systems thinking.

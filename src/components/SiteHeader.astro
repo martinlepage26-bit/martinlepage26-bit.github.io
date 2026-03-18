@@ -9,10 +9,10 @@ const navItems = navigation.map(({ href, label }) => ({
 }));
 ---
 
-<header class="site-header sticky top-0 z-40 border-b border-[rgba(35,27,53,0.12)] bg-[rgba(244,238,247,0.9)] backdrop-blur-[18px]">
+<header class="site-header sticky top-0 z-40 border-b border-[rgba(17,23,38,0.12)] bg-[rgba(241,239,237,0.9)] backdrop-blur-[18px]">
   <div class="shell flex items-center justify-between gap-4 py-4">
     <a class="group inline-flex items-center gap-3 text-sm font-semibold text-moon" href="/">
-      <span class="brand-monogram relative flex h-10 min-w-10 items-center justify-center rounded-full border border-[rgba(35,27,53,0.12)] bg-[rgba(250,244,251,0.74)] px-2">
+      <span class="brand-monogram relative flex h-10 min-w-10 items-center justify-center rounded-full border border-[rgba(17,23,38,0.12)] bg-[rgba(245,241,237,0.78)] px-2">
         <span class="font-display text-[1.05rem] italic tracking-[-0.02em] text-moon">ML</span>
       </span>
       <span class="flex flex-col leading-tight">
@@ -32,7 +32,7 @@ const navItems = navigation.map(({ href, label }) => ({
                 'border-b-2 px-0.5 py-2 transition',
                 isActive
                   ? 'border-accent text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-accent'
-                  : 'border-transparent text-[0.72rem] font-semibold uppercase tracking-[0.12em] text-slate-400 hover:border-[rgba(92,110,198,0.22)] hover:text-moon',
+                  : 'border-transparent text-[0.72rem] font-semibold uppercase tracking-[0.12em] text-slate-400 hover:border-[rgba(70,104,154,0.22)] hover:text-moon',
               ]}
             >
               {label}
@@ -43,14 +43,14 @@ const navItems = navigation.map(({ href, label }) => ({
     </nav>
 
     <details class="group relative md:hidden">
-      <summary class="flex list-none cursor-pointer items-center gap-3 rounded-full border border-[rgba(35,27,53,0.12)] bg-[rgba(250,244,251,0.72)] px-4 py-2 font-mono text-[0.68rem] uppercase tracking-[0.18em] text-slate-300 transition hover:border-[rgba(127,83,178,0.28)] hover:text-moon [&::-webkit-details-marker]:hidden">
+      <summary class="flex list-none cursor-pointer items-center gap-3 rounded-full border border-[rgba(17,23,38,0.12)] bg-[rgba(245,241,237,0.76)] px-4 py-2 font-mono text-[0.68rem] uppercase tracking-[0.18em] text-slate-300 transition hover:border-[rgba(95,95,178,0.24)] hover:text-moon [&::-webkit-details-marker]:hidden">
         Menu
         <span class="text-base leading-none text-slate-400 transition group-open:rotate-45 group-open:text-accent" aria-hidden="true">
           +
         </span>
       </summary>
 
-      <div class="absolute right-0 top-[calc(100%+0.75rem)] w-[min(18rem,calc(100vw-2rem))] border border-[rgba(35,27,53,0.1)] bg-[rgba(250,244,251,0.96)] p-3 shadow-[0_22px_60px_rgba(35,27,53,0.08)]">
+      <div class="absolute right-0 top-[calc(100%+0.75rem)] w-[min(18rem,calc(100vw-2rem))] border border-[rgba(17,23,38,0.1)] bg-[rgba(245,241,237,0.96)] p-3 shadow-[0_22px_60px_rgba(17,23,38,0.08)]">
         <nav aria-label="Primary mobile" class="grid gap-1">
           {
             navItems.map(({ href, isActive, label }) => (
