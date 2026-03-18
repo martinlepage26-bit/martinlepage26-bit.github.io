@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import FilterBar from '../../components/FilterBar.astro';
+import PracticeHero from '../../components/PracticeHero.astro';
 import PublicationCard from '../../components/PublicationCard.astro';
 import SectionIntro from '../../components/SectionIntro.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
@@ -27,20 +28,55 @@ const archiveSpan =
   title="Publications"
   description="A selected index of Martin Lepage's published academic work, with Academia.edu as the larger public archive."
 >
-  <section class="section-shell">
-    <SectionIntro
-      eyebrow="Publications"
-      title="Published academic work."
-      description="This page keeps the published record visible. Unpublished papers, manuscripts, and book-stage work now live under Projects."
-    />
+  <PracticeHero
+    eyebrow="Publications"
+    title="Published academic work."
+    description="This page is the on-site guide to the published record, with Academia.edu holding the larger outward archive."
+    details="Manuscripts, unresolved leads, and other in-progress records stay under Projects. The archive here is limited to validated publication entries."
+    links={[
+      { label: 'Open Academia.edu', url: siteMeta.academia, variant: 'primary' },
+      { label: 'Browse this site index', url: '#publication-archive', variant: 'secondary' },
+      { label: 'See in-progress work under Projects', url: '/projects/', variant: 'inline' },
+    ]}
+    sideEyebrow="Archive boundary"
+    sideTitle="What this page claims."
+    sideDescription="This page is narrower than the full research universe. It lists records solid enough to stand as publications without mixing them with manuscripts or unresolved leads."
+    sidePoints={[
+      'Published articles, chapters, dissertation records, and reviews stay here as record entries.',
+      'The larger outward archive continues on Academia.edu.',
+      'In-progress manuscripts and unresolved leads move to Projects until publication or verification is confirmed.',
+    ]}
+    stats={[
+      {
+        eyebrow: 'Archive span',
+        value: archiveSpan,
+        label: 'Years covered',
+        description: 'Years currently represented by the on-site publication index.',
+      },
+      {
+        eyebrow: 'Published',
+        value: publications.length,
+        label: 'Publication entries',
+        description: 'Entries currently presented as published academic work.',
+      },
+      {
+        eyebrow: 'In progress',
+        value: 'Projects',
+        label: 'Unpublished work',
+        description: 'Unpublished papers, books, and apps in development now live under Projects.',
+      },
+    ]}
+  />
 
-    <div class="mt-8 grid gap-6 xl:grid-cols-[minmax(0,1.35fr)_minmax(0,0.65fr)]">
+  <section class="section-shell">
+    <div class="grid gap-6 xl:grid-cols-[minmax(0,1.35fr)_minmax(0,0.65fr)]">
       <article class="veil-panel">
         <p class="eyebrow">Canonical archive</p>
         <h2 class="mt-3 text-[1.42rem] md:text-[1.62rem]">The full paper archive is on Academia.edu.</h2>
         <p class="mt-4 max-w-[58ch] text-base text-slate-200">
-          Use this page as a guide to the published record. For the larger outward-facing archive, use Academia.edu. For
-          unpublished papers, books in progress, and apps in development, go to Projects.
+          Use this page as the clean on-site guide to the published record. For the larger outward-facing archive, use
+          Academia.edu. For in-progress manuscripts, unresolved review leads, and research still being confirmed, go to
+          Projects.
         </p>
         <div class="mt-6 flex flex-wrap gap-3">
           <a class="button-primary" href={siteMeta.academia}>Open Academia.edu</a>
@@ -48,22 +84,13 @@ const archiveSpan =
         </div>
       </article>
 
-      <div class="grid gap-4 sm:grid-cols-3 xl:grid-cols-1">
-        <article class="veil-panel">
-          <p class="eyebrow">Archive span</p>
-          <p class="mt-4 text-[1.7rem] font-semibold text-moon">{archiveSpan}</p>
-          <p class="mt-2 text-sm text-slate-300">Years currently covered in the on-site index.</p>
-        </article>
-        <article class="veil-panel">
-          <p class="eyebrow">Published</p>
-          <p class="mt-4 text-[1.7rem] font-semibold text-moon">{publications.length}</p>
-          <p class="mt-2 text-sm text-slate-300">Entries presented as published articles or chapters.</p>
-        </article>
-        <article class="veil-panel">
-          <p class="eyebrow">In progress</p>
-          <p class="mt-4 text-[1.7rem] font-semibold text-moon">Projects</p>
-          <p class="mt-2 text-sm text-slate-300">Unpublished papers, books, and apps in development are grouped in the Projects archive.</p>
-        </article>
+      <div class="veil-panel">
+        <p class="eyebrow">On-site use</p>
+        <h2 class="mt-3 text-[1.28rem] md:text-[1.44rem]">Use this page as the bounded guide, not the exhaustive dump.</h2>
+        <p class="mt-4 text-base text-slate-200">
+          The on-site archive stays selective and readable. It includes only records with enough metadata to stand as
+          publication entries, while the larger external stack remains available for the broader paper trail.
+        </p>
       </div>
     </div>
 
@@ -85,7 +112,7 @@ const archiveSpan =
       <SectionIntro
         eyebrow="On-site index"
         title="Search the publications here."
-        description="This index focuses on published articles and chapters."
+        description="Search validated publications by title, venue, year, and topic."
       />
     </div>
 

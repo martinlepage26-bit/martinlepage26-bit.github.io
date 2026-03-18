@@ -4,20 +4,23 @@ year: 2017
 venue: "Studies in Religion / Sciences Religieuses"
 status: "Published journal article"
 type: "Journal article"
-abstract: "A study of how queer and transgender identities are negotiated, recognized, and contested inside Montreal pagan communities."
+abstract: "An article on how witchcraft and contrasting Montreal Pagan traditions shape queer and transgender negotiations of gender norms inside and beyond ritual community life."
 tags:
-  - Queer theory
-  - Pagan studies
+  - witchcraft
+  - queer
+  - Wicca
+  - Paganism
   - Montreal
   - Gender
-  - Ethnography
+  - transgender
 featured: true
-citation: "Lepage, Martin. \"Queerness and Transgender Identity: Negotiations in the Pagan Community of Montreal.\" Studies in Religion / Sciences Religieuses 46, no. 3 (2017)."
-links: []
+citation: "Lepage, M. \"Queerness and Transgender Identity: Negotiations in the Pagan Community of Montreal.\" Studies in Religion / Sciences Religieuses 46, no. 4 (2017): 601-619."
+links:
+  - label: "DOI"
+    url: "https://doi.org/10.1177/0008429817710971"
 ---
+This article studies how witchcraft and contrasting Montreal Pagan traditions, including Wicca and Reclaiming Witchcraft, shape queer and transgender negotiations of gender norms. Magical practice is treated as one mechanism through which binary gender expectations can be contested both inside and outside Pagan community life.
 
-This article sits near the center of Lepage's doctoral-era research. It brings questions of transgender identity, queer negotiation, and community legitimacy into the study of contemporary pagan practice in Montreal.
+It sits close to the center of the doctoral research arc because it brings together ritual practice, gender identity, and questions of legitimacy without reducing any of them to metaphor. The contributor listing ties the publication to Universite du Quebec a Montreal.
 
-For the website, the entry is framed not only as a contribution to pagan studies, but as an early example of a method that continues into later governance work: close attention to how institutions and communities authorize belonging, difference, and decision-making.
-
-The entry can be expanded with publisher abstract and DOI details once they are verified.
+The journal record is generally paywalled through SAGE, so the site keeps the citation and DOI visible even where open full text is not available.

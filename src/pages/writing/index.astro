@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import FilterBar from '../../components/FilterBar.astro';
+import PracticeHero from '../../components/PracticeHero.astro';
 import SectionIntro from '../../components/SectionIntro.astro';
 import WritingCard from '../../components/WritingCard.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
@@ -11,26 +12,63 @@ const writings = sortByDate(await getCollection('writings', ({ data }) => !data.
 const allProjects = await getCollection('projects');
 const amazonBooks = sortByTitle(allProjects.filter((project) => /\bamazon\b/i.test(project.data.status)));
 const tags = collectTags(writings);
+const writingLinks = [
+  { label: 'Visit HEXA', url: siteMeta.substack, variant: 'primary' as const },
+  { label: 'Browse the books', url: '#books', variant: 'secondary' as const },
+  ...(siteMeta.siteUrl ? [{ label: 'Subscribe by RSS', url: '/rss.xml', variant: 'inline' as const }] : []),
+];
 ---
 
 <BaseLayout
   title="Writings"
   description="Essays, reflections, notes, and published book pages by Martin Lepage."
 >
+  <PracticeHero
+    eyebrow="Writings"
+    title="Essays, notes, and books."
+    description="Public writing, criticism, reflections, and the confirmed book pages gathered in one place."
+    details="This page keeps the public-facing prose together: essays, shorter reflections, and published book entries with companion detail pages and outbound links."
+    links={writingLinks}
+    sideEyebrow="Reading path"
+    sideTitle="How to move through the writing archive."
+    sideDescription="Writings is the more reader-facing side of the site, where editorial voice and public essays sit beside confirmed book metadata."
+    sidePoints={[
+      'HEXA remains the outward channel for ongoing publication rhythm.',
+      'Books stay visible here once they are actually published.',
+      'Projects and Publications hold the in-progress and academic archives separately.',
+    ]}
+    stats={[
+      {
+        eyebrow: 'Essays and notes',
+        value: writings.length,
+        label: 'Writing entries',
+        description: 'Published reflections, criticism, notes, and shorter public writing.',
+      },
+      {
+        eyebrow: 'Books',
+        value: amazonBooks.length,
+        label: 'Published titles',
+        description: 'Self-published books with confirmed descriptions, companion pages, and stored links.',
+      },
+      {
+        eyebrow: 'Topics',
+        value: tags.length,
+        label: 'Filter tags',
+        description: 'Searchable themes carried across the on-site writing archive.',
+      },
+    ]}
+  />
+
   <section class="section-shell">
-    <SectionIntro
-      eyebrow="Writings"
-      title="Essays, notes, and books."
-      description="Public writing, criticism, reflections, and the published book pages gathered in one place."
-    />
+    <div id="writing-archive">
+      <SectionIntro
+        eyebrow="Writing archive"
+        title="Search essays and notes."
+        description="Public-facing prose, shorter reflections, and criticism from the on-site writing archive."
+      />
+    </div>
 
-    <ul class="bullet-links mt-6">
-      <li><a class="link-inline" href={siteMeta.substack}>Visit HEXA</a></li>
-      <li><a class="link-inline" href="#books">Browse the books</a></li>
-      {siteMeta.siteUrl && <li><a class="link-inline" href="/rss.xml">Subscribe by RSS</a></li>}
-    </ul>
-
-    <div class="mt-10">
+    <div class="mt-8">
       <FilterBar scopeId="writings" tags={tags} searchPlaceholder="Search writings" />
     </div>
 

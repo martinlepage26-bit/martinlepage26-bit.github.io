@@ -2,21 +2,26 @@
 title: "Les fées dansent autour du Mont-Royal. Magie et négociations queer chez les néo-païens de Montréal"
 year: 2016
 venue: "Anthropologica"
-status: "Published"
+status: "Published journal article"
 type: "Journal article"
-abstract: "Co-authored with François Gauthier, this article examines how magic, place, and queer negotiation intersect in the ritual lives of Montreal neopagans."
+abstract: "A co-authored article based on participant observation and semi-formal interviews that examines how gay men negotiate sexual identity within Montreal neo-pagan ritual life."
 tags:
   - Montreal
-  - queer ritual
-  - anthropological research
-  - co-authored work
-  - French-language scholarship
+  - Neo-Paganism
+  - homosexuality
+  - gender and religion
+  - Wicca
+  - Reclaiming Witchcraft
 featured: true
-citation: 'Gauthier, François, and Martin Lepage. "Les fées dansent autour du Mont-Royal. Magie et négociations queer chez les néo-païens de Montréal." Anthropologica 58, no. 2 (2016): 264-276.'
-links: []
+citation: 'Gauthier, F., and M. Lepage. "Les fées dansent sur le Mont-Royal. Magie et négociations queer chez les néo-païens de Montréal." Anthropologica 58, no. 2 (2016): 264-276.'
+links:
+  - label: "DOI"
+    url: "https://doi.org/10.3138/anth.582.A02"
+  - label: "Open PDF"
+    url: "https://cas-sca.journals.uvic.ca/index.php/anthropologica/article/download/34/30/35"
 ---
-This is one of the most concrete citations in the source bundle, with a verified co-author, volume, issue, and page span. It is a strong candidate for featured display because it names Montreal explicitly and shows the collaboration dimension of the research profile.
+This article is based on participant observation and semi-formal interviews in Montreal neo-pagan settings, especially Wicca and Reclaiming Witchcraft. It is organized around interview-derived motifs of magic, belonging, and self-construction among gay men in ritual life.
 
-The title suggests a rich intersection of locality, ritual imagination, and queer social negotiation. Even without the full text in hand, it clearly belongs to the same intellectual arc as the dissertation and the ACFAS presentations seeded elsewhere in this content collection.
+It is one of the clearest co-authored entries in the archive and helps show the collaborative dimension of the Montreal Pagan research line. The journal-hosted PDF is open access and the licensing notes indicate CC BY-NC 4.0.
 
-The eventual production version of the site can expand this entry with a journal link, author-approved abstract, and perhaps a short note on the collaboration with François Gauthier.
+The PDF lists UQAM for Lepage and Universite de Fribourg for Gauthier, which keeps the institutional context attached to the original publication moment.

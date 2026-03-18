@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import FilterBar from '../../components/FilterBar.astro';
+import PracticeHero from '../../components/PracticeHero.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import PublicationCard from '../../components/PublicationCard.astro';
 import SectionIntro from '../../components/SectionIntro.astro';
@@ -26,37 +27,53 @@ const tags = collectTags([...projects, ...unpublishedPapers]);
   title="Projects"
   description="An archive of unpublished books, papers, apps in development, and research builds by Martin Lepage."
 >
+  <PracticeHero
+    eyebrow="Projects"
+    title="Unpublished books, papers, apps in development, and research builds."
+    description="Projects now holds the in-progress archive: frameworks, manuscripts, tools, and app lines that are still becoming themselves."
+    details="Published academic work lives under Publications, while published Amazon books now live under Writings. This page stays focused on material still under construction, revision, or technical iteration."
+    links={[
+      { label: 'Browse project archive', url: '#project-archive', variant: 'primary' },
+      { label: 'Browse research records', url: '#unpublished-papers', variant: 'secondary' },
+      { label: 'Published books now live under Writings', url: '/writing/', variant: 'inline' },
+    ]}
+    sideEyebrow="Archive logic"
+    sideTitle="What belongs here now."
+    sideDescription="The Projects page is no longer a loose overflow area. It is the bounded public archive for work that is still in progress."
+    sidePoints={[
+      'Book-stage work stays here until it becomes a published record.',
+      'Apps in development remain visible without overstating readiness.',
+      'Unpublished papers remain public, but no longer masquerade as publication entries.',
+    ]}
+    stats={[
+      {
+        eyebrow: 'Books and builds',
+        value: projects.length,
+        label: 'Project records',
+        description: 'Book-stage work, frameworks, apps in development, and research builds.',
+      },
+      {
+        eyebrow: 'Research records',
+        value: unpublishedPapers.length,
+        label: 'Manuscripts and leads',
+        description: 'In-progress manuscripts and unresolved bibliographic leads kept public until they become publication entries.',
+      },
+      {
+        eyebrow: 'Published elsewhere',
+        value: 'Writings',
+        label: 'Amazon books',
+        description: 'Published books with outward links now sit on the Writings page.',
+      },
+    ]}
+  />
+
   <section class="section-shell">
-    <SectionIntro
-      eyebrow="Projects"
-      title="Unpublished books, papers, apps in development, and research builds."
-      description="Projects now collects the in-progress archive. Published academic work lives under Publications, and published Amazon books live under Writings."
-    />
-
-    <div class="mt-10 grid gap-4 sm:grid-cols-3">
-      <article class="veil-panel">
-        <p class="eyebrow">Books and builds</p>
-        <p class="mt-4 text-[1.7rem] font-semibold text-moon">{projects.length}</p>
-        <p class="mt-2 text-sm text-slate-300">Project records, book-stage work, frameworks, and apps in development.</p>
-      </article>
-      <article class="veil-panel">
-        <p class="eyebrow">Unpublished papers</p>
-        <p class="mt-4 text-[1.7rem] font-semibold text-moon">{unpublishedPapers.length}</p>
-        <p class="mt-2 text-sm text-slate-300">Manuscripts and unpublished research records kept visible here.</p>
-      </article>
-      <article class="veil-panel">
-        <p class="eyebrow">Published elsewhere</p>
-        <p class="mt-4 text-[1.7rem] font-semibold text-moon">Writings</p>
-        <p class="mt-2 text-sm text-slate-300">Published books with Amazon links now sit on the Writings page.</p>
-      </article>
-    </div>
-
-    <div class="mt-10">
+    <div class="mt-2">
       <FilterBar scopeId="projects" tags={tags} searchPlaceholder="Search projects, manuscripts, and apps in development" />
     </div>
 
     <div class="mt-10 space-y-16" data-filter-scope="projects">
-      <section>
+      <section id="project-archive">
         <SectionIntro
           eyebrow="Project archive"
           title="Books, apps in development, and research builds."
@@ -68,11 +85,11 @@ const tags = collectTags([...projects, ...unpublishedPapers]);
         </div>
       </section>
 
-      <section>
+      <section id="unpublished-papers">
         <SectionIntro
-          eyebrow="Unpublished papers"
-          title="Manuscripts and unpublished research."
-          description="These records stay public, but they now live under Projects until they become publication records."
+          eyebrow="In-progress research"
+          title="Manuscripts and unresolved research leads."
+          description="These records stay public here until they become publication entries or their bibliographic details are confirmed."
         />
 
         <div class="mt-10 grid gap-6 lg:grid-cols-2">

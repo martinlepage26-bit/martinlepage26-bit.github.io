@@ -1,22 +1,22 @@
 ---
 title: "(Neo-)Shamanism(s) and Gender: Narratives from the Montreal Pagan Community"
 year: 2017
-venue: "Unpublished manuscript"
-status: "Unpublished article"
-type: "Article manuscript"
-abstract: "An analysis of gendered narratives in the Montreal pagan community through contemporary neo-shamanic practice, with attention to storytelling, identity, and community formation."
+venue: "Lithuanian Journal of Anthropology"
+status: "In progress bibliographic confirmation"
+type: "Journal article lead"
+abstract: "A bibliographic lead for an article on neo-shamanic narratives, gender, and community life in the Montreal Pagan milieu that still needs stable retrieval details."
 tags:
   - shamanism
   - gender
-  - anthropology
   - Montreal
-  - pagan studies
+  - narrative
+  - bibliographic lead
 featured: false
-citation: 'Lepage, Martin. "(Neo-)Shamanism(s) and Gender: Narratives from the Montreal Pagan Community." Unpublished manuscript, 2017.'
+citation: 'Lepage, M. "(Neo-)Shamanism(s) and Gender: Narratives from the Montreal Pagan Community." Lithuanian Journal of Anthropology, bibliographic lead requiring retrieval confirmation.'
 links: []
 ---
-This record is kept visible as an unpublished manuscript rather than as a publication. The site confirms the title, year, and broad research focus without overstating journal status.
+This record stays in progress because the title is reported, but a stable journal URL, PDF, and full publication details were not retrieved from the source pass. The site keeps the lead visible without presenting it as a confirmed publication.
 
-In the context of the site, this paper widens the frame beyond Wicca alone and shows how Lepage's work moves across adjacent ritual and spiritual formations while staying anchored in questions of gender, narrative, and community practice.
+The lead still matters because it widens the archive beyond Wicca alone and points to adjacent neo-shamanic narratives inside the Montreal Pagan community. It belongs with the broader gender, narrative, and ritual research line, but it remains a confirmation task rather than a finished publication record.
 
-If its publication path changes later, the record can be updated with fuller bibliographic metadata.
+If a validated journal record or PDF is recovered later, the entry can be promoted into the published archive with fuller metadata.

@@ -1,19 +1,67 @@
 ---
 import { getCollection } from 'astro:content';
+import PracticeHero from '../../components/PracticeHero.astro';
 import SectionIntro from '../../components/SectionIntro.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { sortByDate } from '../../lib/content';
 
 const talks = sortByDate(await getCollection('talks'));
+const talkYears = talks.map((talk) => talk.data.date.getFullYear());
+const latestTalkYear = talkYears.length ? Math.max(...talkYears) : 'Current';
+const earliestTalkYear = talkYears.length ? Math.min(...talkYears) : 'Current';
+const talkSpan = earliestTalkYear === latestTalkYear ? `${latestTalkYear}` : `${earliestTalkYear}-${latestTalkYear}`;
+const talkFormatCount = new Set(talks.map((talk) => talk.data.format)).size;
 ---
 
 <BaseLayout title="Talks and Media" description="Conference presentations, sessions, and public-facing talks by Martin Lepage.">
+  <PracticeHero
+    eyebrow="Talks and media"
+    title="Talks and appearances."
+    description="A short archive of talks, panels, presentations, and public-facing appearances."
+    details="This page keeps the speaking record concise and readable, with enough detail for event context without turning the archive into a noisy event log."
+    links={[
+      { label: 'Browse talks', url: '#talk-archive', variant: 'primary' },
+      { label: 'Read publications', url: '/papers/', variant: 'secondary' },
+      { label: 'Get in touch about talks', url: '/contact/', variant: 'inline' },
+    ]}
+    sideEyebrow="Speaking profile"
+    sideTitle="What the archive makes visible."
+    sideDescription="The talks page shows where the work has been presented publicly and how it moves between scholarship, governance, and media-facing settings."
+    sidePoints={[
+      'Conference papers and sessions stay readable as one archive.',
+      'Format labels keep the speaking record legible at a glance.',
+      'Readers can move from talks into publications, writings, or contact without friction.',
+    ]}
+    stats={[
+      {
+        eyebrow: 'Appearances',
+        value: talks.length,
+        label: 'Talk records',
+        description: 'Conference talks, panels, sessions, and public-facing speaking entries.',
+      },
+      {
+        eyebrow: 'Archive span',
+        value: talkSpan,
+        label: 'Years covered',
+        description: 'The speaking years currently visible in the on-site archive.',
+      },
+      {
+        eyebrow: 'Formats',
+        value: talkFormatCount,
+        label: 'Distinct formats',
+        description: 'Different types of appearances represented across the current list.',
+      },
+    ]}
+  />
+
   <section class="section-shell">
-    <SectionIntro
-      eyebrow="Talks and media"
-      title="Talks and appearances."
-      description="A short archive of talks, panels, and presentations."
-    />
+    <div id="talk-archive">
+      <SectionIntro
+        eyebrow="Talk archive"
+        title="Talks, panels, and presentations."
+        description="A short archive of public speaking and media-facing appearances."
+      />
+    </div>
 
     <div class="mt-10 space-y-5">
       {talks.map((talk) => (
