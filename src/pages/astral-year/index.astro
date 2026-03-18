@@ -97,7 +97,7 @@ const astralBookData = { signs: zodiacSigns };
       {classicalElements.map((element) => (
         <article class="veil-panel astral-element-card" style={`--element-color:${element.color};`}>
           <p class="astral-mini-label">{element.name}</p>
-          <h3 class="mt-4 text-[1.28rem] md:text-[1.45rem]">{element.signs.join(' · ')}</h3>
+          <h3 class="mt-4 text-[1.12rem] md:text-[1.24rem]">{element.signs.join(' · ')}</h3>
           <p class="mt-4 text-base leading-7 text-slate-200">
             <strong>Qualities:</strong> {element.traits}.
           </p>
@@ -109,7 +109,7 @@ const astralBookData = { signs: zodiacSigns };
     <div class="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.95fr)]">
       <article class="veil-panel">
         <p class="eyebrow">How the book uses them</p>
-        <h3 class="mt-4 text-[1.5rem] md:text-[1.68rem]">The elements are the first layer of the book&apos;s movement.</h3>
+        <h3 class="mt-4 text-[1.28rem] md:text-[1.44rem]">The elements are the first layer of the book&apos;s movement.</h3>
         <p class="mt-4 text-base leading-7 text-slate-200">
           Before the book arrives at individual signs, it listens for elemental weather as it is lived on Earth. Fire
           pushes outward. Earth steadies and shapes. Air connects and stirs. Water absorbs and deepens.
@@ -131,7 +131,7 @@ const astralBookData = { signs: zodiacSigns };
 
       <article class="veil-panel">
         <p class="eyebrow">The fifth</p>
-        <h3 class="mt-4 text-[1.28rem] md:text-[1.45rem]">If a fifth is named here, it is Gaia: the living field of Earth.</h3>
+        <h3 class="mt-4 text-[1.12rem] md:text-[1.28rem]">If a fifth is named here, it is Gaia: the living field of Earth.</h3>
         <p class="mt-4 text-base leading-7 text-slate-200">
           The book can make room for a fifth, but not as another distant astrological mechanism. Gaia is the better name
           for it here: the living ground that holds weather, body, season, growth, decay, and relation together.
@@ -194,7 +194,7 @@ const astralBookData = { signs: zodiacSigns };
         <div class="mt-5 flex items-center justify-between gap-4">
           <div>
             <p id="detail-range" class="text-sm uppercase tracking-[0.18em] text-slate-400"></p>
-            <h2 id="detail-name" class="mt-2 text-[1.82rem] md:text-[2.15rem]"></h2>
+            <h2 id="detail-name" class="mt-2 text-[1.5rem] md:text-[1.8rem]"></h2>
           </div>
           <div class="astral-glyph-wrap">
             <span id="detail-glyph" class="astral-glyph">♈</span>
@@ -233,7 +233,7 @@ const astralBookData = { signs: zodiacSigns };
     <div class="grid gap-6 lg:grid-cols-3">
       <article class="veil-panel">
         <p class="eyebrow">Book mood</p>
-        <h3 class="mt-4 text-[1.28rem] md:text-[1.45rem]">A book of atmosphere</h3>
+        <h3 class="mt-4 text-[1.12rem] md:text-[1.28rem]">A book of atmosphere</h3>
         <p class="mt-4 text-base leading-7 text-slate-200">
           The signs move through the book like changing weather: beginnings, ripening, restlessness, brightness,
           balance, pressure, release, and return.
@@ -241,7 +241,7 @@ const astralBookData = { signs: zodiacSigns };
       </article>
       <article class="veil-panel">
         <p class="eyebrow">Approach</p>
-        <h3 class="mt-4 text-[1.28rem] md:text-[1.45rem]">Gaialogy, not sky worship</h3>
+        <h3 class="mt-4 text-[1.12rem] md:text-[1.28rem]">Gaialogy, not sky worship</h3>
         <p class="mt-4 text-base leading-7 text-slate-200">
           The book turns away from the fantasy that all answers are hidden in the sky. It works from Earth, from the
           Sun&apos;s lived rhythm, and from what can actually be seen in bodies, climates, relations, and forms of life.
@@ -249,7 +249,7 @@ const astralBookData = { signs: zodiacSigns };
       </article>
       <article class="veil-panel">
         <p class="eyebrow">Audience</p>
-        <h3 class="mt-4 text-[1.28rem] md:text-[1.45rem]">Written for general readers</h3>
+        <h3 class="mt-4 text-[1.12rem] md:text-[1.28rem]">Written for general readers</h3>
         <p class="mt-4 text-base leading-7 text-slate-200">
           The voice stays close to the surface of things: seasons, moods, desire, drift, pressure, tenderness, and the
           small ways a year changes how life feels.
@@ -305,9 +305,9 @@ const astralBookData = { signs: zodiacSigns };
     .astral-orbit {
       position: absolute;
       border-radius: 999px;
-      border: 1px solid rgba(157, 76, 47, 0.12);
+      border: 1px solid rgba(127, 83, 178, 0.14);
       pointer-events: none;
-      filter: drop-shadow(0 0 24px rgba(157, 76, 47, 0.06));
+      filter: drop-shadow(0 0 24px rgba(127, 83, 178, 0.08));
     }
 
     .astral-orbit-one {
@@ -315,7 +315,7 @@ const astralBookData = { signs: zodiacSigns };
       height: min(72vw, 780px);
       top: -10rem;
       right: -14rem;
-      background: radial-gradient(circle, rgba(157, 76, 47, 0.08) 0%, rgba(157, 76, 47, 0) 62%);
+      background: radial-gradient(circle, rgba(127, 83, 178, 0.1) 0%, rgba(127, 83, 178, 0) 62%);
     }
 
     .astral-orbit-two {
@@ -323,12 +323,12 @@ const astralBookData = { signs: zodiacSigns };
       height: min(42vw, 360px);
       left: -4rem;
       bottom: -4rem;
-      background: radial-gradient(circle, rgba(102, 115, 88, 0.12) 0%, rgba(102, 115, 88, 0) 58%);
+      background: radial-gradient(circle, rgba(92, 110, 198, 0.12) 0%, rgba(92, 110, 198, 0) 58%);
     }
 
     .astral-manifest-panel {
       background:
-        radial-gradient(circle at top right, rgba(157, 76, 47, 0.1), transparent 35%),
+        radial-gradient(circle at top right, rgba(127, 83, 178, 0.12), transparent 35%),
         linear-gradient(160deg, rgba(251, 246, 239, 0.6), rgba(251, 246, 239, 0.14));
     }
 
@@ -373,9 +373,9 @@ const astralBookData = { signs: zodiacSigns };
 
     .astral-sign-chip:focus-visible {
       outline: none;
-      border-color: rgba(157, 76, 47, 0.72);
+      border-color: rgba(127, 83, 178, 0.72);
       box-shadow:
-        0 0 0 3px rgba(157, 76, 47, 0.18),
+        0 0 0 3px rgba(127, 83, 178, 0.18),
         0 18px 30px rgba(36, 27, 23, 0.06);
     }
 

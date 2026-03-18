@@ -16,13 +16,13 @@ const { selectedPublications } = Astro.props;
 
     <div class="mt-10 space-y-8">
       <div>
-        <h2 class="text-[1.68rem] md:text-[1.82rem]">Experience</h2>
+        <h2 class="text-[1.46rem] md:text-[1.6rem]">Experience</h2>
         <div class="mt-6 space-y-6">
           {resumeData.experience.map((item) => (
             <article class="border-t border-[rgba(36,27,23,0.12)] pt-5">
               <div class="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
                 <div>
-                  <h3 class="text-[1.3rem] md:text-[1.5rem]">{item.title}</h3>
+                  <h3 class="text-[1.12rem] md:text-[1.26rem]">{item.title}</h3>
                   <p class="text-sm uppercase tracking-[0.2em] text-slate-400">
                     {item.organization} · {item.location}
                   </p>
@@ -40,12 +40,12 @@ const { selectedPublications } = Astro.props;
       </div>
 
       <div>
-        <h2 class="text-[1.68rem] md:text-[1.82rem]">Selected publications</h2>
+        <h2 class="text-[1.46rem] md:text-[1.6rem]">Selected publications</h2>
         <div class="mt-6 space-y-4">
           {selectedPublications.map((paper) => (
             <article class="border-t border-[rgba(36,27,23,0.12)] pt-5">
               <p class="text-sm font-semibold uppercase tracking-[0.2em] text-accent">{paper.data.year}</p>
-              <h3 class="mt-2 text-[1.3rem] md:text-[1.5rem]">{paper.data.title}</h3>
+              <h3 class="mt-2 text-[1.12rem] md:text-[1.26rem]">{paper.data.title}</h3>
               <p class="mt-2 text-sm text-slate-400">{paper.data.citation}</p>
             </article>
           ))}
@@ -61,7 +61,7 @@ const { selectedPublications } = Astro.props;
         {resumeData.education.map((item) => (
           <article class="border-t border-[rgba(36,27,23,0.12)] pt-5">
             <div class="flex items-start justify-between gap-4">
-              <h2 class="text-[1.28rem] md:text-[1.45rem]">{item.title}</h2>
+              <h2 class="text-[1.12rem] md:text-[1.24rem]">{item.title}</h2>
               <span class="text-sm font-medium text-accent">{item.dates}</span>
             </div>
             <p class="mt-2 text-sm uppercase tracking-[0.2em] text-slate-400">{item.organization}</p>
@@ -76,7 +76,7 @@ const { selectedPublications } = Astro.props;
       <div class="mt-5 space-y-5">
         {resumeData.expertise.map((group) => (
           <div class="border-t border-[rgba(36,27,23,0.12)] pt-5">
-            <h2 class="text-[1.28rem] md:text-[1.45rem]">{group.label}</h2>
+            <h2 class="text-[1.12rem] md:text-[1.24rem]">{group.label}</h2>
             <ul class="mt-4 flex flex-wrap gap-2">
               {group.items.map((item) => (
                 <li class="border border-[rgba(36,27,23,0.12)] px-3 py-1 text-sm text-slate-200">

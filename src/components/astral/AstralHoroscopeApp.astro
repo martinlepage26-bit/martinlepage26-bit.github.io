@@ -43,7 +43,7 @@ const appData = { profiles: profilesBySlug, months: monthOptions, dateLookup };
   <div class="grid gap-8 lg:grid-cols-[minmax(0,0.88fr)_minmax(0,1.12fr)] lg:items-start">
     <section class="veil-panel astral-control-panel">
       <p class="eyebrow">Choose your entry</p>
-      <h2 class="mt-4 text-[1.95rem] leading-tight md:text-[2.35rem]">Generate a grounded horoscope.</h2>
+      <h2 class="mt-4 text-[1.56rem] leading-tight md:text-[1.82rem]">Generate a grounded horoscope.</h2>
       <p class="mt-4 max-w-xl text-base leading-7 text-slate-200">
         This app reads signs the way the book does: as earthly weather, body tone, social motion, pressure, and repair.
         Pick your sign directly or let the date finder resolve it for you.
@@ -106,7 +106,7 @@ const appData = { profiles: profilesBySlug, months: monthOptions, dateLookup };
       <div class="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p id="astral-result-mode" class="astral-mini-label">Reading</p>
-          <h3 id="astral-result-sign" class="mt-3 text-[2rem] leading-tight md:text-[2.55rem]">{initialProfile.sign.name}</h3>
+          <h3 id="astral-result-sign" class="mt-3 text-[1.52rem] leading-tight md:text-[1.92rem]">{initialProfile.sign.name}</h3>
           <p id="astral-result-range" class="mt-2 text-sm uppercase tracking-[0.18em] text-slate-400">
             {initialProfile.sign.dateLabel} · {initialProfile.sign.element}
           </p>
@@ -278,7 +278,7 @@ const appData = { profiles: profilesBySlug, months: monthOptions, dateLookup };
     position: relative;
     overflow: hidden;
     background:
-      radial-gradient(circle at top right, rgba(157, 76, 47, 0.08), transparent 34%),
+      radial-gradient(circle at top right, rgba(127, 83, 178, 0.1), transparent 34%),
       linear-gradient(180deg, rgba(251, 246, 239, 0.5) 0%, rgba(251, 246, 239, 0.14) 100%);
   }
 
@@ -290,7 +290,7 @@ const appData = { profiles: profilesBySlug, months: monthOptions, dateLookup };
     width: 14rem;
     height: 14rem;
     border-radius: 999px;
-    background: radial-gradient(circle, rgba(102, 115, 88, 0.08) 0%, rgba(102, 115, 88, 0) 72%);
+    background: radial-gradient(circle, rgba(92, 110, 198, 0.08) 0%, rgba(92, 110, 198, 0) 72%);
     pointer-events: none;
   }
 
@@ -326,8 +326,8 @@ const appData = { profiles: profilesBySlug, months: monthOptions, dateLookup };
 
   .astral-select:focus-visible {
     outline: none;
-    border-color: rgba(157, 76, 47, 0.5);
-    box-shadow: 0 3px 0 0 rgba(157, 76, 47, 0.12);
+    border-color: rgba(127, 83, 178, 0.5);
+    box-shadow: 0 3px 0 0 rgba(127, 83, 178, 0.12);
   }
 
   .astral-glyph-orbit {
@@ -338,7 +338,7 @@ const appData = { profiles: profilesBySlug, months: monthOptions, dateLookup };
     border-radius: 1.2rem;
     border: 1px solid rgba(36, 27, 23, 0.1);
     background:
-      radial-gradient(circle at center, rgba(157, 76, 47, 0.12), rgba(157, 76, 47, 0) 65%),
+      radial-gradient(circle at center, rgba(127, 83, 178, 0.14), rgba(127, 83, 178, 0) 65%),
       linear-gradient(180deg, rgba(251, 246, 239, 0.9), rgba(251, 246, 239, 0.38));
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.36);
   }

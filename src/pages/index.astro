@@ -79,8 +79,8 @@ const homeStats = [
     <div class="mt-12 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
       {homeStats.map((item) => (
         <article class="veil-panel h-full">
-          <p class="font-display text-[2rem] leading-none text-moon md:text-[2.4rem]">{item.value}</p>
-          <h3 class="mt-4 text-[1.05rem] md:text-[1.18rem]">{item.label}</h3>
+          <p class="font-display text-[1.7rem] leading-none text-moon md:text-[2rem]">{item.value}</p>
+          <h3 class="mt-4 text-[0.98rem] md:text-[1.06rem]">{item.label}</h3>
           <p class="mt-3 text-sm leading-6 text-slate-300">{item.description}</p>
         </article>
       ))}
@@ -90,7 +90,7 @@ const homeStats = [
       {homeHighlights.map((item) => (
         <article class="veil-panel h-full">
           <p class="eyebrow">Mode of work</p>
-          <h3 class="mt-3 text-[1.45rem] md:text-[1.62rem]">{item.title}</h3>
+          <h3 class="mt-3 text-[1.24rem] md:text-[1.38rem]">{item.title}</h3>
           <p class="mt-4 text-base text-slate-200">{item.description}</p>
         </article>
       ))}
@@ -135,7 +135,7 @@ const homeStats = [
 
       <aside class="veil-panel">
         <p class="eyebrow">Developing works</p>
-        <h2 class="mt-3 text-[1.68rem] md:text-[1.9rem]">Books and symbolic frameworks now in public preview.</h2>
+        <h2 class="mt-3 text-[1.42rem] md:text-[1.62rem]">Books and symbolic frameworks now in public preview.</h2>
         <p class="mt-4 text-base text-slate-200">
           These entries hold the more atmospheric and book-stage thread of the practice without pretending they are
           product pages or finalized publications.
@@ -145,13 +145,13 @@ const homeStats = [
           {symbolicProjects.map((project) => (
             <li>
               <a
-                class="block border-t border-[rgba(36,27,23,0.12)] py-4 transition hover:translate-x-1 hover:border-[rgba(157,76,47,0.28)]"
+                class="block border-t border-[rgba(35,27,53,0.12)] py-4 transition hover:translate-x-1 hover:border-[rgba(127,83,178,0.28)]"
                 href={`/projects/${contentSlug(project.id)}/`}
               >
                 <div class="flex items-start justify-between gap-3">
                   <div>
                     <p class="text-xs font-semibold uppercase tracking-[0.18em] text-accent/90">{project.data.status}</p>
-                    <h3 class="mt-2 text-[1.02rem] md:text-[1.12rem]">{project.data.title}</h3>
+                    <h3 class="mt-2 text-[0.96rem] md:text-[1.04rem]">{project.data.title}</h3>
                   </div>
                   {project.data.year && <span class="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">{project.data.year}</span>}
                 </div>
@@ -193,14 +193,14 @@ const homeStats = [
       <div class="space-y-6">
         <div class="veil-panel">
           <p class="eyebrow">Talks and media</p>
-          <h2 class="mt-3 text-[1.52rem] md:text-[1.7rem]">Conference sessions, research presentations, and public-facing appearances.</h2>
+          <h2 class="mt-3 text-[1.32rem] md:text-[1.5rem]">Conference sessions, research presentations, and public-facing appearances.</h2>
           <div class="mt-8 space-y-4">
             {featuredTalks.map((talk) => (
               <article class="border-t border-[rgba(36,27,23,0.12)] py-4">
                 <p class="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
                   {talk.data.dateLabel ?? talk.data.date.getFullYear()}
                 </p>
-                <h3 class="mt-2 text-[1rem] md:text-[1.08rem]">{talk.data.title}</h3>
+                <h3 class="mt-2 text-[0.96rem] md:text-[1.02rem]">{talk.data.title}</h3>
                 <p class="mt-2 text-xs uppercase tracking-[0.18em] text-slate-400">
                   {talk.data.event} · {talk.data.format}
                 </p>
@@ -212,7 +212,7 @@ const homeStats = [
 
         <div class="veil-panel">
           <p class="eyebrow">Resume and CV</p>
-          <h2 class="mt-3 text-[1.52rem] md:text-[1.7rem]">Downloadable, readable, and aligned with the public profile.</h2>
+          <h2 class="mt-3 text-[1.32rem] md:text-[1.5rem]">Downloadable, readable, and aligned with the public profile.</h2>
           <p class="mt-4 text-base text-slate-200">
             The resume route gathers governance, research operations, teaching, archival work, and recent clinical
             coordination into one compact document.
