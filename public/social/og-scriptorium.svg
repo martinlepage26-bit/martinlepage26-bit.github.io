@@ -1,0 +1,32 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#F3EFEB"/>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="1014" cy="130" r="182" fill="url(#ringA)" opacity="0.9"/>
+  <circle cx="210" cy="520" r="190" fill="url(#ringB)" opacity="0.9"/>
+  <rect x="84" y="82" width="1032" height="466" rx="28" fill="rgba(255,255,255,0.46)" stroke="rgba(35,27,53,0.12)"/>
+  <path d="M84 166H1116" stroke="rgba(35,27,53,0.08)"/>
+  <path d="M168 166L214 166" stroke="#5F5FB2" stroke-width="2"/>
+  <path d="M84 470H1116" stroke="rgba(35,27,53,0.08)"/>
+  <text x="168" y="144" fill="#5F5FB2" font-family="'IBM Plex Mono', monospace" font-size="22" letter-spacing="4">SCRIPTORIUM</text>
+  <text x="168" y="262" fill="#111726" font-family="Georgia, 'Times New Roman', serif" font-size="72">Paper builder for</text>
+  <text x="168" y="338" fill="#111726" font-family="Georgia, 'Times New Roman', serif" font-size="72">the deterministic</text>
+  <text x="168" y="414" fill="#111726" font-family="Georgia, 'Times New Roman', serif" font-size="72">recursive method</text>
+  <text x="168" y="484" fill="#39455F" font-family="'Manrope', Arial, sans-serif" font-size="28">
+    Artifact hierarchy. Evidence boundaries. Recursive tests. Interface-bound controls.
+  </text>
+  <defs>
+    <linearGradient id="bg" x1="70" y1="18" x2="1120" y2="630" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F5F2EE"/>
+      <stop offset="0.56" stop-color="#ECEAE8"/>
+      <stop offset="1" stop-color="#E6EBF0"/>
+    </linearGradient>
+    <radialGradient id="ringA" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1014 130) rotate(90) scale(182)">
+      <stop stop-color="#5F5FB2" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#5F5FB2" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="ringB" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(210 520) rotate(90) scale(190)">
+      <stop stop-color="#22334F" stop-opacity="0.2"/>
+      <stop offset="1" stop-color="#22334F" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+</svg>

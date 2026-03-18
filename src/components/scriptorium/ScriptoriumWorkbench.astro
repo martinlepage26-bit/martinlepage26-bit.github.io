@@ -1,0 +1,1215 @@
+---
+import {
+  scriptoriumBuilderData,
+  scriptoriumManuscriptStages,
+  scriptoriumPaperApproaches,
+} from '../../data/scriptorium';
+import { buildScriptoriumPacket, scriptoriumDefaultState } from '../../lib/scriptoriumWorkbench';
+
+const initialPacket = buildScriptoriumPacket(scriptoriumDefaultState);
+---
+
+<div class="scriptorium-workbench">
+  <div class="grid gap-8 lg:grid-cols-[minmax(380px,0.84fr)_minmax(0,1.16fr)] lg:items-start">
+    <section class="veil-panel scriptorium-control-panel">
+      <p class="eyebrow">Deterministic paper builder</p>
+      <h2 class="mt-4 text-[1.56rem] leading-tight md:text-[1.82rem]">Build a manuscript packet, then stress-test it before submission.</h2>
+      <p class="mt-4 max-w-2xl text-base leading-7 text-slate-200">
+        Scriptorium keeps Martin&apos;s deterministic recursive method in front while adding long-form manuscript intake,
+        quote and reference scanning, user-chosen paper approach, and the Henry reviewer stack. The page runs
+        browser-side, supports long drafts, and does not claim that simulation equals actual peer review.
+      </p>
+
+      <div class="mt-8 grid gap-5">
+        <div class="scriptorium-input-card">
+          <label class="scriptorium-label" for="scriptorium-title-input">Packet title or manuscript title</label>
+          <input
+            id="scriptorium-title-input"
+            class="scriptorium-input"
+            type="text"
+            value={scriptoriumDefaultState.title}
+            placeholder="Name the draft, archive, or paper packet"
+          />
+          <p class="mt-3 text-sm leading-6 text-slate-400">
+            Use the real paper title if you have it. If not, use the working argument or packet name.
+          </p>
+        </div>
+
+        <div class="scriptorium-input-card">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <label class="scriptorium-label" for="scriptorium-file-input">Upload manuscript file</label>
+            <p class="text-xs uppercase tracking-[0.18em] text-slate-400">TXT, MD, DOCX</p>
+          </div>
+          <input id="scriptorium-file-input" class="scriptorium-file-input" type="file" accept=".txt,.md,.docx,.doc,text/plain" />
+          <p id="scriptorium-file-status" class="mt-3 text-sm leading-6 text-slate-400">
+            No file loaded yet. Older <code>.doc</code> files should be resaved as <code>.docx</code> before upload.
+          </p>
+          <p class="mt-2 text-xs uppercase tracking-[0.18em] text-slate-400">
+            Long drafts are supported. Use Build packet after paste or upload for the full scan.
+          </p>
+        </div>
+
+        <div class="scriptorium-input-card">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <label class="scriptorium-label" for="scriptorium-manuscript-input">Manuscript body</label>
+            <p class="text-xs uppercase tracking-[0.18em] text-slate-400">Paste text or load from file</p>
+          </div>
+          <textarea
+            id="scriptorium-manuscript-input"
+            class="scriptorium-input scriptorium-textarea"
+            placeholder="Paste the manuscript here. Scriptorium can process 10,000+ words locally in the browser."
+          >{scriptoriumDefaultState.manuscript}</textarea>
+          <p class="mt-3 text-sm leading-6 text-slate-400">
+            The builder scans the text you give it. It does not invent citations, quotations, or external review outcomes.
+          </p>
+        </div>
+
+        <div class="grid gap-5 xl:grid-cols-2">
+          <div class="scriptorium-input-card">
+            <label class="scriptorium-label" for="scriptorium-quote-notes-input">Quote notes or source excerpts</label>
+            <textarea
+              id="scriptorium-quote-notes-input"
+              class="scriptorium-input scriptorium-small-textarea"
+              placeholder="Optional: paste quoted passages, page notes, or source excerpts not already inside the manuscript."
+            >{scriptoriumDefaultState.quoteNotes}</textarea>
+            <p class="mt-3 text-sm leading-6 text-slate-400">
+              One quote or note per line works best.
+            </p>
+          </div>
+
+          <div class="scriptorium-input-card">
+            <label class="scriptorium-label" for="scriptorium-reference-input">Reference list input</label>
+            <textarea
+              id="scriptorium-reference-input"
+              class="scriptorium-input scriptorium-small-textarea"
+              placeholder="Optional: paste references here, ideally one per line."
+            >{scriptoriumDefaultState.references}</textarea>
+            <p class="mt-3 text-sm leading-6 text-slate-400">
+              Scriptorium scans both this field and any references already inside the manuscript.
+            </p>
+          </div>
+        </div>
+
+        <div class="grid gap-5 xl:grid-cols-2">
+          <div class="scriptorium-input-card">
+            <label class="scriptorium-label" for="scriptorium-object-select">Governing object</label>
+            <select id="scriptorium-object-select" class="scriptorium-select">
+              {scriptoriumBuilderData.governingObjects.map((item) => (
+                <option value={item.slug} selected={item.slug === scriptoriumDefaultState.object}>{item.label}</option>
+              ))}
+            </select>
+            <p id="scriptorium-object-description" class="mt-3 text-sm leading-6 text-slate-400">
+              {initialPacket.governingObject.description}
+            </p>
+          </div>
+
+          <div class="scriptorium-input-card">
+            <label class="scriptorium-label" for="scriptorium-mode-select">Output mode</label>
+            <select id="scriptorium-mode-select" class="scriptorium-select">
+              {scriptoriumBuilderData.outputModes.map((item) => (
+                <option value={item.slug} selected={item.slug === scriptoriumDefaultState.mode}>{item.label}</option>
+              ))}
+            </select>
+            <p id="scriptorium-mode-description" class="mt-3 text-sm leading-6 text-slate-400">
+              {initialPacket.outputMode.description}
+            </p>
+          </div>
+        </div>
+
+        <div class="grid gap-5 xl:grid-cols-2">
+          <div class="scriptorium-input-card">
+            <label class="scriptorium-label" for="scriptorium-approach-select">Paper approach</label>
+            <select id="scriptorium-approach-select" class="scriptorium-select">
+              {scriptoriumPaperApproaches.map((item) => (
+                <option value={item.slug} selected={item.slug === scriptoriumDefaultState.approach}>{item.label}</option>
+              ))}
+            </select>
+            <p id="scriptorium-approach-description" class="mt-3 text-sm leading-6 text-slate-400">
+              {initialPacket.paperApproach.description}
+            </p>
+          </div>
+
+          <div class="scriptorium-input-card">
+            <label class="scriptorium-label" for="scriptorium-stage-select">Manuscript stage</label>
+            <select id="scriptorium-stage-select" class="scriptorium-select">
+              {scriptoriumManuscriptStages.map((item) => (
+                <option value={item.slug} selected={item.slug === scriptoriumDefaultState.stage}>{item.label}</option>
+              ))}
+            </select>
+            <p id="scriptorium-stage-description" class="mt-3 text-sm leading-6 text-slate-400">
+              {initialPacket.manuscriptStage.description}
+            </p>
+          </div>
+        </div>
+
+        <div class="grid gap-5 2xl:grid-cols-3">
+          <div class="scriptorium-input-card">
+            <label class="scriptorium-label" for="scriptorium-profile-select">Archive profile</label>
+            <select id="scriptorium-profile-select" class="scriptorium-select">
+              {scriptoriumBuilderData.archiveProfiles.map((item) => (
+                <option value={item.slug} selected={item.slug === scriptoriumDefaultState.profile}>{item.label}</option>
+              ))}
+            </select>
+            <p id="scriptorium-profile-description" class="mt-3 text-sm leading-6 text-slate-400">
+              {initialPacket.archiveProfile.description}
+            </p>
+          </div>
+
+          <div class="scriptorium-input-card">
+            <label class="scriptorium-label" for="scriptorium-domain-select">Consequence domain</label>
+            <select id="scriptorium-domain-select" class="scriptorium-select">
+              {scriptoriumBuilderData.consequenceDomains.map((item) => (
+                <option value={item.slug} selected={item.slug === scriptoriumDefaultState.domain}>{item.label}</option>
+              ))}
+            </select>
+            <p id="scriptorium-domain-description" class="mt-3 text-sm leading-6 text-slate-400">
+              {initialPacket.consequenceDomain.emphasis}
+            </p>
+          </div>
+
+          <div class="scriptorium-input-card">
+            <label class="scriptorium-label" for="scriptorium-pressure-select">Recursive pressure</label>
+            <select id="scriptorium-pressure-select" class="scriptorium-select">
+              {scriptoriumBuilderData.recursivePressures.map((item) => (
+                <option value={item.slug} selected={item.slug === scriptoriumDefaultState.pressure}>{item.label}</option>
+              ))}
+            </select>
+            <p id="scriptorium-pressure-description" class="mt-3 text-sm leading-6 text-slate-400">
+              {initialPacket.recursivePressure.description} {initialPacket.recursivePressure.riskNote}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-8 flex flex-wrap gap-3">
+        <button id="scriptorium-build-button" type="button" class="button-primary">Build packet</button>
+        <button id="scriptorium-reset-button" type="button" class="button-secondary">Reset defaults</button>
+      </div>
+
+      <div class="mt-8 grid gap-4 sm:grid-cols-2">
+        <div class="scriptorium-mini-card">
+          <p class="scriptorium-mini-label">Scale</p>
+          <p class="mt-2 text-sm leading-6 text-slate-200">
+            The workbench is built for long drafts. A 10,000-word manuscript can be pasted or loaded locally, then
+            exported without a short-summary cap.
+          </p>
+        </div>
+        <div class="scriptorium-mini-card">
+          <p class="scriptorium-mini-label">Boundary</p>
+          <p class="mt-2 text-sm leading-6 text-slate-200">
+            Henry simulates reviewer pressure. It does not convert the manuscript into an actually peer-reviewed paper
+            on its own.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <aside class="veil-panel scriptorium-result-panel" aria-live="polite" aria-atomic="true">
+      <div class="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <p id="scriptorium-result-source" class="scriptorium-mini-label">{initialPacket.sourceLabel}</p>
+          <h3 id="scriptorium-result-title" class="mt-3 text-[1.52rem] leading-tight md:text-[1.92rem]">{initialPacket.topic}</h3>
+          <p id="scriptorium-result-meta" class="mt-2 text-sm uppercase tracking-[0.18em] text-slate-400">
+            {initialPacket.outputMode.label} · {initialPacket.paperApproach.label} · {initialPacket.manuscriptStage.label}
+          </p>
+          <p id="scriptorium-result-submeta" class="mt-2 text-xs uppercase tracking-[0.18em] text-slate-400">
+            {initialPacket.governingObject.label} · {initialPacket.consequenceDomain.label} · {initialPacket.recursivePressure.label}
+          </p>
+        </div>
+        <div class="scriptorium-seal-orbit">
+          <span class="scriptorium-seal-glyph">S</span>
+        </div>
+      </div>
+
+      <p id="scriptorium-result-overview" class="mt-6 text-lg leading-8 text-slate-100">{initialPacket.overview}</p>
+
+      <div class="mt-8 scriptorium-metric-grid">
+        <article class="scriptorium-metric-card">
+          <p class="scriptorium-mini-label">Words</p>
+          <p class="scriptorium-metric-value"><span id="scriptorium-word-count">{initialPacket.manuscriptStats.wordCount}</span><small>total</small></p>
+        </article>
+        <article class="scriptorium-metric-card">
+          <p class="scriptorium-mini-label">Sections</p>
+          <p class="scriptorium-metric-value"><span id="scriptorium-section-count">{initialPacket.manuscriptStats.sectionCount}</span><small>blocks</small></p>
+        </article>
+        <article class="scriptorium-metric-card">
+          <p class="scriptorium-mini-label">Quotes</p>
+          <p class="scriptorium-metric-value"><span id="scriptorium-quote-count">{initialPacket.manuscriptStats.quoteCount}</span><small>signals</small></p>
+        </article>
+        <article class="scriptorium-metric-card">
+          <p class="scriptorium-mini-label">References</p>
+          <p class="scriptorium-metric-value"><span id="scriptorium-reference-count">{initialPacket.manuscriptStats.referenceCount}</span><small>entries</small></p>
+        </article>
+      </div>
+
+      <div class="mt-6 grid gap-4 xl:grid-cols-2">
+        <article class="scriptorium-reading-card">
+          <p class="scriptorium-mini-label">Readiness call</p>
+          <p id="scriptorium-readiness-call" class="mt-2 text-base leading-7 text-slate-200">{initialPacket.readinessCall}</p>
+        </article>
+        <article class="scriptorium-reading-card">
+          <p class="scriptorium-mini-label">Governing claim</p>
+          <p id="scriptorium-claim-sentence" class="mt-2 text-base leading-7 text-slate-200">{initialPacket.claimSentence}</p>
+        </article>
+      </div>
+
+      <article class="mt-4 scriptorium-guidance-strip">
+        <p class="scriptorium-mini-label">Contribution ladder</p>
+        <ul id="scriptorium-contribution-list" class="mt-3 space-y-2 text-sm leading-6 text-slate-200">
+          {initialPacket.contributionLadder.map((entry) => (
+            <li><strong>{entry.label}:</strong> {entry.body}</li>
+          ))}
+        </ul>
+      </article>
+
+      <div class="mt-4 grid gap-4 xl:grid-cols-2">
+        <article class="scriptorium-reading-card">
+          <p class="scriptorium-mini-label">Support corroboration</p>
+          <p id="scriptorium-support-headline" class="mt-2 text-sm leading-6 text-slate-300">{initialPacket.supportCorroboration.headline}</p>
+          <ul id="scriptorium-support-list" class="mt-3 space-y-2 text-sm leading-6 text-slate-200">
+            {initialPacket.supportCorroboration.bullets.map((entry) => (
+              <li>{entry}</li>
+            ))}
+          </ul>
+          <ul id="scriptorium-support-levels" class="mt-3 space-y-2 text-sm leading-6 text-slate-200">
+            {initialPacket.supportCorroboration.claimLevels.map((entry) => (
+              <li><strong>{entry.label}:</strong> {entry.body}</li>
+            ))}
+          </ul>
+        </article>
+        <article class="scriptorium-reading-card">
+          <p class="scriptorium-mini-label">Recursive triangulation</p>
+          <p id="scriptorium-triangulation-headline" class="mt-2 text-sm leading-6 text-slate-300">{initialPacket.recursiveTriangulation.headline}</p>
+          <ul id="scriptorium-triangulation-list" class="mt-3 space-y-2 text-sm leading-6 text-slate-200">
+            {initialPacket.recursiveTriangulation.steps.map((entry) => (
+              <li><strong>{entry.label}:</strong> {entry.body}</li>
+            ))}
+          </ul>
+        </article>
+      </div>
+
+      <div class="mt-4 grid gap-4 xl:grid-cols-2">
+        <article class="scriptorium-reading-card">
+          <p class="scriptorium-mini-label">Method fit</p>
+          <p id="scriptorium-method-headline" class="mt-2 text-sm leading-6 text-slate-300">{initialPacket.methodFit.headline}</p>
+          <ul id="scriptorium-method-list" class="mt-3 space-y-2 text-sm leading-6 text-slate-200">
+            {initialPacket.methodFit.bullets.map((entry) => (
+              <li>{entry}</li>
+            ))}
+          </ul>
+        </article>
+        <article class="scriptorium-reading-card">
+          <p class="scriptorium-mini-label">Institutional stakes</p>
+          <p id="scriptorium-stakes-headline" class="mt-2 text-sm leading-6 text-slate-300">{initialPacket.institutionalStakes.headline}</p>
+          <ul id="scriptorium-stakes-list" class="mt-3 space-y-2 text-sm leading-6 text-slate-200">
+            {initialPacket.institutionalStakes.bullets.map((entry) => (
+              <li>{entry}</li>
+            ))}
+          </ul>
+        </article>
+      </div>
+
+      <div class="mt-4 grid gap-4 xl:grid-cols-2">
+        <article class="scriptorium-reading-card">
+          <p class="scriptorium-mini-label">Authority travel</p>
+          <p id="scriptorium-authority-headline" class="mt-2 text-sm leading-6 text-slate-300">{initialPacket.authorityTravel.headline}</p>
+          <ul id="scriptorium-authority-list" class="mt-3 space-y-2 text-sm leading-6 text-slate-200">
+            {initialPacket.authorityTravel.levels.map((entry) => (
+              <li><strong>{entry.label}:</strong> {entry.body}</li>
+            ))}
+          </ul>
+        </article>
+        <article class="scriptorium-reading-card">
+          <p class="scriptorium-mini-label">Reader traction</p>
+          <p id="scriptorium-reader-headline" class="mt-2 text-sm leading-6 text-slate-300">{initialPacket.readerTraction.headline}</p>
+          <ul id="scriptorium-reader-list" class="mt-3 space-y-2 text-sm leading-6 text-slate-200">
+            {initialPacket.readerTraction.bullets.map((entry) => (
+              <li>{entry}</li>
+            ))}
+          </ul>
+        </article>
+      </div>
+
+      <article class="mt-4 scriptorium-guidance-strip">
+        <p class="scriptorium-mini-label">Approach outline</p>
+        <ul id="scriptorium-outline-list" class="mt-3 space-y-2 text-sm leading-6 text-slate-200">
+          {initialPacket.outline.map((entry) => (
+            <li>
+              <strong>[{entry.status === 'present' ? 'Present' : 'Needed'}]</strong> {entry.label}: {entry.note}
+            </li>
+          ))}
+        </ul>
+      </article>
+
+      <div class="mt-4 grid gap-4 xl:grid-cols-2">
+        <article class="scriptorium-reading-card">
+          <p class="scriptorium-mini-label">Quote scan</p>
+          <ul id="scriptorium-quote-list" class="mt-3 space-y-2 text-sm leading-6 text-slate-200">
+            <li>No quoted passages detected yet.</li>
+          </ul>
+        </article>
+        <article class="scriptorium-reading-card">
+          <p class="scriptorium-mini-label">Reference scan</p>
+          <p id="scriptorium-inline-citation-summary" class="mt-2 text-sm leading-6 text-slate-300">
+            {initialPacket.manuscriptStats.inlineCitationCount} inline citation signal(s) detected.
+          </p>
+          <ul id="scriptorium-reference-list" class="mt-3 space-y-2 text-sm leading-6 text-slate-200">
+            <li>No reference entries detected yet.</li>
+          </ul>
+        </article>
+      </div>
+
+      <article class="mt-4 scriptorium-guidance-strip">
+        <p class="scriptorium-mini-label">Section diagnostics</p>
+        <div id="scriptorium-section-diagnostics" class="mt-3 scriptorium-section-grid">
+          <article class="scriptorium-section-card">
+            <p class="scriptorium-control-heading">No manuscript sections yet</p>
+            <p class="mt-2 text-sm leading-6 text-slate-200">
+              Paste or upload a manuscript to generate section-level pressure notes and revision moves.
+            </p>
+          </article>
+        </div>
+      </article>
+
+      <article class="mt-4 scriptorium-guidance-strip">
+        <p class="scriptorium-mini-label">Recursive tests</p>
+        <ul id="scriptorium-tests-list" class="mt-3 space-y-2 text-sm leading-6 text-slate-200">
+          {initialPacket.tests.map((test) => (
+            <li>
+              <strong>{test.label} [{test.status}]:</strong> {test.reading}
+            </li>
+          ))}
+        </ul>
+      </article>
+
+      <article class="mt-4 scriptorium-guidance-strip">
+        <p class="scriptorium-mini-label">Henry reviewer stack</p>
+        <div id="scriptorium-henry-list" class="mt-3 scriptorium-review-grid">
+          {initialPacket.henryReviews.map((review) => (
+            <article class="scriptorium-review-card" data-severity={review.severity}>
+              <div class="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <p class="scriptorium-control-heading">{review.label}</p>
+                  <p class="mt-2 text-sm leading-6 text-slate-300">{review.purpose}</p>
+                </div>
+                <span class="scriptorium-status-pill">{review.severity}</span>
+              </div>
+              <ul class="mt-4 space-y-2 text-sm leading-6 text-slate-200">
+                {review.findings.map((finding) => (
+                  <li>{finding}</li>
+                ))}
+              </ul>
+              <p class="mt-4 text-xs uppercase tracking-[0.18em] text-slate-400">Revision strategies</p>
+              <ul class="mt-2 space-y-2 text-sm leading-6 text-slate-200">
+                {review.strategies.map((strategy) => (
+                  <li>{strategy}</li>
+                ))}
+              </ul>
+            </article>
+          ))}
+        </div>
+      </article>
+
+      <article class="mt-4 scriptorium-guidance-strip">
+        <p class="scriptorium-mini-label">Priority revisions</p>
+        <ul id="scriptorium-priority-list" class="mt-3 space-y-2 text-sm leading-6 text-slate-200">
+          {initialPacket.revisionPriorities.map((priority) => (
+            <li>{priority}</li>
+          ))}
+        </ul>
+      </article>
+
+      <article class="mt-4 scriptorium-guidance-strip">
+        <p class="scriptorium-mini-label">Plain-language next pass</p>
+        <p id="scriptorium-plain-headline" class="mt-2 text-sm leading-6 text-slate-300">{initialPacket.plainLanguagePlan.headline}</p>
+        <ul id="scriptorium-plain-list" class="mt-3 space-y-2 text-sm leading-6 text-slate-200">
+          {initialPacket.plainLanguagePlan.steps.map((entry) => (
+            <li>{entry}</li>
+          ))}
+        </ul>
+      </article>
+
+      <article class="mt-4 scriptorium-guidance-strip">
+        <p class="scriptorium-mini-label">Controls</p>
+        <div id="scriptorium-controls-list" class="mt-3 grid gap-3">
+          {initialPacket.controls.map((control) => (
+            <div class="scriptorium-control-output">
+              <p class="scriptorium-control-heading">{control.heading}</p>
+              <p class="mt-2 text-sm leading-6 text-slate-200"><strong>Finding:</strong> {control.finding}</p>
+              <p class="mt-1 text-sm leading-6 text-slate-200"><strong>Control:</strong> {control.control}</p>
+              <p class="mt-1 text-sm leading-6 text-slate-200"><strong>Owner:</strong> {control.owner}</p>
+              <p class="mt-1 text-sm leading-6 text-slate-200"><strong>Evidence:</strong> {control.evidence}</p>
+              <p class="mt-1 text-sm leading-6 text-slate-200"><strong>Review interval:</strong> {control.review}</p>
+            </div>
+          ))}
+        </div>
+      </article>
+
+      <div class="mt-4 grid gap-4">
+        <article class="scriptorium-reading-card">
+          <p class="scriptorium-mini-label">Bounded conclusion</p>
+          <p id="scriptorium-bounded-conclusion" class="mt-2 text-base leading-7 text-slate-200">{initialPacket.boundedConclusion}</p>
+        </article>
+        <article class="scriptorium-reading-card">
+          <p class="scriptorium-mini-label">Disclosure language</p>
+          <p id="scriptorium-disclosure" class="mt-2 text-base leading-7 text-slate-200">{initialPacket.disclosure}</p>
+        </article>
+      </div>
+
+      <div class="mt-6 scriptorium-export-shell">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <p class="scriptorium-mini-label">Markdown export</p>
+          <div class="flex flex-wrap items-center gap-3">
+            <button id="scriptorium-copy-button" type="button" class="button-secondary">Copy packet</button>
+            <span id="scriptorium-copy-status" class="text-xs uppercase tracking-[0.18em] text-slate-400">Ready for long-form export</span>
+          </div>
+        </div>
+        <textarea id="scriptorium-export" class="scriptorium-export" readonly>{initialPacket.exportMarkdown}</textarea>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    import JSZip from 'jszip';
+    import { buildScriptoriumPacket, scriptoriumDefaultState, type ScriptoriumPacket } from '../../lib/scriptoriumWorkbench';
+
+    const escapeHtml = (value: string | number) =>
+      String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+
+    const titleInput = document.getElementById('scriptorium-title-input') as HTMLInputElement | null;
+    const fileInput = document.getElementById('scriptorium-file-input') as HTMLInputElement | null;
+    const fileStatus = document.getElementById('scriptorium-file-status') as HTMLElement | null;
+    const manuscriptInput = document.getElementById('scriptorium-manuscript-input') as HTMLTextAreaElement | null;
+    const quoteNotesInput = document.getElementById('scriptorium-quote-notes-input') as HTMLTextAreaElement | null;
+    const referenceInput = document.getElementById('scriptorium-reference-input') as HTMLTextAreaElement | null;
+    const objectSelect = document.getElementById('scriptorium-object-select') as HTMLSelectElement | null;
+    const modeSelect = document.getElementById('scriptorium-mode-select') as HTMLSelectElement | null;
+    const approachSelect = document.getElementById('scriptorium-approach-select') as HTMLSelectElement | null;
+    const stageSelect = document.getElementById('scriptorium-stage-select') as HTMLSelectElement | null;
+    const profileSelect = document.getElementById('scriptorium-profile-select') as HTMLSelectElement | null;
+    const domainSelect = document.getElementById('scriptorium-domain-select') as HTMLSelectElement | null;
+    const pressureSelect = document.getElementById('scriptorium-pressure-select') as HTMLSelectElement | null;
+    const buildButton = document.getElementById('scriptorium-build-button') as HTMLButtonElement | null;
+    const resetButton = document.getElementById('scriptorium-reset-button') as HTMLButtonElement | null;
+    const copyButton = document.getElementById('scriptorium-copy-button') as HTMLButtonElement | null;
+    const copyStatus = document.getElementById('scriptorium-copy-status') as HTMLElement | null;
+
+    const objectDescription = document.getElementById('scriptorium-object-description') as HTMLElement | null;
+    const modeDescription = document.getElementById('scriptorium-mode-description') as HTMLElement | null;
+    const approachDescription = document.getElementById('scriptorium-approach-description') as HTMLElement | null;
+    const stageDescription = document.getElementById('scriptorium-stage-description') as HTMLElement | null;
+    const profileDescription = document.getElementById('scriptorium-profile-description') as HTMLElement | null;
+    const domainDescription = document.getElementById('scriptorium-domain-description') as HTMLElement | null;
+    const pressureDescription = document.getElementById('scriptorium-pressure-description') as HTMLElement | null;
+
+    const resultSource = document.getElementById('scriptorium-result-source') as HTMLElement | null;
+    const resultTitle = document.getElementById('scriptorium-result-title') as HTMLElement | null;
+    const resultMeta = document.getElementById('scriptorium-result-meta') as HTMLElement | null;
+    const resultSubmeta = document.getElementById('scriptorium-result-submeta') as HTMLElement | null;
+    const resultOverview = document.getElementById('scriptorium-result-overview') as HTMLElement | null;
+    const wordCount = document.getElementById('scriptorium-word-count') as HTMLElement | null;
+    const sectionCount = document.getElementById('scriptorium-section-count') as HTMLElement | null;
+    const quoteCount = document.getElementById('scriptorium-quote-count') as HTMLElement | null;
+    const referenceCount = document.getElementById('scriptorium-reference-count') as HTMLElement | null;
+    const readinessCall = document.getElementById('scriptorium-readiness-call') as HTMLElement | null;
+    const claimSentence = document.getElementById('scriptorium-claim-sentence') as HTMLElement | null;
+    const contributionList = document.getElementById('scriptorium-contribution-list') as HTMLElement | null;
+    const supportHeadline = document.getElementById('scriptorium-support-headline') as HTMLElement | null;
+    const supportList = document.getElementById('scriptorium-support-list') as HTMLElement | null;
+    const supportLevels = document.getElementById('scriptorium-support-levels') as HTMLElement | null;
+    const triangulationHeadline = document.getElementById('scriptorium-triangulation-headline') as HTMLElement | null;
+    const triangulationList = document.getElementById('scriptorium-triangulation-list') as HTMLElement | null;
+    const methodHeadline = document.getElementById('scriptorium-method-headline') as HTMLElement | null;
+    const methodList = document.getElementById('scriptorium-method-list') as HTMLElement | null;
+    const stakesHeadline = document.getElementById('scriptorium-stakes-headline') as HTMLElement | null;
+    const stakesList = document.getElementById('scriptorium-stakes-list') as HTMLElement | null;
+    const authorityHeadline = document.getElementById('scriptorium-authority-headline') as HTMLElement | null;
+    const authorityList = document.getElementById('scriptorium-authority-list') as HTMLElement | null;
+    const readerHeadline = document.getElementById('scriptorium-reader-headline') as HTMLElement | null;
+    const readerList = document.getElementById('scriptorium-reader-list') as HTMLElement | null;
+    const outlineList = document.getElementById('scriptorium-outline-list') as HTMLElement | null;
+    const quoteList = document.getElementById('scriptorium-quote-list') as HTMLElement | null;
+    const inlineCitationSummary = document.getElementById('scriptorium-inline-citation-summary') as HTMLElement | null;
+    const referenceList = document.getElementById('scriptorium-reference-list') as HTMLElement | null;
+    const sectionDiagnostics = document.getElementById('scriptorium-section-diagnostics') as HTMLElement | null;
+    const testsList = document.getElementById('scriptorium-tests-list') as HTMLElement | null;
+    const henryList = document.getElementById('scriptorium-henry-list') as HTMLElement | null;
+    const priorityList = document.getElementById('scriptorium-priority-list') as HTMLElement | null;
+    const plainHeadline = document.getElementById('scriptorium-plain-headline') as HTMLElement | null;
+    const plainList = document.getElementById('scriptorium-plain-list') as HTMLElement | null;
+    const controlsList = document.getElementById('scriptorium-controls-list') as HTMLElement | null;
+    const boundedConclusion = document.getElementById('scriptorium-bounded-conclusion') as HTMLElement | null;
+    const disclosure = document.getElementById('scriptorium-disclosure') as HTMLElement | null;
+    const exportField = document.getElementById('scriptorium-export') as HTMLTextAreaElement | null;
+
+    let sourceLabel = scriptoriumDefaultState.sourceLabel;
+
+    const collectState = () => ({
+      title: titleInput?.value || '',
+      object: objectSelect?.value || scriptoriumDefaultState.object,
+      mode: modeSelect?.value || scriptoriumDefaultState.mode,
+      profile: profileSelect?.value || scriptoriumDefaultState.profile,
+      domain: domainSelect?.value || scriptoriumDefaultState.domain,
+      pressure: pressureSelect?.value || scriptoriumDefaultState.pressure,
+      approach: approachSelect?.value || scriptoriumDefaultState.approach,
+      stage: stageSelect?.value || scriptoriumDefaultState.stage,
+      manuscript: manuscriptInput?.value || '',
+      quoteNotes: quoteNotesInput?.value || '',
+      references: referenceInput?.value || '',
+      sourceLabel: sourceLabel || (manuscriptInput?.value.trim() ? 'Pasted manuscript' : scriptoriumDefaultState.sourceLabel),
+    });
+
+    const setMarkupList = (element: HTMLElement | null, items: string[], emptyMessage: string) => {
+      if (!element) {
+        return;
+      }
+
+      if (!items.length) {
+        element.innerHTML = `<li>${escapeHtml(emptyMessage)}</li>`;
+        return;
+      }
+
+      element.innerHTML = items.map((item) => `<li>${item}</li>`).join('');
+    };
+
+    const extractDocxParagraphs = (xmlText: string) => {
+      const doc = new DOMParser().parseFromString(xmlText, 'application/xml');
+      const paragraphs = Array.from(doc.getElementsByTagName('*')).filter((node) => node.localName === 'p');
+
+      return paragraphs
+        .map((paragraph) => {
+          const pieces: string[] = [];
+          Array.from(paragraph.getElementsByTagName('*')).forEach((node) => {
+            if (node.localName === 't') {
+              pieces.push(node.textContent || '');
+            } else if (node.localName === 'tab') {
+              pieces.push('\t');
+            } else if (node.localName === 'br' || node.localName === 'cr') {
+              pieces.push('\n');
+            }
+          });
+          return pieces.join('').replace(/\n{2,}/g, '\n').trim();
+        })
+        .filter(Boolean);
+    };
+
+    const parseDocxFile = async (file: File) => {
+      const zip = await JSZip.loadAsync(await file.arrayBuffer());
+      const documentXml = await zip.file('word/document.xml')?.async('string');
+
+      if (!documentXml) {
+        throw new Error('The .docx file did not contain a readable document body.');
+      }
+
+      const parts = [extractDocxParagraphs(documentXml).join('\n\n')];
+
+      for (const extraPath of ['word/footnotes.xml', 'word/endnotes.xml']) {
+        const extraXml = await zip.file(extraPath)?.async('string');
+        if (extraXml) {
+          const extraParagraphs = extractDocxParagraphs(extraXml);
+          if (extraParagraphs.length) {
+            parts.push(extraParagraphs.join('\n\n'));
+          }
+        }
+      }
+
+      return parts.filter(Boolean).join('\n\n');
+    };
+
+    const updateDescriptions = (packet: ScriptoriumPacket) => {
+      if (objectDescription) {
+        objectDescription.textContent = packet.governingObject.description;
+      }
+      if (modeDescription) {
+        modeDescription.textContent = packet.outputMode.description;
+      }
+      if (approachDescription) {
+        approachDescription.textContent = packet.paperApproach.description;
+      }
+      if (stageDescription) {
+        stageDescription.textContent = packet.manuscriptStage.description;
+      }
+      if (profileDescription) {
+        profileDescription.textContent = packet.archiveProfile.description;
+      }
+      if (domainDescription) {
+        domainDescription.textContent = packet.consequenceDomain.emphasis;
+      }
+      if (pressureDescription) {
+        pressureDescription.textContent = `${packet.recursivePressure.description} ${packet.recursivePressure.riskNote}`;
+      }
+    };
+
+    const renderPacket = () => {
+      const packet = buildScriptoriumPacket(collectState());
+
+      updateDescriptions(packet);
+
+      if (resultSource) {
+        resultSource.textContent = packet.sourceLabel;
+      }
+      if (resultTitle) {
+        resultTitle.textContent = packet.topic;
+      }
+      if (resultMeta) {
+        resultMeta.textContent = `${packet.outputMode.label} · ${packet.paperApproach.label} · ${packet.manuscriptStage.label}`;
+      }
+      if (resultSubmeta) {
+        resultSubmeta.textContent = `${packet.governingObject.label} · ${packet.consequenceDomain.label} · ${packet.recursivePressure.label}`;
+      }
+      if (resultOverview) {
+        resultOverview.textContent = packet.overview;
+      }
+      if (wordCount) {
+        wordCount.textContent = String(packet.manuscriptStats.wordCount);
+      }
+      if (sectionCount) {
+        sectionCount.textContent = String(packet.manuscriptStats.sectionCount);
+      }
+      if (quoteCount) {
+        quoteCount.textContent = String(packet.manuscriptStats.quoteCount);
+      }
+      if (referenceCount) {
+        referenceCount.textContent = String(packet.manuscriptStats.referenceCount);
+      }
+      if (readinessCall) {
+        readinessCall.textContent = packet.readinessCall;
+      }
+      if (claimSentence) {
+        claimSentence.textContent = packet.claimSentence;
+      }
+      if (inlineCitationSummary) {
+        inlineCitationSummary.textContent = `${packet.manuscriptStats.inlineCitationCount} inline citation signal(s) detected.`;
+      }
+      if (boundedConclusion) {
+        boundedConclusion.textContent = packet.boundedConclusion;
+      }
+      if (disclosure) {
+        disclosure.textContent = packet.disclosure;
+      }
+      if (exportField) {
+        exportField.value = packet.exportMarkdown;
+      }
+      if (copyStatus) {
+        copyStatus.textContent = 'Ready for long-form export';
+      }
+
+      setMarkupList(
+        contributionList,
+        packet.contributionLadder.map(
+          (entry) => `<strong>${escapeHtml(entry.label)}:</strong> ${escapeHtml(entry.body)}`,
+        ),
+        'No contribution ladder yet.',
+      );
+
+      if (supportHeadline) {
+        supportHeadline.textContent = packet.supportCorroboration.headline;
+      }
+      setMarkupList(
+        supportList,
+        packet.supportCorroboration.bullets.map((entry) => escapeHtml(entry)),
+        'No corroboration readings yet.',
+      );
+      setMarkupList(
+        supportLevels,
+        packet.supportCorroboration.claimLevels.map(
+          (entry) => `<strong>${escapeHtml(entry.label)}:</strong> ${escapeHtml(entry.body)}`,
+        ),
+        'No claim levels yet.',
+      );
+
+      if (triangulationHeadline) {
+        triangulationHeadline.textContent = packet.recursiveTriangulation.headline;
+      }
+      setMarkupList(
+        triangulationList,
+        packet.recursiveTriangulation.steps.map(
+          (entry) => `<strong>${escapeHtml(entry.label)}:</strong> ${escapeHtml(entry.body)}`,
+        ),
+        'No triangulation gates yet.',
+      );
+
+      if (methodHeadline) {
+        methodHeadline.textContent = packet.methodFit.headline;
+      }
+      setMarkupList(
+        methodList,
+        packet.methodFit.bullets.map((entry) => escapeHtml(entry)),
+        'No method-fit notes yet.',
+      );
+
+      if (stakesHeadline) {
+        stakesHeadline.textContent = packet.institutionalStakes.headline;
+      }
+      setMarkupList(
+        stakesList,
+        packet.institutionalStakes.bullets.map((entry) => escapeHtml(entry)),
+        'No institutional-stakes notes yet.',
+      );
+
+      if (authorityHeadline) {
+        authorityHeadline.textContent = packet.authorityTravel.headline;
+      }
+      setMarkupList(
+        authorityList,
+        packet.authorityTravel.levels.map(
+          (entry) => `<strong>${escapeHtml(entry.label)}:</strong> ${escapeHtml(entry.body)}`,
+        ),
+        'No authority-travel notes yet.',
+      );
+
+      if (readerHeadline) {
+        readerHeadline.textContent = packet.readerTraction.headline;
+      }
+      setMarkupList(
+        readerList,
+        packet.readerTraction.bullets.map((entry) => escapeHtml(entry)),
+        'No reader-traction notes yet.',
+      );
+
+      setMarkupList(
+        outlineList,
+        packet.outline.map(
+          (entry) =>
+            `<strong>[${escapeHtml(entry.status === 'present' ? 'Present' : 'Needed')}]</strong> ${escapeHtml(entry.label)}: ${escapeHtml(entry.note)}`,
+        ),
+        'No outline generated yet.',
+      );
+
+      setMarkupList(
+        quoteList,
+        packet.quoteEntries.map((entry) => escapeHtml(entry)),
+        'No quoted passages detected yet.',
+      );
+
+      setMarkupList(
+        referenceList,
+        packet.referenceEntries.map((entry) => escapeHtml(entry)),
+        'No reference entries detected yet.',
+      );
+
+      if (sectionDiagnostics) {
+        sectionDiagnostics.innerHTML = packet.sectionDiagnostics.length
+          ? packet.sectionDiagnostics
+              .map(
+                (section) => `
+                  <article class="scriptorium-section-card">
+                    <p class="scriptorium-control-heading">${escapeHtml(section.label)}</p>
+                    <p class="mt-2 text-xs uppercase tracking-[0.18em] text-slate-400">${escapeHtml(String(section.wordCount))} words</p>
+                    <p class="mt-3 text-sm leading-6 text-slate-200"><strong>Function:</strong> ${escapeHtml(section.function)}</p>
+                    <p class="mt-2 text-sm leading-6 text-slate-200"><strong>Evidence signal:</strong> ${escapeHtml(section.evidenceSignal)}</p>
+                    <p class="mt-2 text-sm leading-6 text-slate-200"><strong>Pressure:</strong> ${escapeHtml(section.pressure)}</p>
+                    <p class="mt-2 text-sm leading-6 text-slate-200"><strong>Revision move:</strong> ${escapeHtml(section.revision)}</p>
+                  </article>
+                `,
+              )
+              .join('')
+          : `
+              <article class="scriptorium-section-card">
+                <p class="scriptorium-control-heading">No manuscript sections yet</p>
+                <p class="mt-2 text-sm leading-6 text-slate-200">
+                  Paste or upload a manuscript to generate section-level pressure notes and revision moves.
+                </p>
+              </article>
+            `;
+      }
+
+      setMarkupList(
+        testsList,
+        packet.tests.map(
+          (test) =>
+            `<strong>${escapeHtml(test.label)} [${escapeHtml(test.status)}]:</strong> ${escapeHtml(test.reading)}`,
+        ),
+        'No recursive tests available yet.',
+      );
+
+      if (henryList) {
+        henryList.innerHTML = packet.henryReviews
+          .map(
+            (review) => `
+              <article class="scriptorium-review-card" data-severity="${escapeHtml(review.severity)}">
+                <div class="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <p class="scriptorium-control-heading">${escapeHtml(review.label)}</p>
+                    <p class="mt-2 text-sm leading-6 text-slate-300">${escapeHtml(review.purpose)}</p>
+                  </div>
+                  <span class="scriptorium-status-pill">${escapeHtml(review.severity)}</span>
+                </div>
+                <ul class="mt-4 space-y-2 text-sm leading-6 text-slate-200">
+                  ${review.findings.map((finding) => `<li>${escapeHtml(finding)}</li>`).join('')}
+                </ul>
+                <p class="mt-4 text-xs uppercase tracking-[0.18em] text-slate-400">Revision strategies</p>
+                <ul class="mt-2 space-y-2 text-sm leading-6 text-slate-200">
+                  ${review.strategies.map((strategy) => `<li>${escapeHtml(strategy)}</li>`).join('')}
+                </ul>
+              </article>
+            `,
+          )
+          .join('');
+      }
+
+      setMarkupList(
+        priorityList,
+        packet.revisionPriorities.map((priority) => escapeHtml(priority)),
+        'No priority revisions yet.',
+      );
+
+      if (plainHeadline) {
+        plainHeadline.textContent = packet.plainLanguagePlan.headline;
+      }
+      setMarkupList(
+        plainList,
+        packet.plainLanguagePlan.steps.map((entry) => escapeHtml(entry)),
+        'No plain-language steps yet.',
+      );
+
+      if (controlsList) {
+        controlsList.innerHTML = packet.controls
+          .map(
+            (control) => `
+              <div class="scriptorium-control-output">
+                <p class="scriptorium-control-heading">${escapeHtml(control.heading)}</p>
+                <p class="mt-2 text-sm leading-6 text-slate-200"><strong>Finding:</strong> ${escapeHtml(control.finding)}</p>
+                <p class="mt-1 text-sm leading-6 text-slate-200"><strong>Control:</strong> ${escapeHtml(control.control)}</p>
+                <p class="mt-1 text-sm leading-6 text-slate-200"><strong>Owner:</strong> ${escapeHtml(control.owner)}</p>
+                <p class="mt-1 text-sm leading-6 text-slate-200"><strong>Evidence:</strong> ${escapeHtml(control.evidence)}</p>
+                <p class="mt-1 text-sm leading-6 text-slate-200"><strong>Review interval:</strong> ${escapeHtml(control.review)}</p>
+              </div>
+            `,
+          )
+          .join('');
+      }
+    };
+
+    const handleFileChange = async () => {
+      const file = fileInput?.files?.[0];
+      if (!file) {
+        return;
+      }
+
+      if (fileStatus) {
+        fileStatus.textContent = `Loading ${file.name}...`;
+      }
+
+      try {
+        const lowerName = file.name.toLowerCase();
+        let text = '';
+
+        if (lowerName.endsWith('.doc')) {
+          throw new Error('Older .doc files are not parsed directly here yet. Please resave the file as .docx and upload again.');
+        }
+
+        if (lowerName.endsWith('.docx')) {
+          text = await parseDocxFile(file);
+        } else {
+          text = await file.text();
+        }
+
+        if (manuscriptInput) {
+          manuscriptInput.value = text;
+        }
+
+        sourceLabel = file.name;
+
+        if (titleInput && (!titleInput.value.trim() || titleInput.value === scriptoriumDefaultState.title)) {
+          titleInput.value = file.name.replace(/\.[^.]+$/, '');
+        }
+
+        if (fileStatus) {
+          const words = text.match(/[\p{L}\p{N}]+(?:['’-][\p{L}\p{N}]+)*/gu)?.length ?? 0;
+          fileStatus.textContent = `Loaded ${file.name}. Detected approximately ${words.toLocaleString()} words locally in the browser.`;
+        }
+
+        renderPacket();
+      } catch (error) {
+        if (fileStatus) {
+          fileStatus.textContent = error instanceof Error ? error.message : 'File load failed.';
+        }
+      }
+    };
+
+    buildButton?.addEventListener('click', renderPacket);
+
+    [objectSelect, modeSelect, approachSelect, stageSelect, profileSelect, domainSelect, pressureSelect].forEach((element) => {
+      element?.addEventListener('change', renderPacket);
+    });
+
+    fileInput?.addEventListener('change', handleFileChange);
+
+    resetButton?.addEventListener('click', () => {
+      if (titleInput) {
+        titleInput.value = scriptoriumDefaultState.title;
+      }
+      if (manuscriptInput) {
+        manuscriptInput.value = scriptoriumDefaultState.manuscript;
+      }
+      if (quoteNotesInput) {
+        quoteNotesInput.value = scriptoriumDefaultState.quoteNotes;
+      }
+      if (referenceInput) {
+        referenceInput.value = scriptoriumDefaultState.references;
+      }
+      if (objectSelect) {
+        objectSelect.value = scriptoriumDefaultState.object;
+      }
+      if (modeSelect) {
+        modeSelect.value = scriptoriumDefaultState.mode;
+      }
+      if (approachSelect) {
+        approachSelect.value = scriptoriumDefaultState.approach;
+      }
+      if (stageSelect) {
+        stageSelect.value = scriptoriumDefaultState.stage;
+      }
+      if (profileSelect) {
+        profileSelect.value = scriptoriumDefaultState.profile;
+      }
+      if (domainSelect) {
+        domainSelect.value = scriptoriumDefaultState.domain;
+      }
+      if (pressureSelect) {
+        pressureSelect.value = scriptoriumDefaultState.pressure;
+      }
+      if (fileInput) {
+        fileInput.value = '';
+      }
+      sourceLabel = scriptoriumDefaultState.sourceLabel;
+      if (fileStatus) {
+        fileStatus.innerHTML = 'No file loaded yet. Older <code>.doc</code> files should be resaved as <code>.docx</code> before upload.';
+      }
+      renderPacket();
+    });
+
+    copyButton?.addEventListener('click', async () => {
+      if (!exportField) {
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(exportField.value);
+        if (copyStatus) {
+          copyStatus.textContent = 'Copied';
+        }
+      } catch {
+        if (copyStatus) {
+          copyStatus.textContent = 'Copy failed';
+        }
+      }
+    });
+
+    renderPacket();
+  </script>
+
+  <style>
+    .scriptorium-control-panel,
+    .scriptorium-result-panel {
+      padding-top: 1.55rem;
+    }
+
+    .scriptorium-input-card,
+    .scriptorium-mini-card,
+    .scriptorium-reading-card,
+    .scriptorium-guidance-strip,
+    .scriptorium-control-output,
+    .scriptorium-export-shell,
+    .scriptorium-metric-card,
+    .scriptorium-review-card,
+    .scriptorium-section-card {
+      border: 1px solid rgba(35, 27, 53, 0.12);
+      background: linear-gradient(180deg, rgba(251, 246, 239, 0.72), rgba(237, 238, 244, 0.54));
+      box-shadow: 0 18px 34px rgba(17, 23, 38, 0.06);
+    }
+
+    .scriptorium-input-card,
+    .scriptorium-mini-card,
+    .scriptorium-reading-card,
+    .scriptorium-guidance-strip,
+    .scriptorium-export-shell {
+      border-radius: 1rem;
+      padding: 1rem;
+    }
+
+    .scriptorium-control-output,
+    .scriptorium-metric-card,
+    .scriptorium-review-card,
+    .scriptorium-section-card {
+      border-radius: 0.95rem;
+      padding: 0.95rem 1rem;
+    }
+
+    .scriptorium-label,
+    .scriptorium-mini-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+    }
+
+    .scriptorium-label::before,
+    .scriptorium-mini-label::before {
+      content: "";
+      width: 0.55rem;
+      height: 0.55rem;
+      transform: rotate(45deg);
+      border: 1px solid rgba(70, 104, 154, 0.42);
+      background: rgba(95, 95, 178, 0.1);
+    }
+
+    .scriptorium-input,
+    .scriptorium-select,
+    .scriptorium-export,
+    .scriptorium-file-input {
+      width: 100%;
+      border: 1px solid rgba(35, 27, 53, 0.14);
+      border-radius: 0.9rem;
+      background: rgba(255, 255, 255, 0.82);
+      color: var(--color-moon);
+      font: inherit;
+    }
+
+    .scriptorium-input,
+    .scriptorium-select,
+    .scriptorium-file-input {
+      margin-top: 0.8rem;
+      min-height: 3rem;
+      padding: 0.85rem 0.95rem;
+    }
+
+    .scriptorium-textarea {
+      min-height: 18rem;
+      resize: vertical;
+    }
+
+    .scriptorium-small-textarea {
+      min-height: 10rem;
+      resize: vertical;
+    }
+
+    .scriptorium-export {
+      margin-top: 0.9rem;
+      min-height: 24rem;
+      padding: 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      line-height: 1.65;
+      resize: vertical;
+    }
+
+    .scriptorium-input:focus,
+    .scriptorium-select:focus,
+    .scriptorium-export:focus,
+    .scriptorium-file-input:focus {
+      outline: 0;
+      box-shadow: 0 0 0 4px rgba(95, 95, 178, 0.14);
+    }
+
+    .scriptorium-metric-grid,
+    .scriptorium-review-grid,
+    .scriptorium-section-grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .scriptorium-metric-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .scriptorium-review-grid,
+    .scriptorium-section-grid {
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+
+    .scriptorium-metric-value {
+      margin-top: 0.65rem;
+      display: flex;
+      align-items: baseline;
+      gap: 0.35rem;
+      font-family: var(--font-display);
+      font-size: clamp(1.75rem, 2.8vw, 2.35rem);
+      color: var(--color-moon);
+      letter-spacing: -0.04em;
+    }
+
+    .scriptorium-metric-value small {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(48, 55, 73, 0.68);
+    }
+
+    .scriptorium-seal-orbit {
+      display: grid;
+      place-items: center;
+      width: 5.6rem;
+      height: 5.6rem;
+      border-radius: 999px;
+      border: 1px solid rgba(95, 95, 178, 0.16);
+      background:
+        radial-gradient(circle, rgba(95, 95, 178, 0.12) 0%, rgba(95, 95, 178, 0.02) 58%, rgba(95, 95, 178, 0) 78%),
+        linear-gradient(135deg, rgba(34, 51, 79, 0.06), rgba(95, 95, 178, 0.1));
+    }
+
+    .scriptorium-seal-glyph {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      color: var(--color-moon);
+      letter-spacing: -0.04em;
+    }
+
+    .scriptorium-control-heading {
+      font-size: 0.94rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--color-moon);
+    }
+
+    .scriptorium-status-pill {
+      border-radius: 999px;
+      padding: 0.35rem 0.6rem;
+      background: rgba(35, 27, 53, 0.08);
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+    }
+
+    .scriptorium-review-card[data-severity="promising"] {
+      border-color: rgba(70, 104, 154, 0.18);
+    }
+
+    .scriptorium-review-card[data-severity="repair"] {
+      border-color: rgba(173, 117, 38, 0.24);
+    }
+
+    .scriptorium-review-card[data-severity="blocker"] {
+      border-color: rgba(168, 54, 54, 0.28);
+    }
+
+    @media (max-width: 768px) {
+      .scriptorium-metric-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .scriptorium-textarea {
+        min-height: 15rem;
+      }
+
+      .scriptorium-export {
+        min-height: 18rem;
+      }
+    }
+  </style>
+</div>

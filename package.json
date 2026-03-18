@@ -25,6 +25,7 @@
     "@fontsource/lato": "^5.2.7",
     "@tailwindcss/vite": "^4.2.1",
     "astro": "^6.0.3",
+    "jszip": "^3.10.1",
     "tailwindcss": "^4.2.1"
   },
   "devDependencies": {

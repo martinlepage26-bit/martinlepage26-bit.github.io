@@ -1,0 +1,279 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionIntro from '../../components/SectionIntro.astro';
+import ScriptoriumWorkbench from '../../components/scriptorium/ScriptoriumWorkbench.astro';
+import {
+  scriptoriumExecutionLayers,
+  scriptoriumFieldGuide,
+  scriptoriumLineage,
+  scriptoriumMethodCommitments,
+  scriptoriumPracticalTips,
+  scriptoriumSurfaces,
+  scriptoriumUsageSteps,
+} from '../../data/scriptorium';
+import { buildCanonical } from '../../lib/seo';
+
+const pageDescription =
+  'Scriptorium is a local-first paper builder that applies Martin Lepage’s deterministic recursive method to topics, archives, and governance writing packets.';
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'Scriptorium',
+  description: pageDescription,
+  applicationCategory: 'ResearchApplication',
+  url: buildCanonical('/scriptorium/'),
+  creator: {
+    '@type': 'Person',
+    name: 'Martin Lepage',
+  },
+};
+---
+
+<BaseLayout
+  title="Scriptorium"
+  description={pageDescription}
+  image="/social/og-scriptorium.svg"
+  canonical="/scriptorium/"
+  structuredData={structuredData}
+>
+  <section class="relative overflow-hidden border-b border-[rgba(36,27,23,0.12)]">
+    <div class="section-shell relative scriptorium-hero-shell">
+      <div class="scriptorium-band scriptorium-band-one"></div>
+      <div class="scriptorium-band scriptorium-band-two"></div>
+      <div class="grid gap-10 lg:grid-cols-[minmax(0,1.08fr)_minmax(320px,0.92fr)] lg:items-end">
+        <div class="relative z-10 max-w-4xl">
+          <p class="eyebrow">Scriptorium</p>
+          <h1 class="mt-5">A paper builder app governed by the deterministic recursive method.</h1>
+          <p class="mt-6 max-w-3xl text-lg leading-8 text-slate-100 md:text-xl">
+            Scriptorium turns a topic, archive, or governance problem into a bounded writing packet. It starts from
+            artifact classes, evidence hierarchy, recursive tests, and interface-bound controls before any polished
+            prose is allowed to harden into authority.
+          </p>
+          <div class="mt-8 flex flex-wrap gap-3">
+            <a class="button-primary" href="#scriptorium-builder">Open the builder</a>
+            <a class="button-secondary" href="#scriptorium-method">Read the method</a>
+            <a class="button-secondary" href="/projects/scriptorium/">Open the project record</a>
+          </div>
+        </div>
+
+        <div class="veil-panel relative z-10 scriptorium-hero-card">
+          <p class="eyebrow">Public boundary</p>
+          <div class="mt-5 grid gap-4">
+            <div class="scriptorium-hero-mini-card">
+              <p class="scriptorium-hero-label">Live now</p>
+              <p class="mt-2 text-base leading-7 text-slate-200">
+                A deterministic browser-side builder that generates recursive analysis packets, controls, and disclosure
+                language from stable method rules.
+              </p>
+            </div>
+            <div class="scriptorium-hero-mini-card">
+              <p class="scriptorium-hero-label">Lineage</p>
+              <p class="mt-2 text-base leading-7 text-slate-200">
+                The deeper local execution layer is being adapted from an MIT-licensed AutoResearchClaw base, then
+                reworked into Martin&apos;s own Scriptorium framing.
+              </p>
+            </div>
+            <div class="scriptorium-hero-mini-card">
+              <p class="scriptorium-hero-label">Claim boundary</p>
+              <p class="mt-2 text-base leading-7 text-slate-200">
+                The public site does not claim autonomous publication-ready truth. It exposes a bounded method surface
+                and keeps heavier local-first automation explicitly under development.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-shell border-y border-[rgba(36,27,23,0.08)] bg-[rgba(251,246,239,0.28)]">
+    <SectionIntro
+      eyebrow="Scriptorium surfaces"
+      title="Use the app through bounded public surfaces."
+      description="The web surface stays clear about what it does today, what method governs it, and where the public project record sits."
+    />
+
+    <div class="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+      {scriptoriumSurfaces.map((item) => (
+        <article class="veil-panel h-full">
+          <p class="eyebrow">{item.eyebrow}</p>
+          <h2 class="mt-4 text-[1.08rem] md:text-[1.2rem]">{item.title}</h2>
+          <p class="mt-4 text-base leading-7 text-slate-200">{item.description}</p>
+          <div class="mt-5">
+            <a class="link-inline" href={item.href}>{item.cta}</a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="section-shell">
+    <SectionIntro
+      eyebrow="How To Use It"
+      title="Simple steps for using the builder on the website."
+      description="The public app is meant to be straightforward: describe the packet, choose the right method frame, build the result, then copy the markdown into your working environment."
+    />
+
+    <div class="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+      {scriptoriumUsageSteps.map((item) => (
+        <article class="veil-panel h-full">
+          <h2 class="text-[1.08rem] md:text-[1.18rem]">{item.label}</h2>
+          <p class="mt-4 text-base leading-7 text-slate-200">{item.body}</p>
+        </article>
+      ))}
+    </div>
+
+    <div class="mt-12 grid gap-8 xl:grid-cols-[minmax(0,1.15fr)_minmax(320px,0.85fr)]">
+      <div>
+        <p class="eyebrow">Field guide</p>
+        <div class="mt-6 grid gap-6 md:grid-cols-2">
+          {scriptoriumFieldGuide.map((item) => (
+            <article class="veil-panel h-full">
+              <h2 class="text-[1.02rem] md:text-[1.12rem]">{item.title}</h2>
+              <p class="mt-4 text-base leading-7 text-slate-200">{item.body}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+
+      <aside class="veil-panel">
+        <p class="eyebrow">Practical tips</p>
+        <h2 class="mt-4 text-[1.18rem] md:text-[1.3rem]">A good first pass stays narrow and reviewable.</h2>
+        <ul class="mt-6 ml-5 list-disc space-y-3 text-base leading-7 text-slate-200">
+          {scriptoriumPracticalTips.map((item) => (
+            <li>{item}</li>
+          ))}
+        </ul>
+      </aside>
+    </div>
+  </section>
+
+  <section id="scriptorium-builder" class="section-shell">
+    <SectionIntro
+      eyebrow="Builder"
+      title="Generate the packet before the prose."
+      description="Choose the governing object, archive profile, consequence domain, and recursive pressure. Scriptorium then renders a deterministic packet scaffold with method tests, controls, and exportable markdown."
+    />
+
+    <div class="mt-12">
+      <ScriptoriumWorkbench />
+    </div>
+  </section>
+
+  <section id="scriptorium-method" class="section-shell border-y border-[rgba(36,27,23,0.08)] bg-[rgba(251,246,239,0.28)]">
+    <SectionIntro
+      eyebrow="Method commitments"
+      title="The method stays visible in the interface."
+      description="Scriptorium adapts to the deterministic recursive method by keeping artifact hierarchy, interruption points, and stop rules visible instead of burying them inside a generic assistant flow."
+    />
+
+    <div class="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+      {scriptoriumMethodCommitments.map((item) => (
+        <article class="veil-panel h-full">
+          <h2 class="text-[1.08rem] md:text-[1.18rem]">{item.title}</h2>
+          <p class="mt-4 text-base leading-7 text-slate-200">{item.body}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section id="scriptorium-outputs" class="section-shell">
+    <SectionIntro
+      eyebrow="Execution layers"
+      title="What the live Scriptorium surface actually produces."
+      description="The site stays honest about the current layer: deterministic packet generation on the public web surface, with deeper local-first automation treated as a separate execution layer."
+    />
+
+    <div class="mt-12 grid gap-6 lg:grid-cols-4">
+      {scriptoriumExecutionLayers.map((item) => (
+        <article class="veil-panel h-full">
+          <p class="eyebrow">{item.eyebrow}</p>
+          <h2 class="mt-4 text-[1.08rem] md:text-[1.2rem]">{item.title}</h2>
+          <p class="mt-4 text-base leading-7 text-slate-200">{item.body}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="section-shell border-y border-[rgba(36,27,23,0.08)] bg-[rgba(251,246,239,0.28)]">
+    <SectionIntro
+      eyebrow="Lineage and boundary"
+      title="Made our own without hiding its lineage."
+      description="The public framing centers Martin’s method, while the technical lineage remains transparent and properly bounded."
+    />
+
+    <div class="mt-12 grid gap-6 lg:grid-cols-3">
+      {scriptoriumLineage.map((item) => (
+        <article class="veil-panel h-full">
+          <h2 class="text-[1.08rem] md:text-[1.18rem]">{item.title}</h2>
+          <p class="mt-4 text-base leading-7 text-slate-200">{item.body}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <style>
+    .scriptorium-hero-shell {
+      position: relative;
+      isolation: isolate;
+    }
+
+    .scriptorium-band {
+      position: absolute;
+      pointer-events: none;
+      border-radius: 999px;
+      border: 1px solid rgba(95, 95, 178, 0.14);
+    }
+
+    .scriptorium-band-one {
+      width: min(82vw, 900px);
+      height: 18rem;
+      top: -4rem;
+      right: -18rem;
+      transform: rotate(-10deg);
+      background: linear-gradient(90deg, rgba(95, 95, 178, 0.08), rgba(70, 104, 154, 0));
+    }
+
+    .scriptorium-band-two {
+      width: min(50vw, 420px);
+      height: min(50vw, 420px);
+      left: -7rem;
+      bottom: -5rem;
+      background: radial-gradient(circle, rgba(34, 51, 79, 0.12) 0%, rgba(34, 51, 79, 0) 60%);
+    }
+
+    .scriptorium-hero-card {
+      padding-top: 1.55rem;
+    }
+
+    .scriptorium-hero-mini-card {
+      border-radius: 1rem;
+      border: 1px solid rgba(35, 27, 53, 0.12);
+      background: linear-gradient(180deg, rgba(251, 246, 239, 0.72), rgba(237, 238, 244, 0.54));
+      padding: 1rem;
+      box-shadow: 0 18px 34px rgba(17, 23, 38, 0.06);
+    }
+
+    .scriptorium-hero-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+    }
+
+    .scriptorium-hero-label::before {
+      content: "";
+      width: 0.55rem;
+      height: 0.55rem;
+      transform: rotate(45deg);
+      border: 1px solid rgba(70, 104, 154, 0.42);
+      background: rgba(95, 95, 178, 0.1);
+    }
+  </style>
+</BaseLayout>
