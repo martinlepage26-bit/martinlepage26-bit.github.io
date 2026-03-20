@@ -25,7 +25,13 @@ const structuredData = buildArticleSchema({
 });
 ---
 
-<BaseLayout title={writing.data.title} description={writing.data.description} canonical={canonical} structuredData={structuredData}>
+<BaseLayout
+  title={writing.data.title}
+  description={writing.data.description}
+  canonical={canonical}
+  ogType="article"
+  structuredData={structuredData}
+>
   <EntryHero
     eyebrow="Writings"
     title={writing.data.title}
@@ -37,15 +43,15 @@ const structuredData = buildArticleSchema({
     links={writing.data.externalUrl ? [{ label: writing.data.externalLabel ?? 'External link', url: writing.data.externalUrl }] : []}
   />
 
-  <article class="section-shell grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
-    <div class="reading-flow">
+  <article class="section-shell reading-layout">
+    <div class="reading-main reading-flow">
       <Content />
     </div>
 
-    <aside class="space-y-6">
+    <aside class="reading-sidebar">
       <section class="veil-panel">
         <p class="eyebrow">Reading time</p>
-        <p class="mt-4 text-base text-slate-200">{minutes} minutes</p>
+        <p class="mt-4 text-[1.02rem] leading-7 text-slate-200">{minutes} minutes</p>
       </section>
       {writing.data.externalUrl && (
         <section class="veil-panel">

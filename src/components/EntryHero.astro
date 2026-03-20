@@ -24,12 +24,12 @@ const { eyebrow, title, description, meta, backHref, backLabel, tags = [], links
 <section class="relative overflow-hidden border-b border-[rgba(36,27,23,0.12)]">
   <BackgroundTreatment variant="panel" />
   <div class="section-shell relative">
-    <a class="link-inline" href={backHref}>&larr; {backLabel}</a>
-    <div class="mt-5 max-w-3xl">
+    <div class="hero-copy-panel mt-2 max-w-4xl">
+      <a class="link-inline inline-flex" href={backHref}>&larr; {backLabel}</a>
       <p class="eyebrow">{eyebrow}</p>
-      <h1 class="mt-4 max-w-3xl text-[1.74rem] leading-tight md:text-[2rem]">{title}</h1>
-      <p class="mt-4 max-w-2xl text-base leading-7 text-slate-100">{description}</p>
-      <p class="mt-5 text-sm uppercase tracking-[0.14em] text-slate-400">{meta}</p>
+      <h1 class="mt-4 max-w-3xl text-[1.9rem] md:text-[2.2rem]">{title}</h1>
+      <p class="mt-4 max-w-[62ch] text-[1.05rem] leading-8 text-slate-100 md:text-[1.12rem]">{description}</p>
+      <p class="mt-5 text-[0.78rem] uppercase tracking-[0.12em] text-slate-400">{meta}</p>
       {tags.length > 0 && <div class="mt-6"><TagList tags={tags} /></div>}
       {
         links.length > 0 && (

@@ -3,29 +3,29 @@ import { heroFacts } from '../data/site';
 import BackgroundTreatment from './BackgroundTreatment.astro';
 ---
 
-<section class="relative overflow-hidden border-b border-[rgba(36,27,23,0.12)]">
+<section class="relative overflow-hidden border-b border-[rgba(17,23,38,0.08)]">
   <BackgroundTreatment variant="hero" />
-  <div class="section-shell relative grid gap-8 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start">
-    <div class="max-w-4xl">
-      <p class="eyebrow">Scholarship, strategy, and systems</p>
-      <h1 class="mt-5 max-w-3xl text-[1.95rem] leading-[0.98] md:text-[2.8rem]">
-        How power gets made, documented, and lived.
+  <div class="section-shell relative grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_22rem] lg:items-start">
+    <div class="hero-copy-panel max-w-4xl">
+      <p class="eyebrow">Martin Lepage</p>
+      <h1 class="mt-5 max-w-3xl text-[2.1rem] leading-[0.96] md:text-[3.25rem]">
+        AI governance strategy, public writing, and a selective archive.
       </h1>
-      <p class="mt-6 max-w-2xl text-[1.08rem] leading-8 text-slate-100">
-        Martin Lepage is a Montreal-based scholar, writer, and AI governance strategist working across governance,
-        culture, and public writing.
+      <p class="mt-6 max-w-3xl text-[1.08rem] leading-8 text-slate-100">
+        Martin Lepage builds governance documents, review structures, and explanatory writing for AI-related work,
+        with a sustained focus on legitimacy, documentation, and public intelligibility.
       </p>
-      <p class="mt-5 max-w-2xl text-base text-slate-300">
-        Across advisory work, research, and essays, the main question is simple: how does power become believable,
-        and what do people experience once it becomes real?
+      <p class="mt-5 max-w-3xl text-base text-slate-200">
+        The site brings governance practice, publications, talks, writing, and direct contact into one readable public
+        record.
       </p>
       <div class="mt-8 flex flex-wrap gap-3">
-        <a class="button-primary" href="/projects/">View governance work</a>
-        <a class="button-secondary" href="/papers/">Read publications</a>
+        <a class="button-primary" href="/governance/">Explore governance work</a>
+        <a class="button-secondary" href="/resume/">View resume and CV</a>
       </div>
       <ul class="bullet-links mt-6">
-        <li><a class="link-inline" href="/resume/">View resume</a></li>
-        <li><a class="link-inline" href="/contact/">Contact</a></li>
+        <li><a class="link-inline" href="/contact/">Get in touch</a></li>
+        <li><a class="link-inline" href="/papers/">Browse publications</a></li>
       </ul>
       <ul class="bullet-facts mt-8">
         {heroFacts.map((fact) => (
@@ -34,21 +34,21 @@ import BackgroundTreatment from './BackgroundTreatment.astro';
       </ul>
     </div>
 
-    <aside class="veil-panel space-y-4 lg:mt-10 lg:pl-2">
+    <aside class="veil-panel space-y-4 lg:mt-10">
       <div>
         <p class="eyebrow">Start here</p>
-        <h2 class="mt-4 text-[1.2rem] md:text-[1.36rem]">Governance first, with research and writing alongside it.</h2>
+        <h2 class="mt-4 text-[1.22rem] md:text-[1.38rem]">Choose the path that matches why you arrived.</h2>
         <p class="mt-4 text-base leading-7 text-slate-200">
-          Governance teams usually start with projects, the resume, or contact. Academic and editorial readers can move
-          directly into publications, writings, and talks.
+          Governance readers usually start with the governance page or contact. The other routes are for publications,
+          writing, talks, and first-time orientation.
         </p>
       </div>
 
-      <ul class="bullet-links">
-        <li><a class="link-inline" href="/projects/">Governance projects and practice</a></li>
-        <li><a class="link-inline" href="/resume/">Resume and CV</a></li>
-        <li><a class="link-inline" href="/papers/">Publications and talks</a></li>
-        <li><a class="link-inline" href="/writing/">Writings and books</a></li>
+      <ul class="space-y-3">
+        <li class="border-t border-[rgba(17,23,38,0.08)] pt-3 text-base text-slate-200">Governance and consulting</li>
+        <li class="border-t border-[rgba(17,23,38,0.08)] pt-3 text-base text-slate-200">Academic readers</li>
+        <li class="border-t border-[rgba(17,23,38,0.08)] pt-3 text-base text-slate-200">Editors, media, and speaking organizers</li>
+        <li class="border-t border-[rgba(17,23,38,0.08)] pt-3 text-base text-slate-200">General readers and first-time visitors</li>
       </ul>
     </aside>
   </div>

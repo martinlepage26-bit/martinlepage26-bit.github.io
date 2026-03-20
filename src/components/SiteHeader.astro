@@ -8,105 +8,47 @@ const isActivePath = (href: string) => {
   return cleanHref === '/' ? pathname === '/' : pathname === cleanHref || pathname.startsWith(cleanHref);
 };
 
-const primaryNavItems = [
-  { href: '/', label: 'Home' },
-  { href: '/about/', label: 'About' },
-  { href: '/resume/', label: 'Resume' },
-  { href: '/contact/', label: 'Contact' },
-].map(({ href, label }) => ({
-  href,
-  label,
-  isActive: isActivePath(href),
-}));
-
-const practiceLinks = [
-  { href: '/writing/#books', label: 'Books' },
-  { href: '/projects/', label: 'Projects' },
+const navItems = [
+  { href: '/governance/', label: 'Governance' },
+  { href: '/papers/', label: 'Publications' },
   { href: '/writing/', label: 'Writings' },
   { href: '/talks/', label: 'Talks' },
-  { href: '/papers/', label: 'Publications' },
+  { href: '/projects/', label: 'Projects' },
+  { href: '/about/', label: 'About' },
 ].map(({ href, label }) => ({
   href,
   label,
   isActive: isActivePath(href),
 }));
 
-const isPracticesActive = practiceLinks.some((item) => item.isActive);
+const utilityItems = [{ href: '/contact/', label: 'Contact', isActive: isActivePath('/contact/') }];
 ---
 
-<header class="site-header sticky top-0 z-40 border-b border-[rgba(17,23,38,0.12)] bg-[rgba(241,239,237,0.9)] backdrop-blur-[18px]">
-  <div class="shell flex items-center justify-between gap-4 py-4">
-    <a class="group inline-flex items-center gap-3 text-sm font-semibold text-moon" href="/">
+<header class="site-header sticky top-0 z-40 border-b border-[rgba(17,23,38,0.08)] bg-[rgba(246,241,233,0.9)] backdrop-blur-[16px]">
+  <div class="shell flex items-center justify-between gap-6 py-4">
+    <a class="group inline-flex min-w-0 items-center gap-3 text-sm font-semibold text-moon" href="/">
       <span class="brand-monogram relative flex items-center justify-center">
         <img src="/assets/ml-signature-monogram.svg" alt="" class="h-9 w-auto object-contain md:h-10" />
       </span>
-      <span class="flex flex-col leading-tight">
-        <span class="font-display text-[1.12rem] tracking-[0.01em] text-moon">Martin Lepage</span>
-        <span class="hidden text-[0.68rem] font-medium uppercase tracking-[0.12em] text-slate-500 sm:block">{siteMeta.jobTitle}</span>
+      <span class="flex min-w-0 flex-col leading-tight">
+        <span class="truncate font-display text-[1.08rem] tracking-[0.01em] text-moon">Martin Lepage</span>
+        <span class="hidden truncate text-[0.69rem] font-medium uppercase tracking-[0.14em] text-slate-300 2xl:block">
+          {siteMeta.jobTitle}
+        </span>
       </span>
     </a>
 
-    <nav aria-label="Primary" class="hidden items-center justify-end gap-4 md:flex md:gap-5">
+    <nav aria-label="Primary" class="hidden min-w-0 items-center gap-3 xl:flex 2xl:gap-4">
       {
-        primaryNavItems.slice(0, 2).map(({ href, isActive, label }) => (
+        navItems.map(({ href, isActive, label }) => (
           <a
             href={href}
             aria-current={isActive ? 'page' : undefined}
             class:list={[
-              'border-b-2 px-0.5 py-2 transition',
+              'border-b-2 px-0.5 py-2 text-[0.72rem] font-semibold uppercase tracking-[0.14em] transition',
               isActive
-                ? 'border-accent text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-accent'
-                : 'border-transparent text-[0.72rem] font-semibold uppercase tracking-[0.12em] text-slate-400 hover:border-[rgba(70,104,154,0.22)] hover:text-moon',
-            ]}
-          >
-            {label}
-          </a>
-        ))
-      }
-
-      <details class="group/practices relative">
-        <summary
-          class:list={[
-            'flex list-none cursor-pointer items-center gap-2 border-b-2 px-0.5 py-2 transition [&::-webkit-details-marker]:hidden',
-            isPracticesActive
-              ? 'border-accent text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-accent'
-              : 'border-transparent text-[0.72rem] font-semibold uppercase tracking-[0.12em] text-slate-400 hover:border-[rgba(70,104,154,0.22)] hover:text-moon',
-          ]}
-        >
-          Practices
-          <span class="text-base leading-none text-slate-400 transition group-open/practices:rotate-45 group-open/practices:text-accent" aria-hidden="true">
-            +
-          </span>
-        </summary>
-
-        <div class="absolute left-1/2 top-[calc(100%+0.9rem)] z-50 grid w-64 -translate-x-1/2 gap-1 border border-[rgba(17,23,38,0.1)] bg-[rgba(245,241,237,0.98)] p-3 shadow-[0_22px_60px_rgba(17,23,38,0.08)]">
-          {
-            practiceLinks.map(({ href, isActive, label }) => (
-              <a
-                href={href}
-                aria-current={isActive ? 'page' : undefined}
-                class:list={[
-                  'px-3 py-3 text-[0.72rem] font-semibold uppercase tracking-[0.16em] transition',
-                  isActive ? 'text-accent' : 'text-slate-300 hover:text-moon',
-                ]}
-              >
-                {label}
-              </a>
-            ))
-          }
-        </div>
-      </details>
-
-      {
-        primaryNavItems.slice(2).map(({ href, isActive, label }) => (
-          <a
-            href={href}
-            aria-current={isActive ? 'page' : undefined}
-            class:list={[
-              'border-b-2 px-0.5 py-2 transition',
-              isActive
-                ? 'border-accent text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-accent'
-                : 'border-transparent text-[0.72rem] font-semibold uppercase tracking-[0.12em] text-slate-400 hover:border-[rgba(70,104,154,0.22)] hover:text-moon',
+                ? 'border-accent text-accent'
+                : 'border-transparent text-slate-300 hover:border-[rgba(55,92,145,0.2)] hover:text-moon',
             ]}
           >
             {label}
@@ -115,75 +57,59 @@ const isPracticesActive = practiceLinks.some((item) => item.isActive);
       }
     </nav>
 
-    <details class="group relative md:hidden">
-      <summary class="flex list-none cursor-pointer items-center gap-3 rounded-full border border-[rgba(17,23,38,0.12)] bg-[rgba(245,241,237,0.76)] px-4 py-2 font-mono text-[0.68rem] uppercase tracking-[0.18em] text-slate-300 transition hover:border-[rgba(95,95,178,0.24)] hover:text-moon [&::-webkit-details-marker]:hidden">
+    <div class="hidden items-center gap-3 md:flex">
+      {utilityItems.map(({ href, isActive, label }) => (
+        <a
+          href={href}
+          aria-current={isActive ? 'page' : undefined}
+          class:list={[
+            'button-primary',
+            'px-4 py-2 text-[0.68rem]',
+            isActive && 'ring-1 ring-[rgba(55,92,145,0.32)]',
+          ]}
+        >
+          {label}
+        </a>
+      ))}
+    </div>
+
+    <details class="group relative xl:hidden">
+      <summary class="flex list-none cursor-pointer items-center gap-3 rounded-full border border-[rgba(17,23,38,0.1)] bg-[rgba(250,247,242,0.92)] px-4 py-2 font-mono text-[0.72rem] uppercase tracking-[0.18em] text-slate-300 transition hover:border-[rgba(55,92,145,0.24)] hover:text-moon [&::-webkit-details-marker]:hidden">
         Menu
-        <span class="text-base leading-none text-slate-400 transition group-open:rotate-45 group-open:text-accent" aria-hidden="true">
+        <span class="text-base leading-none text-slate-300 transition group-open:rotate-45 group-open:text-accent" aria-hidden="true">
           +
         </span>
       </summary>
 
-      <div class="absolute right-0 top-[calc(100%+0.75rem)] w-[min(18rem,calc(100vw-2rem))] border border-[rgba(17,23,38,0.1)] bg-[rgba(245,241,237,0.96)] p-3 shadow-[0_22px_60px_rgba(17,23,38,0.08)]">
+      <div class="absolute right-0 top-[calc(100%+0.75rem)] w-[min(20rem,calc(100vw-2rem))] rounded-[1rem] border border-[rgba(17,23,38,0.08)] bg-[rgba(250,247,242,0.98)] p-3 shadow-[0_20px_48px_rgba(17,23,38,0.08)]">
         <nav aria-label="Primary mobile" class="grid gap-1">
-          {
-            primaryNavItems.slice(0, 2).map(({ href, isActive, label }) => (
+          {navItems.map(({ href, isActive, label }) => (
+            <a
+              href={href}
+              aria-current={isActive ? 'page' : undefined}
+              class:list={[
+                'px-3 py-3 text-[0.76rem] font-semibold uppercase tracking-[0.16em] transition',
+                isActive ? 'text-accent' : 'text-slate-200 hover:text-moon',
+              ]}
+            >
+              {label}
+            </a>
+          ))}
+
+          <div class="mt-2 border-t border-[rgba(17,23,38,0.08)] pt-3 md:hidden">
+            {utilityItems.map(({ href, isActive, label }) => (
               <a
                 href={href}
                 aria-current={isActive ? 'page' : undefined}
                 class:list={[
-                  'px-3 py-3 text-[0.72rem] font-semibold uppercase tracking-[0.16em] transition',
-                  isActive
-                    ? 'text-accent'
-                    : 'text-slate-300 hover:text-moon',
+                  'block px-3 py-3 text-[0.76rem] font-semibold uppercase tracking-[0.16em] transition',
+                  isActive ? 'text-accent' : 'text-slate-200 hover:text-moon',
                 ]}
               >
                 {label}
               </a>
-            ))
-          }
-
-          <div class="mt-2 border-t border-[rgba(17,23,38,0.08)] px-3 pt-4">
-            <p class:list={[
-              'text-[0.72rem] font-semibold uppercase tracking-[0.16em]',
-              isPracticesActive ? 'text-accent' : 'text-slate-400',
-            ]}>
-              Practices
-            </p>
-
-            <div class="mt-2 grid gap-1 border-l border-[rgba(17,23,38,0.08)] pl-3">
-              {
-                practiceLinks.map(({ href, isActive, label }) => (
-                  <a
-                    href={href}
-                    aria-current={isActive ? 'page' : undefined}
-                    class:list={[
-                      'px-3 py-3 text-[0.72rem] font-semibold uppercase tracking-[0.16em] transition',
-                      isActive ? 'text-accent' : 'text-slate-300 hover:text-moon',
-                    ]}
-                  >
-                    {label}
-                  </a>
-                ))
-              }
-            </div>
+            ))}
           </div>
-
-          {
-            primaryNavItems.slice(2).map(({ href, isActive, label }) => (
-              <a
-                href={href}
-                aria-current={isActive ? 'page' : undefined}
-                class:list={[
-                  'px-3 py-3 text-[0.72rem] font-semibold uppercase tracking-[0.16em] transition',
-                  isActive
-                    ? 'text-accent'
-                    : 'text-slate-300 hover:text-moon',
-                ]}
-              >
-                {label}
-              </a>
-            ))
-          }
         </nav>
       </div>
     </details>

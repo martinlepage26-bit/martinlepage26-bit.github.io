@@ -30,7 +30,13 @@ const structuredData = isPublished
   : undefined;
 ---
 
-<BaseLayout title={paper.data.title} description={paper.data.abstract} canonical={canonical} structuredData={structuredData}>
+<BaseLayout
+  title={paper.data.title}
+  description={paper.data.abstract}
+  canonical={canonical}
+  ogType="article"
+  structuredData={structuredData}
+>
   <EntryHero
     eyebrow={paper.data.type}
     title={paper.data.title}
@@ -42,23 +48,23 @@ const structuredData = isPublished
     links={paper.data.links}
   />
 
-  <article class="section-shell grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
-    <div class="reading-flow">
+  <article class="section-shell reading-layout">
+    <div class="reading-main reading-flow">
       <Content />
     </div>
 
-    <aside class="space-y-6">
+    <aside class="reading-sidebar">
       <section class="veil-panel">
         <p class="eyebrow">Citation</p>
-        <p class="mt-4 text-base text-slate-200">{paper.data.citation}</p>
+        <p class="mt-4 text-[1.02rem] leading-7 text-slate-200">{paper.data.citation}</p>
       </section>
       <section class="veil-panel">
         <p class="eyebrow">Status</p>
-        <p class="mt-4 text-base text-slate-200">{paper.data.status}</p>
+        <p class="mt-4 text-[1.02rem] leading-7 text-slate-200">{paper.data.status}</p>
       </section>
       <section class="veil-panel">
         <p class="eyebrow">Archive</p>
-        <p class="mt-4 text-base text-slate-200">
+        <p class="mt-4 text-[1.02rem] leading-7 text-slate-200">
           The broader public paper archive lives on Academia.edu. Use it for the full profile and outward-facing paper
           list.
         </p>

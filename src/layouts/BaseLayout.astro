@@ -1,6 +1,6 @@
 ---
 import { buildCanonical, buildPersonSchema } from '../lib/seo';
-import { siteMeta } from '../data/site';
+import { pageMeta, siteMeta } from '../data/site';
 import '../styles/global.css';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
@@ -10,16 +10,19 @@ interface Props {
   description?: string;
   image?: string;
   canonical?: string;
+  ogType?: 'website' | 'article';
   structuredData?: Record<string, unknown> | Record<string, unknown>[];
 }
 
-const { title, description, image, canonical, structuredData } = Astro.props;
-const pageTitle = title ? `${title} | ${siteMeta.title}` : siteMeta.title;
+const { title, description, image, canonical, ogType = 'website', structuredData } = Astro.props;
+const pageTitle = title ? (title.includes(siteMeta.title) ? title : `${title} | ${siteMeta.title}`) : siteMeta.title;
 const pageDescription = description ?? siteMeta.description;
 const canonicalUrl = canonical ? buildCanonical(canonical) : buildCanonical(Astro.url.pathname);
+const ogImagePath = image ?? '/social/og-default.png';
 const ogImage = siteMeta.siteUrl
-  ? new URL(image ?? '/social/og-default.svg', siteMeta.siteUrl).toString()
-  : image ?? '/social/og-default.svg';
+  ? new URL(ogImagePath, siteMeta.siteUrl).toString()
+  : ogImagePath;
+const socialImageAlt = `${pageTitle} social preview`;
 
 const structuredPayload = [
   buildPersonSchema(),
@@ -38,18 +41,19 @@ const structuredPayload = [
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={pageDescription} />
-    <meta name="theme-color" content="#020204" />
-    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#f2ede7" />
+    <meta name="color-scheme" content="light" />
     {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="manifest" href="/site.webmanifest" />
-    {siteMeta.siteUrl && <link rel="alternate" type="application/rss+xml" title={`${siteMeta.name} RSS`} href="/rss.xml" />}
+    {siteMeta.siteUrl && <link rel="alternate" type="application/rss+xml" title={pageMeta.rss.title} href="/rss.xml" />}
 
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={pageDescription} />
     {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:alt" content={socialImageAlt} />
     <meta property="og:locale" content={siteMeta.locale} />
     <meta property="og:site_name" content={siteMeta.name} />
 
@@ -57,14 +61,15 @@ const structuredPayload = [
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={pageDescription} />
     <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={socialImageAlt} />
 
     <title>{pageTitle}</title>
     <script is:inline type="application/ld+json" set:html={JSON.stringify(structuredPayload)} />
   </head>
-  <body class="site-negative-mode">
+  <body>
     <a class="skip-link" href="#content">Skip to content</a>
     <div class="site-aurora" aria-hidden="true"></div>
-    <div class="site-negative">
+    <div class="site-frame">
       <SiteHeader />
       <main id="content">
         <slot />
