@@ -5,7 +5,7 @@ date: 2018-01-01
 dateLabel: "2018"
 location: ""
 format: "Conference presentation"
-description: "A presentation on magic, witchcraft, and neopagan identity ritualities, framed through intermediality and transgression."
+description: "A conference presentation on magic, witchcraft, and neo-pagan identity ritualities through intermediality and transgression."
 tags:
   - ACFAS
   - Witchcraft
@@ -15,4 +15,4 @@ featured: true
 links: []
 ---
 
-This talk appears here from the verified publication record currently available for the site. The entry can be expanded with fuller program details when archival confirmation is in hand.
+This conference presentation examines magic, witchcraft, and neo-pagan identity ritualities through intermediality and transgression.

@@ -1,19 +1,27 @@
 ---
 import ContactBlock from '../components/ContactBlock.astro';
 import SectionIntro from '../components/SectionIntro.astro';
+import { pageMeta } from '../data/site';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout
-  title="Contact"
-  description="Contact Martin Lepage for governance work, research, editorial inquiries, talks, and media opportunities."
+  title={pageMeta.contact.title}
+  description={pageMeta.contact.description}
 >
   <section class="section-shell">
     <SectionIntro
       eyebrow="Contact"
-      title="Get in touch."
-      description="For governance work, research, editorial work, or talks."
+      title="Get in touch about governance, writing, research, or speaking."
+      description="Use the pathways below to route the conversation quickly: governance work, editorial requests, talks, research, or media."
     />
+
+    <div class="mt-8 max-w-3xl">
+      <p class="text-base text-slate-200">
+        If you already know the context, say it in the first message. That makes it easier to reply with the right
+        materials, next step, or scheduling option.
+      </p>
+    </div>
 
     <div class="mt-12">
       <ContactBlock />

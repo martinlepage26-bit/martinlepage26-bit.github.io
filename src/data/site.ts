@@ -1,4 +1,9 @@
-const configuredSiteUrl = (process.env.PUBLIC_SITE_URL ?? process.env.SITE_URL ?? '').trim();
+import { resolveSiteUrl } from '../../site-config.js';
+
+const configuredSiteUrl = resolveSiteUrl({
+  PUBLIC_SITE_URL: import.meta.env.PUBLIC_SITE_URL,
+  SITE_URL: import.meta.env.SITE_URL,
+});
 
 export const siteMeta = {
   name: 'Martin Lepage',
@@ -6,11 +11,11 @@ export const siteMeta = {
   title: 'Martin Lepage',
   siteUrl: configuredSiteUrl,
   description:
-    'Montreal-based scholar, writer, and AI governance strategist focused on governance, culture, and public writing.',
+    'AI governance strategy, publications, talks, and public writing by Martin Lepage.',
   locale: 'en-CA',
   email: 'martinlepage.ai@gmail.com',
   location: 'Montreal, Quebec, Canada',
-  jobTitle: 'Scholar, writer, AI governance strategist',
+  jobTitle: 'AI governance strategist, scholar, and writer',
   linkedIn: 'https://linkedin.com/in/martin-lepage-ai',
   github: 'https://github.com/martinlepage26-bit/',
   orcid: 'https://orcid.org/0009-0006-4320-6254',
@@ -19,18 +24,75 @@ export const siteMeta = {
   instagram: 'https://www.instagram.com/wheels_of_will/',
 };
 
+export const pageMeta = {
+  home: {
+    title: 'AI Governance, Publications, and Writing',
+    description:
+      'AI governance strategy, selected governance projects, publications, talks, and public writing by Martin Lepage.',
+  },
+  governance: {
+    title: 'Governance Practice',
+    description:
+      'AI governance strategy, decision documentation, evidence packaging, and reviewable systems work by Martin Lepage.',
+  },
+  about: {
+    title: 'About Martin Lepage',
+    description:
+      'Background, research trajectory, and working context for Martin Lepage across AI governance, research operations, and public writing.',
+  },
+  projects: {
+    title: 'Projects and Manuscripts',
+    description:
+      'Deterministic recursive method work, in-progress manuscripts, apps in development, and research projects by Martin Lepage.',
+  },
+  publications: {
+    title: 'Publications',
+    description:
+      'Published academic articles, reviews, and dissertation-related records by Martin Lepage, with Academia.edu as the larger archive.',
+  },
+  writings: {
+    title: 'Writings and Books',
+    description:
+      'Public essays, notes, criticism, and published book pages by Martin Lepage, with RSS and HEXA links.',
+  },
+  talks: {
+    title: 'Talks and Appearances',
+    description:
+      'Talks, conference presentations, panels, and public appearances by Martin Lepage across governance, scholarship, and media.',
+  },
+  resume: {
+    title: 'Resume and CV',
+    description:
+      'On-page resume and downloadable CV for Martin Lepage covering governance work, research operations, publications, and professional experience.',
+  },
+  contact: {
+    title: 'Contact Martin Lepage',
+    description:
+      'Contact Martin Lepage about governance work, writing, research collaborations, speaking, or media requests.',
+  },
+  rss: {
+    title: 'Martin Lepage - Writings',
+    description: 'Latest essays, notes, and public writing from Martin Lepage.',
+  },
+} as const;
+
 export const navigation = [
   { href: '/', label: 'Home' },
-  { href: '/about/', label: 'About' },
+  { href: '/governance/', label: 'Governance' },
   { href: '/papers/', label: 'Publications' },
-  { href: '/projects/', label: 'Projects' },
   { href: '/writing/', label: 'Writings' },
   { href: '/talks/', label: 'Talks' },
+  { href: '/projects/', label: 'Projects' },
+  { href: '/about/', label: 'About' },
   { href: '/resume/', label: 'Resume' },
   { href: '/contact/', label: 'Contact' },
 ] as const;
 
 export const publicProjectOrder = [
+  'scriptorium',
+  'compassai-governance-engine',
+  'aurorai',
+  'from-ai-anxiety-to-recursive-governance-under-constraint',
   'the-scythe-already-in-motion',
   'legitimacy-machines-altars-of-control',
   'the-sealed-card-protocol',
@@ -38,14 +100,11 @@ export const publicProjectOrder = [
   'astrology-as-social-grammar',
   'bonded-intelligence-under-constraint',
   'lotus',
-  'scriptorium',
 ] as const;
 
 export const hiddenProjectArchiveSlugs = [
   'agency-social-positioning-tool',
   'astral',
-  'govern-ai-practice',
-  'from-ai-anxiety-to-recursive-governance-under-constraint',
   'governess-suite',
   'recurso',
   'socialcompass-agatha',
@@ -53,52 +112,110 @@ export const hiddenProjectArchiveSlugs = [
   'the-witches-road',
 ] as const;
 
-export const projectArchivePromotedPaperSlugs = ['whos-the-boob-whos-the-trap'] as const;
+export const projectArchivePromotedPaperSlugs = [] as const;
 
 export const heroFacts = [
-  'PhD, Religious Sciences',
   'AI governance strategy',
-  'Public scholarship',
+  'PhD, Religious Sciences',
+  'Decision documentation and review systems',
   'English and French',
 ];
 
-export const homeHighlights = [
+export const audienceRoutes = [
   {
-    eyebrow: 'For governance teams',
-    title: 'Governance work and documentation',
+    eyebrow: 'Governance and consulting',
+    title: 'Governance strategy, documentation, and reviewable systems',
     description:
-      'Start with the practice side: advisory projects, documentation work, and reviewable systems.',
-    href: '/projects/',
-    cta: 'Open governance work',
+      'Start with governance documents, review structures, and tools for oversight, traceability, and institutional clarity.',
+    href: '/governance/',
+    cta: 'Explore governance work',
   },
   {
-    eyebrow: 'For academic readers',
+    eyebrow: 'Academic readers',
     title: 'Publications and research context',
     description:
-      'Browse published academic work, talks, and the research questions that connect ritual, media, and legitimacy.',
+      'Browse publications and talks, then follow the research line connecting ritual, media, legitimacy, and governance.',
     href: '/papers/',
     cta: 'Browse publications',
   },
   {
-    eyebrow: 'For editors and media',
-    title: 'Writings and books',
+    eyebrow: 'Editors and media',
+    title: 'Essays, books, and public-facing writing',
     description:
-      'Go to essays, criticism, notes, and the public-facing book pages for interviews, editorial work, or general readers.',
+      'Go to essays, criticism, books, and other writing suited to editorial, interview, and media use.',
     href: '/writing/',
     cta: 'Read the writings',
   },
+  {
+    eyebrow: 'Speaking and events',
+    title: 'Talks, panels, and public appearances',
+    description:
+      'Review talk topics, formats, and material suited to conferences, guest lectures, and panels.',
+    href: '/talks/',
+    cta: 'View talks',
+  },
+  {
+    eyebrow: 'General readers',
+    title: 'A selective archive with a clear way in',
+    description:
+      'Start with the biography or selected writing for the clearest introduction to the work.',
+    href: '/about/',
+    cta: 'Read the biography',
+  },
+] as const;
+
+export const governanceProjectSlugs = [
+  'govern-ai-practice',
+  'ai-governance',
+  'compassai-governance-engine',
+  'aurorai',
+] as const;
+
+export const governanceWritingSlugs = [
+  'against-frictionless-governance',
+  'what-governance-needs-from-ritual',
+] as const;
+
+export const governancePracticeAreas = [
+  {
+    title: 'Governance framing and decision documentation',
+    description:
+      'Define scope, claims, decision points, and accountability so AI use can be explained and defended.',
+  },
+  {
+    title: 'Reviewable evidence and traceability',
+    description:
+      'Package inputs, citations, approvals, and supporting records so review does not depend on memory or improvisation.',
+  },
+  {
+    title: 'Policy translation for real teams',
+    description:
+      'Turn standards and governance principles into procedures, escalation paths, and working documents people can actually use.',
+  },
+  {
+    title: 'Research, editorial, and public explanation',
+    description:
+      'Write briefs, essays, and explanatory material that connect governance decisions to culture, legitimacy, and public understanding.',
+  },
+] as const;
+
+export const governanceFit = [
+  'AI use documentation, review structures, and oversight logic',
+  'Decision records, evidence packaging, and traceability',
+  'Risk framing, escalation paths, and governance workflows',
+  'Essays, talks, and editorial work on governance and legitimacy',
 ] as const;
 
 export const biography = {
   intro:
-    'Martin Lepage is a Montreal-based scholar, writer, and AI governance strategist. His work brings together AI governance, research, and public writing.',
+    'Martin Lepage is based in Montreal and works across AI governance, research operations, and public writing.',
   paragraphs: [
-    'His academic background includes ritual studies, queer theory, media analysis, digital culture, and contemporary spiritualities. He completed a PhD in Religious Sciences at Universite du Quebec a Montreal after earlier degrees in literary studies at Universite Laval.',
-    'He has also worked in research operations, archives, AI-assisted quality review, and clinical trial coordination. That mix helps him understand complex institutions while still making documentation useful and practical.',
-    'Today his work connects governance, media, and authorship through a shared concern: how legitimacy is built, how authority is explained, and how people live with those systems once they are in place.',
+    'His academic background spans ritual studies, queer theory, media analysis, digital culture, and contemporary spiritualities. He completed a PhD in Religious Sciences at Universite du Quebec a Montreal after earlier degrees in literary studies at Universite Laval.',
+    'He has also worked in research operations, archives, AI-assisted quality review, and clinical trial coordination. That mix grounds the governance work in documentation, consequence, and institutional reality.',
+    'Across governance, media, and authorship, the recurring concern is legitimacy: how authority is built, how it is explained, and what people are asked to live under.',
   ],
   currentWork:
-    'Current work includes AI governance, research on ritual and media, and books in progress.',
+    'Current work centers on AI governance documents and review systems, alongside research and book-length writing on ritual, media, legitimacy, and public life.',
 };
 
 export const researchInterests = [
@@ -301,8 +418,35 @@ export const resumeData = {
 };
 
 export const contactAreas = [
-  'AI governance and documentation work',
+  'Governance documents, review structures, and AI oversight work',
   'Editorial, interview, and media requests',
   'Talks, guest lectures, and panels',
   'Research collaborations and publication conversations',
 ];
+
+export const contactPathways = [
+  {
+    title: 'Governance and consulting',
+    description:
+      'For governance strategy, review structures, decision records, and related advisory work.',
+    cta: 'Email about governance',
+  },
+  {
+    title: 'Speaking and events',
+    description:
+      'For conferences, panels, workshops, guest lectures, and event programming related to governance, legitimacy, media, or public scholarship.',
+    cta: 'Email about speaking',
+  },
+  {
+    title: 'Editorial and media',
+    description:
+      'For interviews, commissioned writing, editorial collaborations, book conversations, and media requests.',
+    cta: 'Email about editorial work',
+  },
+  {
+    title: 'Academic and research',
+    description:
+      'For publication conversations, research collaborations, scholarly outreach, and archive questions.',
+    cta: 'Email about research',
+  },
+] as const;

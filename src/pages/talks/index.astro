@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import PracticeHero from '../../components/PracticeHero.astro';
 import SectionIntro from '../../components/SectionIntro.astro';
+import { pageMeta } from '../../data/site';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { sortByDate } from '../../lib/content';
 
@@ -13,20 +14,21 @@ const talkSpan = earliestTalkYear === latestTalkYear ? `${latestTalkYear}` : `${
 const talkFormatCount = new Set(talks.map((talk) => talk.data.format)).size;
 ---
 
-<BaseLayout title="Talks and Media" description="Conference presentations, sessions, and public-facing talks by Martin Lepage.">
+<BaseLayout title={pageMeta.talks.title} description={pageMeta.talks.description}>
   <PracticeHero
     eyebrow="Talks and media"
     title="Talks and appearances."
-    description="A short archive of talks, panels, presentations, and public-facing appearances."
-    details="This page keeps the speaking record concise and readable, with enough detail for event context without turning the archive into a noisy event log."
+    description="A short speaking archive of conference presentations, panels, sessions, and invited public appearances."
+    details="This page keeps the speaking record concise and readable without collapsing it into essays or publication entries."
     links={[
       { label: 'Browse talks', url: '#talk-archive', variant: 'primary' },
-      { label: 'Read publications', url: '/papers/', variant: 'secondary' },
+      { label: 'Open resume and CV', url: '/resume/', variant: 'secondary' },
+      { label: 'Browse publications', url: '/papers/', variant: 'inline' },
       { label: 'Get in touch about talks', url: '/contact/', variant: 'inline' },
     ]}
     sideEyebrow="Speaking profile"
     sideTitle="What the archive makes visible."
-    sideDescription="The talks page shows where the work has been presented publicly and how it moves between scholarship, governance, and media-facing settings."
+    sideDescription="The talks page shows where the work has been presented publicly across conferences, panels, sessions, and media-facing settings."
     sidePoints={[
       'Conference papers and sessions stay readable as one archive.',
       'Format labels keep the speaking record legible at a glance.',
@@ -59,7 +61,7 @@ const talkFormatCount = new Set(talks.map((talk) => talk.data.format)).size;
       <SectionIntro
         eyebrow="Talk archive"
         title="Talks, panels, and presentations."
-        description="A short archive of public speaking and media-facing appearances."
+        description="Conference presentations, panels, sessions, and other speaking records from the public archive."
       />
     </div>
 

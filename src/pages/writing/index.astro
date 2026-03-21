@@ -6,7 +6,7 @@ import SectionIntro from '../../components/SectionIntro.astro';
 import WritingCard from '../../components/WritingCard.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { collectTags, contentSlug, estimateReadingMinutes, sortByDate, sortByTitle } from '../../lib/content';
-import { siteMeta } from '../../data/site';
+import { pageMeta, siteMeta } from '../../data/site';
 
 const writings = sortByDate(await getCollection('writings', ({ data }) => !data.draft));
 const allProjects = await getCollection('projects');
@@ -16,22 +16,23 @@ const writingLinks = [
   { label: 'Visit HEXA', url: siteMeta.substack, variant: 'primary' as const },
   { label: 'Browse the books', url: '#books', variant: 'secondary' as const },
   ...(siteMeta.siteUrl ? [{ label: 'Subscribe by RSS', url: '/rss.xml', variant: 'inline' as const }] : []),
+  { label: 'Contact about editorial work', url: '/contact/', variant: 'inline' as const },
 ];
 ---
 
 <BaseLayout
-  title="Writings"
-  description="Essays, reflections, notes, and published book pages by Martin Lepage."
+  title={pageMeta.writings.title}
+  description={pageMeta.writings.description}
 >
   <PracticeHero
     eyebrow="Writings"
     title="Essays, notes, and books."
-    description="Public writing, criticism, reflections, and the confirmed book pages gathered in one place."
-    details="This page keeps the public-facing prose together: essays, shorter reflections, and published book entries with companion detail pages and outbound links."
+    description="Essays, criticism, notes, and published books, separate from the academic publication record."
+    details="Essays, shorter reflections, and published book entries with companion pages and outbound links."
     links={writingLinks}
     sideEyebrow="Reading path"
     sideTitle="How to move through the writing archive."
-    sideDescription="Writings is the more reader-facing side of the site, where editorial voice and public essays sit beside confirmed book metadata."
+    sideDescription="Public essays and books sit here apart from academic publication records and the project archive."
     sidePoints={[
       'HEXA remains the outward channel for ongoing publication rhythm.',
       'Books stay visible here once they are actually published.',
@@ -64,7 +65,7 @@ const writingLinks = [
       <SectionIntro
         eyebrow="Writing archive"
         title="Search essays and notes."
-        description="Public-facing prose, shorter reflections, and criticism from the on-site writing archive."
+        description="Essays, criticism, and shorter public prose from the on-site writing archive."
       />
     </div>
 
@@ -81,8 +82,8 @@ const writingLinks = [
     <div id="books" class="mt-20">
       <SectionIntro
         eyebrow="Books"
-        title="Published books with details and links."
-        description="These self-published titles stay visible here with confirmed descriptions, companion pages, and stored outbound links."
+        title="Published books with companion pages and links."
+        description="These self-published titles stay visible here as writing entries, with companion archive pages and stored outbound links."
       />
 
       <div class="mt-10 grid gap-6 lg:grid-cols-2">
@@ -95,7 +96,7 @@ const writingLinks = [
             </div>
             <p class="max-w-[58ch] text-base text-slate-200">{book.data.description}</p>
             <div class="flex flex-wrap gap-3 text-sm font-semibold text-accent">
-              <a class="link-inline" href={`/projects/${contentSlug(book.id)}/`}>Read details</a>
+              <a class="link-inline" href={`/projects/${contentSlug(book.id)}/`}>Open companion page</a>
               {book.data.links.map((link) => (
                 <a class="link-inline" href={link.url}>{link.label}</a>
               ))}

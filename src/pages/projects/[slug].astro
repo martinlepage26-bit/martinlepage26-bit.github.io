@@ -61,6 +61,7 @@ const meta = project
   description={project?.data.description ?? paper?.data.abstract ?? 'Project record'}
   image={project && hasProjectImage ? project.data.image : undefined}
   canonical={canonical}
+  ogType={paper ? 'article' : 'website'}
 >
   <EntryHero
     eyebrow={project ? 'Project' : paper?.data.type ?? 'Working paper'}

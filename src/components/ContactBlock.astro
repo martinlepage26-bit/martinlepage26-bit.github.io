@@ -1,55 +1,89 @@
 ---
-import { contactAreas, siteMeta } from '../data/site';
+import { contactAreas, contactPathways, siteMeta } from '../data/site';
 
 interface Props {
   compact?: boolean;
 }
 
 const { compact = false } = Astro.props;
+
+const publicChannels = [
+  { href: siteMeta.linkedIn, label: 'LinkedIn' },
+  { href: siteMeta.github, label: 'GitHub' },
+  { href: siteMeta.academia, label: 'Academia.edu' },
+  { href: siteMeta.orcid, label: 'ORCID' },
+  { href: siteMeta.substack, label: 'HEXA' },
+  { href: siteMeta.instagram, label: 'Instagram' },
+];
 ---
 
 <section class="veil-panel">
-  <div class:list={['grid gap-8', !compact && 'lg:grid-cols-[minmax(0,1fr)_320px]']}>
+  <div class="grid gap-8 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
     <div>
       <p class="eyebrow">Contact</p>
-      <h2 class="mt-3 text-[1.46rem] md:text-[1.7rem]">For governance work, research, talks, or editorial work.</h2>
+      <h2 class="mt-3 text-[1.46rem] md:text-[1.74rem]">Reach out with a clear subject.</h2>
       <p class="mt-4 max-w-2xl text-base text-slate-200">
-        Email is the easiest way to reach Martin. The links below point to the wider public profile.
+        Email is the clearest way to reach Martin. A short note about the kind of inquiry makes it easier to route the
+        conversation quickly.
       </p>
-      <div class="mt-6"><a class="button-primary" href={`mailto:${siteMeta.email}`}>Email Martin</a></div>
-    </div>
-
-    <div class="space-y-6">
-      <div>
-        <h3 class="text-sm font-semibold uppercase tracking-[0.24em] text-accent/80">Direct</h3>
-        <ul class="mt-3 space-y-2 text-base text-slate-200">
-          <li>{siteMeta.location}</li>
-          <li><a href={`mailto:${siteMeta.email}`}>{siteMeta.email}</a></li>
-        </ul>
-      </div>
-
-      <div>
-        <h3 class="text-sm font-semibold uppercase tracking-[0.24em] text-accent/80">Public channels</h3>
-        <ul class="mt-3 space-y-2 text-base text-slate-200">
-          <li><a href={siteMeta.linkedIn}>LinkedIn</a></li>
-          <li><a href={siteMeta.github}>GitHub</a></li>
-          <li><a href={siteMeta.academia}>Academia.edu</a></li>
-          <li><a href={siteMeta.orcid}>ORCID</a></li>
-          <li><a href={siteMeta.substack}>HEXA</a></li>
-          <li><a href={siteMeta.instagram}>Instagram</a></li>
-        </ul>
+      <div class="mt-6 flex flex-wrap gap-3">
+        <a class="button-primary" href={`mailto:${siteMeta.email}`}>Email Martin</a>
+        <a class="button-secondary" href="/resume/">Open resume and CV</a>
       </div>
 
       {!compact && (
+        <ul class="bullet-links mt-6">
+          <li><a class="link-inline" href="/papers/">Browse publications</a></li>
+          <li><a class="link-inline" href="/talks/">Review talks</a></li>
+        </ul>
+      )}
+
+      <div class="mt-8 space-y-5">
         <div>
-          <h3 class="text-sm font-semibold uppercase tracking-[0.24em] text-accent/80">Best fits</h3>
+          <h3 class="text-sm font-semibold uppercase tracking-[0.22em] text-accent/80">Best fits</h3>
           <ul class="mt-3 ml-5 list-disc space-y-2 text-base text-slate-200">
             {contactAreas.map((area) => (
               <li>{area}</li>
             ))}
           </ul>
         </div>
-      )}
+
+        {!compact && (
+          <div class="grid gap-6 md:grid-cols-2">
+            <div>
+              <h3 class="text-sm font-semibold uppercase tracking-[0.22em] text-accent/80">Direct</h3>
+              <ul class="mt-3 space-y-2 text-base text-slate-200">
+                <li>{siteMeta.location}</li>
+                <li><a href={`mailto:${siteMeta.email}`}>{siteMeta.email}</a></li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 class="text-sm font-semibold uppercase tracking-[0.22em] text-accent/80">Public channels</h3>
+              <ul class="mt-3 space-y-2 text-base text-slate-200">
+                {publicChannels.map((channel) => (
+                  <li><a href={channel.href}>{channel.label}</a></li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+
+    <div class="grid gap-4 md:grid-cols-2">
+      {contactPathways.map((pathway) => (
+        <article class="card-link">
+          <div>
+            <p class="eyebrow">Inquiry path</p>
+            <h3 class="mt-3 text-[1.04rem] md:text-[1.18rem]">{pathway.title}</h3>
+            <p class="mt-4 text-base text-slate-200">{pathway.description}</p>
+          </div>
+          <a class="mt-auto text-sm font-semibold text-accent hover:text-moon" href={`mailto:${siteMeta.email}`}>
+            {pathway.cta}
+          </a>
+        </article>
+      ))}
     </div>
   </div>
 </section>

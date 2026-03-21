@@ -22,6 +22,6 @@ links:
     url: "https://github.com/martinlepage26-bit/govern-ai"
 ---
 
-This entry gathers the more explicitly governance-facing side of Martin Lepage's practice. It is where risk mapping, traceability, documentation, and institutional legibility become concrete outputs rather than only analytical concerns.
+*govern-ai* is the practice-facing project where risk mapping, traceability, documentation, and institutional legibility become working outputs rather than only analytical concerns.
 
 The project is especially important for the homepage because it shows that the site does not position Martin as an observer of systems only. He also builds the documents, architectures, and interfaces needed to help organizations act.

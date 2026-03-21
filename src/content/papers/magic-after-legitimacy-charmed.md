@@ -20,4 +20,4 @@ This manuscript reads *Charmed* as a narrative about power arriving before the s
 
 The current draft develops the concept of **jester femininity** to describe the show's recurring pattern: spectacular women are licensed to disrupt, mock, and improvise, but only within a system that remains intact. That interpretive move ties the project to Martin Lepage's broader interests in legitimacy, ritual authorization, media form, and the social management of power.
 
-This entry is presented as manuscript-stage research while venue and publication path are still being finalized.
+The manuscript is still circulating while venue and publication path are being finalized.

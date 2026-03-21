@@ -1,9 +1,9 @@
 ---
 title: "SocialCompass Agatha"
-subtitle: "A teaser for a witchcraft, interface, and governance-adjacent build"
+subtitle: "A developing project on witchcraft, interface form, and governance-shaped reading"
 year: 2026
-status: "Public teaser"
-description: "A teaser entry for an Agatha-linked project that appears to sit at the intersection of cultural analysis, interface thinking, and governance-shaped structuring."
+status: "Developing project"
+description: "A developing Agatha-centered project on witchcraft, interface form, and governance-shaped cultural reading."
 role: "Author and builder"
 outputs:
   - "Project teaser"
@@ -20,6 +20,6 @@ imageAlt: "A teaser project concerned with Agatha, interface form, and governanc
 links: []
 ---
 
-This entry is intentionally brief. It marks a project strand connected to *Agatha*, interface logic, and a broader research vocabulary around legitimacy, proof, mediation, and cultural form.
+*SocialCompass Agatha* links Agatha-centered cultural analysis to questions of interface, legitimacy, proof, and mediated power.
 
-For now, the site presents it as a teaser rather than a full description. That keeps the title visible without claiming more public detail than is ready.
+It sits between research and build logic: part cultural reading, part structural experiment in how symbolic material gets organized and interpreted.

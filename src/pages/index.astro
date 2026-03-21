@@ -6,260 +6,224 @@ import ProjectCard from '../components/ProjectCard.astro';
 import PublicationCard from '../components/PublicationCard.astro';
 import SectionIntro from '../components/SectionIntro.astro';
 import WritingCard from '../components/WritingCard.astro';
-import { biography, hiddenProjectArchiveSlugs, homeHighlights, projectArchivePromotedPaperSlugs, publicProjectOrder, siteMeta } from '../data/site';
+import {
+  audienceRoutes,
+  governancePracticeAreas,
+  governanceProjectSlugs,
+  pageMeta,
+} from '../data/site';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { contentSlug, estimateReadingMinutes, isPublishedPaper, orderEntriesBySlug, sortByDate, sortByTitle, sortByYear } from '../lib/content';
+import {
+  contentSlug,
+  estimateReadingMinutes,
+  isPublishedPaper,
+  orderEntriesBySlug,
+  sortByDate,
+  sortByTitle,
+  sortByYear,
+} from '../lib/content';
 
 const papers = sortByYear(await getCollection('papers'));
 const allProjects = await getCollection('projects');
-const hiddenProjectArchiveSlugSet = new Set<string>(hiddenProjectArchiveSlugs);
-const promotedPaperSlugSet = new Set<string>(projectArchivePromotedPaperSlugs);
-const projects = orderEntriesBySlug(allProjects, publicProjectOrder);
-const amazonBooks = sortByTitle(allProjects.filter((project) => /\bamazon\b/i.test(project.data.status)));
-const unpublishedProjects = allProjects.filter(
-  (project) =>
-    !/\bamazon\b/i.test(project.data.status) && !hiddenProjectArchiveSlugSet.has(contentSlug(project.id)),
-);
 const writings = sortByDate(await getCollection('writings', ({ data }) => !data.draft));
 const talks = sortByDate(await getCollection('talks'));
 
 const publishedPapers = papers.filter(isPublishedPaper);
-const unpublishedPapers = papers.filter(
-  (entry) => !isPublishedPaper(entry) && !promotedPaperSlugSet.has(contentSlug(entry.id)),
-);
 const featuredPapers = publishedPapers.filter((entry) => entry.data.featured).slice(0, 2);
-const featuredProjects = projects.slice(0, 2);
-const remainingProjects = projects.slice(2);
+const governanceProjects = orderEntriesBySlug(
+  allProjects.filter((project) => governanceProjectSlugs.includes(contentSlug(project.id) as (typeof governanceProjectSlugs)[number])),
+  governanceProjectSlugs,
+);
+const featuredGovernanceProjects = governanceProjects.slice(0, 2);
 const featuredWriting = writings.filter((entry) => entry.data.featured).slice(0, 2);
 const featuredTalks = talks.filter((entry) => entry.data.featured).slice(0, 3);
-const projectArchiveCount = unpublishedProjects.length + unpublishedPapers.length;
+const amazonBooks = sortByTitle(allProjects.filter((project) => /\bamazon\b/i.test(project.data.status)));
+const featuredBook =
+  amazonBooks.find((book) => contentSlug(book.id) === 'weather-beneath-the-walls') ?? amazonBooks[0];
+
 const homeStats = [
   {
-    value: publishedPapers.length,
-    label: 'Publications',
-    description: 'Published academic work presented as publication records.',
+    value: governanceProjects.length,
+    label: 'Governance records',
+    description: 'Governance-focused projects and tools currently visible on the site.',
   },
   {
-    value: projectArchiveCount,
-    label: 'Projects',
-    description: 'Unpublished books, papers, apps in development, and research builds.',
+    value: publishedPapers.length,
+    label: 'Publication records',
+    description: 'Published academic work presented as bounded publication entries.',
   },
   {
     value: writings.length,
-    label: 'Writings',
-    description: 'Essays, criticism, notes, and linked book pages.',
+    label: 'Writing entries',
+    description: 'Essays, notes, criticism, and public-facing writing.',
   },
   {
     value: talks.length,
-    label: 'Talks',
-    description: 'Conference talks, presentations, and public speaking.',
+    label: 'Talk records',
+    description: 'Talks, presentations, and public-facing speaking entries.',
   },
 ] as const;
 ---
 
-<BaseLayout description={siteMeta.description}>
+<BaseLayout title={pageMeta.home.title} description={pageMeta.home.description}>
   <Hero />
 
   <section class="section-shell">
-    <div class="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)]">
-      <SectionIntro
-        eyebrow="Overview"
-        title="One site, several kinds of work."
-        description={biography.intro}
-      />
+    <SectionIntro
+      eyebrow="Quick routes"
+      title="Start with the reason you are here."
+      description="The site is organized for quick routing without losing the connection between governance work, publications, books, writing, and talks."
+    />
 
-      <div class="veil-panel space-y-6">
-        <p class="text-lg leading-8 text-slate-200">
-          Martin&apos;s work asks a simple question: how is power made believable, and what happens once people have to
-          live with it?
-        </p>
-        <p class="text-base text-slate-200">
-          That question shapes the governance work, research, books, and essays gathered here.
-        </p>
-        <ul class="bullet-links">
-          <li><a class="link-inline" href="/projects/">Start with governance work</a></li>
-          <li><a class="link-inline" href="/resume/">Open the resume</a></li>
-          <li><a class="link-inline" href="/contact/">Get in touch</a></li>
-        </ul>
-        <a class="link-inline" href="/about/">Read the fuller biography</a>
-      </div>
-    </div>
-
-    <div class="mt-12 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+    <div class="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
       {homeStats.map((item) => (
         <article class="veil-panel h-full">
-          <p class="font-display text-[1.7rem] leading-none text-moon md:text-[2rem]">{item.value}</p>
+          <p class="font-display text-[1.7rem] leading-none text-moon md:text-[1.95rem]">{item.value}</p>
           <h3 class="mt-4 text-[0.98rem] md:text-[1.06rem]">{item.label}</h3>
           <p class="mt-3 text-sm leading-6 text-slate-300">{item.description}</p>
         </article>
       ))}
     </div>
 
-    <div class="mt-12 grid gap-6 md:grid-cols-3">
-      {homeHighlights.map((item) => (
-        <article class="veil-panel h-full">
-          <p class="eyebrow">{item.eyebrow}</p>
-          <h3 class="mt-3 text-[1.24rem] md:text-[1.38rem]">{item.title}</h3>
-          <p class="mt-4 text-base text-slate-200">{item.description}</p>
-          <div class="mt-5">
-            <a class="link-inline" href={item.href}>{item.cta}</a>
+    <div class="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-5">
+      {audienceRoutes.map((route) => (
+        <a class="card-link group" href={route.href}>
+          <div>
+            <p class="eyebrow">{route.eyebrow}</p>
+            <h3 class="mt-3 text-[1.04rem] md:text-[1.14rem]">{route.title}</h3>
+            <p class="mt-4 text-base text-slate-200">{route.description}</p>
           </div>
-        </article>
+          <span class="mt-auto text-sm font-semibold text-accent group-hover:text-moon">{route.cta}</span>
+        </a>
       ))}
     </div>
   </section>
 
-  <section class="section-shell border-y border-[rgba(36,27,23,0.08)] bg-[rgba(251,246,239,0.28)]">
-    <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-      <SectionIntro
-        eyebrow="Featured publications"
-        title="Research on ritual, gender, media, and governance."
-        description="Published academic work from the on-site publications archive."
-      />
-    </div>
+  <section class="section-shell border-y border-[rgba(17,23,38,0.08)] bg-[rgba(251,246,239,0.32)]">
+    <div class="grid gap-10 xl:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
+      <div>
+        <SectionIntro
+          eyebrow="Governance work"
+          title="Professional practice grounded in legibility, review, and consequence."
+          description="Governance is the clearest professional route on the site: documentation, oversight logic, evidence packaging, and public-facing clarity for AI-related work."
+        />
+        <p class="mt-6 max-w-[58ch] text-base text-slate-200">
+          The wider archive still matters, but the governance page now gathers the most directly professional layer in
+          one place so visitors do not have to infer it.
+        </p>
 
-    <div class="mt-3">
-      <a class="link-inline" href="/papers/">Browse all publications</a>
-    </div>
+        <div class="mt-8 grid gap-4 md:grid-cols-2">
+          {governancePracticeAreas.map((area) => (
+            <article class="veil-panel h-full">
+              <p class="eyebrow">Practice area</p>
+              <h3 class="mt-3 text-[1.04rem] md:text-[1.14rem]">{area.title}</h3>
+              <p class="mt-4 text-base text-slate-200">{area.description}</p>
+            </article>
+          ))}
+        </div>
 
-    <div class="mt-12 grid gap-6 lg:grid-cols-2">
-      {featuredPapers.map((paper) => <PublicationCard paper={paper} />)}
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a class="button-primary" href="/governance/">Open governance page</a>
+          <a class="button-secondary" href="/contact/">Contact about consulting</a>
+        </div>
+      </div>
+
+      <div>
+        <div class="veil-panel">
+          <p class="eyebrow">Selected governance work</p>
+          <h2 class="mt-3 text-[1.34rem] md:text-[1.5rem]">A clearer route into the governance layer.</h2>
+          <p class="mt-4 text-base text-slate-200">
+            These entries show governance as documents, review surfaces, and working systems rather than as a slogan.
+          </p>
+        </div>
+
+        <div class="mt-6 grid gap-6 lg:grid-cols-2">
+          {featuredGovernanceProjects.map((project) => <ProjectCard project={project} />)}
+        </div>
+      </div>
     </div>
   </section>
 
   <section class="section-shell">
-    <div class="grid gap-8 xl:grid-cols-[minmax(0,1.35fr)_minmax(0,0.85fr)]">
-      <div>
-        <SectionIntro
-          eyebrow="Projects"
-          title="Projects, papers, and research builds."
-          description="A curated public archive rather than a full internal working list."
-        />
+    <SectionIntro
+      eyebrow="Selected archive"
+      title="The wider record stays visible without crowding the front door."
+      description="The homepage now points visitors to selected publication, writing, speaking, and book pathways instead of repeating long lists."
+    />
 
-        <div class="mt-3">
-          <a class="link-inline" href="/projects/">Browse all projects</a>
+    <div class="mt-12 grid gap-8 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+      <div class="space-y-10">
+        <div>
+          <div class="flex items-end justify-between gap-4">
+            <div>
+              <p class="eyebrow">Publications</p>
+              <h2 class="mt-3 text-[1.34rem] md:text-[1.5rem]">Selected academic work.</h2>
+            </div>
+            <a class="link-inline" href="/papers/">Browse publications</a>
+          </div>
+          <div class="mt-8 grid gap-6 lg:grid-cols-2">
+            {featuredPapers.map((paper) => <PublicationCard paper={paper} />)}
+          </div>
         </div>
 
-        <div class="mt-12 grid gap-6 lg:grid-cols-2">
-          {featuredProjects.map((project) => <ProjectCard project={project} />)}
-        </div>
-      </div>
-
-      <aside class="veil-panel">
-        <p class="eyebrow">Also listed</p>
-        <h2 class="mt-3 text-[1.42rem] md:text-[1.62rem]">Additional items in the current public archive.</h2>
-        <p class="mt-4 text-base text-slate-200">
-          These entries stay concise on purpose and point to the rest of the project list without reopening the full
-          older archive.
-        </p>
-
-        <ul class="mt-8 space-y-3">
-          {remainingProjects.map((project) => (
-            <li>
-              <a
-                class="block border-t border-[rgba(35,27,53,0.12)] py-4 transition hover:translate-x-1 hover:border-[rgba(127,83,178,0.28)]"
-                href={`/projects/${contentSlug(project.id)}/`}
-              >
-                <div class="flex items-start justify-between gap-3">
-                  <div>
-                    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-accent/90">{project.data.status}</p>
-                    <h3 class="mt-2 text-[0.96rem] md:text-[1.04rem]">{project.data.title}</h3>
-                  </div>
-                  {project.data.year && <span class="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">{project.data.year}</span>}
-                </div>
-                <p class="mt-2 text-sm leading-6 text-slate-300">{project.data.subtitle}</p>
-              </a>
-            </li>
-          ))}
-        </ul>
-
-        <div class="mt-6">
-          <a class="link-inline" href="/projects/">Open the full project index</a>
-        </div>
-      </aside>
-    </div>
-  </section>
-
-  <section class="section-shell border-y border-[rgba(36,27,23,0.08)] bg-[rgba(251,246,239,0.28)]">
-    <div class="grid gap-8 xl:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
-      <div>
-        <SectionIntro
-          eyebrow="Books on Amazon"
-          title="Published books, listed separately."
-          description="Self-published Amazon titles stay visible here and on the Writings page without being folded into the unpublished project archive."
-        />
-
-        <div class="mt-3">
-          <a class="link-inline" href="/writing/#books">Browse all books</a>
-        </div>
-      </div>
-
-      <div class="veil-panel">
-        <ul class="space-y-3">
-          {amazonBooks.map((project) => (
-            <li>
-              <a
-                class="block border-t border-[rgba(35,27,53,0.12)] py-4 transition hover:translate-x-1 hover:border-[rgba(127,83,178,0.28)]"
-                href={`/projects/${contentSlug(project.id)}/`}
-              >
-                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-accent/90">{project.data.status}</p>
-                <h3 class="mt-2 text-[0.96rem] md:text-[1.04rem]">{project.data.title}</h3>
-                <p class="mt-2 text-sm leading-6 text-slate-300">{project.data.subtitle}</p>
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <section class="section-shell border-y border-[rgba(36,27,23,0.08)] bg-[rgba(251,246,239,0.28)]">
-    <div class="grid gap-8 xl:grid-cols-[minmax(0,1.35fr)_360px]">
-      <div>
-        <SectionIntro
-          eyebrow="Writings"
-          title="Essays, notes, and books."
-          description="Public writing, criticism, notes, and companion book pages."
-        />
-
-        <div class="mt-3">
-          <a class="link-inline" href="/writing/">Read the writings</a>
-        </div>
-
-        <div class="mt-12 grid gap-6 lg:grid-cols-2">
-          {
-            featuredWriting.map((writing) => (
+        <div>
+          <div class="flex items-end justify-between gap-4">
+            <div>
+              <p class="eyebrow">Writings</p>
+              <h2 class="mt-3 text-[1.34rem] md:text-[1.5rem]">Selected public writing.</h2>
+            </div>
+            <a class="link-inline" href="/writing/">Read the writings</a>
+          </div>
+          <div class="mt-8 grid gap-6 lg:grid-cols-2">
+            {featuredWriting.map((writing) => (
               <WritingCard writing={writing} readingMinutes={estimateReadingMinutes(writing.body ?? '')} />
-            ))
-          }
+            ))}
+          </div>
         </div>
       </div>
 
       <div class="space-y-6">
         <div class="veil-panel">
-          <p class="eyebrow">Talks and media</p>
-          <h2 class="mt-3 text-[1.32rem] md:text-[1.5rem]">Talks and public appearances.</h2>
+          <p class="eyebrow">Talks and speaking</p>
+          <h2 class="mt-3 text-[1.32rem] md:text-[1.46rem]">Talks, panels, and presentations.</h2>
           <div class="mt-8 space-y-4">
             {featuredTalks.map((talk) => (
-              <article class="border-t border-[rgba(36,27,23,0.12)] py-4">
+              <article class="border-t border-[rgba(17,23,38,0.08)] py-4">
                 <p class="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
                   {talk.data.dateLabel ?? talk.data.date.getFullYear()}
                 </p>
-                <h3 class="mt-2 text-[0.96rem] md:text-[1.02rem]">{talk.data.title}</h3>
+                <h3 class="mt-2 text-[0.98rem] md:text-[1.06rem]">{talk.data.title}</h3>
                 <p class="mt-2 text-xs uppercase tracking-[0.18em] text-slate-400">
                   {talk.data.event} · {talk.data.format}
                 </p>
               </article>
             ))}
           </div>
-          <div class="mt-6"><a class="link-inline" href="/talks/">View all talks</a></div>
+          <div class="mt-6 flex flex-wrap gap-3">
+            <a class="link-inline" href="/talks/">View all talks</a>
+            <a class="link-inline" href="/contact/">Ask about speaking</a>
+          </div>
         </div>
+
+        {featuredBook && (
+          <div class="veil-panel">
+            <p class="eyebrow">Books</p>
+            <h2 class="mt-3 text-[1.32rem] md:text-[1.46rem]">{featuredBook.data.title}</h2>
+            <p class="mt-2 text-sm uppercase tracking-[0.18em] text-slate-400">{featuredBook.data.subtitle}</p>
+            <p class="mt-4 text-base text-slate-200">{featuredBook.data.description}</p>
+            <div class="mt-6 flex flex-wrap gap-3">
+              <a class="link-inline" href={`/projects/${contentSlug(featuredBook.id)}/`}>Read book details</a>
+              <a class="link-inline" href="/writing/#books">Browse all books</a>
+            </div>
+          </div>
+        )}
 
         <div class="veil-panel">
           <p class="eyebrow">Resume and CV</p>
-          <h2 class="mt-3 text-[1.32rem] md:text-[1.5rem]">Resume and CV.</h2>
+          <h2 class="mt-3 text-[1.32rem] md:text-[1.46rem]">A concise public record.</h2>
           <p class="mt-4 text-base text-slate-200">
-            A short public CV covering governance, research operations, teaching, archives, and recent clinical work.
+            The resume page brings together governance work, research operations, publications, and experience in one
+            readable overview, with downloadable files for direct use.
           </p>
           <ul class="bullet-links mt-6">
             <li><a class="link-inline" href="/resume/">Open resume</a></li>

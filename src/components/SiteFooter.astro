@@ -1,9 +1,19 @@
 ---
 import { navigation, siteMeta } from '../data/site';
+
+const primaryLinks = navigation.filter(({ href }) => ['/governance/', '/papers/', '/projects/', '/writing/', '/talks/'].includes(href));
+const profileLinks = [
+  { href: `mailto:${siteMeta.email}`, label: siteMeta.email },
+  { href: siteMeta.linkedIn, label: 'LinkedIn' },
+  { href: siteMeta.github, label: 'GitHub' },
+  { href: siteMeta.orcid, label: 'ORCID' },
+  { href: siteMeta.academia, label: 'Academia.edu' },
+  { href: siteMeta.substack, label: 'HEXA' },
+];
 ---
 
-<footer class="site-footer border-t border-[rgba(17,23,38,0.12)]">
-  <div class="section-shell grid gap-12 lg:grid-cols-[minmax(0,1fr)_420px]">
+<footer class="site-footer border-t border-[rgba(17,23,38,0.08)] bg-[rgba(244,239,231,0.7)]">
+  <div class="mx-auto grid w-full max-w-[1080px] gap-10 px-6 py-12 md:px-8 md:py-16 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
     <div class="space-y-5">
       <img
         src="/assets/ml-signature-monogram.svg"
@@ -12,48 +22,55 @@ import { navigation, siteMeta } from '../data/site';
         class="w-14 md:w-16"
       />
       <p class="eyebrow">Martin Lepage</p>
-      <h2 class="max-w-xl text-[1.44rem] md:text-[1.7rem]">
-        Governance, scholarship, and authorship made clear.
+      <h2 class="max-w-2xl text-[1.44rem] md:text-[1.72rem]">
+        Governance work, public writing, and a selective archive.
       </h2>
-      <p class="max-w-2xl text-base text-slate-200">
-        A public profile for publications, projects, essays, and professional contact.
+      <p class="max-w-2xl text-[1rem] leading-8 text-slate-100">
+        Use the site to move between governance practice, publications, writing, talks, and direct contact without
+        losing the thread between them.
       </p>
-      <ul class="bullet-links">
-        <li><a class="link-inline" href="/contact/">Get in touch</a></li>
-        {siteMeta.siteUrl && <li><a class="link-inline" href="/rss.xml">RSS feed</a></li>}
-      </ul>
+      <div class="flex flex-wrap gap-3">
+        <a class="button-primary" href="/contact/">Get in touch</a>
+        <a class="button-secondary" href="/governance/">Start with governance</a>
+      </div>
     </div>
 
     <div class="grid gap-8 sm:grid-cols-2">
       <div>
-        <h3 class="font-mono text-sm font-semibold uppercase tracking-[0.24em] text-accent">Navigate</h3>
-        <ul class="mt-4 space-y-3">
-          {navigation.map(({ href, label }) => (
+        <h3 class="font-mono text-sm font-semibold uppercase tracking-[0.24em] text-accent">Explore</h3>
+        <ul class="mt-4 space-y-2.5">
+          {primaryLinks.map(({ href, label }) => (
             <li>
-              <a class="text-sm text-slate-200 hover:text-accent" href={href}>
+              <a class="text-[0.98rem] leading-7 text-slate-100 hover:text-accent" href={href}>
                 {label}
               </a>
             </li>
           ))}
+          <li><a class="text-[0.98rem] leading-7 text-slate-100 hover:text-accent" href="/about/">About</a></li>
+          <li><a class="text-[0.98rem] leading-7 text-slate-100 hover:text-accent" href="/resume/">Resume and CV</a></li>
         </ul>
       </div>
 
       <div>
         <h3 class="font-mono text-sm font-semibold uppercase tracking-[0.24em] text-accent">Elsewhere</h3>
-        <ul class="mt-4 space-y-3 text-sm">
-          <li><a class="text-slate-200 hover:text-accent" href={`mailto:${siteMeta.email}`}>{siteMeta.email}</a></li>
-          <li><a class="text-slate-200 hover:text-accent" href={siteMeta.linkedIn}>LinkedIn</a></li>
-          <li><a class="text-slate-200 hover:text-accent" href={siteMeta.github}>GitHub</a></li>
-          <li><a class="text-slate-200 hover:text-accent" href={siteMeta.orcid}>ORCID</a></li>
-          <li><a class="text-slate-200 hover:text-accent" href={siteMeta.substack}>HEXA</a></li>
-          <li><a class="text-slate-200 hover:text-accent" href={siteMeta.instagram}>Instagram</a></li>
+        <ul class="mt-4 space-y-2.5">
+          {profileLinks.map(({ href, label }) => (
+            <li>
+              <a class="text-[0.98rem] leading-7 text-slate-100 hover:text-accent" href={href}>
+                {label}
+              </a>
+            </li>
+          ))}
+          {siteMeta.siteUrl && (
+            <li><a class="text-[0.98rem] leading-7 text-slate-100 hover:text-accent" href="/rss.xml">RSS feed</a></li>
+          )}
         </ul>
       </div>
     </div>
   </div>
 
-  <div class="shell flex flex-col gap-3 border-t border-[rgba(17,23,38,0.12)] py-5 text-sm text-slate-300 md:flex-row md:items-center md:justify-between">
-    <p>&copy; {new Date().getFullYear()} Martin Lepage. Montreal-based scholar, writer, and AI governance strategist.</p>
-    <p>Clear reading, straightforward navigation, and direct contact paths.</p>
+  <div class="shell flex flex-col gap-3 border-t border-[rgba(17,23,38,0.08)] py-5 text-sm text-slate-200 md:flex-row md:items-center md:justify-between">
+    <p>&copy; {new Date().getFullYear()} Martin Lepage. Montreal-based governance, research, and public writing.</p>
+    <p>Bounded claims. Clear routes. Direct contact.</p>
   </div>
 </footer>

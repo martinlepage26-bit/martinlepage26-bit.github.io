@@ -3,7 +3,7 @@ title: "Religiologiques 32 review leads"
 venue: "Religiologiques"
 status: "In progress bibliographic confirmation"
 type: "Review cluster"
-abstract: "A grouped in-progress record for three book reviews listed on the ACFAS profile for Religiologiques volume 32: Ezzy (2014), Fedele and Knibbe (2013), and Hanegraaff (2013)."
+abstract: "Three reported book reviews in Religiologiques volume 32 on works by Ezzy, Fedele and Knibbe, and Hanegraaff, still awaiting full issue metadata and retrieval confirmation."
 tags:
   - review leads
   - Religiologiques

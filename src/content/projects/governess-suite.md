@@ -3,7 +3,7 @@ title: "Governess"
 subtitle: "A governance suite and backend architecture project"
 year: 2026
 status: "Backend and systems project"
-description: "A governance-oriented backend project that suggests a more infrastructural layer of Martin Lepage's tooling and systems work."
+description: "A governance-oriented backend architecture project for policy logic, traceability, and workflow behavior."
 role: "Builder"
 outputs:
   - "Backend architecture"
@@ -22,6 +22,6 @@ links:
     url: "https://github.com/martinlepage26-bit/Governess"
 ---
 
-This entry gives the projects section some infrastructural weight. Not every governance project should read like a public essay or a polished client deliverable; some of the work is about the underlying systems that hold policy logic, traceability, and workflow behavior together.
+*Governess* is the backend and systems layer of the governance tooling work: policy logic, traceability, workflow behavior, and supporting application structure.
 
-The public framing stays factual and modest while the repository remains primarily an architecture and systems artifact.
+It shows the infrastructural side of the practice rather than the client-facing one. The repository remains primarily an architecture and systems artifact.

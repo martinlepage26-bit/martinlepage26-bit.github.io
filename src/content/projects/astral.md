@@ -16,7 +16,7 @@ tags:
   - Seasonal reading
   - Symbolic systems
 featured: false
-image: "/social/og-breath-of-the-astral-year.svg"
+image: "/social/og-breath-of-the-astral-year.png"
 imageAlt: "A zodiac app in development drawn from the sign language of Breath of the Astral Year."
 links: []
 ---

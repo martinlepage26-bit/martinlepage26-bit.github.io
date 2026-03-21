@@ -5,16 +5,22 @@ import PracticeHero from '../../components/PracticeHero.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import PublicationCard from '../../components/PublicationCard.astro';
 import SectionIntro from '../../components/SectionIntro.astro';
-import { hiddenProjectArchiveSlugs, projectArchivePromotedPaperSlugs } from '../../data/site';
+import { hiddenProjectArchiveSlugs, pageMeta, projectArchivePromotedPaperSlugs, publicProjectOrder } from '../../data/site';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { collectTags, contentSlug, isPublishedPaper, sortByYear } from '../../lib/content';
+import { collectTags, contentSlug, isPublishedPaper, prioritizeEntriesBySlug, sortByYear } from '../../lib/content';
 
 const allProjects = sortByYear(await getCollection('projects'));
 const hiddenProjectArchiveSlugSet = new Set<string>(hiddenProjectArchiveSlugs);
 const promotedPaperSlugSet = new Set<string>(projectArchivePromotedPaperSlugs);
-const projects = allProjects.filter(
-  (project) =>
-    !/\bamazon\b/i.test(project.data.status) && !hiddenProjectArchiveSlugSet.has(contentSlug(project.id)),
+const suppressedProjectArchiveSlugs = new Set<string>(['govern-ai-practice', 'ai-governance']);
+const projects = prioritizeEntriesBySlug(
+  allProjects.filter(
+    (project) =>
+      !/\bamazon\b/i.test(project.data.status) &&
+      !hiddenProjectArchiveSlugSet.has(contentSlug(project.id)) &&
+      !suppressedProjectArchiveSlugs.has(contentSlug(project.id)),
+  ),
+  publicProjectOrder,
 );
 const allPapers = sortByYear(await getCollection('papers'));
 const unpublishedPapers = allPapers.filter(
@@ -24,33 +30,34 @@ const tags = collectTags([...projects, ...unpublishedPapers]);
 ---
 
 <BaseLayout
-  title="Projects"
-  description="An archive of unpublished books, papers, apps in development, and research builds by Martin Lepage."
+  title={pageMeta.projects.title}
+  description={pageMeta.projects.description}
 >
   <PracticeHero
     eyebrow="Projects"
-    title="Unpublished books, papers, apps in development, and research builds."
-    description="Projects now holds the in-progress archive: frameworks, manuscripts, tools, and app lines that are still becoming themselves."
-    details="Published academic work lives under Publications, while published Amazon books now live under Writings. This page stays focused on material still under construction, revision, or technical iteration."
+    title="Projects, manuscripts, and deterministic recursive method work."
+    description="This page now foregrounds recursive method tools, book-stage work, working manuscripts, and experimental builds rather than general governance positioning."
+    details="Governance, Writings, and Publications now have clearer routes of their own. Projects holds the unfinished, exploratory, and method-facing work that does not belong on those shelves yet."
     links={[
       { label: 'Browse project archive', url: '#project-archive', variant: 'primary' },
       { label: 'Browse research records', url: '#unpublished-papers', variant: 'secondary' },
-      { label: 'Published books now live under Writings', url: '/writing/', variant: 'inline' },
+      { label: 'Start with governance work', url: '/governance/', variant: 'inline' },
     ]}
     sideEyebrow="Archive logic"
     sideTitle="What belongs here now."
-    sideDescription="The Projects page is no longer a loose overflow area. It is the bounded public archive for work that is still in progress."
+    sideDescription="Use this archive for recursive method tools, apps in development, book-stage work, experimental builds, and unpublished research."
     sidePoints={[
-      'Book-stage work stays here until it becomes a published record.',
-      'Apps in development remain visible without overstating readiness.',
-      'Unpublished papers remain public, but no longer masquerade as publication entries.',
+      'The deterministic recursive method now gets a clearer front-facing role here through Scriptorium and related work.',
+      'Book-stage work stays here until it becomes a published book entry under Writings.',
+      'Apps in development stay visible without overstating readiness.',
+      'Unpublished papers remain public here until they can stand as publication entries.',
     ]}
     stats={[
       {
         eyebrow: 'Books and builds',
         value: projects.length,
         label: 'Project records',
-        description: 'Book-stage work, frameworks, apps in development, and research builds.',
+        description: 'Recursive method tools, book-stage work, apps in development, and research builds.',
       },
       {
         eyebrow: 'Research records',
@@ -59,10 +66,10 @@ const tags = collectTags([...projects, ...unpublishedPapers]);
         description: 'In-progress manuscripts and unresolved bibliographic leads kept public until they become publication entries.',
       },
       {
-        eyebrow: 'Published elsewhere',
-        value: 'Writings',
-        label: 'Amazon books',
-        description: 'Published books with outward links now sit on the Writings page.',
+        eyebrow: 'Professional route',
+        value: 'Governance',
+        label: 'Practice page',
+        description: 'The more explicitly professional governance surface now lives at its own dedicated entry point.',
       },
     ]}
   />
@@ -76,8 +83,8 @@ const tags = collectTags([...projects, ...unpublishedPapers]);
       <section id="project-archive">
         <SectionIntro
           eyebrow="Project archive"
-          title="Books, apps in development, and research builds."
-          description="This section includes the working archive rather than only a curated shortlist."
+          title="Recursive method tools, books, apps in development, and research builds."
+          description="Scriptorium, book-stage projects, apps in development, and experimental research builds organized around unfinished or method-facing work."
         />
 
         <div class="mt-10 grid gap-6 lg:grid-cols-2">
@@ -89,7 +96,7 @@ const tags = collectTags([...projects, ...unpublishedPapers]);
         <SectionIntro
           eyebrow="In-progress research"
           title="Manuscripts and unresolved research leads."
-          description="These records stay public here until they become publication entries or their bibliographic details are confirmed."
+          description="These records stay public here until they become publication entries or their bibliographic details are secure."
         />
 
         <div class="mt-10 grid gap-6 lg:grid-cols-2">

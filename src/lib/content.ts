@@ -58,6 +58,13 @@ export function orderEntriesBySlug<T extends { id: string }>(items: T[], order: 
     .filter((item): item is T => Boolean(item));
 }
 
+export function prioritizeEntriesBySlug<T extends { id: string }>(items: T[], order: readonly string[]) {
+  const ordered = orderEntriesBySlug(items, order);
+  const orderedSlugs = new Set(order.map((slug) => slug.toLowerCase()));
+  const remainder = items.filter((item) => !orderedSlugs.has(contentSlug(item.id).toLowerCase()));
+  return [...ordered, ...remainder];
+}
+
 export function sortByTitle<T extends { data: { title: string } }>(items: T[]) {
   return [...items].sort((a, b) => a.data.title.localeCompare(b.data.title));
 }

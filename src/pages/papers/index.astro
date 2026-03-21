@@ -7,7 +7,7 @@ import SectionIntro from '../../components/SectionIntro.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { collectTags, isPublishedPaper, sortByYear } from '../../lib/content';
 import { researchOverview, researchProfile } from '../../data/research';
-import { siteMeta } from '../../data/site';
+import { pageMeta, siteMeta } from '../../data/site';
 
 const publications = sortByYear((await getCollection('papers')).filter(isPublishedPaper));
 const tags = collectTags(publications);
@@ -25,22 +25,23 @@ const archiveSpan =
 ---
 
 <BaseLayout
-  title="Publications"
-  description="A selected index of Martin Lepage's published academic work, with Academia.edu as the larger public archive."
+  title={pageMeta.publications.title}
+  description={pageMeta.publications.description}
 >
   <PracticeHero
     eyebrow="Publications"
     title="Published academic work."
-    description="This page is the on-site guide to the published record, with Academia.edu holding the larger outward archive."
-    details="Manuscripts, unresolved leads, and other in-progress records stay under Projects. The archive here is limited to validated publication entries."
+    description="Published journal articles, book chapters, reviews, editorials, and dissertation records, with Academia.edu holding the broader outward archive."
+    details="Manuscripts, unresolved leads, and other in-progress records stay under Projects. Only publication entries with enough metadata to stand on their own appear here."
     links={[
       { label: 'Open Academia.edu', url: siteMeta.academia, variant: 'primary' },
       { label: 'Browse this site index', url: '#publication-archive', variant: 'secondary' },
+      { label: 'Open resume and CV', url: '/resume/', variant: 'inline' },
       { label: 'See in-progress work under Projects', url: '/projects/', variant: 'inline' },
     ]}
     sideEyebrow="Archive boundary"
     sideTitle="What this page claims."
-    sideDescription="This page is narrower than the full research universe. It lists records solid enough to stand as publications without mixing them with manuscripts or unresolved leads."
+    sideDescription="The archive is narrower than the full research universe. It lists publication records without mixing them with manuscripts or unresolved leads."
     sidePoints={[
       'Published articles, chapters, dissertation records, and reviews stay here as record entries.',
       'The larger outward archive continues on Academia.edu.',
@@ -74,8 +75,8 @@ const archiveSpan =
         <p class="eyebrow">Canonical archive</p>
         <h2 class="mt-3 text-[1.42rem] md:text-[1.62rem]">The full paper archive is on Academia.edu.</h2>
         <p class="mt-4 max-w-[58ch] text-base text-slate-200">
-          Use this page as the clean on-site guide to the published record. For the larger outward-facing archive, use
-          Academia.edu. For in-progress manuscripts, unresolved review leads, and research still being confirmed, go to
+          The on-site index is the clean guide to the published record. Academia.edu holds the larger outward-facing
+          archive. In-progress manuscripts, unresolved review leads, and research still being confirmed stay under
           Projects.
         </p>
         <div class="mt-6 flex flex-wrap gap-3">
@@ -86,7 +87,7 @@ const archiveSpan =
 
       <div class="veil-panel">
         <p class="eyebrow">On-site use</p>
-        <h2 class="mt-3 text-[1.28rem] md:text-[1.44rem]">Use this page as the bounded guide, not the exhaustive dump.</h2>
+        <h2 class="mt-3 text-[1.28rem] md:text-[1.44rem]">A bounded guide, not an exhaustive dump.</h2>
         <p class="mt-4 text-base text-slate-200">
           The on-site archive stays selective and readable. It includes only records with enough metadata to stand as
           publication entries, while the larger external stack remains available for the broader paper trail.
@@ -111,8 +112,8 @@ const archiveSpan =
     <div class="mt-14" id="publication-archive">
       <SectionIntro
         eyebrow="On-site index"
-        title="Search the publications here."
-        description="Search validated publications by title, venue, year, and topic."
+        title="Search the published record."
+        description="Search published articles, chapters, reviews, and dissertation records by title, venue, year, and topic."
       />
     </div>
 

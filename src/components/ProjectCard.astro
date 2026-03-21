@@ -18,6 +18,7 @@ const motifClass =
     'the-violet-gem': 'project-motif-gem',
     recurso: 'project-motif-recursion',
   }[slug] ?? 'project-motif-default';
+const summary = clampText(project.data.description, 190);
 ---
 
 <article data-filter-item data-tags={project.data.tags.join('|').toLowerCase()} data-search={`${project.data.title} ${project.data.subtitle} ${project.data.description} ${project.data.role} ${project.data.tags.join(' ')}`.toLowerCase()}>
@@ -34,8 +35,8 @@ const motifClass =
       <h3 class="text-[1.06rem] leading-tight md:text-[1.28rem]">{project.data.title}</h3>
       <p class="text-sm text-slate-200">{project.data.subtitle}</p>
     </div>
-    <p class="text-sm uppercase tracking-[0.14em] text-slate-400">{project.data.role}</p>
-    <p class="max-w-[58ch] text-base text-slate-200">{clampText(project.data.description, 220)}</p>
+    <p class="project-card-role">{project.data.role}</p>
+    <p class="project-card-summary max-w-[58ch]">{summary}</p>
     <span class="mt-auto text-sm font-semibold text-accent group-hover:text-moon">View project</span>
   </a>
 </article>

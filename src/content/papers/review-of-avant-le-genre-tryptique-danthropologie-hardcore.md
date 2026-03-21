@@ -4,7 +4,7 @@ year: 2015
 venue: "Recherches amérindiennes au Québec"
 status: "In progress bibliographic confirmation"
 type: "Review lead"
-abstract: "A bibliographic lead for a reported review in Recherches amérindiennes au Québec that still needs a stable URL, PDF, and fuller citation details."
+abstract: "A reported review in Recherches amérindiennes au Québec of Désveaux (2013), still awaiting a stable URL, PDF, and fuller citation details."
 tags:
   - review lead
   - anthropology
@@ -17,6 +17,6 @@ links: []
 ---
 This record stays under Projects because the review is reported on the ACFAS profile, but a stable URL, PDF, and complete journal metadata were not retrieved in the current pass.
 
-The site keeps it visible as a bibliographic lead rather than promoting it into the publication archive. That preserves the signal that the item likely exists without overstating the present level of verification.
+Keeping it as a bibliographic lead preserves the signal that the item likely exists without overstating the present level of verification.
 
 If a journal record or PDF is recovered later, this entry can be promoted into the published review list with fuller metadata.

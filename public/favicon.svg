@@ -1,15 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
   <title id="title">Martin Lepage site icon</title>
-  <desc id="desc">A split ML monogram with a dark M and a violet L.</desc>
+  <desc id="desc">A split ML monogram with a dark M and a neon lime L.</desc>
   <defs>
-    <linearGradient id="violetFill" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#3f046e" />
-      <stop offset="58%" stop-color="#6310af" />
-      <stop offset="100%" stop-color="#7b1ddd" />
+    <linearGradient id="limeFill" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#304e00" />
+      <stop offset="58%" stop-color="#83d400" />
+      <stop offset="100%" stop-color="#d8ff52" />
     </linearGradient>
-    <filter id="violetGlow" x="-80%" y="-80%" width="260%" height="260%">
-      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#7b1ddd" flood-opacity=".34" />
-      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#7b1ddd" flood-opacity=".14" />
+    <filter id="limeGlow" x="-80%" y="-80%" width="260%" height="260%">
+      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#d8ff52" flood-opacity=".34" />
+      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#d8ff52" flood-opacity=".14" />
     </filter>
   </defs>
 
@@ -29,8 +29,8 @@
   <text
     x="60"
     y="87"
-    fill="url(#violetFill)"
-    filter="url(#violetGlow)"
+    fill="url(#limeFill)"
+    filter="url(#limeGlow)"
     font-family="'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Georgia, serif"
     font-size="82"
     font-style="italic"

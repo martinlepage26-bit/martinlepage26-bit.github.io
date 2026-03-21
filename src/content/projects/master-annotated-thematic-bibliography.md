@@ -19,4 +19,4 @@ imageAlt: "An annotated thematic bibliography supporting long-range research and
 links: []
 ---
 
-This entry names an active bibliography project that supports the broader research and writing archive. It is presented as working infrastructure: a structured reading base rather than a finished public essay or book.
+The Master Annotated Thematic Bibliography is a working reading base for the broader research and writing archive. It groups sources by theme so recurring questions in governance, media, ritual, and legitimacy can be tracked over time.

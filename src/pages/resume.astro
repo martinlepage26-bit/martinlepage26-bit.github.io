@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import ResumeSection from '../components/ResumeSection.astro';
 import SectionIntro from '../components/SectionIntro.astro';
+import { pageMeta } from '../data/site';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { isPublishedPaper, sortByYear } from '../lib/content';
 
@@ -10,20 +11,24 @@ const selectedPublications = papers.filter((entry) => isPublishedPaper(entry)).s
 ---
 
 <BaseLayout
-  title="Resume and CV"
-  description="On-page resume and downloadable CV for Martin Lepage, covering governance work, research operations, publications, and professional experience."
+  title={pageMeta.resume.title}
+  description={pageMeta.resume.description}
 >
   <section class="section-shell">
     <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
       <SectionIntro
         eyebrow="Resume and CV"
-        title="Read online or download."
-        description="A short public CV with experience, publications, and training."
+        title="Professional summary, publications, and downloads."
+        description="A concise public CV covering governance work, research operations, publications, and recent professional roles."
       />
 
       <ul class="bullet-links">
         <li><a class="link-inline" href="/files/Martin-Lepage-CV-2026.pdf">Download PDF</a></li>
         <li><a class="link-inline" href="/files/Martin-Lepage-CV-2026.docx">Download DOCX</a></li>
+        <li><a class="link-inline" href="/governance/">View governance work</a></li>
+        <li><a class="link-inline" href="/papers/">Browse publications</a></li>
+        <li><a class="link-inline" href="/talks/">View talks</a></li>
+        <li><a class="link-inline" href="/contact/">Contact Martin</a></li>
       </ul>
     </div>
 

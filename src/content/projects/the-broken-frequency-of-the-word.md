@@ -2,7 +2,7 @@
 title: "THE BROKEN FREQUENCY OF THE WORD"
 subtitle: "Self-published book"
 status: "Self-published book on Amazon"
-description: "A self-published book by Martin Lepage, documented here with bounded metadata until fuller publication details are supplied."
+description: "Self-published book by Martin Lepage available on Amazon under this title."
 role: "Author"
 outputs:
   - "Self-published book"
@@ -14,12 +14,12 @@ tags:
   - published book
   - books
 featured: false
-image: "/social/og-default.svg"
+image: "/social/og-default.png"
 imageAlt: "Default site graphic used until cover art or fuller metadata is supplied for THE BROKEN FREQUENCY OF THE WORD."
 links:
   - label: "Amazon.ca"
     url: "https://www.amazon.ca/dp/B0G1VT2L4N/"
 ---
-This entry records *THE BROKEN FREQUENCY OF THE WORD* as a self-published book available on Amazon. The site keeps the claim boundary tight: title, authorship, self-published status, and the Amazon listing are included, while fuller edition-specific details can still be added later.
+*THE BROKEN FREQUENCY OF THE WORD* is a self-published book by Martin Lepage available on Amazon. It belongs in the writing archive as a published title rather than a manuscript placeholder.
 
-That restraint is intentional. It prevents the site from inventing publication year, ISBN, subtitle, or synopsis where those details have not yet been confirmed for public display.
+Fuller edition details can be added later without changing that basic status.

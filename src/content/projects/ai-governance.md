@@ -22,6 +22,6 @@ links:
     url: "https://github.com/martinlepage26-bit/govern-ai"
 ---
 
-This entry keeps the portfolio tied to the core governance question running through the site: how AI systems become operationally legible before procurement pressure, audit review, or institutional mistrust turns that work into an emergency.
+This project addresses a practical governance problem: how to make AI systems operationally legible before procurement pressure, audit review, or institutional mistrust turns documentation into emergency repair.
 
-The right public framing is practical rather than inflated. This project is about pathways, evidence, and review structures that let organizations explain what an AI system is doing, who authorized it, and what documentation survives scrutiny.
+The project stays practical rather than inflated. It is about pathways, evidence, and review structures that let organizations explain what an AI system is doing, who authorized it, and what documentation survives scrutiny.

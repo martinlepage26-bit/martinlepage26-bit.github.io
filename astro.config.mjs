@@ -3,15 +3,9 @@ import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
+import { resolveSiteUrl } from './site-config.js';
 
-const site = process.env.PUBLIC_SITE_URL || process.env.SITE_URL;
-const isBuildCommand = process.argv.includes('build');
-
-if (isBuildCommand && !site) {
-  console.warn(
-    '[site] PUBLIC_SITE_URL or SITE_URL is not set. Canonical URLs, sitemap output, and full RSS metadata will be omitted from this build.',
-  );
-}
+const site = resolveSiteUrl(process.env);
 
 export default defineConfig({
   site,
@@ -19,7 +13,7 @@ export default defineConfig({
   legacy: {
     collectionsBackwardsCompat: true,
   },
-  integrations: [mdx(), ...(site ? [sitemap()] : [])],
+  integrations: [mdx(), sitemap()],
   vite: {
     plugins: [tailwindcss()],
   },

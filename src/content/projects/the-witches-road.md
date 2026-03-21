@@ -3,7 +3,7 @@ title: "The Witches Road"
 subtitle: "A symbolic and critical project moving between ritual, path, and mediated power"
 year: 2026
 status: "Developing research and writing project"
-description: "A developing project that appears to connect path-making, symbolic charge, and institutional or mediated forms of power through a ritual-inflected frame."
+description: "A developing research and writing project on ritual pathways, symbolic charge, and mediated forms of power."
 role: "Author and researcher"
 outputs:
   - "Project architecture"
@@ -20,6 +20,6 @@ imageAlt: "A developing symbolic project concerned with roads, thresholds, ritua
 links: []
 ---
 
-For now, this project should stay framed as developing work rather than as a finished manuscript or formal public program. The title suggests a pathway-oriented symbolic structure, and it fits the broader site because it connects atmosphere, reading practice, and institutional interpretation.
+*The Witches Road* follows path-making, ritual movement, symbolic charge, and the forms of power that gather around them.
 
-As fuller public-safe material becomes available, this entry can sharpen into a more specific description of genre, argument, and intended output.
+It belongs beside the site's work on atmosphere, reading practice, and institutional interpretation, while remaining an active project rather than a finished manuscript.

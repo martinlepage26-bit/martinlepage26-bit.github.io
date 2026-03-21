@@ -2,7 +2,7 @@
 title: "Alchemy of the Wound"
 subtitle: "Field Manual for the Body"
 status: "Self-published book on Amazon"
-description: "A self-published book framed as a field manual for the body, documented here without inventing edition details not yet supplied."
+description: "Self-published book by Martin Lepage, subtitled Field Manual for the Body and available on Amazon."
 role: "Author"
 outputs:
   - "Self-published book"
@@ -15,12 +15,12 @@ tags:
   - body archive
   - books
 featured: true
-image: "/images/placeholders/alchemy-of-the-wound.jpg"
-imageAlt: "Placeholder visual treatment for Alchemy of the Wound until final cover metadata is supplied."
+image: "/social/og-default.png"
+imageAlt: "Default site graphic used until cover art or fuller metadata is supplied for Alchemy of the Wound."
 links:
   - label: "Amazon.ca"
     url: "https://www.amazon.ca/dp/B0GSGK5X7M/"
 ---
-This entry is now presented as a self-published book available on Amazon, not as an unpublished manuscript. The site keeps its public claims narrow: title, subtitle, authorship, self-published status, and the Amazon listing are confirmed here, while publication year and fuller bibliographic details can still be added later.
+*Alchemy of the Wound* is a self-published book by Martin Lepage, available on Amazon under the subtitle *Field Manual for the Body*. It belongs in the writing archive as a published title, not as a manuscript-stage project.
 
-The subtitle, *Field Manual for the Body*, is the clearest descriptive frame currently confirmed for the public site. Rather than inventing a broader synopsis from earlier draft-stage materials, this page keeps the book legible without overstating what has been independently checked.
+The subtitle, *Field Manual for the Body*, is the clearest public frame currently attached to the book. Additional bibliographic detail can be added later without changing its published status.

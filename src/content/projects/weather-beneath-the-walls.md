@@ -2,7 +2,7 @@
 title: "The Weather Beneath The Walls"
 subtitle: "Self-published book"
 status: "Self-published book on Amazon"
-description: "A self-published book by Martin Lepage, listed here with bounded metadata until fuller publication details are supplied."
+description: "Self-published book by Martin Lepage available on Amazon under this title."
 role: "Author"
 outputs:
   - "Self-published book"
@@ -14,12 +14,12 @@ tags:
   - published book
   - books
 featured: true
-image: "/assets/ai-governance-eye.png"
-imageAlt: "A placeholder image used until cover art or fuller publication metadata is supplied."
+image: "/social/og-default.png"
+imageAlt: "Default site graphic used until cover art or fuller metadata is supplied for The Weather Beneath The Walls."
 links:
   - label: "Amazon.ca"
     url: "https://www.amazon.ca/dp/B0GSFY9QMS/"
 ---
-This title is documented here as a self-published book available on Amazon. The site no longer presents it as a near-finished manuscript, because that would understate the published status Martin Lepage has now confirmed.
+*The Weather Beneath The Walls* is a self-published book by Martin Lepage available on Amazon. It belongs in the writing archive as a published book, not as a near-finished manuscript.
 
-The entry remains intentionally concise until fuller metadata is available. Publication year, fuller edition details, and cover image can be added later without changing the basic status claim.
+Publication year, fuller edition details, and cover image can be added later without changing that basic status.

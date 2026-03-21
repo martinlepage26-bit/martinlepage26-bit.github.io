@@ -12,18 +12,18 @@ const { writing, readingMinutes } = Astro.props;
 
 <article data-filter-item data-tags={writing.data.tags.join('|').toLowerCase()} data-search={`${writing.data.title} ${writing.data.description} ${writing.data.tags.join(' ')}`.toLowerCase()}>
   <a class="group card-link" href={`/writing/${contentSlug(writing.id)}/`}>
-    <div class="flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">
+    <div class="writing-card-meta">
       <span>{formatDate(writing.data.date)}</span>
-      <span class="h-1 w-1 rounded-full bg-accent/70"></span>
+      <span class="writing-card-divider"></span>
       <span>{readingMinutes} min read</span>
     </div>
     <div>
       <h3 class="text-[1rem] leading-tight md:text-[1.22rem]">{writing.data.title}</h3>
-      <p class="mt-3 max-w-[58ch] text-base text-slate-200">{writing.data.description}</p>
+      <p class="writing-card-summary mt-3 max-w-[58ch]">{writing.data.description}</p>
     </div>
     <div class="mt-auto flex flex-wrap gap-3 text-sm font-semibold text-accent group-hover:text-moon">
       <span>Read writing</span>
-      {writing.data.externalUrl && <span>Also linked externally</span>}
+      {writing.data.externalUrl && <span>External link also available</span>}
     </div>
   </a>
 </article>

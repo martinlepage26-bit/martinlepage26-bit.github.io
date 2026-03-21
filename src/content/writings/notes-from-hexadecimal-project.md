@@ -1,6 +1,6 @@
 ---
 title: "Notes from Hex A. Decimal"
-description: "A short public note on the writing atmosphere behind the Hex A. Decimal Substack profile: glitch-born essays, haunted systems, and a refusal of empty optimization."
+description: "A short essay on the writing atmosphere behind the Hex A. Decimal Substack profile: glitch-born essays, haunted systems, and a refusal of empty optimization."
 date: 2026-02-20
 tags:
   - Substack

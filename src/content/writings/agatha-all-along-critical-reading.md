@@ -1,6 +1,6 @@
 ---
 title: "Agatha All Along and the Digital Reformatting of Witchcraft"
-description: "[Placeholder date] Seeded essay entry based on the verified note that a critical reading of Agatha All Along exists within the current research and writing profile."
+description: "Draft essay on Agatha All Along, queer theory, ritual studies, and the digital reformatting of witchcraft."
 date: "2000-01-01"
 tags:
   - Agatha All Along
@@ -11,8 +11,8 @@ tags:
 featured: false
 draft: true
 ---
-The publications profile confirms that a critical reading of *Agatha All Along* exists within the current body of work and that it uses queer theory, ritual studies, and cultural analysis frameworks. What the available sources do not yet confirm is the final essay title, venue, or posting date.
+This draft essay reads *Agatha All Along* through queer theory, ritual studies, and cultural analysis, with a focus on how witchcraft gets reformatted through digital circulation and serialized media form.
 
-Because of that gap, this seeded content file stays deliberately transparent. It reserves space in the writing collection for a real line of analysis without pretending that a finished publication record already exists.
+The concept is real, but the final public title, venue, and posting date are not yet fixed.
 
-When the approved essay title and date are available, this entry can be updated quickly while preserving the tags and conceptual framing already established here.
+Once those details are settled, this draft can be promoted into the live writing archive without changing its core argument.
