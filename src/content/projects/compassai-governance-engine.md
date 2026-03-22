@@ -22,4 +22,4 @@ links: []
 ---
 *CompassAI* names the governance side of the apps in development: intake, assessment, and output generation shaped as a readable review surface rather than a black-box engine.
 
-The public page stays intentionally bounded. It presents CompassAI as an app in development with substantial development behind it, while keeping the visible claim focused on governance intake, judgment support, and structured review.
+It is an app in development with substantial implementation behind it. The visible claim stays focused on governance intake, judgment support, and structured review — not on an overstated finished product.

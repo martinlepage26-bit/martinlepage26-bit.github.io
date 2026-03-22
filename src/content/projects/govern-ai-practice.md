@@ -24,4 +24,4 @@ links:
 
 *govern-ai* is the practice-facing project where risk mapping, traceability, documentation, and institutional legibility become working outputs rather than only analytical concerns.
 
-The project is especially important for the homepage because it shows that the site does not position Martin as an observer of systems only. He also builds the documents, architectures, and interfaces needed to help organizations act.
+The project demonstrates that the governance work here is not only analytical. It produces documents, decision structures, and review interfaces that organizations can use.

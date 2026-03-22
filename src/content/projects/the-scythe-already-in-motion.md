@@ -22,6 +22,6 @@ links: []
 
 This project studies the post-canonical life of *Buffy the Vampire Slayer* fragments in queer and trans magical practice. It treats moments of glitch, refusal, tonal rupture, and ethical misalignment as ritual technologies that travel beyond the television text and become usable inside living ritual worlds.
 
-The public entry stays concise on purpose. The larger prospectus develops the argument through ethnographic fieldwork, media analysis, and a hybrid frame built from queer theory, ritual studies, and fan studies.
+The larger prospectus develops the argument through ethnographic fieldwork, media analysis, and a hybrid frame built from queer theory, ritual studies, and fan studies.
 
 The project is positioned for readers in media studies, queer theory, ritual and religious studies, cultural anthropology, and fan studies, while remaining legible to practitioners and cultural critics working around witchcraft, ritual, and fandom.

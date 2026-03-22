@@ -41,11 +41,26 @@
     @apply scroll-smooth text-ink antialiased;
     background: #020204;
     text-size-adjust: 100%;
+    filter: invert(100%);
+  }
+
+  /* Restore media elements: double-invert cancels html inversion */
+  /* svg covers inline SVG elements; svg image would be triple-inverted if both were listed */
+  img,
+  video,
+  canvas,
+  picture,
+  embed,
+  iframe,
+  object,
+  svg {
+    filter: invert(100%);
   }
 
   body {
     @apply min-h-screen text-ink selection:text-bone;
     position: relative;
+    z-index: 0;
     background:
       radial-gradient(circle at 18% 8%, rgba(197, 255, 58, 0.16) 0%, rgba(197, 255, 58, 0) 28%),
       radial-gradient(circle at 82% 18%, rgba(69, 190, 124, 0.12) 0%, rgba(69, 190, 124, 0) 26%),
@@ -149,63 +164,85 @@
     z-index: 1;
   }
 
+  /* ─── Aurora Borealis background ─────────────────────────────────────────
+     double-invert(100%) cancels the html-level inversion so the colors
+     defined here appear exactly as written to the viewer.
+  ──────────────────────────────────────────────────────────────────────── */
   .site-aurora {
     position: fixed;
     inset: 0;
-    z-index: 0;
+    z-index: -1;
     pointer-events: none;
     overflow: hidden;
+    /* Double-invert: cancels html's filter:invert(100%) so aurora colors appear as intended */
+    filter: invert(100%);
+    background: #000308;
   }
 
-  .site-aurora::before,
+  /* Primary curtain — unequal lime/teal bands, 82° diagonal (leans left), sweeping left→right */
+  .site-aurora::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      82deg,
+      transparent                   0%,
+      transparent                   6%,
+      rgba(0, 255, 0, 0.88)         8%,    /* narrow lime — 4% wide */
+      rgba(0, 230, 60, 0.72)        11%,
+      rgba(0, 180, 60, 0.22)        13%,
+      transparent                   16%,
+      transparent                   28%,   /* wide gap — 12% */
+      rgba(0, 128, 128, 0.80)       31%,   /* wide teal — 14% wide */
+      rgba(0, 200, 170, 0.68)       37%,
+      rgba(0, 160, 140, 0.38)       42%,
+      rgba(0, 128, 128, 0.10)       45%,
+      transparent                   48%,
+      transparent                   59%,   /* long gap — 11% */
+      rgba(0, 255, 0, 0.75)         61%,   /* medium lime — 8% wide */
+      rgba(0, 220, 70, 0.58)        66%,
+      rgba(0, 160, 50, 0.18)        69%,
+      transparent                   72%,
+      transparent                   83%,   /* wide gap — 11% */
+      rgba(0, 128, 128, 0.70)       87%,   /* wide teal — 10% wide */
+      rgba(0, 190, 160, 0.52)       92%,
+      rgba(0, 128, 128, 0.14)       96%,
+      transparent                   99%,
+      transparent                   100%
+    );
+    background-size: 320% 100%;
+    animation: aurora-primary 28s ease-in-out infinite alternate;
+  }
+
+  /* Secondary curtain — unequal violet/teal bands, 97° diagonal (leans right), sweeping right→left */
   .site-aurora::after {
     content: "";
     position: absolute;
-    left: -14vw;
-    right: -14vw;
-    border-radius: 999px;
-    filter: blur(48px) saturate(155%);
-    transform-origin: center;
-  }
-
-  .site-aurora::before {
-    top: 8vh;
-    height: clamp(12rem, 24vw, 21rem);
-    background:
-      linear-gradient(
-        92deg,
-        rgba(229, 255, 104, 0) 0%,
-        rgba(229, 255, 104, 0.14) 7%,
-        rgba(188, 255, 48, 0.78) 18%,
-        rgba(210, 255, 54, 0.9) 34%,
-        rgba(116, 255, 171, 0.82) 52%,
-        rgba(69, 220, 160, 0.74) 66%,
-        rgba(170, 230, 52, 0.64) 80%,
-        rgba(239, 255, 151, 0.18) 92%,
-        rgba(239, 255, 151, 0) 100%
-      );
-    opacity: 0.92;
-    transform: rotate(-7deg);
-    animation: aurora-drift 20s ease-in-out infinite alternate;
-  }
-
-  .site-aurora::after {
-    top: 16vh;
-    height: clamp(8rem, 15vw, 13rem);
-    background:
-      linear-gradient(
-        100deg,
-        rgba(109, 255, 180, 0) 0%,
-        rgba(109, 255, 180, 0.1) 14%,
-        rgba(109, 255, 180, 0.54) 28%,
-        rgba(213, 255, 82, 0.7) 46%,
-        rgba(158, 232, 48, 0.62) 62%,
-        rgba(83, 213, 139, 0.56) 78%,
-        rgba(83, 213, 139, 0) 100%
-      );
-    opacity: 0.62;
-    transform: rotate(5deg);
-    animation: aurora-drift-secondary 26s ease-in-out infinite alternate;
+    inset: 0;
+    background: linear-gradient(
+      97deg,
+      transparent                   0%,
+      transparent                   8%,
+      rgba(136, 0, 255, 0.82)       12%,   /* wide violet — 14% wide */
+      rgba(200, 0, 240, 0.68)       18%,
+      rgba(160, 0, 200, 0.38)       23%,
+      rgba(120, 0, 180, 0.12)       26%,
+      transparent                   29%,
+      transparent                   47%,   /* long gap — 18% */
+      rgba(0, 128, 128, 0.65)       49%,   /* narrow teal — 5% wide */
+      rgba(0, 200, 200, 0.50)       52%,
+      rgba(0, 128, 128, 0.18)       54%,
+      transparent                   56%,
+      transparent                   74%,   /* long gap — 18% */
+      rgba(180, 0, 255, 0.76)       78%,   /* medium violet — 11% wide */
+      rgba(150, 0, 230, 0.58)       84%,
+      rgba(110, 0, 190, 0.22)       88%,
+      transparent                   91%,
+      transparent                   100%
+    );
+    background-size: 260% 100%;
+    mix-blend-mode: screen;
+    animation: aurora-secondary 40s ease-in-out infinite alternate-reverse;
   }
 
   .negative-restore-image {
@@ -830,30 +867,60 @@
   }
 }
 
-@keyframes aurora-drift {
+/* Primary curtain: 82° bands drift left→right with diagonal sway */
+@keyframes aurora-primary {
   0% {
-    transform: translate3d(-2%, 0, 0) rotate(-7deg) scaleX(1);
+    background-position: 0% 50%;
+    transform: skewX(1.2deg) scaleY(1);
+    opacity: 0.82;
   }
-
+  20% {
+    background-position: 18% 50%;
+    transform: skewX(-0.4deg) scaleY(1.04);
+    opacity: 0.96;
+  }
   50% {
-    transform: translate3d(2%, 1.5%, 0) rotate(-4deg) scaleX(1.04);
+    background-position: 48% 50%;
+    transform: skewX(1.8deg) scaleY(0.97);
+    opacity: 0.88;
   }
-
+  75% {
+    background-position: 74% 50%;
+    transform: skewX(-0.8deg) scaleY(1.06);
+    opacity: 1;
+  }
   100% {
-    transform: translate3d(5%, -1%, 0) rotate(-8deg) scaleX(0.98);
+    background-position: 100% 50%;
+    transform: skewX(1.4deg) scaleY(0.99);
+    opacity: 0.84;
   }
 }
 
-@keyframes aurora-drift-secondary {
+/* Secondary curtain: 97° bands drift right→left, independent diagonal rhythm */
+@keyframes aurora-secondary {
   0% {
-    transform: translate3d(1%, 0, 0) rotate(5deg) scaleX(1);
+    background-position: 0% 50%;
+    transform: skewX(-1.5deg) scaleY(1.02);
+    opacity: 0.68;
   }
-
-  50% {
-    transform: translate3d(-2%, -1%, 0) rotate(8deg) scaleX(1.05);
+  25% {
+    background-position: 24% 50%;
+    transform: skewX(0.6deg) scaleY(0.96);
+    opacity: 0.82;
   }
-
+  55% {
+    background-position: 54% 50%;
+    transform: skewX(-2deg) scaleY(1.07);
+    opacity: 0.74;
+  }
+  80% {
+    background-position: 80% 50%;
+    transform: skewX(0.9deg) scaleY(0.98);
+    opacity: 0.88;
+  }
   100% {
-    transform: translate3d(3%, 1%, 0) rotate(3deg) scaleX(0.97);
+    background-position: 100% 50%;
+    transform: skewX(-1.2deg) scaleY(1.03);
+    opacity: 0.70;
   }
 }

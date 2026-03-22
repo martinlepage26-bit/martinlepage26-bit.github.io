@@ -26,6 +26,6 @@ links:
 
 This project develops the LOTUS Processor as a coherence-centered, constraint-oriented framework for understanding and supporting human intelligence under instability, high load, and relational complexity. Its core claim is that agency and epistemically responsible judgment depend less on isolated insight than on the regulatory and relational conditions that keep interpretation revisable under compression.
 
-The current public record keeps the frame concise while preserving the paper's main contribution: coherence is treated as a low-variance control condition that stabilizes inference, modulates sensitivity to perturbation, and widens reachable trajectories of action in bonded systems. From there, the paper derives governance-relevant design constraints for emotional-intelligence tools, emphasizing regulation-first scaffolding, relational support, transparency, contestability, and anti-coercive oversight.
+The paper's main contribution: coherence is treated as a low-variance control condition that stabilizes inference, modulates sensitivity to perturbation, and widens reachable trajectories of action in bonded systems. From there, the paper derives governance-relevant design constraints for emotional-intelligence tools, emphasizing regulation-first scaffolding, relational support, transparency, contestability, and anti-coercive oversight.
 
 On the site, the processor language stays attached to the paper and framework layer, while the public app surface itself now appears under the canonical name *Lotus*.

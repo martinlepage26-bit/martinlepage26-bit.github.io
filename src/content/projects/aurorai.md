@@ -23,4 +23,4 @@ links: []
 
 *AurorAI* names the document-processing side of the apps in development. It handles intake, classification, extraction, citation capture, and the packaging of evidence before material moves into governance review.
 
-The public record stays intentionally narrow. It presents AurorAI as an app in development with substantial implementation behind it, while keeping the visible claim focused on document handling and evidence packaging rather than on a fully packaged public product.
+It is an app in development with substantial implementation behind it. The claim stays grounded: document handling and evidence packaging, not a finished platform.

@@ -28,4 +28,4 @@ links:
 
 Its closest companions remain distinct. *Dr. Sort* stays with document sorting and cross-reference work. *Lotus* stays with agency scoring for notes and local text material. *Scriptorium* is the paper-builder layer: recursive analysis memos, evidence hierarchy notes, control registers, disclosure language, and reviewer-pressure scaffolds.
 
-The live web surface is intentionally bounded. It offers a deterministic recursive builder rather than overstated claims about autonomous publication-ready truth. Deeper local-first execution is being adapted from an MIT-licensed AutoResearchClaw base and reworked into Martin Lepage's own Scriptorium framing and method logic.
+The web surface offers a deterministic recursive builder: bounded, reviewable, and honest about what it does. Deeper local-first execution is being adapted from an MIT-licensed AutoResearchClaw base and reworked into Martin Lepage's own Scriptorium framing and method logic.

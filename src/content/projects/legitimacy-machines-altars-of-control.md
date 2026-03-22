@@ -22,4 +22,4 @@ links: []
 ---
 This book-stage project studies how screen worlds govern wonder and train recognition of authority. It follows the affective side of power: the way legitimacy is rehearsed through media forms, repeated interfaces, ritual framing, and the visual atmosphere of control.
 
-The public entry stays intentionally short. It marks the project as a developing book rather than a finished manuscript and keeps the emphasis on direction, method, and scope.
+The project is at the book development stage — argument in motion, not a finished manuscript. The emphasis is on direction, method, and scope.

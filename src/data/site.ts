@@ -1,3 +1,30 @@
+/**
+ * site.ts — Content-editable arrays and site configuration
+ *
+ * This file holds two types of data:
+ *
+ * CONFIGURATION (requires code awareness to change):
+ *   - siteMeta: site-wide identity, social URLs, job title, locale
+ *   - pageMeta: per-page SEO titles and meta descriptions
+ *   - navigation: header nav links and order
+ *   - publicProjectOrder: display order for projects on the main archive page
+ *   - hiddenProjectArchiveSlugs: projects excluded from the public archive listing
+ *   - governanceProjectSlugs: project slugs shown on the governance page
+ *   - governanceWritingSlugs: writing slugs shown on the governance page
+ *
+ * CONTENT-EDITABLE ARRAYS (text changes are safe without deeper code changes):
+ *   - heroFacts: short credential tags shown in the homepage hero (bullet list)
+ *   - audienceRoutes: the 5 routing cards on the homepage — eyebrow, title, description, href, cta
+ *   - governancePracticeAreas: 4 practice area descriptions on the governance page
+ *   - governanceFit: bullet list of "Best fit" areas on the governance page sidebar
+ *   - biography: intro sentence, 3 body paragraphs, and currentWork shown on the About page
+ *   - researchInterests: list of research areas shown on the About page sidebar
+ *   - timeline: career timeline entries (year, title, detail) shown on the About page
+ *   - resumeData: full resume content — summary, experience, education, certifications, expertise, contact
+ *   - contactAreas: bullet list of inquiry types in the contact block
+ *   - contactPathways: 4 inquiry pathway cards in the contact block
+ */
+
 import { resolveSiteUrl } from '../../site-config.js';
 
 const configuredSiteUrl = resolveSiteUrl({
@@ -33,7 +60,7 @@ export const pageMeta = {
   governance: {
     title: 'Governance Practice',
     description:
-      'AI governance strategy, decision documentation, evidence packaging, and reviewable systems work by Martin Lepage.',
+      'AI governance strategy and practice by Martin Lepage: risk mapping, decision documentation, traceability structures, and oversight materials grounded in operational experience.',
   },
   about: {
     title: 'About Martin Lepage',
@@ -43,7 +70,7 @@ export const pageMeta = {
   projects: {
     title: 'Projects and Manuscripts',
     description:
-      'Deterministic recursive method work, in-progress manuscripts, apps in development, and research projects by Martin Lepage.',
+      'Apps in development, working manuscripts, and research projects by Martin Lepage across AI governance, media studies, ritual theory, and experimental authorship.',
   },
   publications: {
     title: 'Publications',
@@ -116,8 +143,8 @@ export const projectArchivePromotedPaperSlugs = [] as const;
 
 export const heroFacts = [
   'AI governance strategy',
-  'PhD, Religious Sciences',
-  'Decision documentation and review systems',
+  'PhD, Religious Sciences (UQAM)',
+  'Decision documentation and traceability',
   'English and French',
 ];
 
@@ -156,9 +183,9 @@ export const audienceRoutes = [
   },
   {
     eyebrow: 'General readers',
-    title: 'A selective archive with a clear way in',
+    title: 'Start with the biography or selected writing',
     description:
-      'Start with the biography or selected writing for the clearest introduction to the work.',
+      'The About page gives the clearest orientation to who Martin is and what the work covers.',
     href: '/about/',
     cta: 'Read the biography',
   },
@@ -211,8 +238,8 @@ export const biography = {
     'Martin Lepage is based in Montreal and works across AI governance, research operations, and public writing.',
   paragraphs: [
     'His academic background spans ritual studies, queer theory, media analysis, digital culture, and contemporary spiritualities. He completed a PhD in Religious Sciences at Universite du Quebec a Montreal after earlier degrees in literary studies at Universite Laval.',
-    'He has also worked in research operations, archives, AI-assisted quality review, and clinical trial coordination. That mix grounds the governance work in documentation, consequence, and institutional reality.',
-    'Across governance, media, and authorship, the recurring concern is legitimacy: how authority is built, how it is explained, and what people are asked to live under.',
+    'He has also worked in research operations, archives, AI-assisted quality review, and clinical trial coordination. Each of those roles required keeping documentation audit-ready, explaining consequential decisions to multiple stakeholders, and maintaining traceability under real operational pressure. That experience is the practical foundation for the governance work.',
+    'The through-line across governance, media, and authorship is legitimacy: how authority gets built, how decisions get explained, and what people are asked to accept as authorized. The PhD sharpened the analytical frame; the operational work provided the institutional grounding.',
   ],
   currentWork:
     'Current work centers on AI governance documents and review systems, alongside research and book-length writing on ritual, media, legitimacy, and public life.',
@@ -272,7 +299,7 @@ export const timeline = [
 
 export const resumeData = {
   summary:
-    'AI governance and research operations professional with experience in clinical trials, AI review, archives, and scholarly research. Strong at bringing order to fast-moving work through clear documentation, risk review, and practical decision support.',
+    'AI governance and research operations professional with experience in clinical trials, AI quality review, archives, and scholarly research. Works through documentation, decision traceability, and structured review to make consequential processes legible and defensible.',
   experience: [
     {
       title: 'Clinical Trial Coordinator',
