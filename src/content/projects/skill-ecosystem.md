@@ -22,7 +22,9 @@ tags:
 featured: false
 image: "/assets/geometric-motif-bottomleft.png"
 imageAlt: "The SKILL Ecosystem: fourteen operational constitutions with philosopher as sovereign meta-router."
-links: []
+links:
+  - label: "Open Hephaistos"
+    url: "/hephaistos/"
 ---
 
 **Oversight must be earned. This system was built on that principle.**

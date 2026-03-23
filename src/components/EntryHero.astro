@@ -19,7 +19,7 @@ interface Props {
 }
 
 const { eyebrow, title, description, meta, backHref, backLabel, tags = [], links = [] } = Astro.props;
-const standaloneRoutes = new Set(['/echo/', '/astral/']);
+const standaloneRoutes = new Set(['/echo/', '/astral/', '/lotus/', '/scriptorium/', '/hephaistos/']);
 const opensInNewWindow = (url: string) => standaloneRoutes.has(url) || /^https?:\/\//.test(url);
 ---
 

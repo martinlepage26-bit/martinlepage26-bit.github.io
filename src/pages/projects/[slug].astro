@@ -57,7 +57,7 @@ const meta = project
       .filter(Boolean)
       .join(' · ')
   : joinDistinctText([paper?.data.year, paper?.data.venue, paper?.data.status]);
-const standaloneRoutes = new Set(['/echo/', '/astral/']);
+const standaloneRoutes = new Set(['/echo/', '/astral/', '/lotus/', '/scriptorium/', '/hephaistos/']);
 const opensInNewWindow = (url: string) => standaloneRoutes.has(url) || /^https?:\/\//.test(url);
 const structuredData = isSignalManuscript && project
   ? buildArticleSchema({
