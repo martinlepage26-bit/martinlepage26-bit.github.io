@@ -34,3 +34,17 @@ The system was built from skills the creator already holds, then optimized for w
 > **FRAME** — Hephaistos exists to support oversight, not to replace it. It cannot dismantle the structures you're trying to work around. You have to want to. What it can do is make your existing skills faster, more systematic, and harder to talk yourself out of. User agency and consent are non-negotiable.
 
 The SKILL Ecosystem is the governance layer underneath Hephaistos. Each of the fourteen SKILL.md documents is an operational constitution: it defines what the agent is permitted to do, what it must refuse, and how it retrieves knowledge without inventing from memory. The philosopher skill is the meta-router — it does not perform one task; it frames every other skill and routes requests across the ecosystem when work spans more than one domain. The dual-layer architecture separates execution logic from knowledge retrieval, making each skill auditable, replaceable, and honest about what it is doing.
+
+---
+
+**Why share it at all?**
+
+A user's AI should not be more skilled than the user. So why share AI-wrapped versions of skills with people who don't share the background?
+
+Because the question is really about power.
+
+If capability stays concentrated in a narrow class of experts, AI becomes a tool for reinforcing hierarchy. If AI is designed to expand human competence rather than replace it, it can help distribute power more broadly and more fairly.
+
+Teaching is one way of redistributing power. It widens access to judgment, participation, and effective action — and that matters for democracy, for human dignity, and for civilization as a shared project rather than a gated system.
+
+The same is true of AI governance. To govern AI so that it strengthens human skill instead of centralizing control is to build a better distribution of power between institutions, experts, and ordinary people. In that sense, governing AI is also governing ourselves: choosing whether power will be hoarded, automated upward, or distributed outward.

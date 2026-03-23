@@ -493,6 +493,17 @@ const cfg = {
         </div>
 
         <div class="sidebar-section">
+          <p class="sidebar-label" style="cursor:pointer;user-select:none;" id="rationale-toggle">Rationale <span id="rationale-arrow" style="font-size:0.7rem;">▸</span></p>
+          <div id="rationale-body" style="display:none;font-size:0.78rem;color:var(--text2);line-height:1.65;">
+            <p>A user's AI should not be more skilled than the user. So why share AI-wrapped versions of skills with people who don't share the background?</p>
+            <p style="margin-top:8px;">Because the question is really about power.</p>
+            <p style="margin-top:8px;">If capability stays concentrated in a narrow class of experts, AI becomes a tool for reinforcing hierarchy. If AI is designed to expand human competence rather than replace it, it can help distribute power more broadly and more fairly.</p>
+            <p style="margin-top:8px;">Teaching widens access to judgment, participation, and effective action. That matters for democracy, for human dignity, and for civilization as a shared project rather than a gated system.</p>
+            <p style="margin-top:8px;">To govern AI so that it strengthens human skill instead of centralizing control is to build a better distribution of power. In that sense, governing AI is also governing ourselves: choosing whether power will be hoarded, automated upward, or distributed outward.</p>
+          </div>
+        </div>
+
+        <div class="sidebar-section">
           <p class="sidebar-label">Skills</p>
           <ul class="skill-list" id="skill-list">
             <li class="skill-item philosopher" data-skill="philosopher">
@@ -670,6 +681,18 @@ saveBtn.addEventListener('click', () => {
   modeBadge.textContent = 'Your Key';
   modeBadge.classList.add('byok');
 });
+
+// Rationale toggle
+const rationaleToggle = document.getElementById('rationale-toggle');
+const rationaleBody   = document.getElementById('rationale-body');
+const rationaleArrow  = document.getElementById('rationale-arrow');
+if (rationaleToggle) {
+  rationaleToggle.addEventListener('click', () => {
+    const open = rationaleBody.style.display === 'none';
+    rationaleBody.style.display = open ? 'block' : 'none';
+    rationaleArrow.textContent  = open ? '▾' : '▸';
+  });
+}
 
 // Preset chips
 document.querySelectorAll('.preset-chip').forEach(chip => {
