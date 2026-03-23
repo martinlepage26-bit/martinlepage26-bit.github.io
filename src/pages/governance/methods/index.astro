@@ -5,7 +5,7 @@ import ResearchCard from '../../../components/ResearchCard.astro';
 import SectionIntro from '../../../components/SectionIntro.astro';
 import { inferredTree, infrastructureEvidence, methodsPageMeta, pendingExternalCorpus } from '../../../data/methods';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import { contentSlug, isPublishedPaper, sortByDate, sortByYear } from '../../../lib/content';
+import { contentSlug, isPublishedPaper, normalizeTitle, sortByDate, sortByYear } from '../../../lib/content';
 
 const researchEntries = (await getCollection('research')).sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999));
 const majorEntries = researchEntries.filter((entry) => (entry.data.entryRole ?? 'major') === 'major');
@@ -28,22 +28,6 @@ const counts = {
   infrastructure: infrastructureEvidence.length,
 };
 
-function normalizeTitle(sourceTitle: string) {
-  if (sourceTitle.toUpperCase() === sourceTitle) {
-    return sourceTitle
-      .toLowerCase()
-      .split(' ')
-      .filter(Boolean)
-      .map((word) => word[0].toUpperCase() + word.slice(1))
-      .join(' ');
-  }
-
-  if (sourceTitle === 'govern-ai') {
-    return 'Govern-AI Practice Environment';
-  }
-
-  return sourceTitle;
-}
 ---
 
 <BaseLayout title={methodsPageMeta.title} description={methodsPageMeta.description}>

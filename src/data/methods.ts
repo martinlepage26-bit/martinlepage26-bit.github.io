@@ -62,12 +62,12 @@ export const infrastructureEvidence = [
 export const pendingExternalCorpus = [
   {
     title: 'To Codex for Website cards.zip',
-    locationHint: 'C:\\Users\\softinfo\\Documents\\MASTER PACK\\To Codex for Website cards.zip',
+    locationHint: 'Local archive: To Codex for Website cards.zip',
     note: 'Referenced by user; canonical imported copy is not yet linked in-repo.',
   },
   {
     title: 'For Her Alone to Wield The Infras.txt',
-    locationHint: 'C:\\Users\\softinfo\\Documents\\For Her Alone to Wield The Infras.txt',
+    locationHint: 'Local document: For Her Alone to Wield The Infras.txt',
     note: 'Path referenced by user; authoritative source file still pending explicit integration.',
   },
   {

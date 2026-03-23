@@ -1,6 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import { contentSlug } from '../lib/content';
+import { clampText, contentSlug } from '../lib/content';
 
 interface Props {
   entry: CollectionEntry<'research'>;
@@ -13,7 +13,7 @@ const sourceTitleLabel = entry.data.originalTitle && entry.data.originalTitle !=
   : undefined;
 ---
 
-<article data-filter-item data-tags={entry.data.tags.join('|').toLowerCase()} data-search={`${entry.data.title} ${entry.data.abstract} ${entry.data.tags.join(' ')}`.toLowerCase()}>
+<article data-filter-item data-tags={entry.data.tags.join('|').toLowerCase()} data-search={`${entry.data.title} ${clampText(entry.data.abstract, 200)} ${entry.data.tags.join(' ')}`.toLowerCase()}>
   <a class="group card-link" href={`/governance/methods/${slug}/`}>
     <div class="space-y-2">
       <p class="eyebrow">{entry.data.family ?? entry.data.type}</p>

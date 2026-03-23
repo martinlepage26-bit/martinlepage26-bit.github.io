@@ -8,7 +8,11 @@ import { setTimeout as delay } from 'node:timers/promises';
 
 const npmCmd = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 const host = process.env.SMOKE_HOST ?? '127.0.0.1';
-const port = process.env.SMOKE_PORT ?? '4511';
+const rawPort = process.env.SMOKE_PORT ?? '4511';
+const port = parseInt(rawPort, 10);
+if (Number.isNaN(port)) {
+  throw new Error(`SMOKE_PORT must be a number, got: ${rawPort}`);
+}
 const baseUrl = `http://${host}:${port}`;
 const baseRoutes = [
   '/',

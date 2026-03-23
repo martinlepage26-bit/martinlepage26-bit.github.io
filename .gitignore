@@ -26,3 +26,7 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# generated corpus inventory artifacts (build outputs, not source)
+docs/corpus-inventory.json
+docs/external-corpus-inventory.json
