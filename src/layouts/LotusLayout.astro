@@ -1,0 +1,78 @@
+---
+import { buildCanonical, buildPersonSchema } from '../lib/seo';
+import { siteMeta } from '../data/site';
+import '../styles/lotus.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  canonical?: string;
+  ogType?: 'website' | 'article';
+  structuredData?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const { title, description, image, canonical, ogType = 'website', structuredData } = Astro.props;
+const pageTitle = title ? `${title} | LOTUS` : 'LOTUS';
+const pageDescription = description ?? 'LOTUS is a reflective support and pattern-mapping system that helps people understand how agency can narrow under pressure.';
+const canonicalUrl = canonical ? buildCanonical(canonical) : buildCanonical(Astro.url.pathname);
+const ogImagePath = image ?? '/social/og-default.png';
+const ogImage = siteMeta.siteUrl ? new URL(ogImagePath, siteMeta.siteUrl).toString() : ogImagePath;
+const robotsDirectives = 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1';
+
+const structuredPayload = [
+  buildPersonSchema(),
+  ...(Array.isArray(structuredData) ? structuredData : structuredData ? [structuredData] : []),
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={pageDescription} />
+    <meta name="robots" content={robotsDirectives} />
+    <meta name="theme-color" content="#fdf5e8" />
+    <meta name="color-scheme" content="light" />
+    {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="manifest" href="/site.webmanifest" />
+    {siteMeta.siteUrl && <link rel="alternate" type="application/rss+xml" title="Martin Lepage RSS" href="/rss.xml" />}
+
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content={siteMeta.locale} />
+    <meta property="og:site_name" content="LOTUS" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={pageDescription} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <title>{pageTitle}</title>
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(structuredPayload)} />
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <div class="lotus-sunrise" aria-hidden="true"></div>
+    <div class="site-frame">
+      <header class="lotus-standalone-header">
+        <div class="shell flex items-center justify-between gap-6 py-4">
+          <a href="/" class="lotus-back-link">
+            <span aria-hidden="true">←</span> martin.govern-ai.ca
+          </a>
+          <span class="lotus-wordmark">Lotus</span>
+          <div class="lotus-header-right"></div>
+        </div>
+      </header>
+      <main id="content">
+        <slot />
+      </main>
+    </div>
+  </body>
+</html>

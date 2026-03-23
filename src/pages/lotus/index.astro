@@ -3,7 +3,7 @@ import LotusWorkbench from '../../components/lotus/LotusWorkbench.astro';
 import LotusVectorWorkbench from '../../components/lotus/LotusVectorWorkbench.astro';
 import SectionIntro from '../../components/SectionIntro.astro';
 import { lotusBoundaryCards, lotusSignalGroups, lotusSurfaces } from '../../data/lotus';
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import LotusLayout from '../../layouts/LotusLayout.astro';
 import { buildCanonical } from '../../lib/seo';
 
 const pageDescription =
@@ -23,7 +23,7 @@ const structuredData = {
 };
 ---
 
-<BaseLayout title="Lotus" description={pageDescription} canonical="/lotus/" structuredData={structuredData}>
+<LotusLayout title="Lotus" description={pageDescription} canonical="/lotus/" structuredData={structuredData}>
   <section class="relative overflow-hidden border-b border-[rgba(36,27,23,0.12)]">
     <div class="section-shell relative lotus-hero-shell">
       <div class="lotus-hero-orbit lotus-hero-orbit-one"></div>
@@ -230,4 +230,4 @@ const structuredData = {
       font-weight: 700;
     }
   </style>
-</BaseLayout>
+</LotusLayout>

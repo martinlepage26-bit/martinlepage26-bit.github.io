@@ -1,0 +1,891 @@
+@import "@fontsource-variable/manrope";
+@import "@fontsource-variable/newsreader";
+@import "@fontsource/ibm-plex-mono/400.css";
+@import "@fontsource/ibm-plex-mono/500.css";
+@import "@fontsource/ibm-plex-mono/600.css";
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Manrope Variable", "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Newsreader Variable", "Newsreader", Georgia, serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  /* Sunrise warm palette — used directly (no inversion trick) */
+  --color-bone: #fdf5e8;
+  --color-bone-deep: #e8d4b0;
+  --color-ink: #1a0d05;
+  --color-night: #2c1a0e;
+  --color-slate-ink: #5c3a1e;
+  --color-slate-soft: #7a4e2a;
+  --color-fog: #9a6f48;
+  --color-moon: #120a03;
+  --color-accent: #b5622a;
+  --color-grove: #7a3a12;
+  --color-ember: #5c2210;
+  --color-aqua: #8b4a2a;
+  --color-horizon: #c49070;
+
+  /* Slate scale — warm tans for text */
+  --color-white: #1a0d05;
+  --color-slate-100: #2c1a0e;
+  --color-slate-200: #4a2e1a;
+  --color-slate-300: #7a4e2a;
+  --color-slate-400: #9a6f48;
+  --color-slate-500: #b8906a;
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    @apply scroll-smooth text-ink antialiased;
+    background: #fdf5e8;
+    text-size-adjust: 100%;
+    /* NO filter:invert() — sunrise colors are warm and direct */
+  }
+
+  body {
+    @apply min-h-screen text-ink;
+    position: relative;
+    z-index: 0;
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(28, 12, 48, 0.9) 0%, transparent 45%),
+      radial-gradient(ellipse at 20% 15%, rgba(130, 40, 80, 0.35) 0%, transparent 35%),
+      radial-gradient(ellipse at 80% 20%, rgba(170, 70, 40, 0.3) 0%, transparent 32%),
+      radial-gradient(ellipse at 50% 85%, rgba(240, 185, 80, 0.28) 0%, transparent 40%),
+      linear-gradient(180deg, #1b0f2e 0%, #5c2244 22%, #a04030 42%, #c47838 58%, #e0b060 72%, #f2d8a8 84%, #fdf5e8 100%);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: clip;
+    letter-spacing: 0.003em;
+  }
+
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      radial-gradient(circle at 50% -8%, rgba(200, 120, 60, 0.06), transparent 38%),
+      radial-gradient(circle at 12% 82%, rgba(196, 144, 56, 0.07), transparent 24%),
+      radial-gradient(circle at 86% 72%, rgba(181, 98, 42, 0.07), transparent 26%),
+      linear-gradient(180deg, rgba(253, 245, 232, 0) 0%, rgba(253, 245, 232, 0.28) 72%, rgba(253, 245, 232, 0.6) 100%);
+    opacity: 0.92;
+  }
+
+  main {
+    @apply overflow-x-clip;
+  }
+
+  a {
+    @apply transition-colors duration-200;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-display;
+    color: var(--color-moon);
+    text-wrap: balance;
+  }
+
+  h1 {
+    font-size: clamp(2.15rem, 4vw, 3.7rem);
+    line-height: 1.01;
+    letter-spacing: -0.045em;
+    font-weight: 500;
+  }
+
+  h2 {
+    font-size: clamp(1.32rem, 2.1vw, 1.95rem);
+    line-height: 1.08;
+    letter-spacing: -0.032em;
+    font-weight: 500;
+  }
+
+  h3 {
+    font-size: clamp(0.98rem, 1.35vw, 1.12rem);
+    line-height: 1.22;
+    letter-spacing: -0.014em;
+    font-weight: 600;
+  }
+
+  p,
+  li {
+    color: var(--color-slate-100);
+    font-size: clamp(1.05rem, 0.18vw + 1.01rem, 1.12rem);
+    line-height: 1.86;
+    font-weight: 450;
+    text-wrap: pretty;
+  }
+
+  strong {
+    color: var(--color-moon);
+    font-weight: 650;
+  }
+
+  ::selection {
+    background: rgba(196, 120, 56, 0.22);
+  }
+
+  :focus-visible {
+    outline: 0;
+    box-shadow: 0 0 0 4px rgba(181, 98, 42, 0.2);
+  }
+
+  .site-frame {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ─── Sunrise background ───────────────────────────────────────────────────
+     NO filter:invert() — sunrise colors are warm and direct as intended.
+  ──────────────────────────────────────────────────────────────────────────── */
+  .lotus-sunrise {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    overflow: hidden;
+    /* NO invert filter — sunrise colors are warm and direct */
+  }
+
+  /* Warm rose/amber bands, 78° angle */
+  .lotus-sunrise::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      78deg,
+      transparent 0%,
+      transparent 5%,
+      rgba(185, 75, 95, 0.45) 8%,
+      rgba(170, 60, 80, 0.30) 12%,
+      transparent 15%,
+      transparent 28%,
+      rgba(200, 110, 45, 0.40) 32%,
+      rgba(185, 95, 35, 0.25) 37%,
+      transparent 41%,
+      transparent 58%,
+      rgba(220, 155, 50, 0.35) 62%,
+      rgba(200, 135, 40, 0.20) 67%,
+      transparent 71%,
+      transparent 82%,
+      rgba(185, 75, 95, 0.30) 86%,
+      rgba(170, 60, 80, 0.18) 90%,
+      transparent 94%,
+      transparent 100%
+    );
+    background-size: 280% 100%;
+    animation: sunrise-primary 48s ease-in-out infinite alternate;
+    opacity: 0.6;
+  }
+
+  /* Gold/amber shimmer, 95° */
+  .lotus-sunrise::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      95deg,
+      transparent 0%,
+      transparent 10%,
+      rgba(220, 150, 45, 0.38) 14%,
+      rgba(200, 130, 38, 0.25) 20%,
+      transparent 25%,
+      transparent 44%,
+      rgba(185, 75, 95, 0.32) 48%,
+      rgba(170, 60, 80, 0.20) 53%,
+      transparent 57%,
+      transparent 74%,
+      rgba(215, 145, 42, 0.34) 78%,
+      rgba(195, 125, 36, 0.20) 83%,
+      transparent 88%,
+      transparent 100%
+    );
+    background-size: 240% 100%;
+    mix-blend-mode: multiply;
+    animation: sunrise-secondary 64s ease-in-out infinite alternate-reverse;
+    opacity: 0.5;
+  }
+}
+
+@layer components {
+  .shell {
+    @apply mx-auto w-full max-w-[1080px] px-6 md:px-8;
+  }
+
+  .section-shell {
+    @apply mx-auto w-full max-w-[1080px] px-6 py-12 md:px-8 md:py-20;
+  }
+
+  .eyebrow {
+    @apply inline-flex items-center gap-3 py-0 font-mono text-[0.62rem] font-semibold uppercase tracking-[0.24em];
+    color: var(--color-accent);
+  }
+
+  .eyebrow::before {
+    content: "";
+    width: 1.8rem;
+    height: 1px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgba(181, 98, 42, 0.66), rgba(120, 60, 20, 0.12));
+  }
+
+  .eyebrow::after {
+    content: "";
+    width: 0.42rem;
+    height: 0.42rem;
+    transform: rotate(45deg);
+    border: 1px solid rgba(120, 60, 20, 0.38);
+    background: rgba(181, 98, 42, 0.08);
+  }
+
+  .section-title {
+    @apply mt-4 text-[1.38rem] leading-[1.08] md:text-[1.58rem];
+    color: var(--color-moon);
+    position: relative;
+    letter-spacing: -0.024em;
+    padding-bottom: 1rem;
+  }
+
+  .section-title::after {
+    content: "";
+    display: block;
+    width: 5.5rem;
+    height: 0.8rem;
+    margin-top: 0.85rem;
+    background:
+      linear-gradient(90deg, rgba(181, 98, 42, 0.14) 0 28%, transparent 28% 34%, rgba(140, 60, 20, 0.70) 34% 50%, rgba(196, 120, 56, 0.76) 50% 66%, transparent 66% 72%, rgba(92, 34, 16, 0.18) 72% 100%);
+    clip-path: polygon(0 48%, 26% 48%, 33% 0, 50% 48%, 67% 0, 74% 48%, 100% 48%, 100% 62%, 74% 62%, 67% 100%, 50% 62%, 33% 100%, 26% 62%, 0 62%);
+    opacity: 0.8;
+  }
+
+  .section-copy {
+    max-width: 48rem;
+    color: var(--color-slate-100);
+    font-size: clamp(1.06rem, 0.18vw + 1.02rem, 1.14rem);
+    line-height: 1.9;
+  }
+
+  .veil-panel {
+    @apply relative rounded-[1.1rem] px-5 py-5 md:px-6 md:py-6;
+    border: 1px solid rgba(120, 80, 40, 0.12);
+    background:
+      linear-gradient(180deg, rgba(253, 245, 232, 0.96), rgba(248, 235, 210, 0.92)),
+      linear-gradient(135deg, rgba(181, 98, 42, 0.04), rgba(120, 60, 20, 0.02) 42%, rgba(26, 13, 5, 0.01) 100%);
+    box-shadow:
+      0 16px 34px rgba(100, 55, 20, 0.10),
+      inset 0 1px 0 rgba(255, 240, 210, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .veil-panel::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 1.25rem;
+    width: 4rem;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(181, 98, 42, 0.68), rgba(120, 60, 20, 0));
+  }
+
+  .veil-panel::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 1rem;
+    width: 2.6rem;
+    height: 0.9rem;
+    background:
+      linear-gradient(90deg, transparent 0 18%, rgba(181, 98, 42, 0.28) 18% 24%, transparent 24% 52%, rgba(185, 75, 95, 0.24) 52% 58%, transparent 58% 100%);
+    opacity: 0.7;
+  }
+
+  .veil-panel-bare {
+    @apply p-0;
+  }
+
+  .hero-copy-panel {
+    @apply rounded-[1.5rem] px-5 py-5 md:px-7 md:py-7;
+    border: 1px solid rgba(120, 80, 40, 0.14);
+    background:
+      linear-gradient(180deg, rgba(253, 245, 232, 0.8), rgba(248, 235, 210, 0.5)),
+      linear-gradient(135deg, rgba(181, 98, 42, 0.06), rgba(120, 60, 20, 0.03) 46%, rgba(26, 13, 5, 0.05) 100%);
+    box-shadow:
+      0 24px 64px rgba(100, 55, 20, 0.14),
+      inset 0 1px 0 rgba(255, 240, 210, 0.42);
+    backdrop-filter: blur(20px) saturate(118%);
+    -webkit-backdrop-filter: blur(20px) saturate(118%);
+  }
+
+  .button-primary {
+    @apply inline-flex items-center justify-center rounded-full px-5 py-2.5 text-[0.75rem] font-semibold uppercase tracking-[0.14em] transition;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(100, 55, 20, 0.18);
+    background: linear-gradient(135deg, #2c1a0e, #4a2e1a);
+    color: var(--color-bone);
+    box-shadow: 0 12px 24px rgba(100, 55, 20, 0.15);
+  }
+
+  .button-primary:hover {
+    transform: translateY(-1px);
+    background: linear-gradient(135deg, #221408, #3a2414);
+  }
+
+  .button-secondary {
+    @apply inline-flex items-center justify-center rounded-full px-5 py-2.5 text-[0.75rem] font-semibold uppercase tracking-[0.14em] transition;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(100, 55, 20, 0.14);
+    background: rgba(253, 245, 232, 0.82);
+    color: var(--color-moon);
+  }
+
+  .button-primary::before,
+  .button-primary::after,
+  .button-secondary::before,
+  .button-secondary::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 0.6rem;
+    height: 1px;
+    transform: translateY(-50%);
+  }
+
+  .button-primary::before,
+  .button-secondary::before {
+    left: 0.7rem;
+    background: linear-gradient(90deg, rgba(255, 240, 210, 0.62), transparent);
+  }
+
+  .button-primary::after,
+  .button-secondary::after {
+    right: 0.7rem;
+    background: linear-gradient(90deg, transparent, rgba(255, 240, 210, 0.62));
+  }
+
+  .button-secondary::before {
+    background: linear-gradient(90deg, rgba(100, 55, 20, 0.34), transparent);
+  }
+
+  .button-secondary::after {
+    background: linear-gradient(90deg, transparent, rgba(100, 55, 20, 0.34));
+  }
+
+  .button-secondary:hover {
+    transform: translateY(-1px);
+    border-color: rgba(181, 98, 42, 0.28);
+    background: rgba(253, 245, 232, 0.96);
+    color: var(--color-accent);
+  }
+
+  .link-inline {
+    font-size: 0.98rem;
+    font-weight: 650;
+    text-decoration-line: underline;
+    text-decoration-thickness: 0.08em;
+    text-underline-offset: 0.18em;
+    color: var(--color-accent);
+    text-decoration-color: rgba(181, 98, 42, 0.28);
+  }
+
+  .link-inline:hover {
+    color: var(--color-moon);
+    text-decoration-color: rgba(120, 60, 20, 0.42);
+  }
+
+  .bullet-tags {
+    @apply ml-5 list-disc space-y-1 text-sm text-slate-300;
+  }
+
+  .bullet-tags li::marker {
+    color: rgba(181, 98, 42, 0.68);
+  }
+
+  .bullet-links {
+    @apply ml-5 list-disc space-y-1.5 text-sm text-slate-200;
+  }
+
+  .bullet-links li::marker {
+    color: rgba(181, 98, 42, 0.68);
+  }
+
+  .bullet-facts {
+    @apply grid gap-x-6 gap-y-2 text-sm text-slate-200 md:grid-cols-2;
+  }
+
+  .bullet-facts li {
+    @apply ml-5 list-disc;
+  }
+
+  .bullet-facts li::marker {
+    color: rgba(181, 98, 42, 0.68);
+  }
+
+  .card-link {
+    @apply relative flex h-full flex-col gap-4 rounded-[1rem] border px-5 py-5 transition duration-300;
+    border-color: rgba(120, 80, 40, 0.10);
+    background:
+      linear-gradient(180deg, rgba(253, 245, 232, 0.82), rgba(248, 235, 210, 0.78)),
+      linear-gradient(135deg, rgba(181, 98, 42, 0.03), rgba(120, 60, 20, 0.015) 42%, rgba(26, 13, 5, 0.015) 100%);
+    box-shadow:
+      0 16px 32px rgba(100, 55, 20, 0.07),
+      inset 0 1px 0 rgba(255, 240, 210, 0.6);
+  }
+
+  .card-link::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 1.25rem;
+    width: 3rem;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(181, 98, 42, 0.72), rgba(120, 60, 20, 0));
+    transition: width 180ms ease;
+  }
+
+  .card-link:hover {
+    transform: translateY(-0.2rem);
+    border-color: rgba(181, 98, 42, 0.2);
+  }
+
+  .card-link:hover::before {
+    width: 4.4rem;
+  }
+
+  .publication-card {
+    @apply gap-5;
+    background:
+      linear-gradient(180deg, rgba(253, 245, 232, 0.07), rgba(248, 235, 210, 0.02)),
+      linear-gradient(135deg, rgba(181, 98, 42, 0.04), rgba(120, 60, 20, 0.02) 42%, rgba(26, 13, 5, 0.04) 100%);
+  }
+
+  .publication-card:hover {
+    transform: translateY(-0.18rem);
+  }
+
+  .publication-card-title {
+    color: var(--color-moon);
+    text-wrap: balance;
+  }
+
+  .publication-card-year {
+    @apply rounded-full border px-2.5 py-1;
+    border-color: rgba(181, 98, 42, 0.18);
+    background: rgba(253, 245, 232, 0.04);
+  }
+
+  .publication-card-meta {
+    @apply flex flex-wrap items-center gap-2;
+    font-size: 0.82rem;
+  }
+
+  .publication-card-venue {
+    @apply font-medium leading-6 text-slate-100;
+  }
+
+  .publication-card-status {
+    @apply rounded-full border px-2.5 py-1 font-mono uppercase tracking-[0.14em] text-slate-200;
+    border-color: rgba(181, 98, 42, 0.18);
+    background: rgba(181, 98, 42, 0.08);
+  }
+
+  .publication-card-summary {
+    color: var(--color-slate-100);
+    font-size: 1.02rem;
+    line-height: 1.78;
+  }
+
+  .publication-card-cta {
+    letter-spacing: 0.01em;
+  }
+
+  .project-card-role {
+    @apply text-sm font-medium leading-6 text-slate-100;
+  }
+
+  .project-card-summary,
+  .writing-card-summary {
+    color: var(--color-slate-100);
+    font-size: 1.02rem;
+    line-height: 1.78;
+  }
+
+  .writing-card-meta {
+    @apply flex flex-wrap items-center gap-3 font-mono uppercase tracking-[0.14em] text-slate-300;
+    font-size: 0.74rem;
+  }
+
+  .writing-card-divider {
+    @apply h-1 w-1 rounded-full;
+    background: rgba(181, 98, 42, 0.72);
+  }
+
+  .project-motif-shell {
+    background-image:
+      linear-gradient(120deg, rgba(181, 98, 42, 0.08), transparent 38%),
+      linear-gradient(180deg, rgba(26, 13, 5, 0.03), rgba(74, 46, 26, 0.08));
+  }
+
+  .project-motif-default {
+    background-image:
+      radial-gradient(circle at top, rgba(139, 74, 42, 0.16), transparent 34%),
+      linear-gradient(180deg, rgba(181, 98, 42, 0.05), rgba(26, 13, 5, 0.06));
+  }
+
+  .project-motif-road {
+    background-image:
+      radial-gradient(circle at 20% 15%, rgba(139, 74, 42, 0.18), transparent 26%),
+      linear-gradient(140deg, transparent 0 38%, rgba(26, 13, 5, 0.18) 39%, transparent 40%, transparent 52%, rgba(181, 98, 42, 0.14) 53%, transparent 54%),
+      linear-gradient(180deg, rgba(139, 74, 42, 0.05), rgba(26, 13, 5, 0.06));
+  }
+
+  .project-motif-seal {
+    background-image:
+      radial-gradient(circle at 50% 24%, rgba(181, 98, 42, 0.14), transparent 24%),
+      linear-gradient(180deg, transparent 0 14%, rgba(26, 13, 5, 0.18) 14% 15%, transparent 15% 85%, rgba(26, 13, 5, 0.18) 85% 86%, transparent 86%),
+      linear-gradient(90deg, transparent 0 12%, rgba(139, 74, 42, 0.16) 12% 13%, transparent 13% 87%, rgba(139, 74, 42, 0.16) 87% 88%, transparent 88%),
+      linear-gradient(180deg, rgba(181, 98, 42, 0.04), rgba(26, 13, 5, 0.05));
+  }
+
+  .project-motif-gem {
+    background-image:
+      radial-gradient(circle at 50% 24%, rgba(181, 98, 42, 0.15), transparent 22%),
+      linear-gradient(45deg, transparent 0 48%, rgba(26, 13, 5, 0.2) 49% 51%, transparent 52%),
+      linear-gradient(-45deg, transparent 0 48%, rgba(139, 74, 42, 0.16) 49% 51%, transparent 52%),
+      linear-gradient(180deg, rgba(181, 98, 42, 0.04), rgba(26, 13, 5, 0.05));
+  }
+
+  .project-motif-recursion {
+    background-image:
+      radial-gradient(circle at center, transparent 0 18%, rgba(26, 13, 5, 0.18) 18% 19%, transparent 19% 32%, rgba(139, 74, 42, 0.18) 32% 33%, transparent 33% 46%, rgba(181, 98, 42, 0.14) 46% 47%, transparent 47%),
+      linear-gradient(180deg, rgba(139, 74, 42, 0.05), rgba(26, 13, 5, 0.05));
+  }
+
+  .project-motif-orbit {
+    background-image:
+      radial-gradient(circle at center, transparent 0 22%, rgba(181, 98, 42, 0.16) 22% 23%, transparent 23% 38%, rgba(139, 74, 42, 0.18) 38% 39%, transparent 39% 55%, rgba(26, 13, 5, 0.14) 55% 56%, transparent 56%),
+      radial-gradient(circle at 35% 32%, rgba(139, 74, 42, 0.16), transparent 14%),
+      radial-gradient(circle at 68% 62%, rgba(181, 98, 42, 0.1), transparent 16%),
+      linear-gradient(180deg, rgba(139, 74, 42, 0.05), rgba(26, 13, 5, 0.05));
+  }
+
+  .reading-layout {
+    @apply grid gap-8 xl:grid-cols-[minmax(0,68ch)_minmax(16rem,22rem)] xl:items-start;
+  }
+
+  .reading-main {
+    min-width: 0;
+    border: 1px solid rgba(120, 80, 40, 0.10);
+    border-radius: 1.35rem;
+    padding: 1.6rem 1.35rem;
+    background:
+      linear-gradient(180deg, rgba(253, 245, 232, 0.96), rgba(248, 235, 210, 0.92)),
+      linear-gradient(135deg, rgba(181, 98, 42, 0.04), rgba(120, 60, 20, 0.02) 42%, rgba(26, 13, 5, 0.015) 100%);
+    box-shadow:
+      0 16px 34px rgba(100, 55, 20, 0.08),
+      inset 0 1px 0 rgba(255, 240, 210, 0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  @media (min-width: 768px) {
+    .reading-main {
+      padding: 2rem 2rem;
+    }
+  }
+
+  .reading-sidebar {
+    @apply space-y-5;
+  }
+
+  .reading-flow {
+    color: var(--color-slate-100);
+    max-width: 68ch;
+  }
+
+  .reading-flow > * + * {
+    margin-top: 1.35rem;
+  }
+
+  .reading-flow :where(p, ul, ol, blockquote, pre, table) {
+    max-width: 68ch;
+  }
+
+  .reading-flow p,
+  .reading-flow li {
+    color: var(--color-slate-100);
+    font-size: clamp(1.08rem, 0.24vw + 1.02rem, 1.16rem);
+    line-height: 1.92;
+  }
+
+  .reading-flow p + p {
+    margin-top: 1.25rem;
+  }
+
+  .reading-flow h2 {
+    font-size: clamp(1.46rem, 1.5vw + 1.12rem, 1.86rem);
+    line-height: 1.12;
+    letter-spacing: -0.024em;
+    margin-top: 3.2rem;
+    max-width: 24ch;
+  }
+
+  .reading-flow h3 {
+    font-size: clamp(1.12rem, 0.8vw + 0.96rem, 1.3rem);
+    line-height: 1.24;
+    margin-top: 2.2rem;
+  }
+
+  .reading-flow ul,
+  .reading-flow ol {
+    @apply ml-6 space-y-4;
+  }
+
+  .reading-flow blockquote {
+    color: var(--color-slate-100);
+    font-size: 1.12rem;
+    font-style: italic;
+    line-height: 1.82;
+    padding: 1rem 1.4rem 1rem 1.3rem;
+    border-left: 3px solid rgba(181, 98, 42, 0.42);
+    border-radius: 0 1rem 1rem 0;
+    background: linear-gradient(180deg, rgba(181, 98, 42, 0.06), rgba(26, 13, 5, 0.02));
+  }
+
+  .reading-flow a {
+    color: var(--color-accent);
+    font-weight: 600;
+    text-decoration-line: underline;
+    text-decoration-thickness: 0.08em;
+    text-underline-offset: 0.18em;
+    text-decoration-color: rgba(181, 98, 42, 0.32);
+  }
+
+  .reading-flow a:hover {
+    color: var(--color-moon);
+    text-decoration-color: rgba(120, 60, 20, 0.46);
+  }
+
+  .filter-shell {
+    @apply border-y px-0 py-4;
+    border-color: rgba(120, 80, 40, 0.14);
+  }
+
+  .filter-toolbar {
+    @apply grid gap-4 md:grid-cols-[minmax(0,1.2fr)_13rem_auto] md:items-end;
+  }
+
+  .filter-field {
+    @apply grid gap-2;
+  }
+
+  .filter-label {
+    @apply font-mono text-[0.62rem] uppercase tracking-[0.2em];
+    color: var(--color-slate-400);
+  }
+
+  .filter-search,
+  .filter-select {
+    @apply w-full border-b px-0 py-[0.82rem] text-sm transition;
+    color: var(--color-moon);
+    border-color: rgba(120, 80, 40, 0.18);
+    background: transparent;
+  }
+
+  .filter-search::placeholder {
+    color: rgba(120, 60, 20, 0.52);
+  }
+
+  .filter-search:hover,
+  .filter-search:focus,
+  .filter-select:hover,
+  .filter-select:focus {
+    border-color: rgba(181, 98, 42, 0.42);
+  }
+
+  .filter-actions {
+    @apply flex items-center gap-3 md:justify-end;
+  }
+
+  .filter-reset {
+    @apply inline-flex items-center justify-center bg-transparent px-0 py-0 text-sm font-medium underline underline-offset-4 transition;
+    color: var(--color-accent);
+  }
+
+  .filter-reset:hover {
+    color: var(--color-moon);
+  }
+
+  .filter-count {
+    @apply inline-flex items-center rounded-full border px-3 py-1 font-mono text-[0.62rem] uppercase tracking-[0.16em];
+    border-color: rgba(120, 80, 40, 0.14);
+    color: var(--color-slate-300);
+  }
+
+  .skip-link {
+    @apply absolute left-4 top-4 z-50 -translate-y-20 rounded-full px-4 py-2 text-sm font-semibold transition focus:translate-y-0;
+    background: var(--color-moon);
+    color: var(--color-bone);
+  }
+
+  .brand-monogram {
+    position: relative;
+    min-width: 2.9rem;
+  }
+
+  .brand-monogram::before,
+  .brand-monogram::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    width: 2.8rem;
+    height: 1px;
+    transform: translateX(-50%);
+    background: linear-gradient(90deg, rgba(181, 98, 42, 0), rgba(181, 98, 42, 0.32), rgba(181, 98, 42, 0));
+  }
+
+  .brand-monogram::before {
+    top: -0.15rem;
+  }
+
+  .brand-monogram::after {
+    bottom: -0.15rem;
+  }
+
+  /* ─── Standalone LOTUS header ─────────────────────────────────────────── */
+  .lotus-standalone-header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    border-bottom: 1px solid rgba(120, 80, 40, 0.12);
+    background: rgba(253, 245, 232, 0.88);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  .lotus-standalone-header::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -1px;
+    width: min(16rem, 42vw);
+    height: 1px;
+    transform: translateX(-50%);
+    background: linear-gradient(90deg, rgba(181, 98, 42, 0), rgba(181, 98, 42, 0.26), rgba(185, 75, 95, 0.22), rgba(181, 98, 42, 0));
+    pointer-events: none;
+  }
+
+  .lotus-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    transition: color 0.18s ease;
+  }
+
+  .lotus-back-link:hover {
+    color: var(--color-moon);
+  }
+
+  .lotus-wordmark {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: var(--color-moon);
+  }
+
+  .lotus-header-right {
+    min-width: 8rem;
+  }
+
+  /* ─── Site footer — warm amber/rose glow ──────────────────────────────── */
+  .site-footer {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .site-footer::before {
+    content: "";
+    position: absolute;
+    left: -10%;
+    right: -10%;
+    bottom: -12rem;
+    height: 26rem;
+    background:
+      radial-gradient(ellipse at 16% 58%, rgba(196, 144, 112, 0.18), transparent 42%),
+      radial-gradient(ellipse at 36% 64%, rgba(139, 74, 42, 0.20), transparent 46%),
+      radial-gradient(ellipse at 58% 62%, rgba(181, 98, 42, 0.20), transparent 48%),
+      radial-gradient(ellipse at 82% 52%, rgba(185, 75, 95, 0.14), transparent 42%),
+      linear-gradient(180deg, rgba(253, 245, 232, 0), rgba(253, 245, 232, 0.18) 46%, rgba(100, 55, 20, 0.04) 100%);
+    filter: blur(28px) saturate(110%);
+    opacity: 0.82;
+    pointer-events: none;
+  }
+
+  .site-footer > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .text-center .section-title::after {
+    margin-inline: auto;
+  }
+}
+
+@media (min-width: 1280px) {
+  .reading-sidebar {
+    position: sticky;
+    top: 6.5rem;
+    align-self: start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Primary sunrise curtain: 78° warm rose/amber bands, slow drift */
+@keyframes sunrise-primary {
+  0%   { background-position: 0% 50%;   transform: skewX(0.8deg) scaleY(1.0);   opacity: 0.52; }
+  25%  { background-position: 22% 50%;  transform: skewX(-0.3deg) scaleY(1.03); opacity: 0.64; }
+  55%  { background-position: 54% 50%;  transform: skewX(1.2deg) scaleY(0.98);  opacity: 0.58; }
+  80%  { background-position: 78% 50%;  transform: skewX(-0.6deg) scaleY(1.04); opacity: 0.68; }
+  100% { background-position: 100% 50%; transform: skewX(0.9deg) scaleY(1.01);  opacity: 0.56; }
+}
+
+/* Secondary sunrise shimmer: 95° gold/amber drift, reverse */
+@keyframes sunrise-secondary {
+  0%   { background-position: 0% 50%;   transform: skewX(-1.0deg) scaleY(1.02); opacity: 0.44; }
+  30%  { background-position: 28% 50%;  transform: skewX(0.4deg) scaleY(0.97);  opacity: 0.56; }
+  60%  { background-position: 58% 50%;  transform: skewX(-1.4deg) scaleY(1.05); opacity: 0.48; }
+  85%  { background-position: 82% 50%;  transform: skewX(0.7deg) scaleY(0.99);  opacity: 0.60; }
+  100% { background-position: 100% 50%; transform: skewX(-0.8deg) scaleY(1.02); opacity: 0.46; }
+}
