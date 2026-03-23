@@ -1,0 +1,3 @@
+# Default ownership for this repository.
+# CODEOWNERS labels ownership, but merge blocking requires GitHub setting: "Require review from Code Owners".
+* @martinlepage26-bit

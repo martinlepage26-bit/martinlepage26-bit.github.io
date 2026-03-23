@@ -1,0 +1,253 @@
+---
+import { getCollection } from 'astro:content';
+import PracticeHero from '../../../components/PracticeHero.astro';
+import ResearchCard from '../../../components/ResearchCard.astro';
+import SectionIntro from '../../../components/SectionIntro.astro';
+import { inferredTree, infrastructureEvidence, methodsPageMeta, pendingExternalCorpus } from '../../../data/methods';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { contentSlug, isPublishedPaper, sortByDate, sortByYear } from '../../../lib/content';
+
+const researchEntries = (await getCollection('research')).sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999));
+const majorEntries = researchEntries.filter((entry) => (entry.data.entryRole ?? 'major') === 'major');
+const secondaryEntries = researchEntries.filter((entry) => (entry.data.entryRole ?? 'major') !== 'major');
+
+const projects = sortByYear(await getCollection('projects'));
+const papers = sortByYear(await getCollection('papers'));
+const writings = sortByDate(await getCollection('writings'));
+const talks = sortByDate(await getCollection('talks'));
+
+const publishedPapers = papers.filter(isPublishedPaper);
+const developingPapers = papers.filter((paper) => !isPublishedPaper(paper));
+
+const counts = {
+  projects: projects.length,
+  papers: papers.length,
+  writings: writings.length,
+  talks: talks.length,
+  research: researchEntries.length,
+  infrastructure: infrastructureEvidence.length,
+};
+
+function normalizeTitle(sourceTitle: string) {
+  if (sourceTitle.toUpperCase() === sourceTitle) {
+    return sourceTitle
+      .toLowerCase()
+      .split(' ')
+      .filter(Boolean)
+      .map((word) => word[0].toUpperCase() + word.slice(1))
+      .join(' ');
+  }
+
+  if (sourceTitle === 'govern-ai') {
+    return 'Govern-AI Practice Environment';
+  }
+
+  return sourceTitle;
+}
+---
+
+<BaseLayout title={methodsPageMeta.title} description={methodsPageMeta.description}>
+  <PracticeHero
+    eyebrow="Governance Methods"
+    title="Governance methods and procedural infrastructure across the corpus."
+    description="A file-grounded atlas of how this corpus defines authority, distributes interpretation, and operationalizes accountability across conceptual framing, protocol design, and implementation artifacts."
+    details="This section uses the repository corpus as evidence. It preserves source titles while introducing a normalized naming and navigation layer. External files referenced by Windows paths are tracked as pending imports rather than inferred."
+    links={[
+      { label: 'Read major method entries', url: '#major-entries', variant: 'primary' },
+      { label: 'Inspect inferred tree', url: '#inferred-tree', variant: 'secondary' },
+      { label: 'Inspect full corpus inventory', url: '#full-inventory', variant: 'inline' },
+    ]}
+    sideEyebrow="Corpus boundary"
+    sideTitle="What this atlas includes right now."
+    sideDescription="Counts below come from in-repo files only and are accompanied by explicit gap markers for referenced but unavailable external sources."
+    sidePoints={[
+      `Projects: ${counts.projects}`,
+      `Papers: ${counts.papers}`,
+      `Writings: ${counts.writings}`,
+      `Talks: ${counts.talks}`,
+      `Infrastructure artifacts: ${counts.infrastructure}`,
+      'Pending external corpus items are recorded without speculative claims.',
+    ]}
+    stats={[
+      {
+        eyebrow: 'Corpus rows',
+        value: counts.projects + counts.papers + counts.writings + counts.talks + counts.infrastructure,
+        label: 'Classified in inventory',
+        description: 'Structured from frontmatter, file paths, and repository governance artifacts.',
+      },
+      {
+        eyebrow: 'Methods pages',
+        value: majorEntries.length,
+        label: 'Major entries',
+        description: 'Full-page governance method interpretations with cross-links and source paths.',
+      },
+      {
+        eyebrow: 'Boundary discipline',
+        value: pendingExternalCorpus.length,
+        label: 'External gaps logged',
+        description: 'Referenced files not currently present in this workspace are preserved as pending.',
+      },
+    ]}
+  />
+
+  <section id="inferred-tree" class="section-shell">
+    <SectionIntro
+      eyebrow="Inferred Tree"
+      title="Professional naming layer derived from repository evidence."
+      description="These parent groupings are normalized for site architecture while preserving source-author titles inside cards and page bodies."
+    />
+
+    <div class="mt-10 grid gap-4 md:grid-cols-2">
+      {inferredTree.map((node) => (
+        <article class="veil-panel h-full">
+          <p class="eyebrow">{node.id}</p>
+          <h2 class="mt-3 text-[1.16rem] md:text-[1.3rem]">{node.title}</h2>
+          <p class="mt-4 text-base text-slate-200">{node.rationale}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section id="major-entries" class="section-shell border-y border-[rgba(17,23,38,0.08)] bg-[rgba(251,246,239,0.32)]">
+    <SectionIntro
+      eyebrow="Major Entries"
+      title="Card and full-page method interpretations."
+      description="Each entry keeps source provenance visible and adds a normalized governance-method framing layer suitable for migration to Pharos later."
+    />
+
+    <div class="mt-10 grid gap-6 lg:grid-cols-2">
+      {majorEntries.map((entry) => <ResearchCard entry={entry} />)}
+    </div>
+
+    {secondaryEntries.length > 0 && (
+      <div class="mt-16">
+        <SectionIntro
+          eyebrow="Secondary and Supporting Entries"
+          title="Lighter records for boundary tracking and unresolved evidence."
+          description="These entries are represented proportionally instead of being inflated into synthetic long-form pages."
+        />
+
+        <div class="mt-8 grid gap-6 lg:grid-cols-2">
+          {secondaryEntries.map((entry) => <ResearchCard entry={entry} />)}
+        </div>
+      </div>
+    )}
+  </section>
+
+  <section class="section-shell">
+    <SectionIntro
+      eyebrow="Infrastructure Evidence"
+      title="Implementation-level governance artifacts in this repo."
+      description="These files operationalize merge control, route verification, and maintainer accountability as part of the governance method itself."
+    />
+
+    <div class="mt-10 grid gap-4 md:grid-cols-2">
+      {infrastructureEvidence.map((artifact) => (
+        <article class="veil-panel h-full">
+          <p class="eyebrow">Implementation artifact</p>
+          <h2 class="mt-3 text-[1.12rem] md:text-[1.24rem]">{artifact.title}</h2>
+          <p class="mt-3 font-mono text-xs uppercase tracking-[0.12em] text-slate-400">{artifact.path}</p>
+          <p class="mt-4 text-base text-slate-200">{artifact.role}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="section-shell border-y border-[rgba(17,23,38,0.08)] bg-[rgba(251,246,239,0.32)]">
+    <SectionIntro
+      eyebrow="Pending External Sources"
+      title="Evidence deliberately kept unresolved until files are available."
+      description="These file references are preserved as pending so the architecture remains truthful and portable."
+    />
+
+    <div class="mt-10 grid gap-4 md:grid-cols-2">
+      {pendingExternalCorpus.map((item) => (
+        <article class="veil-panel h-full">
+          <p class="eyebrow">Pending source</p>
+          <h2 class="mt-3 text-[1.12rem] md:text-[1.24rem]">{item.title}</h2>
+          <p class="mt-3 font-mono text-xs uppercase tracking-[0.12em] text-slate-400">{item.locationHint}</p>
+          <p class="mt-4 text-base text-slate-200">{item.note}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section id="full-inventory" class="section-shell">
+    <SectionIntro
+      eyebrow="Full Inventory"
+      title="Collection-level corpus inventory with source-title preservation."
+      description="Source titles remain intact; normalized naming is used only where architecture or legibility requires it."
+    />
+
+    <div class="mt-10 space-y-8">
+      <details class="veil-panel" open>
+        <summary class="cursor-pointer text-[1.02rem] font-semibold text-moon">Projects ({projects.length})</summary>
+        <ul class="mt-6 space-y-5">
+          {projects.map((project) => {
+            const slug = contentSlug(project.id);
+            const normalizedTitle = normalizeTitle(project.data.title);
+            const sourceTitleLabel = project.data.title !== normalizedTitle ? `Source title: ${project.data.title}` : undefined;
+            return (
+              <li class="border-t border-[rgba(17,23,38,0.08)] pt-5">
+                <p class="text-xs uppercase tracking-[0.14em] text-slate-400">src/content/projects/{project.id}</p>
+                <a class="mt-2 inline-flex text-[1.02rem] font-semibold text-accent hover:text-moon" href={`/projects/${slug}/`}>
+                  {normalizedTitle}
+                </a>
+                {sourceTitleLabel && <p class="mt-2 text-xs uppercase tracking-[0.12em] text-slate-400">{sourceTitleLabel}</p>}
+                <p class="mt-3 text-sm text-slate-200">{project.data.status} · {project.data.role}</p>
+              </li>
+            );
+          })}
+        </ul>
+      </details>
+
+      <details class="veil-panel">
+        <summary class="cursor-pointer text-[1.02rem] font-semibold text-moon">Papers ({papers.length})</summary>
+        <p class="mt-4 text-sm text-slate-300">Published: {publishedPapers.length} · In development/verification: {developingPapers.length}</p>
+        <ul class="mt-6 space-y-5">
+          {papers.map((paper) => {
+            const slug = contentSlug(paper.id);
+            const href = isPublishedPaper(paper) ? `/papers/${slug}/` : `/projects/${slug}/`;
+            return (
+              <li class="border-t border-[rgba(17,23,38,0.08)] pt-5">
+                <p class="text-xs uppercase tracking-[0.14em] text-slate-400">src/content/papers/{paper.id}</p>
+                <a class="mt-2 inline-flex text-[1.02rem] font-semibold text-accent hover:text-moon" href={href}>{paper.data.title}</a>
+                <p class="mt-3 text-sm text-slate-200">{paper.data.type} · {paper.data.status}</p>
+              </li>
+            );
+          })}
+        </ul>
+      </details>
+
+      <details class="veil-panel">
+        <summary class="cursor-pointer text-[1.02rem] font-semibold text-moon">Writings ({writings.length})</summary>
+        <ul class="mt-6 space-y-5">
+          {writings.map((writing) => (
+            <li class="border-t border-[rgba(17,23,38,0.08)] pt-5">
+              <p class="text-xs uppercase tracking-[0.14em] text-slate-400">src/content/writings/{writing.id}</p>
+              <a class="mt-2 inline-flex text-[1.02rem] font-semibold text-accent hover:text-moon" href={`/writing/${contentSlug(writing.id)}/`}>
+                {writing.data.title}
+              </a>
+              <p class="mt-3 text-sm text-slate-200">{writing.data.description}</p>
+            </li>
+          ))}
+        </ul>
+      </details>
+
+      <details class="veil-panel">
+        <summary class="cursor-pointer text-[1.02rem] font-semibold text-moon">Talks ({talks.length})</summary>
+        <ul class="mt-6 space-y-5">
+          {talks.map((talk) => (
+            <li class="border-t border-[rgba(17,23,38,0.08)] pt-5">
+              <p class="text-xs uppercase tracking-[0.14em] text-slate-400">src/content/talks/{talk.id}</p>
+              <a class="mt-2 inline-flex text-[1.02rem] font-semibold text-accent hover:text-moon" href="/talks/">
+                {talk.data.title}
+              </a>
+              <p class="mt-3 text-sm text-slate-200">{talk.data.event} · {talk.data.format}</p>
+            </li>
+          ))}
+        </ul>
+      </details>
+    </div>
+  </section>
+</BaseLayout>

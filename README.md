@@ -59,6 +59,17 @@ martin-lepage-site/
 └── dist/ (generated)
 ```
 
+## Runtime Prerequisites
+
+Use Node `22.12.0` or newer (see `package.json` engines). This repo includes `.nvmrc` pinned to `22.12.0` for local parity with CI.
+
+```bash
+nvm install
+nvm use
+```
+
+After switching Node, install dependencies and run scripts (`npm ci`, `npm run dev`, `npm run check`, `npm run smoke`) under that version.
+
 ## Install
 
 ```bash
@@ -67,17 +78,37 @@ npm install
 
 ## Run Locally
 
+Use the default development workflow:
+
 ```bash
 npm run dev
 ```
 
-Open `http://localhost:4321`.
+Astro will pick an available local port (usually `http://localhost:4321`).
+
+Use deterministic local mode when you need a stable host/port for scripts, captures, or repeatable debugging:
+
+```bash
+npm run dev:local
+```
+
+This binds to `http://127.0.0.1:4510` with `--strictPort`.
 
 ## Verification
 
 ```bash
 npm run check
 npm run build
+npm run preview
+npm run smoke
+```
+
+Smoke test defaults to host `127.0.0.1` and port `4511`.
+
+Optional smoke overrides:
+
+```bash
+SMOKE_HOST=127.0.0.1 SMOKE_PORT=4520 npm run smoke
 ```
 
 Production metadata now defaults to `https://martin.govern-ai.ca`.
@@ -187,13 +218,40 @@ At minimum:
 
 If you deploy under a subpath instead of a root domain, add the correct `base` value to `astro.config.mjs`.
 
+### Deployment Governance (Manual Settings)
+
+Production deployment control is external and must be verified in platform settings:
+
+1. In Cloudflare Pages project settings, set `Production branch` to `main`.
+2. In Cloudflare Pages build settings, keep `Build command` as `npm run build` and `Build output directory` as `dist`.
+3. In GitHub branch protection/rulesets for `main`, keep `Require status checks to pass before merging` with required check `Verify / verify`.
+4. In GitHub branch protection/rulesets for `main`, keep `Require a pull request before merging` and keep direct pushes to `main` restricted to maintainers.
+
+Without these external settings, production deploys may proceed from unverified commits even though in-repo CI exists.
+
+## Maintainer Merge Controls
+
+In-repo enforcement is defined in `.github/workflows/verify.yml` (runs `npm run check` and `npm run smoke` on pull requests and pushes to `main`).
+
+Merge blocking is a GitHub setting, not a repo file. Maintain this manually for `main` under **Settings -> Branches** (or **Settings -> Rules -> Rulesets**):
+
+1. Enable `Require a pull request before merging`.
+2. Enable `Require status checks to pass before merging`.
+3. Add required check `Verify / verify`.
+4. Enable `Require branches to be up to date before merging`.
+5. Keep direct pushes to `main` restricted to maintainers only (via branch protection/ruleset restrictions).
+
+Without these GitHub settings, the `Verify` workflow runs but does not block merges.
+
 ## Commands
 
 ```bash
 npm run dev
+npm run dev:local
 npm run check
 npm run build
 npm run preview
+npm run smoke
 ```
 
 ## Major Build Choices

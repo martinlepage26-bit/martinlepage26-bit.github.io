@@ -7,9 +7,13 @@
   },
   "scripts": {
     "dev": "astro dev",
+    "dev:local": "astro dev --host 127.0.0.1 --port 4510 --strictPort",
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
+    "smoke": "node ./scripts/smoke.mjs",
+    "inventory:corpus": "node ./scripts/generate-corpus-inventory.mjs",
+    "inventory:external": "python3 ./scripts/generate-external-corpus-inventory.py",
     "astro": "astro"
   },
   "dependencies": {

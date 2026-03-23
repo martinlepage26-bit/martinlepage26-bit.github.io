@@ -83,9 +83,47 @@ const talks = defineCollection({
   }),
 });
 
+// research: governance-oriented research pieces, protocols, and experiments.
+// Designed for portability to the Pharos suite: stable slugs, explicit ordering,
+// content/presentation separation, schema shared across card and full-page views.
+const research = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    // originalTitle preserves the exact source-author naming when title is
+    // normalized for navigation or file architecture.
+    originalTitle: z.string().optional(),
+    // titleNote: preserve exact source title and flag discrepancies here rather
+    // than silently normalizing. This field does not render in the UI; it is
+    // a migration and provenance note for editors.
+    titleNote: z.string().optional(),
+    navLabel: z.string().optional(),
+    subtitle: z.string().optional(),
+    year: z.number().int().optional(),
+    status: z.string(),
+    type: z.string(),
+    family: z.string().optional(),
+    phase: z.string().optional(),
+    entryRole: z.string().optional(),
+    // whatItDoes: one sentence stating what the piece does, used in card view.
+    whatItDoes: z.string(),
+    abstract: z.string(),
+    tags: z.array(z.string()),
+    featured: z.boolean(),
+    // order: explicit integer for sorting in the index, independent of year.
+    order: z.number().int().optional(),
+    // relatedWorks: slugs of related research entries (no file extension).
+    // Used for cross-linking. Stable across Pharos migration.
+    relatedWorks: z.array(z.string()).optional(),
+    sourcePaths: z.array(z.string()).default([]),
+    links: z.array(linkSchema).default([]),
+  }),
+});
+
 export const collections = {
   papers,
   projects,
   writings,
   talks,
+  research,
 };
