@@ -30,4 +30,4 @@ links:
 
 *Lotus* is a local-first app in development with a defined scoring model and an active browser workbench. It reads notes through agency, strategy, governance, operational, creative, and meaning signals without overstating its current state.
 
-The website workbench now consolidates the public naming. *Lotus* is the app. The older `flowerapp` package name and Agency LOTUS label remain compatibility residue in the repo rather than separate public products.
+The website workbench consolidates the public naming. *Lotus* is the app.

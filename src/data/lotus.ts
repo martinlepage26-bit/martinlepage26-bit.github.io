@@ -173,11 +173,6 @@ export const lotusBoundaryCards = [
       'The canonical product name is Lotus. The all-caps desktop styling and the older Agency LOTUS label do not indicate separate products.',
   },
   {
-    title: 'flowerapp is compatibility only.',
-    body:
-      'The Python package and legacy CLI namespace remain available so older imports keep working, but they are not the public-facing app identity.',
-  },
-  {
     title: 'The website surface is intentionally bounded.',
     body:
       'This browser workbench scores only the text you paste into the page. Local note libraries, imports, and workspace folders remain part of the local-first execution layer.',
