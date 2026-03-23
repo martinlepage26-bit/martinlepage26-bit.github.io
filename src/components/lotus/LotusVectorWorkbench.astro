@@ -1,0 +1,892 @@
+---
+// LotusVectorWorkbench.astro — vectorized LOTUS agency model
+// No server-side data needed; all computation runs in browser JS.
+---
+
+<div class="lvw-root">
+  <!-- ── Input panels ── -->
+  <div class="lvw-inputs-grid">
+
+    <!-- L_base panel -->
+    <section class="veil-panel lvw-panel">
+      <p class="eyebrow">L_base — base state</p>
+      <p class="lvw-panel-desc">Six LOTUS dimensions representing the person's starting capacity before constraint load is applied.</p>
+      <div class="lvw-slider-list" id="lvw-lbase">
+        <div class="lvw-slider-row">
+          <label class="lotus-mini-label lvw-dim-label" for="lb-P">P — Perceptual latitude</label>
+          <div class="lvw-slider-wrap">
+            <input class="lvw-range" id="lb-P" type="range" min="0" max="1" step="0.05" value="0.65" data-group="lbase" data-idx="0" />
+            <span class="lvw-readout" id="lb-P-val">0.65</span>
+          </div>
+        </div>
+        <div class="lvw-slider-row">
+          <label class="lotus-mini-label lvw-dim-label" for="lb-R">R — Regulatory bandwidth</label>
+          <div class="lvw-slider-wrap">
+            <input class="lvw-range" id="lb-R" type="range" min="0" max="1" step="0.05" value="0.65" data-group="lbase" data-idx="1" />
+            <span class="lvw-readout" id="lb-R-val">0.65</span>
+          </div>
+        </div>
+        <div class="lvw-slider-row">
+          <label class="lotus-mini-label lvw-dim-label" for="lb-A">A — Access</label>
+          <div class="lvw-slider-wrap">
+            <input class="lvw-range" id="lb-A" type="range" min="0" max="1" step="0.05" value="0.65" data-group="lbase" data-idx="2" />
+            <span class="lvw-readout" id="lb-A-val">0.65</span>
+          </div>
+        </div>
+        <div class="lvw-slider-row">
+          <label class="lotus-mini-label lvw-dim-label" for="lb-S">S — Social legibility</label>
+          <div class="lvw-slider-wrap">
+            <input class="lvw-range" id="lb-S" type="range" min="0" max="1" step="0.05" value="0.65" data-group="lbase" data-idx="3" />
+            <span class="lvw-readout" id="lb-S-val">0.65</span>
+          </div>
+        </div>
+        <div class="lvw-slider-row">
+          <label class="lotus-mini-label lvw-dim-label" for="lb-C">C — Coherence</label>
+          <div class="lvw-slider-wrap">
+            <input class="lvw-range" id="lb-C" type="range" min="0" max="1" step="0.05" value="0.65" data-group="lbase" data-idx="4" />
+            <span class="lvw-readout" id="lb-C-val">0.65</span>
+          </div>
+        </div>
+        <div class="lvw-slider-row">
+          <label class="lotus-mini-label lvw-dim-label" for="lb-Sh">Sh — Shadow remainder (drag)</label>
+          <div class="lvw-slider-wrap">
+            <input class="lvw-range lvw-range-drag" id="lb-Sh" type="range" min="0" max="1" step="0.05" value="0.65" data-group="lbase" data-idx="5" />
+            <span class="lvw-readout" id="lb-Sh-val">0.65</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- K constraints panel -->
+    <section class="veil-panel lvw-panel">
+      <p class="eyebrow">K — Constraints</p>
+      <p class="lvw-panel-desc">Eight constraint dimensions suppressing effective capacity. Higher = stronger suppression.</p>
+      <div class="lvw-slider-list" id="lvw-k">
+        <div class="lvw-slider-row">
+          <label class="lotus-mini-label lvw-dim-label" for="k-body">body</label>
+          <div class="lvw-slider-wrap">
+            <input class="lvw-range lvw-range-constraint" id="k-body" type="range" min="0" max="1" step="0.05" value="0.30" data-group="k" data-idx="0" />
+            <span class="lvw-readout" id="k-body-val">0.30</span>
+          </div>
+        </div>
+        <div class="lvw-slider-row">
+          <label class="lotus-mini-label lvw-dim-label" for="k-time">time</label>
+          <div class="lvw-slider-wrap">
+            <input class="lvw-range lvw-range-constraint" id="k-time" type="range" min="0" max="1" step="0.05" value="0.30" data-group="k" data-idx="1" />
+            <span class="lvw-readout" id="k-time-val">0.30</span>
+          </div>
+        </div>
+        <div class="lvw-slider-row">
+          <label class="lotus-mini-label lvw-dim-label" for="k-econ">economic</label>
+          <div class="lvw-slider-wrap">
+            <input class="lvw-range lvw-range-constraint" id="k-econ" type="range" min="0" max="1" step="0.05" value="0.30" data-group="k" data-idx="2" />
+            <span class="lvw-readout" id="k-econ-val">0.30</span>
+          </div>
+        </div>
+        <div class="lvw-slider-row">
+          <label class="lotus-mini-label lvw-dim-label" for="k-relat">relational</label>
+          <div class="lvw-slider-wrap">
+            <input class="lvw-range lvw-range-constraint" id="k-relat" type="range" min="0" max="1" step="0.05" value="0.30" data-group="k" data-idx="3" />
+            <span class="lvw-readout" id="k-relat-val">0.30</span>
+          </div>
+        </div>
+        <div class="lvw-slider-row">
+          <label class="lotus-mini-label lvw-dim-label" for="k-inst">institutional</label>
+          <div class="lvw-slider-wrap">
+            <input class="lvw-range lvw-range-constraint" id="k-inst" type="range" min="0" max="1" step="0.05" value="0.30" data-group="k" data-idx="4" />
+            <span class="lvw-readout" id="k-inst-val">0.30</span>
+          </div>
+        </div>
+        <div class="lvw-slider-row">
+          <label class="lotus-mini-label lvw-dim-label" for="k-stigma">stigma</label>
+          <div class="lvw-slider-wrap">
+            <input class="lvw-range lvw-range-constraint" id="k-stigma" type="range" min="0" max="1" step="0.05" value="0.30" data-group="k" data-idx="5" />
+            <span class="lvw-readout" id="k-stigma-val">0.30</span>
+          </div>
+        </div>
+        <div class="lvw-slider-row">
+          <label class="lotus-mini-label lvw-dim-label" for="k-iso">isolation</label>
+          <div class="lvw-slider-wrap">
+            <input class="lvw-range lvw-range-constraint" id="k-iso" type="range" min="0" max="1" step="0.05" value="0.30" data-group="k" data-idx="6" />
+            <span class="lvw-readout" id="k-iso-val">0.30</span>
+          </div>
+        </div>
+        <div class="lvw-slider-row">
+          <label class="lotus-mini-label lvw-dim-label" for="k-urg">urgency</label>
+          <div class="lvw-slider-wrap">
+            <input class="lvw-range lvw-range-constraint" id="k-urg" type="range" min="0" max="1" step="0.05" value="0.30" data-group="k" data-idx="7" />
+            <span class="lvw-readout" id="k-urg-val">0.30</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- G scaffolds panel -->
+    <section class="veil-panel lvw-panel">
+      <p class="eyebrow">G — Scaffolds</p>
+      <p class="lvw-panel-desc">Seven restoration scaffolds that counteract constraint suppression. Higher = stronger restoration.</p>
+      <div class="lvw-slider-list" id="lvw-g">
+        <div class="lvw-slider-row">
+          <label class="lotus-mini-label lvw-dim-label" for="g-relat">relational</label>
+          <div class="lvw-slider-wrap">
+            <input class="lvw-range lvw-range-scaffold" id="g-relat" type="range" min="0" max="1" step="0.05" value="0.50" data-group="g" data-idx="0" />
+            <span class="lvw-readout" id="g-relat-val">0.50</span>
+          </div>
+        </div>
+        <div class="lvw-slider-row">
+          <label class="lotus-mini-label lvw-dim-label" for="g-mat">material</label>
+          <div class="lvw-slider-wrap">
+            <input class="lvw-range lvw-range-scaffold" id="g-mat" type="range" min="0" max="1" step="0.05" value="0.50" data-group="g" data-idx="1" />
+            <span class="lvw-readout" id="g-mat-val">0.50</span>
+          </div>
+        </div>
+        <div class="lvw-slider-row">
+          <label class="lotus-mini-label lvw-dim-label" for="g-clin">clinical</label>
+          <div class="lvw-slider-wrap">
+            <input class="lvw-range lvw-range-scaffold" id="g-clin" type="range" min="0" max="1" step="0.05" value="0.50" data-group="g" data-idx="2" />
+            <span class="lvw-readout" id="g-clin-val">0.50</span>
+          </div>
+        </div>
+        <div class="lvw-slider-row">
+          <label class="lotus-mini-label lvw-dim-label" for="g-cult">cultural</label>
+          <div class="lvw-slider-wrap">
+            <input class="lvw-range lvw-range-scaffold" id="g-cult" type="range" min="0" max="1" step="0.05" value="0.50" data-group="g" data-idx="3" />
+            <span class="lvw-readout" id="g-cult-val">0.50</span>
+          </div>
+        </div>
+        <div class="lvw-slider-row">
+          <label class="lotus-mini-label lvw-dim-label" for="g-spir">spiritual</label>
+          <div class="lvw-slider-wrap">
+            <input class="lvw-range lvw-range-scaffold" id="g-spir" type="range" min="0" max="1" step="0.05" value="0.50" data-group="g" data-idx="4" />
+            <span class="lvw-readout" id="g-spir-val">0.50</span>
+          </div>
+        </div>
+        <div class="lvw-slider-row">
+          <label class="lotus-mini-label lvw-dim-label" for="g-org">organizational</label>
+          <div class="lvw-slider-wrap">
+            <input class="lvw-range lvw-range-scaffold" id="g-org" type="range" min="0" max="1" step="0.05" value="0.50" data-group="g" data-idx="5" />
+            <span class="lvw-readout" id="g-org-val">0.50</span>
+          </div>
+        </div>
+        <div class="lvw-slider-row">
+          <label class="lotus-mini-label lvw-dim-label" for="g-interp">interpretive</label>
+          <div class="lvw-slider-wrap">
+            <input class="lvw-range lvw-range-scaffold" id="g-interp" type="range" min="0" max="1" step="0.05" value="0.50" data-group="g" data-idx="6" />
+            <span class="lvw-readout" id="g-interp-val">0.50</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /lvw-inputs-grid -->
+
+  <!-- ── Action buttons ── -->
+  <div class="lvw-actions">
+    <button id="lvw-compute" type="button" class="button-primary">Compute</button>
+    <button id="lvw-reset" type="button" class="button-secondary">Reset defaults</button>
+  </div>
+
+  <!-- ── Results panel ── -->
+  <div class="veil-panel lvw-results" id="lvw-results" aria-live="polite" aria-atomic="true">
+
+    <!-- Collapse warning (hidden until triggered) -->
+    <div class="lvw-collapse-banner" id="lvw-collapse-banner" hidden>
+      <span class="lvw-collapse-icon" aria-hidden="true">!</span>
+      <span>COLLAPSE RISK — prioritize relational and material scaffolds only</span>
+    </div>
+
+    <!-- Score + band -->
+    <div class="lvw-score-row">
+      <div>
+        <p class="lotus-mini-label">A_final score</p>
+        <p class="lvw-score-value"><span id="lvw-afinal">—</span></p>
+        <p class="lvw-band" id="lvw-band">Run compute to see results</p>
+      </div>
+      <div class="lvw-penalties-block">
+        <p class="lotus-mini-label">Penalties applied</p>
+        <ul class="lvw-penalties-list" id="lvw-penalties">
+          <li class="lvw-penalty-none">None</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Active interactions -->
+    <div class="lvw-section-divider">
+      <p class="lotus-mini-label">Active interactions (ΔK pairs fired)</p>
+      <div class="lvw-pill-row" id="lvw-interactions">
+        <span class="lvw-pill lvw-pill-muted">Run compute</span>
+      </div>
+    </div>
+
+    <!-- L_eff vector -->
+    <div class="lvw-section-divider">
+      <p class="lotus-mini-label">L_eff — effective LOTUS state</p>
+      <p class="lvw-vector-desc">Coupled base minus suppression plus restoration minus interaction terms, clipped to [0, 1].</p>
+      <div class="lvw-bar-grid" id="lvw-leff-bars">
+        <div class="lvw-bar-row"><span class="lvw-bar-label">P</span><div class="lvw-bar-track"><div class="lvw-bar-fill" id="lvw-leff-P" style="width:65%"></div></div><span class="lvw-bar-val" id="lvw-leff-P-val">0.65</span></div>
+        <div class="lvw-bar-row"><span class="lvw-bar-label">R</span><div class="lvw-bar-track"><div class="lvw-bar-fill" id="lvw-leff-R" style="width:65%"></div></div><span class="lvw-bar-val" id="lvw-leff-R-val">0.65</span></div>
+        <div class="lvw-bar-row"><span class="lvw-bar-label">A</span><div class="lvw-bar-track"><div class="lvw-bar-fill" id="lvw-leff-A" style="width:65%"></div></div><span class="lvw-bar-val" id="lvw-leff-A-val">0.65</span></div>
+        <div class="lvw-bar-row"><span class="lvw-bar-label">S</span><div class="lvw-bar-track"><div class="lvw-bar-fill" id="lvw-leff-S" style="width:65%"></div></div><span class="lvw-bar-val" id="lvw-leff-S-val">0.65</span></div>
+        <div class="lvw-bar-row"><span class="lvw-bar-label">C</span><div class="lvw-bar-track"><div class="lvw-bar-fill" id="lvw-leff-C" style="width:65%"></div></div><span class="lvw-bar-val" id="lvw-leff-C-val">0.65</span></div>
+        <div class="lvw-bar-row"><span class="lvw-bar-label">Sh</span><div class="lvw-bar-track"><div class="lvw-bar-fill lvw-bar-fill-drag" id="lvw-leff-Sh" style="width:65%"></div></div><span class="lvw-bar-val" id="lvw-leff-Sh-val">0.65</span></div>
+      </div>
+    </div>
+
+    <!-- A_LOTUS vector -->
+    <div class="lvw-section-divider">
+      <p class="lotus-mini-label">A_LOTUS — agency projection</p>
+      <p class="lvw-vector-desc">W · L_eff projected onto six agency dimensions.</p>
+      <div class="lvw-bar-grid" id="lvw-alotus-bars">
+        <div class="lvw-bar-row"><span class="lvw-bar-label">sense</span><div class="lvw-bar-track"><div class="lvw-bar-fill" id="lvw-al-sense" style="width:0%"></div></div><span class="lvw-bar-val" id="lvw-al-sense-val">—</span></div>
+        <div class="lvw-bar-row"><span class="lvw-bar-label">choose</span><div class="lvw-bar-track"><div class="lvw-bar-fill" id="lvw-al-choose" style="width:0%"></div></div><span class="lvw-bar-val" id="lvw-al-choose-val">—</span></div>
+        <div class="lvw-bar-row"><span class="lvw-bar-label">act</span><div class="lvw-bar-track"><div class="lvw-bar-fill" id="lvw-al-act" style="width:0%"></div></div><span class="lvw-bar-val" id="lvw-al-act-val">—</span></div>
+        <div class="lvw-bar-row"><span class="lvw-bar-label">protect</span><div class="lvw-bar-track"><div class="lvw-bar-fill" id="lvw-al-protect" style="width:0%"></div></div><span class="lvw-bar-val" id="lvw-al-protect-val">—</span></div>
+        <div class="lvw-bar-row"><span class="lvw-bar-label">adapt</span><div class="lvw-bar-track"><div class="lvw-bar-fill" id="lvw-al-adapt" style="width:0%"></div></div><span class="lvw-bar-val" id="lvw-al-adapt-val">—</span></div>
+        <div class="lvw-bar-row"><span class="lvw-bar-label">coord</span><div class="lvw-bar-track"><div class="lvw-bar-fill" id="lvw-al-coord" style="width:0%"></div></div><span class="lvw-bar-val" id="lvw-al-coord-val">—</span></div>
+      </div>
+    </div>
+
+    <!-- Suppressed dims + fastest restorers -->
+    <div class="lvw-section-divider lvw-two-col">
+      <div>
+        <p class="lotus-mini-label">Most suppressed dimensions</p>
+        <div class="lvw-pill-row" id="lvw-suppressed">
+          <span class="lvw-pill lvw-pill-muted">Run compute</span>
+        </div>
+      </div>
+      <div>
+        <p class="lotus-mini-label">Fastest-restoring scaffolds</p>
+        <div class="lvw-pill-row" id="lvw-restorers">
+          <span class="lvw-pill lvw-pill-muted">Run compute</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /lvw-results -->
+</div><!-- /lvw-root -->
+
+<script is:inline>
+(function () {
+  // ── Matrices ──────────────────────────────────────────────────────────────
+
+  const M = [
+    [1.00, 0.30, 0.00, 0.00, 0.40, -0.30],
+    [0.30, 1.00, 0.00, 0.00, 0.40, -0.40],
+    [0.00, 0.00, 1.00, 0.30, 0.00, -0.20],
+    [0.00, 0.00, 0.30, 1.00, 0.20, -0.30],
+    [0.40, 0.40, 0.00, 0.20, 1.00, -0.50],
+    [0.00, 0.00, 0.00, 0.00, 0.00,  1.00],
+  ];
+
+  const N = [
+    [0.40, 0.20, 0.10, 0.20, 0.10, 0.30, 0.50, 0.50],
+    [0.60, 0.50, 0.30, 0.50, 0.20, 0.20, 0.40, 0.60],
+    [0.20, 0.30, 0.70, 0.30, 0.60, 0.20, 0.30, 0.20],
+    [0.10, 0.10, 0.20, 0.40, 0.50, 0.70, 0.50, 0.20],
+    [0.30, 0.30, 0.20, 0.60, 0.20, 0.30, 0.60, 0.50],
+    [0.40, 0.20, 0.30, 0.50, 0.20, 0.40, 0.30, 0.30],
+  ];
+
+  const Q = [
+    [0.30, 0.10, 0.20, 0.30, 0.20, 0.10, 0.60],
+    [0.60, 0.30, 0.50, 0.20, 0.30, 0.40, 0.20],
+    [0.20, 0.70, 0.30, 0.10, 0.10, 0.50, 0.20],
+    [0.50, 0.20, 0.20, 0.60, 0.20, 0.20, 0.30],
+    [0.50, 0.10, 0.30, 0.40, 0.50, 0.20, 0.50],
+    [0.40, 0.10, 0.30, 0.30, 0.60, 0.10, 0.50],
+  ];
+
+  const W = [
+    [0.60, 0.20, 0.00, 0.10, 0.30, -0.20],
+    [0.30, 0.50, 0.10, 0.10, 0.50, -0.30],
+    [0.10, 0.30, 0.60, 0.20, 0.30, -0.20],
+    [0.20, 0.30, 0.30, 0.60, 0.20, -0.30],
+    [0.30, 0.50, 0.20, 0.10, 0.40, -0.40],
+    [0.10, 0.20, 0.40, 0.50, 0.30, -0.20],
+  ];
+
+  const w = [0.15, 0.20, 0.20, 0.15, 0.15, 0.15];
+
+  // ── Math helpers ──────────────────────────────────────────────────────────
+
+  function matVec(mat, vec) {
+    return mat.map(function (row) {
+      return row.reduce(function (sum, v, i) { return sum + v * vec[i]; }, 0);
+    });
+  }
+
+  function dot(a, b) {
+    return a.reduce(function (sum, v, i) { return sum + v * b[i]; }, 0);
+  }
+
+  function clamp(v, lo, hi) {
+    return Math.max(lo, Math.min(hi, v));
+  }
+
+  // ── Core computation ──────────────────────────────────────────────────────
+
+  function computeLotus(Lbase, K, G) {
+    var Lcoupled = matVec(M, Lbase);
+    var suppression = matVec(N, K);
+    var restoration = matVec(Q, G);
+
+    var deltaK = [0, 0, 0, 0, 0, 0];
+    var interactions = [];
+
+    if (K[6] > 0.5 && K[7] > 0.5) {
+      deltaK[0] += 0.20; deltaK[1] += 0.20; deltaK[4] += 0.20;
+      interactions.push('isolation × urgency → P, R, C');
+    }
+    if (K[2] > 0.5 && K[4] > 0.5) {
+      deltaK[2] += 0.20; deltaK[3] += 0.20;
+      interactions.push('economic × institutional → A, S');
+    }
+    if (K[0] > 0.5 && K[1] > 0.5) {
+      deltaK[1] += 0.15;
+      interactions.push('body × time → R');
+    }
+    if (K[3] > 0.5 && G[2] < 0.5) {
+      deltaK[1] += 0.15; deltaK[4] += 0.15;
+      interactions.push('relational K × clinical absence → R, C');
+    }
+
+    var Leff = Lbase.map(function (_, i) {
+      return clamp(Lcoupled[i] - suppression[i] + restoration[i] - deltaK[i], 0, 1);
+    });
+
+    var Alotus = matVec(W, Leff).map(function (v) { return clamp(v, 0, 1); });
+
+    var Afinal = dot(w, Alotus);
+    var penalties = [];
+
+    if (K[6] >= 0.7) {
+      var p1 = 0.40 * (K[6] - 0.70) / 0.30;
+      Afinal *= (1 - p1);
+      penalties.push('Isolation penalty: −' + (p1 * 100).toFixed(0) + '%');
+    }
+    if (K[7] >= 0.7) {
+      var p2 = 0.30 * (K[7] - 0.70) / 0.30;
+      Afinal *= (1 - p2);
+      penalties.push('Urgency penalty: −' + (p2 * 100).toFixed(0) + '%');
+    }
+    var Ksum = K.reduce(function (a, b) { return a + b; }, 0);
+    if (Ksum >= 4.0) {
+      Afinal *= 0.85;
+      penalties.push('Overload penalty: −15%');
+    }
+    var collapseByDim = Alotus.some(function (v) { return v < 0.10; });
+    if (collapseByDim) {
+      Afinal *= 0.70;
+      penalties.push('Collapse penalty: −30%');
+    }
+    Afinal = clamp(Afinal, 0, 1);
+
+    var collapseFlag =
+      Leff[1] < 0.15 ||
+      Afinal < 0.20 ||
+      Alotus.filter(function (v) { return v < 0.20; }).length >= 3 ||
+      (K[6] >= 0.90 && K[7] >= 0.70);
+
+    var lotusDimNames = ['P', 'R', 'A', 'S', 'C', 'Sh'];
+    var capacityDims = [0, 1, 2, 3, 4];
+    var suppressed = capacityDims.slice().sort(function (a, b) { return Leff[a] - Leff[b]; }).slice(0, 2).map(function (i) {
+      return { name: lotusDimNames[i], score: Leff[i] };
+    });
+
+    var scaffoldNames = ['relational', 'material', 'clinical', 'cultural', 'spiritual', 'organizational', 'interpretive'];
+    var fastestRestorers = suppressed.map(function (dim) {
+      var dimIdx = lotusDimNames.indexOf(dim.name);
+      var qRow = Q[dimIdx];
+      var best = qRow.indexOf(Math.max.apply(null, qRow));
+      return scaffoldNames[best] + ' \u2192 ' + dim.name;
+    });
+
+    var band = '';
+    if (Afinal < 0.20) band = 'Agency collapse';
+    else if (Afinal < 0.40) band = 'Severely constrained';
+    else if (Afinal < 0.60) band = 'Unstable / conditional';
+    else if (Afinal < 0.75) band = 'Functional';
+    else if (Afinal < 0.90) band = 'Strong';
+    else band = 'Exceptional resilient';
+
+    return {
+      Leff: Leff,
+      Alotus: Alotus,
+      Afinal: Afinal,
+      penalties: penalties,
+      collapseFlag: collapseFlag,
+      suppressed: suppressed,
+      fastestRestorers: fastestRestorers,
+      band: band,
+      interactions: interactions,
+    };
+  }
+
+  // ── DOM helpers ───────────────────────────────────────────────────────────
+
+  function el(id) { return document.getElementById(id); }
+
+  function readSliders(group) {
+    var inputs = document.querySelectorAll('[data-group="' + group + '"]');
+    var arr = new Array(inputs.length);
+    inputs.forEach(function (inp) {
+      arr[parseInt(inp.dataset.idx, 10)] = parseFloat(inp.value);
+    });
+    return arr;
+  }
+
+  function setPills(containerId, values, muted) {
+    var container = el(containerId);
+    if (!container) return;
+    container.innerHTML = '';
+    var list = values.length ? values : ['Run compute'];
+    list.forEach(function (val) {
+      var span = document.createElement('span');
+      span.className = 'lvw-pill' + (muted || !values.length ? ' lvw-pill-muted' : '');
+      span.textContent = val;
+      container.appendChild(span);
+    });
+  }
+
+  function setBar(fillId, valId, value) {
+    var fill = el(fillId);
+    var valEl = el(valId);
+    if (fill) fill.style.width = (value * 100).toFixed(1) + '%';
+    if (valEl) valEl.textContent = value.toFixed(2);
+  }
+
+  function setBandClass(bandEl, afinal) {
+    bandEl.className = 'lvw-band';
+    if (afinal >= 0.75) bandEl.classList.add('lvw-band-green');
+    else if (afinal >= 0.40) bandEl.classList.add('lvw-band-amber');
+    else bandEl.classList.add('lvw-band-red');
+  }
+
+  // ── Render ────────────────────────────────────────────────────────────────
+
+  var leffIds = ['lvw-leff-P', 'lvw-leff-R', 'lvw-leff-A', 'lvw-leff-S', 'lvw-leff-C', 'lvw-leff-Sh'];
+  var leffValIds = ['lvw-leff-P-val', 'lvw-leff-R-val', 'lvw-leff-A-val', 'lvw-leff-S-val', 'lvw-leff-C-val', 'lvw-leff-Sh-val'];
+  var alIds = ['lvw-al-sense', 'lvw-al-choose', 'lvw-al-act', 'lvw-al-protect', 'lvw-al-adapt', 'lvw-al-coord'];
+  var alValIds = ['lvw-al-sense-val', 'lvw-al-choose-val', 'lvw-al-act-val', 'lvw-al-protect-val', 'lvw-al-adapt-val', 'lvw-al-coord-val'];
+
+  function render(result) {
+    // Score + band
+    var afinalEl = el('lvw-afinal');
+    var bandEl = el('lvw-band');
+    if (afinalEl) afinalEl.textContent = result.Afinal.toFixed(3);
+    if (bandEl) { bandEl.textContent = result.band; setBandClass(bandEl, result.Afinal); }
+
+    // Collapse banner
+    var banner = el('lvw-collapse-banner');
+    if (banner) banner.hidden = !result.collapseFlag;
+
+    // Penalties
+    var penEl = el('lvw-penalties');
+    if (penEl) {
+      penEl.innerHTML = '';
+      var pList = result.penalties.length ? result.penalties : ['None'];
+      pList.forEach(function (p) {
+        var li = document.createElement('li');
+        li.className = result.penalties.length ? 'lvw-penalty-item' : 'lvw-penalty-none';
+        li.textContent = p;
+        penEl.appendChild(li);
+      });
+    }
+
+    // Active interactions
+    setPills('lvw-interactions', result.interactions, false);
+
+    // L_eff bars
+    result.Leff.forEach(function (v, i) { setBar(leffIds[i], leffValIds[i], v); });
+
+    // A_LOTUS bars
+    result.Alotus.forEach(function (v, i) { setBar(alIds[i], alValIds[i], v); });
+
+    // Suppressed dims
+    var suppPills = result.suppressed.map(function (d) { return d.name + ' (' + d.score.toFixed(2) + ')'; });
+    setPills('lvw-suppressed', suppPills, false);
+
+    // Fastest restorers
+    setPills('lvw-restorers', result.fastestRestorers, false);
+  }
+
+  // ── Defaults ──────────────────────────────────────────────────────────────
+
+  var DEFAULTS = {
+    lbase: [0.65, 0.65, 0.65, 0.65, 0.65, 0.65],
+    k:     [0.30, 0.30, 0.30, 0.30, 0.30, 0.30, 0.30, 0.30],
+    g:     [0.50, 0.50, 0.50, 0.50, 0.50, 0.50, 0.50],
+  };
+
+  function resetSliders() {
+    ['lbase', 'k', 'g'].forEach(function (group) {
+      var inputs = document.querySelectorAll('[data-group="' + group + '"]');
+      inputs.forEach(function (inp) {
+        var idx = parseInt(inp.dataset.idx, 10);
+        inp.value = DEFAULTS[group][idx];
+        var readout = el(inp.id + '-val');
+        if (readout) readout.textContent = DEFAULTS[group][idx].toFixed(2);
+      });
+    });
+  }
+
+  // ── Slider live readout ───────────────────────────────────────────────────
+
+  document.querySelectorAll('.lvw-range').forEach(function (inp) {
+    inp.addEventListener('input', function () {
+      var readout = el(inp.id + '-val');
+      if (readout) readout.textContent = parseFloat(inp.value).toFixed(2);
+    });
+  });
+
+  // ── Button wiring ─────────────────────────────────────────────────────────
+
+  var computeBtn = el('lvw-compute');
+  var resetBtn = el('lvw-reset');
+
+  if (computeBtn) {
+    computeBtn.addEventListener('click', function () {
+      var Lbase = readSliders('lbase');
+      var K = readSliders('k');
+      var G = readSliders('g');
+      var result = computeLotus(Lbase, K, G);
+      render(result);
+    });
+  }
+
+  if (resetBtn) {
+    resetBtn.addEventListener('click', function () {
+      resetSliders();
+      // Re-run compute with defaults so results update immediately
+      var result = computeLotus(DEFAULTS.lbase, DEFAULTS.k, DEFAULTS.g);
+      render(result);
+    });
+  }
+
+  // Run once on load with defaults so bars are populated
+  (function () {
+    var result = computeLotus(DEFAULTS.lbase, DEFAULTS.k, DEFAULTS.g);
+    render(result);
+  }());
+}());
+</script>
+
+<style>
+  /* ── Root ── */
+  .lvw-root {
+    position: relative;
+  }
+
+  /* ── Three-column input grid ── */
+  .lvw-inputs-grid {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 860px) {
+    .lvw-inputs-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  /* ── Panel ── */
+  .lvw-panel {
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at top left, rgba(105, 138, 120, 0.14), transparent 34%),
+      radial-gradient(circle at right bottom, rgba(189, 138, 81, 0.12), transparent 28%),
+      linear-gradient(180deg, rgba(251, 246, 239, 0.52) 0%, rgba(251, 246, 239, 0.16) 100%);
+  }
+
+  .lvw-panel-desc {
+    margin-top: 0.65rem;
+    font-size: 0.84rem;
+    line-height: 1.6;
+    color: var(--color-muted, #8b9a8e);
+  }
+
+  /* ── Slider list ── */
+  .lvw-slider-list {
+    margin-top: 1.15rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+
+  .lvw-slider-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.28rem;
+  }
+
+  .lvw-dim-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+  }
+
+  .lvw-slider-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+  }
+
+  .lvw-range {
+    -webkit-appearance: none;
+    appearance: none;
+    flex: 1;
+    height: 4px;
+    border-radius: 999px;
+    background: rgba(105, 138, 120, 0.22);
+    outline: none;
+    cursor: pointer;
+  }
+
+  .lvw-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 999px;
+    background: rgba(105, 138, 120, 0.88);
+    border: 2px solid rgba(251, 246, 239, 0.9);
+    box-shadow: 0 2px 6px rgba(58, 70, 54, 0.18);
+    transition: background 0.15s ease;
+  }
+
+  .lvw-range::-webkit-slider-thumb:hover {
+    background: rgba(92, 117, 106, 1);
+  }
+
+  .lvw-range-constraint::-webkit-slider-thumb {
+    background: rgba(189, 138, 81, 0.82);
+  }
+
+  .lvw-range-constraint {
+    background: rgba(189, 138, 81, 0.2);
+  }
+
+  .lvw-range-scaffold::-webkit-slider-thumb {
+    background: rgba(92, 138, 160, 0.82);
+  }
+
+  .lvw-range-scaffold {
+    background: rgba(92, 138, 160, 0.18);
+  }
+
+  .lvw-range-drag::-webkit-slider-thumb {
+    background: rgba(140, 90, 90, 0.78);
+  }
+
+  .lvw-readout {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: var(--color-ink, #2a2017);
+    min-width: 2.6rem;
+    text-align: right;
+  }
+
+  /* ── Actions ── */
+  .lvw-actions {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  /* ── Results panel ── */
+  .lvw-results {
+    margin-top: 1.5rem;
+    background:
+      radial-gradient(circle at top left, rgba(105, 138, 120, 0.14), transparent 34%),
+      radial-gradient(circle at right bottom, rgba(189, 138, 81, 0.12), transparent 28%),
+      linear-gradient(180deg, rgba(251, 246, 239, 0.52) 0%, rgba(251, 246, 239, 0.16) 100%);
+  }
+
+  /* ── Collapse banner ── */
+  .lvw-collapse-banner {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    border-radius: 1rem;
+    border: 1px solid #b43c3c;
+    background: rgba(180, 60, 60, 0.12);
+    padding: 0.9rem 1.1rem;
+    margin-bottom: 1.25rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #b43c3c;
+    letter-spacing: 0.02em;
+  }
+
+  .lvw-collapse-icon {
+    display: grid;
+    place-items: center;
+    width: 1.55rem;
+    height: 1.55rem;
+    border-radius: 999px;
+    border: 2px solid #b43c3c;
+    font-size: 0.9rem;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+
+  /* ── Score row ── */
+  .lvw-score-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    align-items: flex-start;
+  }
+
+  .lvw-score-value {
+    font-family: var(--font-display, serif);
+    font-size: 3.2rem;
+    line-height: 1;
+    color: var(--color-heading, #1a1007);
+    margin-top: 0.4rem;
+  }
+
+  .lvw-band {
+    margin-top: 0.4rem;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .lvw-band-green { color: #3d7a52; }
+  .lvw-band-amber { color: #a06820; }
+  .lvw-band-red   { color: #b43c3c; }
+
+  .lvw-penalties-block {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .lvw-penalties-list {
+    margin-top: 0.5rem;
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .lvw-penalty-item {
+    font-size: 0.84rem;
+    color: #b43c3c;
+    font-family: var(--font-mono, monospace);
+  }
+
+  .lvw-penalty-none {
+    font-size: 0.84rem;
+    color: var(--color-muted, #8b9a8e);
+    font-family: var(--font-mono, monospace);
+  }
+
+  /* ── Section dividers ── */
+  .lvw-section-divider {
+    border-top: 1px solid rgba(36, 27, 23, 0.10);
+    margin-top: 1.4rem;
+    padding-top: 1.2rem;
+  }
+
+  .lvw-vector-desc {
+    margin-top: 0.4rem;
+    font-size: 0.82rem;
+    color: var(--color-muted, #8b9a8e);
+    line-height: 1.5;
+  }
+
+  /* ── Bar grid ── */
+  .lvw-bar-grid {
+    margin-top: 0.85rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.62rem;
+  }
+
+  .lvw-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .lvw-bar-label {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #728c7b;
+    min-width: 3.2rem;
+    text-align: right;
+  }
+
+  .lvw-bar-track {
+    flex: 1;
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(58, 70, 54, 0.10);
+    overflow: hidden;
+  }
+
+  .lvw-bar-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgba(105, 138, 120, 0.7), rgba(105, 138, 120, 1));
+    transition: width 0.35s ease;
+  }
+
+  .lvw-bar-fill-drag {
+    background: linear-gradient(90deg, rgba(140, 90, 90, 0.5), rgba(140, 90, 90, 0.85));
+  }
+
+  .lvw-bar-val {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: var(--color-ink, #2a2017);
+    min-width: 2.8rem;
+  }
+
+  /* ── Two-col section ── */
+  .lvw-two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 600px) {
+    .lvw-two-col {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* ── Pills ── */
+  .lvw-pill-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    margin-top: 0.65rem;
+  }
+
+  .lvw-pill {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 0.38rem 0.75rem;
+    font-size: 0.78rem;
+    background: rgba(189, 138, 81, 0.12);
+    color: var(--color-heading, #1a1007);
+  }
+
+  .lvw-pill-muted {
+    background: rgba(58, 70, 54, 0.08);
+    color: var(--color-muted, #8b9a8e);
+  }
+</style>

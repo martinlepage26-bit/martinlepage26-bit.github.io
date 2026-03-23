@@ -1,5 +1,6 @@
 ---
 import LotusWorkbench from '../../components/lotus/LotusWorkbench.astro';
+import LotusVectorWorkbench from '../../components/lotus/LotusVectorWorkbench.astro';
 import SectionIntro from '../../components/SectionIntro.astro';
 import { lotusBoundaryCards, lotusSignalGroups, lotusSurfaces } from '../../data/lotus';
 import BaseLayout from '../../layouts/BaseLayout.astro';
@@ -40,6 +41,7 @@ const structuredData = {
             <a class="button-primary" href="#lotus-workbench">Open the workbench</a>
             <a class="button-secondary" href="/projects/bonded-intelligence-under-constraint/">Read the framework paper</a>
             <a class="button-secondary" href="/projects/lotus/">Open the project record</a>
+            <a class="button-secondary" href="#lotus-vector">Run the vector model</a>
           </div>
         </div>
 
@@ -103,6 +105,17 @@ const structuredData = {
 
     <div class="mt-12">
       <LotusWorkbench />
+    </div>
+  </section>
+
+  <section id="lotus-vector" class="section-shell border-y border-[rgba(36,27,23,0.08)] bg-[rgba(251,246,239,0.28)]">
+    <SectionIntro
+      eyebrow="Vector model"
+      title="Score agency as a vector field under constraint."
+      description="The vectorized LOTUS model computes effective agency from a base state, constraint load, and scaffold availability. Enter scores for each dimension and run the full formula chain: L_eff = M·L_base − N·K + Q·G − ΔK → A_LOTUS → A_final."
+    />
+    <div class="mt-12">
+      <LotusVectorWorkbench />
     </div>
   </section>
 
