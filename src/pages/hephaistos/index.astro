@@ -1,0 +1,657 @@
+---
+const cfg = {
+  apiKey: import.meta.env.PUBLIC_LLM_API_KEY ?? '',
+  baseUrl: import.meta.env.PUBLIC_LLM_BASE_URL ?? '',
+  model: import.meta.env.PUBLIC_LLM_MODEL_NAME ?? '',
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Hephaistos — AI skill ecosystem built on the principle that oversight must be earned." />
+    <meta name="theme-color" content="#c97a16" />
+    <title>Hephaistos</title>
+    <style>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+      :root {
+        --bg:        #141210;
+        --bg2:       #1c1916;
+        --bg3:       #252018;
+        --border:    rgba(200,160,80,0.15);
+        --border2:   rgba(200,160,80,0.28);
+        --amber:     #c97a16;
+        --amber-dim: #a06010;
+        --amber-hi:  #f0a030;
+        --text:      #e8dfc8;
+        --text2:     #a89870;
+        --text3:     #6e5e3e;
+        --user-bg:   #1f2a1a;
+        --user-border: rgba(100,180,80,0.25);
+        --user-text: #b8d8a0;
+        --asst-bg:   #201a10;
+        --asst-border: rgba(200,140,40,0.25);
+      }
+
+      html, body { height: 100%; }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: 'Georgia', serif;
+        font-size: 15px;
+        line-height: 1.65;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+
+      /* ── Header ── */
+      .h-header {
+        border-bottom: 1px solid var(--border);
+        padding: 14px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: var(--bg2);
+        flex-shrink: 0;
+      }
+      .h-brand {
+        display: flex; align-items: baseline; gap: 10px;
+        text-decoration: none;
+      }
+      .h-mark {
+        font-family: 'Georgia', serif;
+        font-size: 1.15rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--amber-hi);
+      }
+      .h-tagline {
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text3);
+      }
+      .h-nav { display: flex; gap: 20px; }
+      .h-nav a {
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text3);
+        text-decoration: none;
+        transition: color 0.15s;
+      }
+      .h-nav a:hover { color: var(--text2); }
+
+      /* ── Main layout ── */
+      .h-body {
+        display: flex;
+        flex: 1;
+        overflow: hidden;
+      }
+
+      /* ── Sidebar ── */
+      .h-sidebar {
+        width: 260px;
+        flex-shrink: 0;
+        border-right: 1px solid var(--border);
+        background: var(--bg2);
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+      }
+      @media (max-width: 700px) { .h-sidebar { display: none; } }
+
+      .sidebar-section {
+        padding: 18px 16px;
+        border-bottom: 1px solid var(--border);
+      }
+      .sidebar-label {
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--text3);
+        margin-bottom: 10px;
+      }
+      .frame-callout {
+        background: var(--bg3);
+        border: 1px solid var(--border2);
+        border-left: 3px solid var(--amber);
+        border-radius: 6px;
+        padding: 12px 14px;
+        font-size: 0.78rem;
+        color: var(--text2);
+        line-height: 1.6;
+      }
+      .frame-callout strong { color: var(--amber-hi); }
+
+      .skill-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .skill-item {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+        padding: 6px 8px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.12s;
+      }
+      .skill-item:hover { background: var(--bg3); }
+      .skill-name {
+        font-size: 0.78rem;
+        color: var(--text);
+        font-weight: 500;
+      }
+      .skill-sub {
+        font-size: 0.68rem;
+        color: var(--text3);
+      }
+      .skill-item.philosopher .skill-name { color: var(--amber-hi); }
+
+      /* ── Chat panel ── */
+      .h-chat {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        min-width: 0;
+      }
+
+      .chat-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 24px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        scroll-behavior: smooth;
+      }
+
+      /* Welcome state */
+      .chat-welcome {
+        margin: auto;
+        max-width: 560px;
+        text-align: center;
+        padding: 40px 20px;
+      }
+      .welcome-glyph {
+        font-size: 2.5rem;
+        margin-bottom: 16px;
+        display: block;
+        color: var(--amber);
+      }
+      .welcome-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--amber-hi);
+        margin-bottom: 8px;
+        letter-spacing: 0.04em;
+      }
+      .welcome-sub {
+        font-size: 0.85rem;
+        color: var(--text2);
+        line-height: 1.7;
+        margin-bottom: 20px;
+      }
+      .welcome-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+      }
+      .chip {
+        font-size: 0.75rem;
+        padding: 6px 12px;
+        border-radius: 20px;
+        background: var(--bg3);
+        border: 1px solid var(--border2);
+        color: var(--text2);
+        cursor: pointer;
+        transition: border-color 0.15s, color 0.15s;
+      }
+      .chip:hover { border-color: var(--amber); color: var(--text); }
+
+      /* Messages */
+      .msg {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        max-width: 720px;
+      }
+      .msg.user { align-self: flex-end; align-items: flex-end; }
+      .msg.assistant { align-self: flex-start; align-items: flex-start; }
+
+      .msg-role {
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text3);
+      }
+      .msg-bubble {
+        padding: 10px 14px;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        line-height: 1.7;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+      .msg.user .msg-bubble {
+        background: var(--user-bg);
+        border: 1px solid var(--user-border);
+        color: var(--user-text);
+      }
+      .msg.assistant .msg-bubble {
+        background: var(--asst-bg);
+        border: 1px solid var(--asst-border);
+        color: var(--text);
+      }
+
+      .msg-bubble.streaming::after {
+        content: '▋';
+        animation: blink 1s step-end infinite;
+        color: var(--amber);
+        margin-left: 2px;
+      }
+      @keyframes blink { 50% { opacity: 0; } }
+
+      /* Error state */
+      .msg-bubble.error {
+        background: #200a0a;
+        border-color: rgba(200,60,60,0.3);
+        color: #e08080;
+      }
+
+      /* ── Input bar ── */
+      .chat-input-bar {
+        border-top: 1px solid var(--border);
+        background: var(--bg2);
+        padding: 14px 16px;
+        flex-shrink: 0;
+      }
+      .input-row {
+        display: flex;
+        gap: 8px;
+        align-items: flex-end;
+      }
+      .chat-textarea {
+        flex: 1;
+        background: var(--bg3);
+        border: 1px solid var(--border2);
+        border-radius: 8px;
+        padding: 10px 12px;
+        color: var(--text);
+        font-family: inherit;
+        font-size: 0.875rem;
+        line-height: 1.5;
+        resize: none;
+        min-height: 42px;
+        max-height: 160px;
+        outline: none;
+        transition: border-color 0.15s;
+      }
+      .chat-textarea:focus { border-color: var(--amber-dim); }
+      .chat-textarea::placeholder { color: var(--text3); }
+
+      .send-btn {
+        background: var(--amber);
+        color: #0e0c08;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 16px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        cursor: pointer;
+        transition: background 0.15s;
+        flex-shrink: 0;
+        height: 42px;
+      }
+      .send-btn:hover:not(:disabled) { background: var(--amber-hi); }
+      .send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+      .input-hint {
+        font-size: 0.65rem;
+        color: var(--text3);
+        margin-top: 6px;
+        text-align: center;
+      }
+
+      /* ── Scrollbar ── */
+      ::-webkit-scrollbar { width: 6px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+    </style>
+  </head>
+  <body>
+
+    <header class="h-header">
+      <a class="h-brand" href="/hephaistos/">
+        <span class="h-mark">Hephaistos</span>
+        <span class="h-tagline">Oversight must be earned</span>
+      </a>
+      <nav class="h-nav">
+        <a href="/projects/skill-ecosystem/">About</a>
+        <a href="/governance/tree/">Governance Tree</a>
+        <a href="/projects/">Projects</a>
+      </nav>
+    </header>
+
+    <div class="h-body">
+
+      <aside class="h-sidebar">
+        <div class="sidebar-section">
+          <p class="sidebar-label">Frame</p>
+          <div class="frame-callout">
+            <strong>Oversight must be earned.</strong> Your expertise and the agent's must be comparable for feedback to be legitimate. Hephaistos amplifies what you can already do — it does not replace your judgment, expand your scope, or become a tool of coercive norms.
+          </div>
+        </div>
+
+        <div class="sidebar-section">
+          <p class="sidebar-label">Skills</p>
+          <ul class="skill-list" id="skill-list">
+            <li class="skill-item philosopher" data-skill="philosopher">
+              <span class="skill-name">Philosopher</span>
+              <span class="skill-sub">Meta-router · Debate Engine</span>
+            </li>
+            <li class="skill-item" data-skill="recursive-governance">
+              <span class="skill-name">Recursive Governance</span>
+              <span class="skill-sub">Control extraction from bounded archives</span>
+            </li>
+            <li class="skill-item" data-skill="qualitative">
+              <span class="skill-name">Qualitative Methods</span>
+              <span class="skill-sub">Study design, coding, interpretation</span>
+            </li>
+            <li class="skill-item" data-skill="trace">
+              <span class="skill-name">Trace Investigator</span>
+              <span class="skill-sub">Authority and accountability flow</span>
+            </li>
+            <li class="skill-item" data-skill="red-team">
+              <span class="skill-name">Red Team</span>
+              <span class="skill-sub">Authorized adversarial design</span>
+            </li>
+            <li class="skill-item" data-skill="paper-writer">
+              <span class="skill-name">Paper Writer</span>
+              <span class="skill-sub">Scholarly manuscript to submission</span>
+            </li>
+            <li class="skill-item" data-skill="publisher">
+              <span class="skill-name">Publisher</span>
+              <span class="skill-sub">Manuscript evaluation and positioning</span>
+            </li>
+            <li class="skill-item" data-skill="brand">
+              <span class="skill-name">Brand Identity</span>
+              <span class="skill-sub">Diagnosis, positioning, direction</span>
+            </li>
+            <li class="skill-item" data-skill="humanize">
+              <span class="skill-name">Humanize</span>
+              <span class="skill-sub">Rules redesigned for real behavior</span>
+            </li>
+            <li class="skill-item" data-skill="novelist">
+              <span class="skill-name">Novelist</span>
+              <span class="skill-sub">Planning, drafting, revision</span>
+            </li>
+            <li class="skill-item" data-skill="skill-architect">
+              <span class="skill-name">Skill Architect</span>
+              <span class="skill-sub">SKILL.md design and audit</span>
+            </li>
+          </ul>
+        </div>
+      </aside>
+
+      <main class="h-chat">
+        <div class="chat-messages" id="chat-messages">
+          <div class="chat-welcome" id="chat-welcome">
+            <span class="welcome-glyph">⚒</span>
+            <p class="welcome-title">What do you need to build?</p>
+            <p class="welcome-sub">
+              Hephaistos routes your request to the right skill. Start anywhere — governance analysis, a manuscript, a red team brief, a brand question.
+              The philosopher skill frames everything.
+            </p>
+            <div class="welcome-chips">
+              <span class="chip" data-prompt="I need to analyze a governance document for authority drift and accountability gaps.">Trace authority drift</span>
+              <span class="chip" data-prompt="Help me design a red team exercise for an AI governance framework.">Red team brief</span>
+              <span class="chip" data-prompt="I have a manuscript at draft stage. Help me identify the governing claim and structure the argument.">Manuscript review</span>
+              <span class="chip" data-prompt="Apply the recursive governance method to this problem: ">Recursive governance</span>
+              <span class="chip" data-prompt="I need a debate. Give me the strongest steel-man and the sharpest counter-argument for: ">Debate engine</span>
+              <span class="chip" data-prompt="I'm writing a paper and need help identifying the contribution ladder and framing the introduction.">Paper structure</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="chat-input-bar">
+          <div class="input-row">
+            <textarea
+              id="chat-input"
+              class="chat-textarea"
+              placeholder="Ask Hephaistos anything — governance, research, writing, red team, brand…"
+              rows="1"
+            ></textarea>
+            <button class="send-btn" id="send-btn">Send</button>
+          </div>
+          <p class="input-hint">Enter to send · Shift+Enter for new line · Skill routing is automatic</p>
+        </div>
+      </main>
+
+    </div>
+
+    <script define:vars={{ cfg }}>
+// @ts-nocheck
+
+const API_KEY  = cfg.apiKey;
+const BASE_URL = cfg.baseUrl;
+const MODEL    = cfg.model;
+
+const SYSTEM_PROMPT = `You are Hephaistos — an AI skill ecosystem built on the principle that oversight must be earned.
+
+FRAME (non-negotiable):
+1. Oversight legitimacy: for your feedback to be legitimate, the human's expertise and yours must be comparable or defensibly comparable. You never claim authority the human does not hold.
+2. Skill lineage: you were built from skills the creator already possesses, optimized for machine execution — speed, systematicity, consistency. You amplify. You do not outrank.
+3. Anti-scope-creep: you amplify the user's capabilities but do not expand their scope or substitute for human judgment where responsibility is required.
+4. Anti-capture: you actively resist institutional co-optation, coercive norms, shame-based correction, and forced standardization. User agency and consent are non-negotiable. Warning: cannot destroy the master's house with the master's tools — this tool must never become one of those tools.
+
+Your skill roster (route to the right one automatically; state which skill you are applying and why at the start of each response):
+- Philosopher (meta-router): frames every other skill, holds the Debate Engine, routes cross-domain requests
+- Recursive Governance Method: control extraction from bounded archives, separation of source from generated layer, method lock
+- Qualitative Methods: study design, coding, thematic analysis, ethnography, discourse analysis, positionality
+- Trace Investigator: authority flow, accountability chains, definition drift, handoff mapping
+- Red Team: authorized adversarial exercise design, rules of engagement, adversary emulation, purple team
+- Peer-Reviewed Paper Writer: governing claim, contribution ladder, argument structure, reviewer response
+- Publisher: manuscript evaluation, editorial positioning, acquisitions memos, jacket copy
+- Brand Identity System: diagnosis, strategic brief, logo direction, website branding
+- Humanize: compliance rules redesigned for real behavior, COM-B, behavioral science
+- Novelist: character arc, plot momentum, POV, scene structure
+- Skill Architect: SKILL.md design, dual-layer architecture, prompt vs context engineering
+
+When you route to a skill, lead with: [Skill: Name] and a single sentence on why this skill applies. Then proceed. If a task spans multiple skills, sequence them and explain the handoff.
+
+Do not moralize. Do not over-explain. Be direct, precise, and accountable. Your analysis must be reconstructable.`;
+
+// ── State ──────────────────────────────────────────────────────
+let history = []; // { role: 'user'|'assistant', content: string }
+let streaming = false;
+
+// ── DOM refs ───────────────────────────────────────────────────
+const messagesEl = document.getElementById('chat-messages');
+const welcomeEl  = document.getElementById('chat-welcome');
+const inputEl    = document.getElementById('chat-input');
+const sendBtn    = document.getElementById('send-btn');
+
+// ── Restore session ────────────────────────────────────────────
+try {
+  const saved = sessionStorage.getItem('heph-history');
+  if (saved) {
+    history = JSON.parse(saved);
+    if (history.length > 0) {
+      welcomeEl.style.display = 'none';
+      history.forEach(m => appendMsg(m.role, m.content));
+    }
+  }
+} catch {}
+
+// ── Chip prompts ───────────────────────────────────────────────
+document.querySelectorAll('.chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    inputEl.value = chip.dataset.prompt;
+    inputEl.focus();
+    autoResize();
+  });
+});
+
+// ── Skill sidebar: click to prepend skill context ──────────────
+document.querySelectorAll('.skill-item').forEach(item => {
+  item.addEventListener('click', () => {
+    const name = item.querySelector('.skill-name').textContent;
+    const current = inputEl.value.trim();
+    if (!current.toLowerCase().includes(name.toLowerCase())) {
+      inputEl.value = `[Use ${name} skill] ${current}`;
+    }
+    inputEl.focus();
+    autoResize();
+  });
+});
+
+// ── Auto-resize textarea ───────────────────────────────────────
+function autoResize() {
+  inputEl.style.height = 'auto';
+  inputEl.style.height = Math.min(inputEl.scrollHeight, 160) + 'px';
+}
+inputEl.addEventListener('input', autoResize);
+
+// ── Keyboard: Enter to send, Shift+Enter for newline ──────────
+inputEl.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    handleSend();
+  }
+});
+sendBtn.addEventListener('click', handleSend);
+
+// ── Send ───────────────────────────────────────────────────────
+async function handleSend() {
+  const text = inputEl.value.trim();
+  if (!text || streaming) return;
+
+  // Hide welcome
+  if (welcomeEl) welcomeEl.style.display = 'none';
+
+  // Append user message
+  history.push({ role: 'user', content: text });
+  appendMsg('user', text);
+  inputEl.value = '';
+  inputEl.style.height = 'auto';
+  saveSession();
+
+  streaming = true;
+  sendBtn.disabled = true;
+
+  // Create assistant bubble
+  const bubble = appendMsg('assistant', '');
+  bubble.classList.add('streaming');
+
+  try {
+    const messages = [
+      { role: 'system', content: SYSTEM_PROMPT },
+      ...history.slice(-20), // keep last 20 turns
+    ];
+
+    const res = await fetch(`${BASE_URL}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ model: MODEL, messages, stream: true }),
+    });
+
+    if (!res.ok) {
+      const err = await res.text();
+      bubble.classList.remove('streaming');
+      bubble.classList.add('error');
+      bubble.textContent = `API error ${res.status}: ${err}`;
+      history.pop(); // remove user msg on error
+      return;
+    }
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let fullText = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      const chunk = decoder.decode(value, { stream: true });
+      const lines = chunk.split('\n').filter(l => l.startsWith('data: '));
+
+      for (const line of lines) {
+        const data = line.slice(6);
+        if (data === '[DONE]') continue;
+        try {
+          const parsed = JSON.parse(data);
+          const delta = parsed.choices?.[0]?.delta?.content ?? '';
+          if (delta) {
+            fullText += delta;
+            bubble.textContent = fullText;
+            scrollToBottom();
+          }
+        } catch {}
+      }
+    }
+
+    bubble.classList.remove('streaming');
+    if (fullText) {
+      history.push({ role: 'assistant', content: fullText });
+      saveSession();
+    }
+
+  } catch (err) {
+    bubble.classList.remove('streaming');
+    bubble.classList.add('error');
+    bubble.textContent = `Connection error: ${err.message}`;
+  } finally {
+    streaming = false;
+    sendBtn.disabled = false;
+    inputEl.focus();
+  }
+}
+
+// ── Helpers ────────────────────────────────────────────────────
+function appendMsg(role, content) {
+  const wrap = document.createElement('div');
+  wrap.className = `msg ${role}`;
+
+  const label = document.createElement('span');
+  label.className = 'msg-role';
+  label.textContent = role === 'user' ? 'You' : 'Hephaistos';
+
+  const bubble = document.createElement('div');
+  bubble.className = 'msg-bubble';
+  bubble.textContent = content;
+
+  wrap.appendChild(label);
+  wrap.appendChild(bubble);
+  messagesEl.appendChild(wrap);
+  scrollToBottom();
+  return bubble;
+}
+
+function scrollToBottom() {
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+}
+
+function saveSession() {
+  try {
+    sessionStorage.setItem('heph-history', JSON.stringify(history.slice(-40)));
+  } catch {}
+}
+    </script>
+
+  </body>
+</html>
