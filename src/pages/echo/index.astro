@@ -1,0 +1,88 @@
+---
+import '@fontsource-variable/space-grotesk';
+import '@fontsource/ibm-plex-sans/400.css';
+import '@fontsource/ibm-plex-sans/600.css';
+import '../../styles/echo-standalone.css';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="ECHO standalone page: human-sounding bilingual text-to-speech with masculine, feminine, and non-gendered voice renditions." />
+    <meta name="theme-color" content="#5ba7ff" />
+    <title>ECHO | Standalone Voice Surface</title>
+  </head>
+  <body class="echo-standalone">
+    <div class="echo-shell">
+      <header class="echo-header">
+        <a class="echo-brand" href="/echo/">
+          <span class="echo-mark">ECHO</span>
+          <span class="echo-tagline">Standalone Voice Surface</span>
+        </a>
+        <nav class="echo-nav" aria-label="ECHO navigation">
+          <a href="/projects/echo/">Project details</a>
+          <a href="/projects/">All projects</a>
+          <a href="/contact/">Contact</a>
+        </nav>
+      </header>
+
+      <main class="echo-main">
+        <section class="echo-hero">
+          <p class="echo-eyebrow">Text-to-Speech</p>
+          <h1>Natural bilingual voices for English and French.</h1>
+          <p>
+            ECHO is a dedicated text-to-speech surface focused on human-like delivery: rhythm, pacing, phrasing,
+            intonation, and connected-speech behavior. It supports masculine, feminine, and non-gendered rendition
+            profiles built from the same phonology and prosody framework.
+          </p>
+          <div class="echo-actions">
+            <a class="echo-button primary" href="/projects/echo/">View ECHO project record</a>
+            <a class="echo-button secondary" href="mailto:martinlepage.ai@gmail.com">Request voice testing access</a>
+          </div>
+        </section>
+
+        <section class="echo-grid" aria-label="Rendition profiles">
+          <article class="echo-card">
+            <h2>Masculine</h2>
+            <p>Lower-centered range with stable clarity and controlled energy for long-form narration.</p>
+            <ul>
+              <li>Balanced breath pacing across phrase groups</li>
+              <li>Clear consonant edges without harshness</li>
+              <li>Natural sentence-fall behavior</li>
+            </ul>
+          </article>
+          <article class="echo-card">
+            <h2>Feminine</h2>
+            <p>Brighter resonance and agile contour motion while keeping intelligibility grounded.</p>
+            <ul>
+              <li>Flexible phrase shaping for emphasis</li>
+              <li>Smooth transitions in connected speech</li>
+              <li>Consistent tempo under longer passages</li>
+            </ul>
+          </article>
+          <article class="echo-card">
+            <h2>Non-gendered</h2>
+            <p>Neutral resonance profile designed to avoid forced gender cues while sounding human.</p>
+            <ul>
+              <li>Center-weighted pitch strategy</li>
+              <li>Low-stereotype timbre balancing</li>
+              <li>Clean bilingual articulation targets</li>
+            </ul>
+          </article>
+        </section>
+
+        <section class="echo-lines">
+          <h3>Voice naturalness targets</h3>
+          <p><code>English</code> “I can confirm the review is scheduled for tomorrow morning.”</p>
+          <p><code>French</code> “Je peux confirmer que la revue est prévue demain matin.”</p>
+          <p>
+            Each line is tuned for realistic human pacing rather than robotic uniform timing, with pronunciation
+            variation constrained by the selected rendition profile.
+          </p>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

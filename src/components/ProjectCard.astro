@@ -8,6 +8,8 @@ interface Props {
 
 const { project } = Astro.props;
 const slug = contentSlug(project.id);
+const isEchoProject = slug === 'echo';
+const projectHref = isEchoProject ? '/echo/' : `/projects/${slug}/`;
 const motifClass =
   {
     'breath-of-the-astral-year': 'project-motif-orbit',
@@ -22,7 +24,12 @@ const summary = clampText(project.data.description, 190);
 ---
 
 <article data-filter-item data-tags={project.data.tags.join('|').toLowerCase()} data-search={`${project.data.title} ${project.data.subtitle} ${project.data.description} ${project.data.role} ${project.data.tags.join(' ')}`.toLowerCase()}>
-  <a class="group card-link" href={`/projects/${contentSlug(project.id)}/`}>
+  <a
+    class="group card-link"
+    href={projectHref}
+    target={isEchoProject ? '_blank' : undefined}
+    rel={isEchoProject ? 'noopener noreferrer' : undefined}
+  >
     <div class="overflow-hidden border-b border-[rgba(36,27,23,0.1)]">
       <div class:list={['aspect-[16/8] p-5 project-motif-shell', motifClass]}>
         <div class="flex h-full flex-col justify-between">
@@ -37,6 +44,8 @@ const summary = clampText(project.data.description, 190);
     </div>
     <p class="project-card-role">{project.data.role}</p>
     <p class="project-card-summary max-w-[58ch]">{summary}</p>
-    <span class="mt-auto text-sm font-semibold text-accent group-hover:text-moon">View project</span>
+    <span class="mt-auto text-sm font-semibold text-accent group-hover:text-moon">
+      {isEchoProject ? 'Open ECHO' : 'View project'}
+    </span>
   </a>
 </article>

@@ -19,7 +19,9 @@ tags:
 featured: false
 image: "/assets/geometric-motif-bottomleft.png"
 imageAlt: "ECHO text-to-speech app surface for bilingual audio generation."
-links: []
+links:
+  - label: "Open ECHO app (new window)"
+    url: "/echo/"
 ---
 
 *ECHO* is a text-to-speech project for generating English and French voices that sound more like real people.

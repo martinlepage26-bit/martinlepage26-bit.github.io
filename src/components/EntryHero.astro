@@ -19,6 +19,7 @@ interface Props {
 }
 
 const { eyebrow, title, description, meta, backHref, backLabel, tags = [], links = [] } = Astro.props;
+const opensInNewWindow = (url: string) => url === '/echo/' || /^https?:\/\//.test(url);
 ---
 
 <section class="relative overflow-hidden border-b border-[rgba(36,27,23,0.12)]">
@@ -35,7 +36,16 @@ const { eyebrow, title, description, meta, backHref, backLabel, tags = [], links
         links.length > 0 && (
           <ul class="bullet-links mt-6">
             {links.map((link) => (
-              <li><a class="link-inline" href={link.url}>{link.label}</a></li>
+              <li>
+                <a
+                  class="link-inline"
+                  href={link.url}
+                  target={opensInNewWindow(link.url) ? '_blank' : undefined}
+                  rel={opensInNewWindow(link.url) ? 'noopener noreferrer' : undefined}
+                >
+                  {link.label}
+                </a>
+              </li>
             ))}
           </ul>
         )
