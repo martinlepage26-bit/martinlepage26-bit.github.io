@@ -1,42 +1,24 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
   <title id="title">Martin Lepage site icon</title>
-  <desc id="desc">A split ML monogram with a dark M and a neon lime L.</desc>
+  <desc id="desc">A geometric ML monogram in restrained blue and ivory tones.</desc>
   <defs>
-    <linearGradient id="limeFill" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#304e00" />
-      <stop offset="58%" stop-color="#83d400" />
-      <stop offset="100%" stop-color="#d8ff52" />
+    <linearGradient id="mStroke" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f7fbff" />
+      <stop offset="100%" stop-color="#b9cbe3" />
     </linearGradient>
-    <filter id="limeGlow" x="-80%" y="-80%" width="260%" height="260%">
-      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#d8ff52" flood-opacity=".34" />
-      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#d8ff52" flood-opacity=".14" />
+    <linearGradient id="lStroke" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#9bc0ff" />
+      <stop offset="100%" stop-color="#5f85cf" />
+    </linearGradient>
+    <filter id="softShadow" x="-30%" y="-40%" width="180%" height="220%">
+      <feDropShadow dx="0" dy="3" stdDeviation="2.6" flood-color="#08101d" flood-opacity="0.3" />
     </filter>
   </defs>
 
-  <text
-    x="16"
-    y="87"
-    fill="#06070b"
-    font-family="'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Georgia, serif"
-    font-size="78"
-    font-style="italic"
-    font-weight="700"
-    letter-spacing="-4"
-  >
-    M
-  </text>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round" filter="url(#softShadow)">
+    <path d="M14 102V24L32 46L50 24V102" stroke="url(#mStroke)" stroke-width="11" />
+    <path d="M66 24V102H114" stroke="url(#lStroke)" stroke-width="11" />
+  </g>
 
-  <text
-    x="60"
-    y="87"
-    fill="url(#limeFill)"
-    filter="url(#limeGlow)"
-    font-family="'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Georgia, serif"
-    font-size="82"
-    font-style="italic"
-    font-weight="700"
-    letter-spacing="-3"
-  >
-    L
-  </text>
+  <path d="M10 112H116" stroke="rgba(151, 178, 219, 0.35)" stroke-width="1.2" stroke-linecap="round" />
 </svg>

@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alt 02 Teal + Scarlet Rose</title>
+    <style>
+      :root {
+        --bg-dark: #0f141b;
+        --bg-dark-panel: #18212c;
+        --bg-light: #ecefed;
+        --ink: #dfe7e5;
+        --ink-dark: #1d2a2d;
+        --edge: #3a4b59;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        font-family: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+        background: radial-gradient(circle at 15% -15%, #253446 0%, var(--bg-dark) 58%);
+        color: var(--ink);
+      }
+
+      .page {
+        width: min(1080px, 94vw);
+        margin: 0 auto;
+        padding: 38px 0 70px;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(1.5rem, 2.4vw, 2.2rem);
+      }
+
+      p {
+        margin: 10px 0 0;
+        max-width: 74ch;
+        line-height: 1.55;
+        color: #b8c5c2;
+      }
+
+      .grid {
+        margin-top: 24px;
+        display: grid;
+        gap: 16px;
+        grid-template-columns: 1fr;
+      }
+
+      .panel {
+        border: 1px solid var(--edge);
+        border-radius: 14px;
+        padding: 18px;
+      }
+
+      .panel--dark {
+        background: linear-gradient(165deg, #1e2733, var(--bg-dark-panel));
+      }
+
+      .panel--light {
+        background: var(--bg-light);
+        color: var(--ink-dark);
+        border-color: #c6cecb;
+      }
+
+      .panel h2 {
+        margin: 0;
+        font-size: 0.98rem;
+      }
+
+      .mark-wrap {
+        margin-top: 12px;
+        min-height: 190px;
+        display: grid;
+        place-items: center;
+        border-radius: 10px;
+      }
+
+      .panel--dark .mark-wrap {
+        background: linear-gradient(180deg, #1c2734, #161f2a);
+        border: 1px solid rgba(111, 130, 155, 0.38);
+      }
+
+      .panel--light .mark-wrap {
+        background: #f6f8f7;
+        border: 1px solid #d2dad7;
+      }
+
+      .mark-wrap img {
+        width: min(320px, 84%);
+        height: auto;
+      }
+
+      .favicon-row {
+        margin-top: 14px;
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+
+      .chip {
+        width: 48px;
+        height: 48px;
+        border-radius: 10px;
+        display: grid;
+        place-items: center;
+      }
+
+      .panel--dark .chip {
+        background: #111820;
+        border: 1px solid #2a3b49;
+      }
+
+      .panel--light .chip {
+        background: #ffffff;
+        border: 1px solid #cfd7d4;
+      }
+
+      .chip img {
+        width: 30px;
+        height: 30px;
+      }
+
+      @media (min-width: 900px) {
+        .grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <h1>Alt 02 Framed Seal in Muted Teal + Muted Scarlet Rose</h1>
+      <p>This render applies the chosen mark with restrained institutional color values for trust-focused contexts.</p>
+
+      <section class="grid" aria-label="Color render preview">
+        <article class="panel panel--dark">
+          <h2>Dark Surface</h2>
+          <div class="mark-wrap">
+            <img src="/assets/ml-monogram-alt-02-framed-seal.svg" alt="Alt 02 in muted teal and scarlet rose on dark" />
+          </div>
+          <div class="favicon-row">
+            <div class="chip"><img src="/assets/ml-monogram-alt-02-framed-seal.svg" alt="Small preview dark" /></div>
+            <span>Small-size check</span>
+          </div>
+        </article>
+
+        <article class="panel panel--light">
+          <h2>Light Surface</h2>
+          <div class="mark-wrap">
+            <img src="/assets/ml-monogram-alt-02-framed-seal.svg" alt="Alt 02 in muted teal and scarlet rose on light" />
+          </div>
+          <div class="favicon-row">
+            <div class="chip"><img src="/assets/ml-monogram-alt-02-framed-seal.svg" alt="Small preview light" /></div>
+            <span>Small-size check</span>
+          </div>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>

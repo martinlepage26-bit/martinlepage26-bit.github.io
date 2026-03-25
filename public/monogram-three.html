@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Three Monogram Alternates</title>
+    <style>
+      :root {
+        --bg: #0b1220;
+        --panel: #111a2d;
+        --edge: #2f476f;
+        --text: #e5edf9;
+        --muted: #a5b6d3;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        font-family: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+        background: radial-gradient(circle at 20% -10%, #182845 0%, var(--bg) 58%);
+        color: var(--text);
+      }
+
+      .page {
+        width: min(1200px, 94vw);
+        margin: 0 auto;
+        padding: 36px 0 64px;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(1.5rem, 2.5vw, 2.2rem);
+      }
+
+      p {
+        margin: 10px 0 0;
+        color: var(--muted);
+        max-width: 72ch;
+        line-height: 1.55;
+      }
+
+      .grid {
+        margin-top: 24px;
+        display: grid;
+        gap: 16px;
+        grid-template-columns: 1fr;
+      }
+
+      .card {
+        border: 1px solid var(--edge);
+        border-radius: 14px;
+        background: linear-gradient(160deg, rgba(23, 35, 58, 0.92), rgba(15, 25, 43, 0.92));
+        box-shadow: 0 16px 40px rgba(4, 9, 19, 0.34);
+        padding: 18px;
+      }
+
+      .card h2 {
+        margin: 0;
+        font-size: 1rem;
+      }
+
+      .preview {
+        margin-top: 12px;
+        min-height: 180px;
+        display: grid;
+        place-items: center;
+        border: 1px solid rgba(132, 160, 206, 0.42);
+        border-radius: 10px;
+        background: linear-gradient(180deg, #16233b, #121d33);
+      }
+
+      .preview img {
+        width: clamp(220px, 30vw, 320px);
+        height: auto;
+      }
+
+      @media (min-width: 980px) {
+        .grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <h1>ML Monogram Alternates (3-Up)</h1>
+      <p>All three alternates are shown at the same scale and frame so you can compare balance and weight quickly.</p>
+
+      <section class="grid" aria-label="Three monogram alternatives">
+        <article class="card">
+          <h2>Alt 01 Balanced Line</h2>
+          <div class="preview">
+            <img src="/assets/ml-monogram-alt-01-balanced-line.svg" alt="Alt 01 balanced line monogram" />
+          </div>
+        </article>
+
+        <article class="card">
+          <h2>Alt 02 Framed Seal</h2>
+          <div class="preview">
+            <img src="/assets/ml-monogram-alt-02-framed-seal.svg" alt="Alt 02 framed seal monogram" />
+          </div>
+        </article>
+
+        <article class="card">
+          <h2>Alt 03 Slab Cut</h2>
+          <div class="preview">
+            <img src="/assets/ml-monogram-alt-03-slab-cut.svg" alt="Alt 03 slab cut monogram" />
+          </div>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>

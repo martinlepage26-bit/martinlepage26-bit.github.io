@@ -35,41 +35,41 @@ const tags = collectTags([...projects, ...unpublishedPapers]);
 >
   <PracticeHero
     eyebrow="Projects"
-    title="Projects, manuscripts, and deterministic recursive method work."
-    description="This page now foregrounds recursive method tools, book-stage work, working manuscripts, and experimental builds rather than general governance positioning."
-    details="Governance, Writings, and Publications now have clearer routes of their own. Projects holds the unfinished, exploratory, and method-facing work that does not belong on those shelves yet."
+    title="Methods, manuscripts, and unfinished systems."
+    description="Projects is the working archive: recursive method tools, app builds, book-stage records, and exploratory research that is not yet classified as published output."
+    details="This page protects epistemic clarity. Governance, Publications, and Writings keep distinct claim boundaries, while Projects holds developmental work without overstating readiness."
     links={[
       { label: 'Browse project archive', url: '#project-archive', variant: 'primary' },
       { label: 'Browse research records', url: '#unpublished-papers', variant: 'secondary' },
-      { label: 'Start with governance work', url: '/governance/', variant: 'inline' },
+      { label: 'Open governance practice', url: '/governance/', variant: 'inline' },
     ]}
     sideEyebrow="Archive logic"
-    sideTitle="What belongs here now."
-    sideDescription="Use this archive for recursive method tools, apps in development, book-stage work, experimental builds, and unpublished research."
+    sideTitle="Why this section exists."
+    sideDescription="Projects preserves visibility into active work while keeping publication and governance claims disciplined."
     sidePoints={[
-      'The deterministic recursive method now gets a clearer front-facing role here through Scriptorium and related work.',
-      'Book-stage work stays here until it becomes a published book entry under Writings.',
-      'Apps in development stay visible without overstating readiness.',
-      'Unpublished papers remain public here until they can stand as publication entries.',
+      'Method-facing tools stay visible here while they are being tested and refined.',
+      'Book-stage work remains here until it reaches published-book status.',
+      'Apps in development remain public without implying production readiness.',
+      'Unpublished papers stay here until publication status and bibliographic metadata are verified.',
     ]}
     stats={[
       {
-        eyebrow: 'Books and builds',
+        eyebrow: 'Methods and builds',
         value: projects.length,
         label: 'Project records',
-        description: 'Recursive method tools, book-stage work, apps in development, and research builds.',
+        description: 'Recursive tools, manuscripts, apps in development, and experimental research artifacts.',
       },
       {
         eyebrow: 'Research records',
         value: unpublishedPapers.length,
         label: 'Manuscripts and leads',
-        description: 'In-progress manuscripts and unresolved bibliographic leads kept public until they become publication entries.',
+        description: 'In-progress papers and unresolved leads kept public at the correct confidence level.',
       },
       {
         eyebrow: 'Professional route',
         value: 'Governance',
-        label: 'Practice page',
-        description: 'The more explicitly professional governance surface now lives at its own dedicated entry point.',
+        label: 'Dedicated practice page',
+        description: 'Formal governance engagement material lives on its own focused page.',
       },
     ]}
   />
@@ -83,8 +83,8 @@ const tags = collectTags([...projects, ...unpublishedPapers]);
       <section id="project-archive">
         <SectionIntro
           eyebrow="Project archive"
-          title="Recursive method tools, books, apps in development, and research builds."
-          description="Scriptorium, book-stage projects, apps in development, and experimental research builds organized around unfinished or method-facing work."
+          title="Method tools, active manuscripts, and experimental builds."
+          description="This section foregrounds unfinished work where process visibility matters as much as outcomes."
         />
 
         <div class="mt-10 grid gap-6 lg:grid-cols-2">
@@ -96,7 +96,7 @@ const tags = collectTags([...projects, ...unpublishedPapers]);
         <SectionIntro
           eyebrow="In-progress research"
           title="Manuscripts and unresolved research leads."
-          description="These records stay public here until they become publication entries or their bibliographic details are secure."
+          description="These records stay public here until publication status is confirmed and metadata is stable."
         />
 
         <div class="mt-10 grid gap-6 lg:grid-cols-2">

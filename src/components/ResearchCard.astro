@@ -19,14 +19,14 @@ const sourceTitleLabel = entry.data.originalTitle && entry.data.originalTitle !=
       <p class="eyebrow">{entry.data.family ?? entry.data.type}</p>
       <h3 class="text-[1rem] leading-tight md:text-[1.22rem]">{entry.data.title}</h3>
       {entry.data.subtitle && <p class="text-sm text-slate-300">{entry.data.subtitle}</p>}
-      {sourceTitleLabel && <p class="text-xs uppercase tracking-[0.12em] text-slate-400">{sourceTitleLabel}</p>}
+      {sourceTitleLabel && <p class="text-[0.74rem] uppercase tracking-[0.1em] text-slate-400">{sourceTitleLabel}</p>}
     </div>
 
     <p class="max-w-[64ch] text-base text-slate-200">{entry.data.abstract}</p>
 
     <p class="text-sm font-semibold text-moon">{entry.data.whatItDoes}</p>
 
-    <div class="mt-auto flex flex-wrap gap-2 text-xs uppercase tracking-[0.14em] text-accent">
+    <div class="mt-auto flex flex-wrap gap-2 text-[0.74rem] uppercase tracking-[0.12em] text-accent">
       {entry.data.tags.slice(0, 6).map((tag) => (
         <span>{tag}</span>
       ))}

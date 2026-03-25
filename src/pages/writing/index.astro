@@ -14,7 +14,7 @@ const amazonBooks = sortByTitle(allProjects.filter((project) => /\bamazon\b/i.te
 const tags = collectTags(writings);
 const writingLinks = [
   { label: 'Visit HEXA', url: siteMeta.substack, variant: 'primary' as const },
-  { label: 'Browse the books', url: '#books', variant: 'secondary' as const },
+  { label: 'Browse books', url: '#books', variant: 'secondary' as const },
   ...(siteMeta.siteUrl ? [{ label: 'Subscribe by RSS', url: '/rss.xml', variant: 'inline' as const }] : []),
   { label: 'Contact about editorial work', url: '/contact/', variant: 'inline' as const },
 ];
@@ -26,36 +26,36 @@ const writingLinks = [
 >
   <PracticeHero
     eyebrow="Writings"
-    title="Essays, notes, and books."
-    description="Essays, criticism, notes, and published books, separate from the academic publication record."
-    details="Essays, shorter reflections, and published book entries with companion pages and outbound links."
+    title="Essays, criticism, and books."
+    description="This archive holds public prose: essays, notes, criticism, and published books. It is where conceptual work is tested in language meant to travel beyond specialist contexts."
+    details="Academic publication records remain under Publications, and developmental manuscripts remain under Projects. This boundary keeps each archive legible."
     links={writingLinks}
     sideEyebrow="Reading path"
-    sideTitle="How to move through the writing archive."
-    sideDescription="Public essays and books sit here apart from academic publication records and the project archive."
+    sideTitle="How this archive is structured."
+    sideDescription="Writings carry the public argument; they do not replace the scholarly archive or the project lab."
     sidePoints={[
-      'HEXA remains the outward channel for ongoing publication rhythm.',
-      'Books stay visible here once they are actually published.',
-      'Projects and Publications hold the in-progress and academic archives separately.',
+      'HEXA remains the main outward channel for ongoing publication rhythm.',
+      'Books remain visible here once publication status is confirmed.',
+      'Projects and Publications keep developmental and academic records distinct.',
     ]}
     stats={[
       {
         eyebrow: 'Essays and notes',
         value: writings.length,
         label: 'Writing entries',
-        description: 'Published reflections, criticism, notes, and shorter public writing.',
+        description: 'Published essays, criticism, notes, and short-form public analysis.',
       },
       {
         eyebrow: 'Books',
         value: amazonBooks.length,
         label: 'Published titles',
-        description: 'Self-published books with confirmed descriptions, companion pages, and stored links.',
+        description: 'Self-published books with companion pages and stable outbound links.',
       },
       {
         eyebrow: 'Topics',
         value: tags.length,
         label: 'Filter tags',
-        description: 'Searchable themes carried across the on-site writing archive.',
+        description: 'Searchable themes that track recurring concepts across the archive.',
       },
     ]}
   />
@@ -65,7 +65,7 @@ const writingLinks = [
       <SectionIntro
         eyebrow="Writing archive"
         title="Search essays and notes."
-        description="Essays, criticism, and shorter public prose from the on-site writing archive."
+        description="Filter the on-site writing archive by theme, title, and description."
       />
     </div>
 
@@ -82,8 +82,8 @@ const writingLinks = [
     <div id="books" class="mt-20">
       <SectionIntro
         eyebrow="Books"
-        title="Published books with companion pages and links."
-        description="These self-published titles stay visible here as writing entries, with companion archive pages and stored outbound links."
+        title="Published books with companion records."
+        description="Each title stays linked to its companion project page and outbound publication links."
       />
 
       <div class="mt-10 grid gap-6 lg:grid-cols-2">

@@ -13,7 +13,7 @@ import { biography, pageMeta, researchInterests, timeline } from '../data/site';
       <div>
         <SectionIntro
           eyebrow="About"
-          title="Research background and working context."
+          title="A scholar's method applied to institutional reality."
           description={biography.intro}
         />
         <div class="mt-8 space-y-5">
@@ -29,12 +29,13 @@ import { biography, pageMeta, researchInterests, timeline } from '../data/site';
           <img
             src="/assets/portrait.png"
             alt="Portrait of Martin Lepage"
-            class="negative-restore-image aspect-[4/5] w-full object-cover object-center"
+            class="aspect-[4/5] w-full object-cover object-center"
           />
           <div class="absolute inset-x-0 bottom-0 bg-[linear-gradient(180deg,transparent,rgba(17,23,38,0.76))] p-5">
             <p class="eyebrow">Martin Lepage</p>
             <p class="mt-2 max-w-xs text-sm leading-6 text-slate-100">
-              AI governance strategist. PhD, Religious Sciences. Working across governance, media, and public writing.
+              Governance strategist and writer. PhD, Religious Sciences. Working across institutions, language, and
+              consequence.
             </p>
           </div>
         </div>
@@ -50,13 +51,13 @@ import { biography, pageMeta, researchInterests, timeline } from '../data/site';
         <p class="mt-5 text-lg leading-8 text-slate-200">{biography.currentWork}</p>
         <ul class="bullet-links mt-6">
           <li><a class="link-inline" href="/governance/">Start with governance practice</a></li>
-          <li><a class="link-inline" href="/papers/">Browse publications</a></li>
+          <li><a class="link-inline" href="/papers/">Read publications</a></li>
           <li><a class="link-inline" href="/resume/">Open resume and CV</a></li>
         </ul>
       </div>
 
       <div class="veil-panel">
-        <p class="eyebrow">Research and professional interests</p>
+        <p class="eyebrow">Research and practice interests</p>
         <ul class="mt-5 space-y-3 text-base text-slate-200">
           {researchInterests.map((interest) => (
             <li class="border-t border-[rgba(36,27,23,0.12)] pt-3">
@@ -71,8 +72,8 @@ import { biography, pageMeta, researchInterests, timeline } from '../data/site';
   <section class="section-shell border-y border-[rgba(36,27,23,0.08)] bg-[rgba(251,246,239,0.28)]">
     <SectionIntro
       eyebrow="Timeline"
-      title="How this work took shape."
-      description="Study, research, and operational work from literary studies through governance and clinical coordination."
+      title="How the work became this practice."
+      description="From literary and religious studies to archives, clinical coordination, and AI governance implementation."
     />
 
     <div class="mt-12 space-y-5">

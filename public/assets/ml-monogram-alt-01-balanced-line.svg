@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 160" role="img" aria-labelledby="title desc">
+  <title id="title">ML monogram alt 01</title>
+  <desc id="desc">Balanced monoline ML monogram with centered geometry.</desc>
+  <defs>
+    <linearGradient id="mStroke" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f7fbff" />
+      <stop offset="100%" stop-color="#bed1ea" />
+    </linearGradient>
+    <linearGradient id="lStroke" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#9bc0ff" />
+      <stop offset="100%" stop-color="#5f85cf" />
+    </linearGradient>
+    <filter id="softShadow" x="-30%" y="-40%" width="180%" height="220%">
+      <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#08101d" flood-opacity="0.26" />
+    </filter>
+  </defs>
+
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round" filter="url(#softShadow)">
+    <path d="M40 124V36L86 84L132 36V124" stroke="url(#mStroke)" stroke-width="14" />
+    <path d="M148 36V124H240" stroke="url(#lStroke)" stroke-width="14" />
+  </g>
+
+  <path d="M34 136H246" stroke="rgba(151, 178, 219, 0.36)" stroke-width="1.4" stroke-linecap="round" />
+</svg>

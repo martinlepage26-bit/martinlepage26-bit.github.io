@@ -38,11 +38,11 @@ export const siteMeta = {
   title: 'Martin Lepage',
   siteUrl: configuredSiteUrl,
   description:
-    'AI governance strategy, publications, talks, and public writing by Martin Lepage.',
+    'AI governance, institutional analysis, and public writing by Martin Lepage.',
   locale: 'en-CA',
   email: 'martinlepage.ai@gmail.com',
   location: 'Montreal, Quebec, Canada',
-  jobTitle: 'AI governance strategist, scholar, and writer',
+  jobTitle: 'AI governance strategist, researcher, and writer',
   linkedIn: 'https://linkedin.com/in/martin-lepage-ai',
   github: 'https://github.com/martinlepage26-bit/',
   orcid: 'https://orcid.org/0009-0006-4320-6254',
@@ -53,49 +53,49 @@ export const siteMeta = {
 
 export const pageMeta = {
   home: {
-    title: 'AI Governance, Publications, and Writing',
+    title: 'AI Governance, Research, and Strategic Writing',
     description:
-      'AI governance strategy, selected governance projects, publications, talks, and public writing by Martin Lepage.',
+      'AI governance design, institutional analysis, publications, and public writing by Martin Lepage.',
   },
   governance: {
     title: 'Governance Practice',
     description:
-      'AI governance strategy and practice by Martin Lepage: risk mapping, decision documentation, traceability structures, and oversight materials grounded in operational experience.',
+      'Governance design by Martin Lepage: decision rights, evidence discipline, traceability, and review structures built for real institutional pressure.',
   },
   about: {
     title: 'About Martin Lepage',
     description:
-      'Background, research trajectory, and working context for Martin Lepage across AI governance, research operations, and public writing.',
+      'Background, research trajectory, and working method across AI governance, institutional analysis, and public writing.',
   },
   projects: {
-    title: 'Projects and Manuscripts',
+    title: 'Projects and Working Manuscripts',
     description:
-      'Apps in development, working manuscripts, and research projects by Martin Lepage across AI governance, media studies, ritual theory, and experimental authorship.',
+      'Method tools, working manuscripts, and experimental builds across governance, culture, legitimacy, and recursive analysis.',
   },
   publications: {
     title: 'Publications',
     description:
-      'Published academic articles, reviews, and dissertation-related records by Martin Lepage, with Academia.edu as the larger archive.',
+      'Published academic articles, reviews, and dissertation-related records by Martin Lepage, with Academia.edu as the wider archive.',
   },
   writings: {
     title: 'Writings and Books',
     description:
-      'Public essays, notes, criticism, and published book pages by Martin Lepage, with RSS and HEXA links.',
+      'Essays, criticism, notes, and books by Martin Lepage on governance, culture, power, and meaning-making.',
   },
   talks: {
     title: 'Talks and Appearances',
     description:
-      'Talks, conference presentations, panels, and public appearances by Martin Lepage across governance, scholarship, and media.',
+      'Talks, conference presentations, and public appearances by Martin Lepage across governance, scholarship, and cultural analysis.',
   },
   resume: {
     title: 'Resume and CV',
     description:
-      'On-page resume and downloadable CV for Martin Lepage covering governance work, research operations, publications, and professional experience.',
+      'Professional record for Martin Lepage across governance practice, research operations, publications, and institutional work.',
   },
   contact: {
     title: 'Contact Martin Lepage',
     description:
-      'Contact Martin Lepage about governance work, writing, research collaborations, speaking, or media requests.',
+      'Contact Martin Lepage for governance engagements, writing commissions, research collaborations, speaking, or media requests.',
   },
   rss: {
     title: 'Martin Lepage - Writings',
@@ -143,50 +143,50 @@ export const hiddenProjectArchiveSlugs = [
 export const projectArchivePromotedPaperSlugs = [] as const;
 
 export const heroFacts = [
-  'AI governance strategy',
+  'AI governance architecture and decision traceability',
   'PhD, Religious Sciences (UQAM)',
-  'Decision documentation and traceability',
+  'Institutional analysis across language, culture, and power',
   'English and French',
 ];
 
 export const audienceRoutes = [
   {
-    eyebrow: 'Governance and consulting',
-    title: 'Governance strategy, documentation, and reviewable systems',
+    eyebrow: 'Governance engagements',
+    title: 'Decision systems, accountability design, and review-ready documentation',
     description:
-      'Start with governance documents, review structures, and tools for oversight, traceability, and institutional clarity.',
+      'Start with governance structures that clarify authority, evidence, and consequence under institutional constraints.',
     href: '/governance/',
-    cta: 'Explore governance work',
+    cta: 'Review governance work',
   },
   {
-    eyebrow: 'Academic readers',
-    title: 'Publications and research context',
+    eyebrow: 'Academic and research readers',
+    title: 'Publications and research trajectory',
     description:
-      'Browse publications and talks, then follow the research line connecting ritual, media, legitimacy, and governance.',
+      'Browse published work and follow the through-line from ritual studies to governance, legitimacy, and institutional analysis.',
     href: '/papers/',
-    cta: 'Browse publications',
+    cta: 'Read publications',
   },
   {
     eyebrow: 'Editors and media',
-    title: 'Essays, books, and public-facing writing',
+    title: 'Essays, books, and public argument',
     description:
-      'Go to essays, criticism, books, and other writing suited to editorial, interview, and media use.',
+      'Move into essays and books that translate complex structures into clear public language without flattening stakes.',
     href: '/writing/',
-    cta: 'Read the writings',
+    cta: 'Open the writing archive',
   },
   {
-    eyebrow: 'Speaking and events',
-    title: 'Talks, panels, and public appearances',
+    eyebrow: 'Speaking and programming',
+    title: 'Talks, panels, and invited sessions',
     description:
-      'Review talk topics, formats, and material suited to conferences, guest lectures, and panels.',
+      'Review conference and public-facing talks on governance, cultural legitimacy, and methods of interpretation.',
     href: '/talks/',
-    cta: 'View talks',
+    cta: 'See talks',
   },
   {
-    eyebrow: 'General readers',
-    title: 'Start with the biography or selected writing',
+    eyebrow: 'First-time orientation',
+    title: 'Biography, method, and working context',
     description:
-      'The About page gives the clearest orientation to who Martin is and what the work covers.',
+      'Use About for the most direct orientation to background, method, and the relation between scholarship and strategy.',
     href: '/about/',
     cta: 'Read the biography',
   },
@@ -206,65 +206,65 @@ export const governanceWritingSlugs = [
 
 export const governancePracticeAreas = [
   {
-    title: 'Governance framing and decision documentation',
+    title: 'Governance architecture and decision rights',
     description:
-      'Define scope, claims, decision points, and accountability so AI use can be explained and defended.',
+      'Map who decides what, on what grounds, and under which escalation rules so authority remains explicit rather than assumed.',
   },
   {
-    title: 'Reviewable evidence and traceability',
+    title: 'Evidence design and traceability',
     description:
-      'Package inputs, citations, approvals, and supporting records so review does not depend on memory or improvisation.',
+      'Structure records, approvals, and source chains so consequential claims can be inspected, challenged, and defended.',
   },
   {
-    title: 'Policy translation for real teams',
+    title: 'Policy translation into operations',
     description:
-      'Turn standards and governance principles into procedures, escalation paths, and working documents people can actually use.',
+      'Turn standards and principles into concrete procedures teams can execute under deadline without losing accountability.',
   },
   {
-    title: 'Research, editorial, and public explanation',
+    title: 'Strategic interpretation and public clarity',
     description:
-      'Write briefs, essays, and explanatory material that connect governance decisions to culture, legitimacy, and public understanding.',
+      'Produce briefs, essays, and explanatory texts that connect governance choices to institutional legitimacy and social consequence.',
   },
 ] as const;
 
 export const governanceFit = [
-  'AI use documentation, review structures, and oversight logic',
-  'Decision records, evidence packaging, and traceability',
-  'Risk framing, escalation paths, and governance workflows',
-  'Essays, talks, and editorial work on governance and legitimacy',
+  'Decision architecture, accountability models, and authority mapping',
+  'Evidence packaging, traceability chains, and review protocols',
+  'Risk framing, escalation logic, and operational governance workflows',
+  'Strategic writing on governance, legitimacy, and institutional narrative',
 ] as const;
 
 export const biography = {
   intro:
-    'Martin Lepage is based in Montreal and works across AI governance, research operations, and public writing.',
+    'Martin Lepage is a Montreal-based governance strategist, researcher, and writer working where institutional design, public meaning, and operational accountability meet.',
   paragraphs: [
-    'His academic background spans ritual studies, queer theory, media analysis, digital culture, and contemporary spiritualities. He completed a PhD in Religious Sciences at Universite du Quebec a Montreal after earlier degrees in literary studies at Universite Laval.',
-    'He has also worked in research operations, archives, AI-assisted quality review, and clinical trial coordination. Each of those roles required keeping documentation audit-ready, explaining consequential decisions to multiple stakeholders, and maintaining traceability under real operational pressure. That experience is the practical foundation for the governance work.',
-    'The through-line across governance, media, and authorship is legitimacy: how authority gets built, how decisions get explained, and what people are asked to accept as authorized. The PhD sharpened the analytical frame; the operational work provided the institutional grounding.',
+    'His academic formation spans ritual studies, queer theory, media analysis, digital culture, and contemporary spiritualities. He completed a PhD in Religious Sciences at Universite du Quebec a Montreal after earlier degrees in literary studies at Universite Laval. That trajectory trained close reading, conceptual discipline, and sensitivity to how categories shape what institutions can see.',
+    'He has also worked in research operations, archives, AI-assisted quality evaluation, and clinical trial coordination. These roles demanded audit-ready documentation, multi-stakeholder judgment under pressure, and defensible decision pathways. The governance practice is grounded in that operational reality, not in abstract policy language alone.',
+    'The through-line is legitimacy: how authority becomes credible, how systems distribute consequence, and how language can either clarify or conceal responsibility. The work treats governance as a lived relation between decision, evidence, institution, and affected people.',
   ],
   currentWork:
-    'Current work centers on AI governance documents and review systems, alongside research and book-length writing on ritual, media, legitimacy, and public life.',
+    'Current work focuses on AI governance systems, decision traceability, and strategic writing that links institutional design to cultural and political consequence.',
 };
 
 export const researchInterests = [
-  'AI governance and decision traceability',
-  'Digital culture, platform ritual, and enchantment',
-  'Queer theory, gender, and legitimacy',
-  'Ritual studies and symbolic systems',
-  'Media analysis, postfeminism, and television',
-  'Experimental authorship and essay practice',
+  'AI governance, accountability design, and decision traceability',
+  'Legitimacy, authority, and institutional narrative',
+  'Digital culture, platform ritual, and symbolic systems',
+  'Queer theory, gender, and category critique',
+  'Media interpretation, rhetoric, and public persuasion',
+  'Method design for recursive and cross-domain analysis',
 ];
 
 export const timeline = [
   {
     year: '2007',
     title: 'B.A. in Literary Studies',
-    detail: 'Completed at Universite Laval.',
+    detail: 'Completed at Universite Laval with training in textual analysis and interpretive method.',
   },
   {
     year: '2009',
     title: 'M.A. in Literary Studies',
-    detail: 'Graduate work at Universite Laval on symbolic and archetypal representations.',
+    detail: 'Graduate work at Universite Laval focused on symbolic and archetypal representation in narrative forms.',
   },
   {
     year: '2010-2017',
@@ -279,12 +279,12 @@ export const timeline = [
   {
     year: '2019-2021',
     title: 'National Film Board of Canada',
-    detail: 'Worked in materials and preservation, with an archival and systems-focused workflow.',
+    detail: 'Worked in preservation workflows where archival control, classification, and retrieval discipline were central.',
   },
   {
     year: '2022',
     title: 'Lead Quality Evaluator',
-    detail: 'Assessed AI-assisted customer service environments, escalation logic, and output reliability.',
+    detail: 'Evaluated AI-assisted customer service systems for escalation quality, judgment consistency, and output reliability.',
   },
   {
     year: '2023-2025',
@@ -294,13 +294,13 @@ export const timeline = [
   {
     year: '2025-2026',
     title: 'Clinical Trial Coordination and Governance Practice',
-    detail: 'Combined high-compliance trial operations with AI governance framing, risk mapping, and decision documentation.',
+    detail: 'Integrated high-compliance trial operations with governance design, risk framing, and decision documentation.',
   },
 ] as const;
 
 export const resumeData = {
   summary:
-    'AI governance and research operations professional with experience in clinical trials, AI quality review, archives, and scholarly research. Works through documentation, decision traceability, and structured review to make consequential processes legible and defensible.',
+    'Governance and research-operations professional working across clinical trials, AI quality review, archives, and scholarship. Builds documentation and review structures that make consequential decisions legible, contestable, and defensible.',
   experience: [
     {
       title: 'Clinical Trial Coordinator',
@@ -308,9 +308,9 @@ export const resumeData = {
       location: 'Remote',
       dates: 'Oct 2025 - Jan 2026',
       bullets: [
-        'Coordinated large-scale pharmaceutical trial activity in a high-compliance environment and kept documentation review-ready under tight timelines.',
-        'Managed cross-functional communication across distributed stakeholders to keep operational and regulatory materials moving.',
-        'Delivered structured, audit-ready materials for time-sensitive trial work.',
+        'Coordinated large-scale pharmaceutical trial activity in a high-compliance environment and maintained review-ready documentation under strict timelines.',
+        'Managed cross-functional communication across distributed stakeholders to keep regulatory and operational materials aligned.',
+        'Delivered audit-ready records for time-sensitive trial workflows with clear handoff and escalation logic.',
       ],
     },
     {
@@ -319,9 +319,9 @@ export const resumeData = {
       location: 'Montreal',
       dates: 'Aug 2023 - Oct 2025',
       bullets: [
-        'Directed research protocol coordination, stakeholder engagement, and documentation workflows across clinical and academic settings.',
-        'Improved grant, reporting, and formal project materials through clearer documentation pipelines.',
-        'Maintained project integrity across ethical, clinical, and academic standards.',
+        'Directed protocol coordination, stakeholder communication, and documentation workflows across clinical and academic contexts.',
+        'Strengthened grant, reporting, and formal project materials through clearer evidence pathways and structured review.',
+        'Maintained project integrity across ethical, clinical, and academic standards in mixed-institution settings.',
       ],
     },
     {
@@ -330,8 +330,8 @@ export const resumeData = {
       location: 'Montreal',
       dates: 'Jan 2023 - Aug 2023',
       bullets: [
-        'Managed sample processing, database input, and research tracking for multi-phase work.',
-        'Supported cleaner data reporting and stronger workflow consistency.',
+        'Managed sample processing, database entry, and research tracking for multi-phase clinical workflows.',
+        'Improved reporting consistency through tighter documentation and quality-control routines.',
       ],
     },
     {
@@ -341,8 +341,8 @@ export const resumeData = {
       dates: '2022',
       bullets: [
         'Evaluated decision quality in AI-assisted customer service environments in English and French.',
-        'Identified risk signals in escalation logic, judgment consistency, and potential output bias.',
-        'Turned review findings into practical recommendations to improve workflow reliability and trustworthiness.',
+        'Detected risk signals in escalation logic, judgment consistency, and potential output bias.',
+        'Translated review findings into practical changes that improved reliability and trustworthiness.',
       ],
     },
     {
@@ -351,8 +351,8 @@ export const resumeData = {
       location: 'Canada',
       dates: '2019 - 2021',
       bullets: [
-        'Maintained digital and physical media preservation workflows for complex archival assets.',
-        'Documented lifecycle controls and retrieval processes to improve traceability.',
+        'Maintained digital and physical preservation workflows for complex archival media assets.',
+        'Documented lifecycle controls and retrieval processes to improve institutional traceability.',
       ],
     },
     {
@@ -362,7 +362,7 @@ export const resumeData = {
       dates: '2010 - 2017',
       bullets: [
         'Supported teaching and research in sociology, sexology, and religious studies.',
-        'Led tutorials, assessed student work, and contributed to publication-oriented research.',
+        'Led tutorials, assessed student work, and contributed to publication-oriented academic research.',
       ],
     },
   ],
@@ -446,35 +446,35 @@ export const resumeData = {
 };
 
 export const contactAreas = [
-  'Governance documents, review structures, and AI oversight work',
-  'Editorial, interview, and media requests',
-  'Talks, guest lectures, and panels',
-  'Research collaborations and publication conversations',
+  'Governance architecture, decision traceability, and review protocols',
+  'Editorial commissions, interviews, and media requests',
+  'Talks, guest lectures, and panel programming',
+  'Research collaborations and publication discussions',
 ];
 
 export const contactPathways = [
   {
-    title: 'Governance and consulting',
+    title: 'Governance engagements',
     description:
-      'For governance strategy, review structures, decision records, and related advisory work.',
-    cta: 'Email about governance',
+      'For governance architecture, evidence design, escalation pathways, and institutional accountability work.',
+    cta: 'Email about governance work',
   },
   {
     title: 'Speaking and events',
     description:
-      'For conferences, panels, workshops, guest lectures, and event programming related to governance, legitimacy, media, or public scholarship.',
+      'For conferences, panels, workshops, and guest lectures on governance, legitimacy, culture, and institutional analysis.',
     cta: 'Email about speaking',
   },
   {
     title: 'Editorial and media',
     description:
-      'For interviews, commissioned writing, editorial collaborations, book conversations, and media requests.',
+      'For commissioned essays, interviews, book conversations, editorial collaboration, and media requests.',
     cta: 'Email about editorial work',
   },
   {
     title: 'Academic and research',
     description:
-      'For publication conversations, research collaborations, scholarly outreach, and archive questions.',
+      'For publication dialogue, collaborative research, scholarly outreach, and archive-related inquiries.',
     cta: 'Email about research',
   },
 ] as const;

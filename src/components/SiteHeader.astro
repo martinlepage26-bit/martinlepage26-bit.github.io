@@ -27,12 +27,12 @@ const utilityItems = [{ href: '/contact/', label: 'Contact', isActive: isActiveP
 <header class="site-header sticky top-0 z-40 border-b border-[rgba(17,23,38,0.08)] bg-[rgba(246,241,233,0.9)] backdrop-blur-[16px]">
   <div class="shell flex items-center justify-between gap-6 py-4">
     <a class="group inline-flex min-w-0 items-center gap-3 text-sm font-semibold text-moon" href="/">
-      <span class="brand-monogram relative flex items-center justify-center">
+      <span class="brand-monogram relative flex items-center justify-center rounded-[0.5rem] border border-[rgba(95,127,174,0.34)] bg-[linear-gradient(145deg,rgba(17,23,38,0.5),rgba(17,23,38,0.16))] px-1.5 py-0.5 shadow-[0_8px_20px_rgba(17,23,38,0.3)]">
         <img src="/assets/ml-signature-monogram.svg" alt="" class="h-9 w-auto object-contain md:h-10" />
       </span>
       <span class="flex min-w-0 flex-col leading-tight">
         <span class="truncate font-display text-[1.08rem] tracking-[0.01em] text-moon">Martin Lepage</span>
-        <span class="hidden truncate text-[0.69rem] font-medium uppercase tracking-[0.14em] text-slate-300 2xl:block">
+        <span class="hidden truncate text-[0.74rem] font-medium uppercase tracking-[0.12em] text-slate-300 2xl:block">
           {siteMeta.jobTitle}
         </span>
       </span>
@@ -45,10 +45,10 @@ const utilityItems = [{ href: '/contact/', label: 'Contact', isActive: isActiveP
             href={href}
             aria-current={isActive ? 'page' : undefined}
             class:list={[
-              'border-b-2 px-0.5 py-2 text-[0.72rem] font-semibold uppercase tracking-[0.14em] transition',
+              'border-b-2 px-0.5 py-2 text-[0.78rem] font-semibold uppercase tracking-[0.12em] transition',
               isActive
-                ? 'border-accent text-accent'
-                : 'border-transparent text-slate-300 hover:border-[rgba(55,92,145,0.2)] hover:text-moon',
+                ? 'border-[rgba(95,127,174,0.7)] text-moon'
+                : 'border-transparent text-slate-200 hover:border-[rgba(95,127,174,0.34)] hover:text-moon',
             ]}
           >
             {label}
@@ -57,15 +57,14 @@ const utilityItems = [{ href: '/contact/', label: 'Contact', isActive: isActiveP
       }
     </nav>
 
-    <div class="hidden items-center gap-3 md:flex">
+    <div class="hidden items-center gap-3 xl:flex">
       {utilityItems.map(({ href, isActive, label }) => (
         <a
           href={href}
           aria-current={isActive ? 'page' : undefined}
           class:list={[
-            'button-primary',
-            'px-4 py-2 text-[0.68rem]',
-            isActive && 'ring-1 ring-[rgba(55,92,145,0.32)]',
+            'button-primary button-nav',
+            isActive && 'ring-1 ring-[rgba(95,127,174,0.32)]',
           ]}
         >
           {label}
@@ -74,9 +73,9 @@ const utilityItems = [{ href: '/contact/', label: 'Contact', isActive: isActiveP
     </div>
 
     <details class="group relative xl:hidden">
-      <summary class="flex list-none cursor-pointer items-center gap-3 rounded-full border border-[rgba(17,23,38,0.1)] bg-[rgba(250,247,242,0.92)] px-4 py-2 font-mono text-[0.72rem] uppercase tracking-[0.18em] text-slate-300 transition hover:border-[rgba(55,92,145,0.24)] hover:text-moon [&::-webkit-details-marker]:hidden">
+      <summary class="flex list-none cursor-pointer items-center gap-3 rounded-full border border-[rgba(17,23,38,0.12)] bg-[rgba(250,247,242,0.94)] px-4 py-2 font-mono text-[0.8rem] uppercase tracking-[0.12em] text-slate-200 transition hover:border-[rgba(95,127,174,0.3)] hover:text-moon [&::-webkit-details-marker]:hidden">
         Menu
-        <span class="text-base leading-none text-slate-300 transition group-open:rotate-45 group-open:text-accent" aria-hidden="true">
+        <span class="text-base leading-none text-slate-200 transition group-open:rotate-45 group-open:text-accent" aria-hidden="true">
           +
         </span>
       </summary>
@@ -88,22 +87,22 @@ const utilityItems = [{ href: '/contact/', label: 'Contact', isActive: isActiveP
               href={href}
               aria-current={isActive ? 'page' : undefined}
               class:list={[
-                'px-3 py-3 text-[0.76rem] font-semibold uppercase tracking-[0.16em] transition',
-                isActive ? 'text-accent' : 'text-slate-200 hover:text-moon',
+                'px-3 py-3 text-[0.82rem] font-semibold uppercase tracking-[0.14em] transition',
+                isActive ? 'text-moon' : 'text-slate-100 hover:text-moon',
               ]}
             >
               {label}
             </a>
           ))}
 
-          <div class="mt-2 border-t border-[rgba(17,23,38,0.08)] pt-3 md:hidden">
+          <div class="mt-2 border-t border-[rgba(17,23,38,0.08)] pt-3">
             {utilityItems.map(({ href, isActive, label }) => (
               <a
                 href={href}
                 aria-current={isActive ? 'page' : undefined}
                 class:list={[
-                  'block px-3 py-3 text-[0.76rem] font-semibold uppercase tracking-[0.16em] transition',
-                  isActive ? 'text-accent' : 'text-slate-200 hover:text-moon',
+                  'block px-3 py-3 text-[0.82rem] font-semibold uppercase tracking-[0.14em] transition',
+                  isActive ? 'text-moon' : 'text-slate-100 hover:text-moon',
                 ]}
               >
                 {label}

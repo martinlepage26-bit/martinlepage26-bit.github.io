@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ML Monogram Alternatives</title>
+    <style>
+      :root {
+        --bg: #0b1220;
+        --panel: #111a2d;
+        --edge: #2f476f;
+        --text: #e5edf9;
+        --muted: #a5b6d3;
+        --accent: #87afff;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+        background: radial-gradient(circle at 20% -10%, #182845 0%, var(--bg) 58%);
+        color: var(--text);
+      }
+
+      .page {
+        width: min(1180px, 94vw);
+        margin: 0 auto;
+        padding: 40px 0 72px;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(1.6rem, 2.4vw, 2.2rem);
+        letter-spacing: 0.01em;
+      }
+
+      .intro {
+        margin: 10px 0 0;
+        max-width: 72ch;
+        color: var(--muted);
+        line-height: 1.56;
+      }
+
+      .grid {
+        margin-top: 30px;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 18px;
+      }
+
+      .card {
+        border: 1px solid var(--edge);
+        border-radius: 14px;
+        background: linear-gradient(160deg, rgba(23, 35, 58, 0.92), rgba(15, 25, 43, 0.92));
+        box-shadow: 0 18px 45px rgba(4, 9, 19, 0.36);
+        padding: 20px;
+      }
+
+      .card__head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .card__title {
+        margin: 0;
+        font-size: 1rem;
+        letter-spacing: 0.01em;
+      }
+
+      .card__tag {
+        margin: 0;
+        font-size: 0.72rem;
+        letter-spacing: 0.06em;
+        color: var(--accent);
+        text-transform: uppercase;
+      }
+
+      .card__preview {
+        margin-top: 14px;
+        border: 1px solid rgba(132, 160, 206, 0.42);
+        border-radius: 10px;
+        background: linear-gradient(180deg, #16233b, #121d33);
+        min-height: 180px;
+        display: grid;
+        place-items: center;
+      }
+
+      .card__preview img {
+        width: clamp(190px, 38vw, 300px);
+        height: auto;
+      }
+
+      .card__notes {
+        margin: 12px 0 0;
+        color: var(--muted);
+        line-height: 1.5;
+        font-size: 0.92rem;
+      }
+
+      @media (min-width: 860px) {
+        .grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <h1>Monogram Alternatives</h1>
+      <p class="intro">
+        These four options are normalized to the same bounding box and preview scale so symmetry can be judged fairly.
+        Each version is tuned for non-lopsided optical weight in header lockups and favicon reduction.
+      </p>
+
+      <section class="grid" aria-label="Monogram options">
+        <article class="card">
+          <div class="card__head">
+            <h2 class="card__title">Current Active</h2>
+            <p class="card__tag">Reference</p>
+          </div>
+          <div class="card__preview">
+            <img src="/assets/ml-signature-monogram.svg" alt="Current active ML monogram" />
+          </div>
+          <p class="card__notes">The current production mark. Strong simplicity, but lighter right-side terminal can read slightly open at small sizes.</p>
+        </article>
+
+        <article class="card">
+          <div class="card__head">
+            <h2 class="card__title">Alt 01 Balanced Line</h2>
+            <p class="card__tag">Monoline</p>
+          </div>
+          <div class="card__preview">
+            <img src="/assets/ml-monogram-alt-01-balanced-line.svg" alt="Alternative 01 balanced line monogram" />
+          </div>
+          <p class="card__notes">Most direct refinement. Equalized stem zones and calmer proportions while preserving the existing rhythm.</p>
+        </article>
+
+        <article class="card">
+          <div class="card__head">
+            <h2 class="card__title">Alt 02 Framed Seal</h2>
+            <p class="card__tag">Institutional</p>
+          </div>
+          <div class="card__preview">
+            <img src="/assets/ml-monogram-alt-02-framed-seal.svg" alt="Alternative 02 framed seal monogram" />
+          </div>
+          <p class="card__notes">Adds a formal frame and bilateral spacing anchors. Most stable for governance-facing documents and headers.</p>
+        </article>
+
+        <article class="card">
+          <div class="card__head">
+            <h2 class="card__title">Alt 03 Slab Cut</h2>
+            <p class="card__tag">Structural</p>
+          </div>
+          <div class="card__preview">
+            <img src="/assets/ml-monogram-alt-03-slab-cut.svg" alt="Alternative 03 slab cut monogram" />
+          </div>
+          <p class="card__notes">Heavier geometric mass with explicit center delimiter. High legibility under compression and stronger icon behavior.</p>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>

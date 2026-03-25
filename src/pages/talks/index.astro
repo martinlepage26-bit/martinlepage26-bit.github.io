@@ -17,22 +17,22 @@ const talkFormatCount = new Set(talks.map((talk) => talk.data.format)).size;
 <BaseLayout title={pageMeta.talks.title} description={pageMeta.talks.description}>
   <PracticeHero
     eyebrow="Talks and media"
-    title="Talks and appearances."
-    description="A short speaking archive of conference presentations, panels, sessions, and invited public appearances."
-    details="This page keeps the speaking record concise and readable without collapsing it into essays or publication entries."
+    title="Talks, panels, and invited public argument."
+    description="A concise speaking archive of conference presentations, panels, and invited appearances across governance, legitimacy, and cultural analysis."
+    details="This page keeps the speaking record readable and bounded without folding it into publication or writing archives."
     links={[
       { label: 'Browse talks', url: '#talk-archive', variant: 'primary' },
       { label: 'Open resume and CV', url: '/resume/', variant: 'secondary' },
-      { label: 'Browse publications', url: '/papers/', variant: 'inline' },
-      { label: 'Get in touch about talks', url: '/contact/', variant: 'inline' },
+      { label: 'Read publications', url: '/papers/', variant: 'inline' },
+      { label: 'Contact about talks', url: '/contact/', variant: 'inline' },
     ]}
     sideEyebrow="Speaking profile"
-    sideTitle="What the archive makes visible."
-    sideDescription="The talks page shows where the work has been presented publicly across conferences, panels, sessions, and media-facing settings."
+    sideTitle="What this archive makes visible."
+    sideDescription="The talks archive shows how the work translates across scholarly, professional, and public-facing contexts."
     sidePoints={[
-      'Conference papers and sessions stay readable as one archive.',
-      'Format labels keep the speaking record legible at a glance.',
-      'Readers can move from talks into publications, writings, or contact without friction.',
+      'Conference talks and panel sessions remain organized as one readable archive.',
+      'Format labels keep event context legible at a glance.',
+      'Readers can move directly from talks into publications, writing, or contact.',
     ]}
     stats={[
       {
@@ -45,13 +45,13 @@ const talkFormatCount = new Set(talks.map((talk) => talk.data.format)).size;
         eyebrow: 'Archive span',
         value: talkSpan,
         label: 'Years covered',
-        description: 'The speaking years currently visible in the on-site archive.',
+        description: 'Years represented in the current on-site speaking archive.',
       },
       {
         eyebrow: 'Formats',
         value: talkFormatCount,
         label: 'Distinct formats',
-        description: 'Different types of appearances represented across the current list.',
+        description: 'Different appearance formats represented across the archive.',
       },
     ]}
   />
@@ -61,7 +61,7 @@ const talkFormatCount = new Set(talks.map((talk) => talk.data.format)).size;
       <SectionIntro
         eyebrow="Talk archive"
         title="Talks, panels, and presentations."
-        description="Conference presentations, panels, sessions, and other speaking records from the public archive."
+        description="Conference presentations, panels, sessions, and related speaking records from the public archive."
       />
     </div>
 
