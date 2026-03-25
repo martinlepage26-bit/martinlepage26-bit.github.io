@@ -360,8 +360,12 @@
 
   .button-nav {
     padding-inline: 1rem;
-    font-size: 0.78rem;
+    font-size: 0.55rem;
     letter-spacing: 0.1em;
+  }
+
+  .footer-button-compact {
+    font-size: 0.56rem;
   }
 
   .button-secondary:hover {

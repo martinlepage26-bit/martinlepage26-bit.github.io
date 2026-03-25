@@ -21,56 +21,56 @@ const profileLinks = [
         aria-hidden="true"
         class="w-14 md:w-16"
       />
-      <p class="eyebrow">Martin Lepage</p>
-      <h2 class="max-w-2xl text-[1.44rem] md:text-[1.72rem]">
+      <p class="eyebrow text-[0.52rem]">Martin Lepage, PhD</p>
+      <h2 class="max-w-2xl text-[1.01rem] md:text-[1.2rem]">
         Governance design, strategic interpretation, and public argument.
       </h2>
-      <p class="max-w-2xl text-[1rem] leading-8 text-slate-100">
+      <p class="max-w-2xl text-[0.7rem] leading-[1.4rem] text-slate-100">
         The site links governance practice, publications, writing, and talks as one continuous record of how
         institutions make claims, justify decisions, and distribute consequence.
       </p>
       <div class="flex flex-wrap gap-3">
-        <a class="button-primary" href="/contact/">Start a conversation</a>
-        <a class="button-secondary" href="/governance/">Open governance practice</a>
+        <a class="button-primary footer-button-compact" href="/contact/">Start a conversation</a>
+        <a class="button-secondary footer-button-compact" href="/governance/">Open governance practice</a>
       </div>
     </div>
 
     <div class="grid gap-8 sm:grid-cols-2">
       <div>
-        <h3 class="font-mono text-sm font-semibold uppercase tracking-[0.24em] text-accent">Explore</h3>
+        <h3 class="font-mono text-[0.61rem] font-semibold uppercase tracking-[0.24em] text-accent">Explore</h3>
         <ul class="mt-4 space-y-2.5">
           {primaryLinks.map(({ href, label }) => (
             <li>
-              <a class="text-[0.98rem] leading-7 text-slate-100 hover:text-accent" href={href}>
+              <a class="text-[0.69rem] leading-5 text-slate-100 hover:text-accent" href={href}>
                 {label}
               </a>
             </li>
           ))}
-          <li><a class="text-[0.98rem] leading-7 text-slate-100 hover:text-accent" href="/about/">About</a></li>
-          <li><a class="text-[0.98rem] leading-7 text-slate-100 hover:text-accent" href="/resume/">Resume and CV</a></li>
+          <li><a class="text-[0.69rem] leading-5 text-slate-100 hover:text-accent" href="/about/">About</a></li>
+          <li><a class="text-[0.69rem] leading-5 text-slate-100 hover:text-accent" href="/resume/">Resume and CV</a></li>
         </ul>
       </div>
 
       <div>
-        <h3 class="font-mono text-sm font-semibold uppercase tracking-[0.24em] text-accent">Elsewhere</h3>
+        <h3 class="font-mono text-[0.61rem] font-semibold uppercase tracking-[0.24em] text-accent">Elsewhere</h3>
         <ul class="mt-4 space-y-2.5">
           {profileLinks.map(({ href, label }) => (
             <li>
-              <a class="text-[0.98rem] leading-7 text-slate-100 hover:text-accent" href={href}>
+              <a class="text-[0.69rem] leading-5 text-slate-100 hover:text-accent" href={href}>
                 {label}
               </a>
             </li>
           ))}
           {siteMeta.siteUrl && (
-            <li><a class="text-[0.98rem] leading-7 text-slate-100 hover:text-accent" href="/rss.xml">RSS feed</a></li>
+            <li><a class="text-[0.69rem] leading-5 text-slate-100 hover:text-accent" href="/rss.xml">RSS feed</a></li>
           )}
         </ul>
       </div>
     </div>
   </div>
 
-  <div class="shell flex flex-col gap-3 border-t border-[rgba(17,23,38,0.08)] py-5 text-sm text-slate-200 md:flex-row md:items-center md:justify-between">
-    <p>&copy; {new Date().getFullYear()} Martin Lepage. Montreal-based governance, research, and writing.</p>
+  <div class="shell flex flex-col gap-3 border-t border-[rgba(17,23,38,0.08)] py-5 text-[0.61rem] text-slate-200 md:flex-row md:items-center md:justify-between">
+    <p>&copy; {new Date().getFullYear()} Martin Lepage, PhD. Montreal-based governance, research, and writing.</p>
     <p>Precise claims. Reviewable method. Serious collaboration.</p>
   </div>
 </footer>

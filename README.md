@@ -94,6 +94,26 @@ npm run dev:local
 
 This binds to `http://127.0.0.1:4510` with `--strictPort`.
 
+## ECHO Online TTS
+
+`/echo/` is wired for online-only synthesis through `functions/api/echo-tts.js`.
+
+### Required runtime secret (Cloudflare Pages)
+
+- `OPENAI_API_KEY`
+
+### Optional runtime vars
+
+- `ECHO_TTS_MODEL` (default: `gpt-4o-mini-tts`)
+- `ECHO_TTS_DEFAULT_VOICE` (default: `alloy`)
+- `ECHO_TTS_VOICES` (comma-separated voice list for UI, default: `alloy,echo,sage`)
+- `ECHO_TTS_FORMAT` (default: `mp3`)
+- `ECHO_TTS_API_BASE` (default: `https://api.openai.com/v1`)
+- `ECHO_TTS_API_PATH` (default: `/audio/speech`)
+- `ECHO_TTS_ALLOWED_ORIGINS` (comma-separated origins allowed to call POST; default is same-origin only)
+
+The ECHO page calls `/api/echo-tts` by default when deployed.
+
 ## Verification
 
 ```bash
