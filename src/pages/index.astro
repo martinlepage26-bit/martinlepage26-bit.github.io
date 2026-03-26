@@ -1,218 +1,36 @@
 ---
-import { getCollection } from 'astro:content';
-import ContactBlock from '../components/ContactBlock.astro';
-import Hero from '../components/Hero.astro';
-import ProjectCard from '../components/ProjectCard.astro';
-import PublicationCard from '../components/PublicationCard.astro';
-import SectionIntro from '../components/SectionIntro.astro';
-import WritingCard from '../components/WritingCard.astro';
-import {
-  audienceRoutes,
-  governancePracticeAreas,
-  governanceProjectSlugs,
-  pageMeta,
-} from '../data/site';
-import BaseLayout from '../layouts/BaseLayout.astro';
-import {
-  contentSlug,
-  estimateReadingMinutes,
-  isPublishedPaper,
-  orderEntriesBySlug,
-  sortByDate,
-  sortByYear,
-} from '../lib/content';
-
-const papers = sortByYear(await getCollection('papers'));
-const allProjects = await getCollection('projects');
-const writings = sortByDate(await getCollection('writings', ({ data }) => !data.draft));
-
-const publishedPapers = papers.filter(isPublishedPaper);
-const featuredPapers = publishedPapers.filter((entry) => entry.data.featured).slice(0, 2);
-const governanceProjects = orderEntriesBySlug(
-  allProjects.filter((project) => governanceProjectSlugs.includes(contentSlug(project.id) as (typeof governanceProjectSlugs)[number])),
-  governanceProjectSlugs,
-);
-const featuredGovernanceProjects = governanceProjects.slice(0, 2);
-const featuredWriting = writings.filter((entry) => entry.data.featured).slice(0, 2);
-
-const homeStats = [
-  {
-    value: governanceProjects.length,
-    label: 'Governance records',
-    description: 'Operational governance structures with explicit decision-rights and control logic.',
-  },
-  {
-    value: publishedPapers.length,
-    label: 'Publication records',
-    description: 'Published research records with bounded claims and source visibility.',
-  },
-  {
-    value: writings.length,
-    label: 'Writing records',
-    description: 'Public argument and institutional interpretation in accessible, reviewable form.',
-  },
-] as const;
+const pageTitle = 'Martin Lepage - Institutional Analysis & AI Governance';
+const pageDescription =
+  'Institutional analysis, AI governance design, publications, public writing, and autodidact app development by Martin Lepage, PhD.';
 ---
 
-<BaseLayout title={pageMeta.home.title} description={pageMeta.home.description}>
-  <Hero />
-
-  <section class="section-shell border-b border-[rgba(17,23,38,0.08)] bg-[rgba(251,246,239,0.24)]">
-    <SectionIntro
-      eyebrow="Institutional framing"
-      title="Research architecture for governance decisions that must hold under scrutiny."
-      description="The homepage follows an institutional-research logic: bounded claims, explicit method, traceable evidence, and selective routes for high-consequence readers."
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+    <meta name="description" content={pageDescription} />
+    <meta name="robots" content="index,follow" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Institutional Analysis, AI Governance, and Public Writing | Martin Lepage" />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:locale" content="en-CA" />
+    <meta property="og:site_name" content="Martin Lepage" />
+    <meta name="theme-color" content="#0d1117" />
+    <link rel="canonical" href="https://martin.govern-ai.ca/" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
     />
-
-    <div class="mt-10 grid gap-4 md:grid-cols-3">
-      {homeStats.map((item) => (
-        <article class="veil-panel h-full">
-          <p class="font-display text-[1.8rem] leading-none text-moon md:text-[2rem]">{item.value}</p>
-          <h3 class="mt-4 text-[1.02rem] md:text-[1.12rem]">{item.label}</h3>
-          <p class="mt-3 text-sm leading-6 text-slate-300">{item.description}</p>
-        </article>
-      ))}
-    </div>
-
-    <div class="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-      <article class="veil-panel h-full">
-        <p class="eyebrow">Method 01</p>
-        <h3 class="mt-3 text-[1.04rem] md:text-[1.14rem]">Claim boundary discipline</h3>
-        <p class="mt-4 text-base text-slate-200">Separate verified evidence, structured inference, and unresolved uncertainty.</p>
-      </article>
-      <article class="veil-panel h-full">
-        <p class="eyebrow">Method 02</p>
-        <h3 class="mt-3 text-[1.04rem] md:text-[1.14rem]">Relational analysis</h3>
-        <p class="mt-4 text-base text-slate-200">Read technical systems together with policy language and institutional constraints.</p>
-      </article>
-      <article class="veil-panel h-full">
-        <p class="eyebrow">Method 03</p>
-        <h3 class="mt-3 text-[1.04rem] md:text-[1.14rem]">Escalation mapping</h3>
-        <p class="mt-4 text-base text-slate-200">Define accountability transfer points before high-pressure decisions are required.</p>
-      </article>
-      <article class="veil-panel h-full">
-        <p class="eyebrow">Method 04</p>
-        <h3 class="mt-3 text-[1.04rem] md:text-[1.14rem]">Consequence tracing</h3>
-        <p class="mt-4 text-base text-slate-200">Track who bears costs when governance categories and controls fail.</p>
-      </article>
-    </div>
-  </section>
-
-  <section class="section-shell border-b border-[rgba(17,23,38,0.08)] bg-[rgba(251,246,239,0.28)]">
-    <div class="grid gap-10 xl:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
-      <div>
-        <SectionIntro
-          eyebrow="Governance / Advisory"
-          title="Governance as power made operational."
-          description="Design decision rights, evidence pathways, and accountability controls that remain legible under audit, procurement, and public challenge."
-        />
-
-        <div class="mt-8 grid gap-4 md:grid-cols-2">
-          {governancePracticeAreas.map((area) => (
-            <article class="veil-panel h-full">
-              <p class="eyebrow">Practice area</p>
-              <h3 class="mt-3 text-[1.04rem] md:text-[1.14rem]">{area.title}</h3>
-              <p class="mt-4 text-base text-slate-200">{area.description}</p>
-            </article>
-          ))}
-        </div>
-
-        <div class="mt-8 flex flex-wrap gap-3">
-          <a class="button-primary" href="/governance/">Open governance practice</a>
-          <a class="button-secondary" href="/contact/">Discuss an engagement</a>
-        </div>
-      </div>
-
-      <div>
-        <div class="veil-panel">
-          <p class="eyebrow">Selected governance work</p>
-          <h2 class="mt-3 text-[1.34rem] md:text-[1.5rem]">Evidence before slogans.</h2>
-          <p class="mt-4 text-base text-slate-200">
-            Governance records are presented as working structures that can be read, tested, and contested.
-          </p>
-        </div>
-
-        <div class="mt-6 grid gap-6 lg:grid-cols-2">
-          {featuredGovernanceProjects.map((project) => <ProjectCard project={project} />)}
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section-shell border-b border-[rgba(17,23,38,0.08)] bg-[rgba(251,246,239,0.24)]">
-    <SectionIntro
-      eyebrow="Research / Publications"
-      title="Publication, writing, and method records in one coherent line."
-      description="The archive remains selective on the homepage so institutional readers can orient quickly without losing conceptual precision."
-    />
-
-    <div class="mt-12 grid gap-10 xl:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
-      <div class="space-y-10">
-        <div>
-          <div class="flex items-end justify-between gap-4">
-            <div>
-              <p class="eyebrow">Publications</p>
-              <h2 class="mt-3 text-[1.34rem] md:text-[1.5rem]">Selected academic records.</h2>
-            </div>
-            <a class="link-inline" href="/papers/">Read publications</a>
-          </div>
-          <div class="mt-8 grid gap-6 lg:grid-cols-2">
-            {featuredPapers.map((paper) => <PublicationCard paper={paper} />)}
-          </div>
-        </div>
-
-        <div>
-          <div class="flex items-end justify-between gap-4">
-            <div>
-              <p class="eyebrow">Writings</p>
-              <h2 class="mt-3 text-[1.34rem] md:text-[1.5rem]">Selected essays and criticism.</h2>
-            </div>
-            <a class="link-inline" href="/writing/">Open writings</a>
-          </div>
-          <div class="mt-8 grid gap-6 lg:grid-cols-2">
-            {featuredWriting.map((writing) => (
-              <WritingCard writing={writing} readingMinutes={estimateReadingMinutes(writing.body ?? '')} />
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <div class="space-y-6">
-        <div class="veil-panel">
-          <p class="eyebrow">Selected frameworks</p>
-          <h2 class="mt-3 text-[1.32rem] md:text-[1.46rem]">Reusable governance structures.</h2>
-          <div class="mt-6 grid gap-3">
-            <article class="border-t border-[rgba(17,23,38,0.08)] pt-3">
-              <p class="text-[0.74rem] font-semibold uppercase tracking-[0.14em] text-accent">Framework 01</p>
-              <h3 class="mt-2 text-[1rem]">Claim Boundary Ledger</h3>
-            </article>
-            <article class="border-t border-[rgba(17,23,38,0.08)] pt-3">
-              <p class="text-[0.74rem] font-semibold uppercase tracking-[0.14em] text-accent">Framework 02</p>
-              <h3 class="mt-2 text-[1rem]">Policy-to-Control Trace Map</h3>
-            </article>
-            <article class="border-t border-[rgba(17,23,38,0.08)] pt-3">
-              <p class="text-[0.74rem] font-semibold uppercase tracking-[0.14em] text-accent">Framework 03</p>
-              <h3 class="mt-2 text-[1rem]">Escalation Accountability Matrix</h3>
-            </article>
-          </div>
-        </div>
-
-        <div class="veil-panel">
-          <p class="eyebrow">Route by reader type</p>
-          <div class="mt-6 grid gap-3">
-            {audienceRoutes.slice(0, 4).map((route) => (
-              <a class="card-link group" href={route.href}>
-                <h3 class="text-[1rem]">{route.title}</h3>
-                <p class="mt-2 text-sm text-slate-200">{route.description}</p>
-              </a>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section-shell border-t border-[rgba(17,23,38,0.08)] bg-[rgba(251,246,239,0.24)] pt-0" id="contact">
-    <ContactBlock compact />
-  </section>
-</BaseLayout>
+    <link rel="stylesheet" href="/martin-portfolio/index.css" />
+    <title>{pageTitle}</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/martin-portfolio/index.js"></script>
+  </body>
+</html>
