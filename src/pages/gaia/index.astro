@@ -1,108 +1,37 @@
 ---
-import '@fontsource-variable/space-grotesk';
-import '@fontsource/ibm-plex-sans/400.css';
-import '@fontsource/ibm-plex-sans/600.css';
-import '../../styles/gaia-standalone.css';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GaiaAppExperience from '../../components/gaia/GaiaAppExperience.astro';
+import '../../styles/gaia-theme.css';
+import { buildCanonical } from '../../lib/seo';
+
+const pageDescription =
+  "GAIA is an Earth-based online astrology app built from Breath of the Astral Year, with general readings and daily horoscope.";
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'GAIA',
+  description: pageDescription,
+  applicationCategory: 'LifestyleApplication',
+  url: buildCanonical('/gaia/'),
+  creator: {
+    '@type': 'Person',
+    name: 'Martin Lepage',
+  },
+  isBasedOn: {
+    '@type': 'Book',
+    name: 'Breath of the Astral Year',
+    url: buildCanonical('/gaia/book/'),
+  },
+};
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta
-      name="description"
-      content="GAIA standalone: rooted seasonal reading surface with grey-black root systems and silver signal strings."
-    />
-    <meta name="theme-color" content="#5c5f66" />
-    <link rel="stylesheet" href="/martin-portfolio/index.css" />
-    <title>GAIA | Root Signal Surface</title>
-  </head>
-  <body class="gaia-standalone">
-    <div class="gaia-shell">
-      <header class="gaia-header">
-        <a class="gaia-brand" href="/gaia/">
-          <span class="gaia-mark">GAIA</span>
-          <span class="gaia-tagline">Root Signal Surface</span>
-        </a>
-        <nav class="gaia-nav" aria-label="GAIA navigation">
-          <a href="/astral-year/app/">Open full app</a>
-          <a href="/astral-year/glossary/">Glossary</a>
-          <a href="/projects/astral/">Project</a>
-        </nav>
-      </header>
-
-      <main class="gaia-main">
-        <section class="gaia-hero" aria-labelledby="gaia-title">
-          <div class="gaia-hero-grid">
-            <div>
-              <p class="gaia-eyebrow">Gaialogy interface</p>
-              <h1 id="gaia-title">Seasonal readings through root pressure and silver threads.</h1>
-              <p>
-                GAIA keeps interpretation grounded in relation, seasonality, and lived consequence. Signals stay
-                visible as connected strands, not isolated fragments.
-              </p>
-              <div class="gaia-actions">
-                <a class="gaia-button primary" href="/astral-year/app/">Open GAIA app</a>
-                <a class="gaia-button secondary" href="/astral-year/glossary/">Read sign glossary</a>
-              </div>
-            </div>
-
-            <aside class="gaia-signal-panel" aria-label="Signal frame">
-              <h2>System Signals</h2>
-              <ul>
-                <li><span>Substrate</span><strong>Soil and social ground</strong></li>
-                <li><span>Tracing</span><strong>Silver continuity threads</strong></li>
-                <li><span>Pressure</span><strong>Seasonal and relational load</strong></li>
-                <li><span>Use</span><strong>Practical orientation rhythm</strong></li>
-              </ul>
-            </aside>
-          </div>
-        </section>
-
-        <section class="gaia-section" aria-labelledby="gaia-zones-title">
-          <div class="gaia-section-head">
-            <p class="gaia-kicker">System zones</p>
-            <h2 id="gaia-zones-title">Three visible layers for reading pressure and relation.</h2>
-          </div>
-
-          <div class="gaia-grid" aria-label="GAIA surfaces">
-            <article class="gaia-card">
-              <p class="gaia-node">Node 01</p>
-              <h3>Rooted Context</h3>
-              <p>Read signs through social and relational ground conditions, not detached celestial abstraction.</p>
-            </article>
-            <article class="gaia-card">
-              <p class="gaia-node">Node 02</p>
-              <h3>Silver Strings</h3>
-              <p>Track connections between pressure, care, and adaptation as linked interpretive threads.</p>
-            </article>
-            <article class="gaia-card">
-              <p class="gaia-node">Node 03</p>
-              <h3>Practical Rhythm</h3>
-              <p>Use daily and seasonal cues as governance for attention, timing, and action under uncertainty.</p>
-            </article>
-          </div>
-        </section>
-
-        <section class="gaia-threadfield" aria-labelledby="gaia-thread-title">
-          <h2 id="gaia-thread-title">Thread map excerpt</h2>
-          <div class="gaia-thread-grid">
-            <article>
-              <h3>Strata A</h3>
-              <p>Root stress rises when symbolic conflict and governance deadlines align.</p>
-            </article>
-            <article>
-              <h3>Strata B</h3>
-              <p>Silver strings identify where care obligations and policy boundaries intersect.</p>
-            </article>
-            <article>
-              <h3>Strata C</h3>
-              <p>Surface signals convert hidden system load into usable timing decisions.</p>
-            </article>
-          </div>
-        </section>
-      </main>
-    </div>
-  </body>
-</html>
+<BaseLayout
+  title="GAIA App"
+  description={pageDescription}
+  image="/social/og-breath-of-the-astral-year.png"
+  canonical="/gaia/"
+  structuredData={structuredData}
+>
+  <GaiaAppExperience />
+</BaseLayout>

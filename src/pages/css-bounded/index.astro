@@ -1,0 +1,94 @@
+---
+import '@fontsource-variable/newsreader';
+import '@fontsource-variable/manrope';
+import '@fontsource/ibm-plex-mono/500.css';
+import '../../styles/css-bounded-standalone.css';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="CSS-bounded standalone: a no-JavaScript interface study driven entirely by semantic HTML and handcrafted CSS."
+    />
+    <meta name="theme-color" content="#1a2f44" />
+    <link rel="stylesheet" href="/martin-portfolio/index.css" />
+    <title>CSS Bounded | Interface Study</title>
+  </head>
+  <body class="css-bounded">
+    <div class="cb-shell">
+      <header class="cb-header">
+        <a class="cb-brand" href="/">
+          <span class="cb-mark">ML</span>
+          <span class="cb-name">CSS Bounded Surface</span>
+        </a>
+        <nav class="cb-nav" aria-label="Primary">
+          <a href="/projects/">Projects</a>
+          <a href="/writing/">Writing</a>
+          <a href="/contact/">Contact</a>
+        </nav>
+      </header>
+
+      <main class="cb-main">
+        <section class="cb-hero" aria-labelledby="cb-title">
+          <p class="cb-kicker">No JavaScript</p>
+          <h1 id="cb-title">One interface, fully bounded to CSS.</h1>
+          <p class="cb-lede">
+            This page is intentionally constrained: semantic HTML, intentional typography, gradient atmosphere, and
+            state transitions powered only by CSS.
+          </p>
+          <div class="cb-actions">
+            <a class="cb-button cb-button-primary" href="/">Back to site</a>
+            <a class="cb-button cb-button-secondary" href="/gaia/">Open GAIA standalone</a>
+          </div>
+        </section>
+
+        <section class="cb-strip" aria-label="Constraint highlights">
+          <article>
+            <p class="cb-strip-label">Constraint 01</p>
+            <h2>Behavior boundary</h2>
+            <p>No runtime logic, no component hydration, no scripts.</p>
+          </article>
+          <article>
+            <p class="cb-strip-label">Constraint 02</p>
+            <h2>Visual system</h2>
+            <p>Color, depth, and rhythm emerge from gradients and type hierarchy.</p>
+          </article>
+          <article>
+            <p class="cb-strip-label">Constraint 03</p>
+            <h2>Interaction</h2>
+            <p>Hover, focus, and reveal states are authored through transitions alone.</p>
+          </article>
+        </section>
+
+        <section class="cb-board" aria-labelledby="cb-board-title">
+          <div class="cb-board-head">
+            <p class="cb-kicker">Signal board</p>
+            <h2 id="cb-board-title">Readable under pressure, even in a tight stack.</h2>
+          </div>
+
+          <div class="cb-grid">
+            <article class="cb-card">
+              <p class="cb-card-id">A1</p>
+              <h3>Legibility lane</h3>
+              <p>Display serif for hierarchy, sans for flow, mono for control labels.</p>
+            </article>
+            <article class="cb-card">
+              <p class="cb-card-id">B3</p>
+              <h3>Atmospheric depth</h3>
+              <p>Multi-layer gradients provide field texture without image assets.</p>
+            </article>
+            <article class="cb-card">
+              <p class="cb-card-id">C7</p>
+              <h3>Motion policy</h3>
+              <p>One entrance motion and one hover lift to keep signal over spectacle.</p>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

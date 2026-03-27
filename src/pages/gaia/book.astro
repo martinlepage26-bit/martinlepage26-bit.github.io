@@ -1,0 +1,430 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionIntro from '../../components/SectionIntro.astro';
+import { classicalElements, gaialogySigns } from '../../data/astralYear';
+import { buildCanonical } from '../../lib/seo';
+import '../../styles/gaia-theme.css';
+
+const pageDescription =
+  'Breath of the Astral Year is a self-published book about gaialogy as a grammar of collective life, with signs and seasons kept close to lived experience.';
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'Book',
+  name: 'Breath of the Astral Year',
+  description: pageDescription,
+  url: buildCanonical('/gaia/book/'),
+  creator: {
+    '@type': 'Person',
+    name: 'Martin Lepage',
+  },
+  genre: 'Self-published book',
+};
+
+const gaiaBookData = { signs: gaialogySigns };
+---
+
+<BaseLayout
+  title="Breath of the Astral Year"
+  description={pageDescription}
+  image="/social/og-breath-of-the-astral-year.png"
+  canonical="/gaia/book/"
+  structuredData={structuredData}
+>
+  <section class="relative overflow-hidden border-b border-[rgba(255,255,255,0.08)]">
+    <div class="section-shell gaia-cosmos-shell">
+      <div class="gaia-orbit gaia-orbit-one"></div>
+      <div class="gaia-orbit gaia-orbit-two"></div>
+      <div class="grid gap-10 lg:grid-cols-[minmax(0,1.08fr)_minmax(340px,0.92fr)] lg:items-end">
+        <div class="relative z-10 max-w-4xl">
+          <p class="eyebrow">Self-published book</p>
+          <h1 class="mt-5">Breath of the Astral Year</h1>
+          <p class="mt-6 max-w-3xl text-lg leading-8 text-slate-100 md:text-xl">
+            An Earth-bound reading of signs, seasons, bodies, and weather. It keeps its answers close to the ground,
+            where change can be felt and shared.
+          </p>
+          <div class="mt-8 flex flex-wrap gap-3">
+            <a class="button-primary" href="/projects/breath-of-the-astral-year/">Read about the book</a>
+            <a class="button-secondary" href="/gaia/">Open the GAIA app</a>
+            <a class="button-secondary" href="/gaia/glossary/">Browse the sign glossary</a>
+          </div>
+          <p class="mt-5 max-w-2xl text-sm leading-6 text-slate-300">
+            This page offers the book&apos;s tone and structure, while the companion glossary and app turn that sign
+            language into a living public-facing toolset.
+          </p>
+        </div>
+
+        <div class="veil-panel gaia-panel relative z-10">
+          <p class="eyebrow">Book frame</p>
+          <div class="mt-5 grid gap-4">
+            <div class="gaia-mini-card">
+              <p class="gaia-mini-label">Status</p>
+              <p class="mt-2 text-base leading-7 text-slate-200">Self-published book on Amazon.</p>
+            </div>
+            <div class="gaia-mini-card">
+              <p class="gaia-mini-label">What it follows</p>
+              <p class="mt-2 text-base leading-7 text-slate-200">
+                The year as it is actually lived on Earth: light and dark, heat and cold, ripening and retreat, motion
+                and rest.
+              </p>
+            </div>
+            <div class="gaia-mini-card">
+              <p class="gaia-mini-label">For readers</p>
+              <p class="mt-2 text-base leading-7 text-slate-200">
+                Written for general readers who want a grounded symbolic language, not a distant sky-machine.
+              </p>
+            </div>
+            <div class="gaia-mini-card">
+              <p class="gaia-mini-label">Companion surfaces</p>
+              <p class="mt-2 text-base leading-7 text-slate-200">
+                Use the <a class="link-inline" href="/gaia/glossary/">sign glossary</a> to read the lexicon, or open the
+                <a class="link-inline" href="/gaia/">GAIA app</a> for a guided seasonal reading experience.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="elements-chapter" class="section-shell border-y border-[rgba(255,255,255,0.08)] bg-[rgba(8,11,16,0.72)]">
+    <SectionIntro
+      eyebrow="Chapter: The elements"
+      title="The four elements."
+      description="Fire, earth, air, and water shape the book&apos;s first layer."
+    />
+
+    <div class="mt-12 grid gap-6 xl:grid-cols-4 md:grid-cols-2">
+      {classicalElements.map((element) => (
+        <article class="veil-panel gaia-element-card" style={`--element-color:${element.color};`}>
+          <p class="gaia-mini-label">{element.name}</p>
+          <h3 class="mt-4 text-[1.12rem] md:text-[1.24rem]">{element.signs.join(' - ')}</h3>
+          <p class="mt-4 text-base leading-7 text-slate-200">
+            <strong>Qualities:</strong> {element.traits}.
+          </p>
+          <p class="mt-4 text-base leading-7 text-slate-200">{element.bookUse}</p>
+        </article>
+      ))}
+    </div>
+
+    <div class="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.95fr)]">
+      <article class="veil-panel gaia-panel">
+        <p class="eyebrow">How the book uses them</p>
+        <h3 class="mt-4 text-[1.28rem] md:text-[1.44rem]">The elements are the first layer of the book&apos;s movement.</h3>
+        <p class="mt-4 text-base leading-7 text-slate-200">
+          Before the book arrives at individual signs, it listens for elemental weather as it is lived on Earth. Fire
+          pushes outward. Earth steadies and shapes. Air connects and stirs. Water absorbs and deepens.
+        </p>
+        <p class="mt-4 text-base leading-7 text-slate-200">
+          That is how gaialogy becomes operational on the page. The elements set the temperature of a chapter, the kind
+          of attention it gives the world, and the emotional pressure carried by the signs inside it.
+        </p>
+        <p class="mt-4 text-base leading-7 text-slate-200">
+          They also change one another. Fire can lift air. Air can unsettle earth. Water can cool fire. Earth can hold
+          water in place. The book uses those frictions and affinities to shape how one mood turns into the next.
+        </p>
+      </article>
+
+      <article class="veil-panel gaia-panel">
+        <p class="eyebrow">The fifth</p>
+        <h3 class="mt-4 text-[1.12rem] md:text-[1.28rem]">If a fifth is named here, it is Gaia: the living field of Earth.</h3>
+        <p class="mt-4 text-base leading-7 text-slate-200">
+          The book can make room for a fifth, but not as another distant gaialogy mechanism. Gaia is the better name
+          for it here: the living ground that holds weather, body, season, growth, decay, and relation together.
+        </p>
+        <ul class="mt-4 ml-5 list-disc space-y-2 text-base leading-7 text-slate-200">
+          <li>Do not treat the planets as hidden causes the book needs in order to work.</li>
+          <li>Do not turn Gaia into a fifth technical sign-family beside the four elements.</li>
+          <li>Do not present akasha, Gaia, or spirit as scientific proof of cosmic mechanism.</li>
+          <li>Keep the method empirical in tone: what happens to bodies, moods, seasons, and forms of life on Earth.</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <section id="gaialogy-architecture" class="section-shell">
+    <SectionIntro
+      eyebrow="The signs"
+      title="The gaialogy, kept close to the ground."
+      description="The elements set the weather; each sign gives it a more exact voice."
+    />
+
+    <div class="mt-12 grid gap-8 xl:grid-cols-[minmax(0,1.1fr)_minmax(360px,0.9fr)]">
+      <div class="veil-panel gaia-panel">
+        <div class="gaia-wheel-grid" id="sign-grid">
+          {gaialogySigns.map((sign) => (
+            <button
+              type="button"
+              class="gaia-sign-chip"
+              data-sign={sign.slug}
+              style={`--sign-color:${sign.color};`}
+              aria-pressed="false"
+            >
+              <span class="gaia-sign-glyph">{sign.glyph}</span>
+              <span class="gaia-sign-name">{sign.name}</span>
+              <span class="gaia-sign-dates">{sign.dateLabel}</span>
+            </button>
+          ))}
+        </div>
+        <p class="mt-6 gaia-helper-text">
+          Click any sign to see how it feels inside the book.
+        </p>
+      </div>
+
+      <aside class="veil-panel gaia-panel gaia-detail-panel" aria-live="polite" aria-atomic="true">
+        <p class="eyebrow">Selected sign</p>
+        <div class="mt-5 flex items-center justify-between gap-4">
+          <div>
+            <p id="detail-range" class="text-sm uppercase tracking-[0.18em] text-slate-400"></p>
+            <h2 id="detail-name" class="mt-2 text-[1.5rem] md:text-[1.8rem]"></h2>
+          </div>
+          <div class="gaia-glyph-wrap">
+            <span id="detail-glyph" class="gaia-glyph">♈</span>
+          </div>
+        </div>
+        <p id="detail-competence" class="mt-4 text-lg text-accent"></p>
+        <div class="mt-6 grid gap-4">
+          <div class="gaia-detail-card">
+            <p class="gaia-mini-label">Season mood</p>
+            <p id="detail-civic" class="mt-2 text-base leading-7 text-slate-200"></p>
+          </div>
+          <div class="gaia-detail-card">
+            <p class="gaia-mini-label">Body feeling</p>
+            <p id="detail-body" class="mt-2 text-base leading-7 text-slate-200"></p>
+          </div>
+          <div class="gaia-detail-card">
+            <p class="gaia-mini-label">How it moves</p>
+            <p id="detail-social" class="mt-2 text-base leading-7 text-slate-200"></p>
+          </div>
+          <div class="gaia-detail-grid">
+            <div class="gaia-mini-card">
+              <p class="gaia-mini-label">Where it turns dark</p>
+              <p id="detail-shadow" class="mt-2 text-sm leading-6 text-slate-200"></p>
+            </div>
+            <div class="gaia-mini-card">
+              <p class="gaia-mini-label">Small ritual</p>
+              <p id="detail-ritual" class="mt-2 text-sm leading-6 text-slate-200"></p>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section-shell border-y border-[rgba(255,255,255,0.08)] bg-[rgba(8,11,16,0.72)]">
+    <div class="gaia-grid-3">
+      <article class="veil-panel gaia-panel">
+        <p class="eyebrow">Book mood</p>
+        <h3 class="mt-4 text-[1.12rem] md:text-[1.28rem]">A book of atmosphere</h3>
+        <p class="mt-4 text-base leading-7 text-slate-200">
+          The signs move through the book like changing weather: beginnings, ripening, restlessness, brightness,
+          balance, pressure, release, and return.
+        </p>
+      </article>
+      <article class="veil-panel gaia-panel">
+        <p class="eyebrow">Approach</p>
+        <h3 class="mt-4 text-[1.12rem] md:text-[1.28rem]">Gaialogy, not sky worship</h3>
+        <p class="mt-4 text-base leading-7 text-slate-200">
+          The book turns away from the fantasy that all answers are hidden in the sky. It works from Earth, from the
+          Sun&apos;s lived rhythm, and from what can actually be seen in bodies, climates, relations, and forms of life.
+        </p>
+      </article>
+      <article class="veil-panel gaia-panel">
+        <p class="eyebrow">Audience</p>
+        <h3 class="mt-4 text-[1.12rem] md:text-[1.28rem]">Written for general readers</h3>
+        <p class="mt-4 text-base leading-7 text-slate-200">
+          The voice stays close to the surface of things: seasons, moods, desire, drift, pressure, tenderness, and the
+          small ways a year changes how life feels.
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <script is:inline type="application/json" id="gaia-book-data" set:html={JSON.stringify(gaiaBookData)}></script>
+  <script is:inline>
+    const bookDataElement = document.getElementById('gaia-book-data');
+    const signButtons = Array.from(document.querySelectorAll('[data-sign]'));
+
+    if (bookDataElement && signButtons.length > 0) {
+      const gaiaData = JSON.parse(bookDataElement.textContent || '{}');
+      const signs = gaiaData.signs || [];
+
+      function renderSignDetail(sign) {
+        signButtons.forEach((button) => {
+          button.setAttribute('aria-pressed', button.dataset.sign === sign.slug ? 'true' : 'false');
+        });
+
+        document.getElementById('detail-name').textContent = sign.name;
+        document.getElementById('detail-glyph').textContent = sign.glyph;
+        document.getElementById('detail-range').textContent = `${sign.dateLabel} - ${sign.element}`;
+        document.getElementById('detail-competence').textContent = `Key note: ${sign.competence}`;
+        document.getElementById('detail-civic').textContent = sign.civicTheme;
+        document.getElementById('detail-body').textContent = sign.bodyRegister;
+        document.getElementById('detail-social').textContent = sign.socialPattern;
+        document.getElementById('detail-shadow').textContent = sign.shadow;
+        document.getElementById('detail-ritual').textContent = sign.ritual;
+      }
+
+      signButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          const sign = signs.find((entry) => entry.slug === button.dataset.sign);
+          if (sign) {
+            renderSignDetail(sign);
+          }
+        });
+      });
+
+      renderSignDetail(signs[0]);
+    }
+  </script>
+
+  <style>
+    .gaia-wheel-grid {
+      display: grid;
+      gap: 0.9rem;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    }
+
+    .gaia-element-card {
+      position: relative;
+      background:
+        radial-gradient(circle at top left, color-mix(in srgb, var(--element-color) 18%, rgba(95, 138, 85, 0.08)) 0%, transparent 42%),
+        linear-gradient(180deg, rgba(251, 246, 239, 0.58) 0%, rgba(251, 246, 239, 0.18) 100%);
+    }
+
+    .gaia-sign-chip {
+      position: relative;
+      display: grid;
+      gap: 0.35rem;
+      min-height: 9.5rem;
+      align-content: space-between;
+      padding: 1rem;
+      border-radius: 1.1rem;
+      border: 1px solid rgba(36, 27, 23, 0.1);
+      background:
+        radial-gradient(circle at top left, color-mix(in srgb, var(--sign-color) 22%, rgba(95, 138, 85, 0.1)) 0%, transparent 42%),
+        linear-gradient(180deg, rgba(251, 246, 239, 0.8) 0%, rgba(251, 246, 239, 0.36) 100%);
+      color: var(--color-moon);
+      text-align: left;
+      transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+    }
+
+    .gaia-sign-chip:hover,
+    .gaia-sign-chip[aria-pressed='true'] {
+      transform: translateY(-2px);
+      border-color: color-mix(in srgb, var(--sign-color) 44%, rgba(95, 138, 85, 0.3));
+      box-shadow:
+        0 18px 30px rgba(36, 27, 23, 0.06),
+        0 0 0 1px color-mix(in srgb, var(--sign-color) 24%, rgba(95, 138, 85, 0.22));
+    }
+
+    .gaia-sign-chip:focus-visible {
+      outline: none;
+      border-color: rgba(95, 138, 85, 0.72);
+      box-shadow:
+        0 0 0 3px rgba(95, 138, 85, 0.18),
+        0 18px 30px rgba(36, 27, 23, 0.06);
+    }
+
+    .gaia-sign-glyph {
+      font-size: 1.8rem;
+      line-height: 1;
+      color: var(--sign-color);
+    }
+
+    .gaia-sign-name {
+      font-size: 1.08rem;
+      font-weight: 600;
+      color: var(--color-moon);
+    }
+
+    .gaia-sign-dates {
+      font-size: 0.78rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-slate-300);
+    }
+
+    .gaia-glyph-wrap {
+      display: grid;
+      place-items: center;
+      width: 4.5rem;
+      height: 4.5rem;
+      border-radius: 1.2rem;
+      border: 1px solid rgba(36, 27, 23, 0.1);
+      background:
+        radial-gradient(circle at center, rgba(95, 138, 85, 0.2), rgba(95, 138, 85, 0) 72%),
+        linear-gradient(180deg, rgba(251, 246, 239, 0.82), rgba(251, 246, 239, 0.46));
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    }
+
+    .gaia-glyph {
+      font-size: 2rem;
+      line-height: 1;
+      color: color-mix(in srgb, var(--gaia-leaf-500) 62%, var(--gaia-nebula-500) 38%);
+    }
+
+    .gaia-detail-grid {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    .gaia-helper-text {
+      font-size: 0.94rem;
+      line-height: 1.7;
+      color: var(--color-slate-soft);
+    }
+
+    @media (max-width: 768px) {
+      .gaia-sign-chip {
+        min-height: 8.6rem;
+      }
+    }
+
+    /* Homepage alignment override */
+    .gaia-element-card {
+      border-color: rgba(255, 255, 255, 0.08);
+      background:
+        radial-gradient(circle at top left, color-mix(in srgb, var(--element-color) 18%, rgba(204, 153, 103, 0.08)) 0%, transparent 42%),
+        linear-gradient(180deg, rgba(8, 11, 16, 0.88) 0%, rgba(8, 11, 16, 0.72) 100%);
+      box-shadow: 0 18px 34px rgba(0, 0, 0, 0.35);
+    }
+
+    .gaia-sign-chip {
+      border-color: rgba(255, 255, 255, 0.08);
+      background:
+        radial-gradient(circle at top left, color-mix(in srgb, var(--sign-color) 22%, rgba(204, 153, 103, 0.1)) 0%, transparent 42%),
+        linear-gradient(180deg, rgba(8, 11, 16, 0.92) 0%, rgba(8, 11, 16, 0.76) 100%);
+      box-shadow: 0 18px 34px rgba(0, 0, 0, 0.35);
+    }
+
+    .gaia-sign-chip:hover,
+    .gaia-sign-chip[aria-pressed='true'] {
+      border-color: color-mix(in srgb, var(--sign-color) 38%, rgba(204, 153, 103, 0.4));
+      box-shadow:
+        0 18px 34px rgba(0, 0, 0, 0.35),
+        0 0 0 1px color-mix(in srgb, var(--sign-color) 20%, rgba(204, 153, 103, 0.22));
+    }
+
+    .gaia-sign-chip:focus-visible {
+      border-color: rgba(204, 153, 103, 0.68);
+      box-shadow:
+        0 0 0 3px rgba(204, 153, 103, 0.14),
+        0 18px 34px rgba(0, 0, 0, 0.35);
+    }
+
+    .gaia-sign-name {
+      color: var(--color-moon);
+    }
+
+    .gaia-glyph-wrap {
+      border-color: rgba(255, 255, 255, 0.08);
+      background:
+        radial-gradient(circle at center, rgba(204, 153, 103, 0.22), rgba(204, 153, 103, 0) 72%),
+        radial-gradient(circle at 24% 18%, rgba(95, 127, 174, 0.12), rgba(95, 127, 174, 0) 58%),
+        linear-gradient(180deg, rgba(8, 11, 16, 0.94), rgba(8, 11, 16, 0.74));
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+  </style>
+</BaseLayout>
