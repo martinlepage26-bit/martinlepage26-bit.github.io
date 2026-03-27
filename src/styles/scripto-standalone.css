@@ -1,15 +1,15 @@
 :root {
-  --scripto-vellum: #efe2c8;
-  --scripto-vellum-deep: #e2cfab;
-  --scripto-ocher: #a97534;
-  --scripto-umber: #5a3a17;
-  --scripto-carbon: #26190c;
-  --scripto-ink: #312112;
-  --scripto-border: rgba(98, 64, 28, 0.36);
-  --scripto-border-soft: rgba(98, 64, 28, 0.2);
-  --scripto-panel: rgba(244, 231, 203, 0.84);
-  --scripto-shadow: 0 18px 40px rgba(48, 30, 11, 0.2);
-  --scripto-shadow-deep: 0 24px 48px rgba(44, 28, 11, 0.24);
+  --scripto-vellum: #f1eeeb;
+  --scripto-vellum-deep: #d8c6ad;
+  --scripto-ocher: #cc9967;
+  --scripto-umber: #cc9967;
+  --scripto-carbon: #f1eeeb;
+  --scripto-ink: #c7ced7;
+  --scripto-border: rgba(255, 255, 255, 0.1);
+  --scripto-border-soft: rgba(255, 255, 255, 0.08);
+  --scripto-panel: rgba(8, 11, 16, 0.84);
+  --scripto-shadow: 0 18px 40px rgba(0, 0, 0, 0.32);
+  --scripto-shadow-deep: 0 24px 48px rgba(0, 0, 0, 0.38);
 }
 
 *,
@@ -26,12 +26,12 @@ body {
 
 body.scripto-standalone {
   min-height: 100vh;
-  font-family: "IBM Plex Sans", "Space Grotesk Variable", "Segoe UI", sans-serif;
+  font-family: "DM Sans", system-ui, sans-serif;
   color: var(--scripto-carbon);
   background:
-    radial-gradient(circle at 14% 10%, rgba(169, 117, 52, 0.22), rgba(169, 117, 52, 0) 44%),
-    radial-gradient(circle at 85% 12%, rgba(109, 73, 31, 0.2), rgba(109, 73, 31, 0) 46%),
-    linear-gradient(180deg, #d7bc94 0%, #cda877 44%, #bb8e55 100%);
+    radial-gradient(circle at 14% 10%, rgba(204, 153, 103, 0.14), rgba(204, 153, 103, 0) 44%),
+    radial-gradient(circle at 85% 12%, rgba(95, 127, 174, 0.14), rgba(95, 127, 174, 0) 40%),
+    linear-gradient(180deg, #090b10 0%, #04070b 42%, #020408 100%);
   position: relative;
 }
 
@@ -50,7 +50,7 @@ body.scripto-standalone::before {
       rgba(108, 69, 29, 0.18) 75px,
       transparent 75px
     );
-  opacity: 0.32;
+  opacity: 0.16;
 }
 
 body.scripto-standalone::after {
@@ -61,7 +61,7 @@ body.scripto-standalone::after {
   background:
     radial-gradient(circle at 11% 88%, rgba(61, 39, 15, 0.22), transparent 36%),
     radial-gradient(circle at 86% 92%, rgba(61, 39, 15, 0.2), transparent 32%);
-  opacity: 0.28;
+  opacity: 0.16;
 }
 
 .scripto-shell {
@@ -100,7 +100,7 @@ body.scripto-standalone::after {
 }
 
 .scripto-mark {
-  font-family: "Newsreader Variable", "Newsreader", Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 1.38rem;
   letter-spacing: 0.09em;
   font-weight: 600;
@@ -134,7 +134,7 @@ body.scripto-standalone::after {
 
 .scripto-nav a:hover {
   border-color: var(--scripto-border);
-  background: rgba(247, 233, 205, 0.65);
+  background: rgba(255, 255, 255, 0.03);
   color: var(--scripto-carbon);
   transform: translateY(-1px);
 }
@@ -166,7 +166,7 @@ body.scripto-standalone::after {
 
 .scripto-hero h1 {
   margin: 0.6rem 0 0.6rem;
-  font-family: "Newsreader Variable", "Newsreader", Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: clamp(1.98rem, 5.8vw, 3.2rem);
   line-height: 1.04;
   color: var(--scripto-carbon);
@@ -199,15 +199,15 @@ body.scripto-standalone::after {
 }
 
 .scripto-button.primary {
-  background: linear-gradient(120deg, #8d5b26, #70461f);
-  color: #f6e9cf;
-  box-shadow: 0 10px 22px rgba(62, 37, 12, 0.25);
+  background: #cc9967;
+  color: #030508;
+  box-shadow: 0 10px 22px rgba(204, 153, 103, 0.24);
 }
 
 .scripto-button.secondary {
   border-color: var(--scripto-border);
-  background: rgba(249, 237, 212, 0.8);
-  color: var(--scripto-ink);
+  background: transparent;
+  color: #e5e0dc;
 }
 
 .scripto-button:hover {
@@ -219,13 +219,12 @@ body.scripto-standalone::after {
   border: 1px solid var(--scripto-border-soft);
   border-radius: 0.9rem;
   padding: 0.9rem;
-  background:
-    linear-gradient(180deg, rgba(243, 228, 199, 0.8), rgba(234, 213, 174, 0.72));
+  background: var(--scripto-panel);
 }
 
 .scripto-meta-panel h2 {
   margin: 0 0 0.7rem;
-  font-family: "Newsreader Variable", "Newsreader", Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 1.18rem;
   color: var(--scripto-carbon);
 }
@@ -251,7 +250,7 @@ body.scripto-standalone::after {
   text-transform: uppercase;
   letter-spacing: 0.14em;
   font-weight: 700;
-  color: #7e5426;
+  color: #cc9967;
 }
 
 .scripto-meta-panel strong {
@@ -280,7 +279,7 @@ body.scripto-standalone::after {
 
 .scripto-section-head h2 {
   margin: 0.5rem 0 0;
-  font-family: "Newsreader Variable", "Newsreader", Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: clamp(1.25rem, 2vw, 1.56rem);
   line-height: 1.2;
   color: var(--scripto-carbon);
@@ -322,12 +321,12 @@ body.scripto-standalone::after {
   font-size: 0.72rem;
   font-weight: 700;
   color: var(--scripto-umber);
-  background: rgba(247, 234, 207, 0.84);
+  background: rgba(204, 153, 103, 0.08);
 }
 
 .scripto-card h3 {
   margin: 0.58rem 0 0.42rem;
-  font-family: "Newsreader Variable", "Newsreader", Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 1.1rem;
   color: var(--scripto-carbon);
 }
@@ -350,14 +349,13 @@ body.scripto-standalone::after {
 .scripto-sheet {
   border: 1px solid var(--scripto-border-soft);
   border-radius: 0.88rem;
-  background:
-    linear-gradient(180deg, rgba(245, 232, 205, 0.88), rgba(231, 209, 171, 0.78));
+  background: var(--scripto-panel);
   padding: 0.92rem;
 }
 
 .scripto-sheet h2 {
   margin: 0 0 0.56rem;
-  font-family: "Newsreader Variable", "Newsreader", Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 1.24rem;
   color: var(--scripto-carbon);
 }
@@ -374,22 +372,22 @@ body.scripto-standalone::after {
 .sheet-line {
   margin: 0.46rem 0;
   padding-bottom: 0.34rem;
-  border-bottom: 1px dotted rgba(108, 70, 26, 0.32);
+  border-bottom: 1px dotted rgba(255, 255, 255, 0.14);
   font-size: 0.93rem;
   line-height: 1.5;
-  color: #4a3116;
+  color: #c7ced7;
 }
 
 .scripto-margin-note {
   border: 1px solid var(--scripto-border-soft);
   border-radius: 0.88rem;
   padding: 0.92rem;
-  background: rgba(240, 223, 191, 0.8);
+  background: var(--scripto-panel);
 }
 
 .scripto-margin-note h3 {
   margin: 0 0 0.56rem;
-  font-family: "Newsreader Variable", "Newsreader", Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 1.16rem;
   color: var(--scripto-carbon);
 }
@@ -424,8 +422,8 @@ body.scripto-standalone::after {
 }
 
 .scripto-note-link:hover {
-  color: #35210d;
-  border-bottom-color: rgba(53, 33, 13, 0.55);
+  color: #f1eeeb;
+  border-bottom-color: rgba(204, 153, 103, 0.55);
 }
 
 a:focus-visible,

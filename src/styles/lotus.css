@@ -6,44 +6,41 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Manrope Variable", "Manrope", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Newsreader Variable", "Newsreader", Georgia, serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Cormorant Garamond", Georgia, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
 
-  /* Sunrise warm palette — used directly (no inversion trick) */
-  --color-bone: #fdf5e8;
-  --color-bone-deep: #e8d4b0;
-  --color-ink: #1a0d05;
-  --color-night: #2c1a0e;
-  --color-slate-ink: #5c3a1e;
-  --color-slate-soft: #7a4e2a;
-  --color-fog: #9a6f48;
-  --color-moon: #120a03;
-  --color-accent: #b5622a;
-  --color-grove: #7a3a12;
-  --color-ember: #5c2210;
-  --color-aqua: #8b4a2a;
-  --color-horizon: #c49070;
+  --color-bone: oklch(91% 0.008 65);
+  --color-bone-deep: oklch(75% 0.015 65);
+  --color-ink: oklch(91% 0.008 65);
+  --color-night: oklch(11% 0.012 255);
+  --color-slate-ink: oklch(72% 0.015 65);
+  --color-slate-soft: oklch(58% 0.018 255);
+  --color-fog: oklch(45% 0.015 255);
+  --color-moon: oklch(91% 0.008 65);
+  --color-accent: oklch(72% 0.09 65);
+  --color-grove: oklch(22% 0.018 255);
+  --color-ember: oklch(62% 0.08 255);
+  --color-aqua: oklch(62% 0.08 255);
+  --color-horizon: oklch(52% 0.06 255);
 
-  /* Slate scale — warm tans for text */
-  --color-white: #1a0d05;
-  --color-slate-100: #2c1a0e;
-  --color-slate-200: #4a2e1a;
-  --color-slate-300: #7a4e2a;
-  --color-slate-400: #9a6f48;
-  --color-slate-500: #b8906a;
+  --color-white: oklch(91% 0.008 65);
+  --color-slate-100: oklch(72% 0.015 65);
+  --color-slate-200: oklch(58% 0.018 255);
+  --color-slate-300: oklch(52% 0.015 255);
+  --color-slate-400: oklch(45% 0.015 255);
+  --color-slate-500: oklch(38% 0.012 255);
 }
 
 @layer base {
   :root {
-    color-scheme: light;
+    color-scheme: dark;
   }
 
   html {
     @apply scroll-smooth text-ink antialiased;
-    background: #fdf5e8;
+    background: #030508;
     text-size-adjust: 100%;
-    /* NO filter:invert() — sunrise colors are warm and direct */
   }
 
   body {
@@ -51,11 +48,9 @@
     position: relative;
     z-index: 0;
     background:
-      radial-gradient(ellipse at 50% 0%, rgba(28, 12, 48, 0.9) 0%, transparent 45%),
-      radial-gradient(ellipse at 20% 15%, rgba(130, 40, 80, 0.35) 0%, transparent 35%),
-      radial-gradient(ellipse at 80% 20%, rgba(170, 70, 40, 0.3) 0%, transparent 32%),
-      radial-gradient(ellipse at 50% 85%, rgba(240, 185, 80, 0.28) 0%, transparent 40%),
-      linear-gradient(180deg, #1b0f2e 0%, #5c2244 22%, #a04030 42%, #c47838 58%, #e0b060 72%, #f2d8a8 84%, #fdf5e8 100%);
+      radial-gradient(circle at 14% 14%, rgba(204, 153, 103, 0.12), transparent 28%),
+      radial-gradient(circle at 86% 10%, rgba(95, 127, 174, 0.12), transparent 24%),
+      linear-gradient(180deg, #090b10 0%, #04070b 42%, #020408 100%);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: clip;
@@ -69,11 +64,10 @@
     pointer-events: none;
     z-index: 0;
     background:
-      radial-gradient(circle at 50% -8%, rgba(200, 120, 60, 0.06), transparent 38%),
-      radial-gradient(circle at 12% 82%, rgba(196, 144, 56, 0.07), transparent 24%),
-      radial-gradient(circle at 86% 72%, rgba(181, 98, 42, 0.07), transparent 26%),
-      linear-gradient(180deg, rgba(253, 245, 232, 0) 0%, rgba(253, 245, 232, 0.28) 72%, rgba(253, 245, 232, 0.6) 100%);
-    opacity: 0.92;
+      radial-gradient(circle at 16% 82%, rgba(204, 153, 103, 0.06), transparent 24%),
+      radial-gradient(circle at 82% 70%, rgba(95, 127, 174, 0.08), transparent 28%),
+      linear-gradient(180deg, rgba(7, 7, 12, 0) 0%, rgba(0, 0, 0, 0.42) 72%, rgba(0, 0, 0, 0.82) 100%);
+    opacity: 1;
   }
 
   main {
@@ -144,75 +138,26 @@
     z-index: 1;
   }
 
-  /* ─── Sunrise background ───────────────────────────────────────────────────
-     NO filter:invert() — sunrise colors are warm and direct as intended.
-  ──────────────────────────────────────────────────────────────────────────── */
   .lotus-sunrise {
     position: fixed;
     inset: 0;
     z-index: -1;
     pointer-events: none;
     overflow: hidden;
-    /* NO invert filter — sunrise colors are warm and direct */
   }
 
-  /* Warm rose/amber bands, 78° angle */
   .lotus-sunrise::before {
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-      78deg,
-      transparent 0%,
-      transparent 5%,
-      rgba(185, 75, 95, 0.45) 8%,
-      rgba(170, 60, 80, 0.30) 12%,
-      transparent 15%,
-      transparent 28%,
-      rgba(200, 110, 45, 0.40) 32%,
-      rgba(185, 95, 35, 0.25) 37%,
-      transparent 41%,
-      transparent 58%,
-      rgba(220, 155, 50, 0.35) 62%,
-      rgba(200, 135, 40, 0.20) 67%,
-      transparent 71%,
-      transparent 82%,
-      rgba(185, 75, 95, 0.30) 86%,
-      rgba(170, 60, 80, 0.18) 90%,
-      transparent 94%,
-      transparent 100%
-    );
-    background-size: 280% 100%;
-    animation: sunrise-primary 48s ease-in-out infinite alternate;
-    opacity: 0.6;
+    background: none;
   }
 
-  /* Gold/amber shimmer, 95° */
   .lotus-sunrise::after {
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-      95deg,
-      transparent 0%,
-      transparent 10%,
-      rgba(220, 150, 45, 0.38) 14%,
-      rgba(200, 130, 38, 0.25) 20%,
-      transparent 25%,
-      transparent 44%,
-      rgba(185, 75, 95, 0.32) 48%,
-      rgba(170, 60, 80, 0.20) 53%,
-      transparent 57%,
-      transparent 74%,
-      rgba(215, 145, 42, 0.34) 78%,
-      rgba(195, 125, 36, 0.20) 83%,
-      transparent 88%,
-      transparent 100%
-    );
-    background-size: 240% 100%;
-    mix-blend-mode: multiply;
-    animation: sunrise-secondary 64s ease-in-out infinite alternate-reverse;
-    opacity: 0.5;
+    background: none;
   }
 }
 
@@ -227,7 +172,7 @@
 
   .eyebrow {
     @apply inline-flex items-center gap-3 py-0 font-mono text-[0.62rem] font-semibold uppercase tracking-[0.24em];
-    color: var(--color-accent);
+    color: #cc9967;
   }
 
   .eyebrow::before {
@@ -276,13 +221,10 @@
 
   .veil-panel {
     @apply relative rounded-[1.1rem] px-5 py-5 md:px-6 md:py-6;
-    border: 1px solid rgba(120, 80, 40, 0.12);
-    background:
-      linear-gradient(180deg, rgba(253, 245, 232, 0.96), rgba(248, 235, 210, 0.92)),
-      linear-gradient(135deg, rgba(181, 98, 42, 0.04), rgba(120, 60, 20, 0.02) 42%, rgba(26, 13, 5, 0.01) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(8, 11, 16, 0.84);
     box-shadow:
-      0 16px 34px rgba(100, 55, 20, 0.10),
-      inset 0 1px 0 rgba(255, 240, 210, 0.8);
+      0 18px 34px rgba(0, 0, 0, 0.35);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
   }
@@ -315,39 +257,38 @@
 
   .hero-copy-panel {
     @apply rounded-[1.5rem] px-5 py-5 md:px-7 md:py-7;
-    border: 1px solid rgba(120, 80, 40, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     background:
-      linear-gradient(180deg, rgba(253, 245, 232, 0.8), rgba(248, 235, 210, 0.5)),
-      linear-gradient(135deg, rgba(181, 98, 42, 0.06), rgba(120, 60, 20, 0.03) 46%, rgba(26, 13, 5, 0.05) 100%);
+      radial-gradient(circle at 86% 18%, rgba(204, 153, 103, 0.1), transparent 34%),
+      linear-gradient(180deg, rgba(8, 11, 16, 0.92), rgba(8, 11, 16, 0.72));
     box-shadow:
-      0 24px 64px rgba(100, 55, 20, 0.14),
-      inset 0 1px 0 rgba(255, 240, 210, 0.42);
-    backdrop-filter: blur(20px) saturate(118%);
-    -webkit-backdrop-filter: blur(20px) saturate(118%);
+      0 18px 34px rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
   }
 
   .button-primary {
     @apply inline-flex items-center justify-center rounded-full px-5 py-2.5 text-[0.75rem] font-semibold uppercase tracking-[0.14em] transition;
     position: relative;
     overflow: hidden;
-    border: 1px solid rgba(100, 55, 20, 0.18);
-    background: linear-gradient(135deg, #2c1a0e, #4a2e1a);
-    color: var(--color-bone);
-    box-shadow: 0 12px 24px rgba(100, 55, 20, 0.15);
+    border: 1px solid rgba(204, 153, 103, 0.7);
+    background: #cc9967;
+    color: #030508;
+    box-shadow: 0 12px 24px rgba(204, 153, 103, 0.24);
   }
 
   .button-primary:hover {
     transform: translateY(-1px);
-    background: linear-gradient(135deg, #221408, #3a2414);
+    background: #e0ac79;
   }
 
   .button-secondary {
     @apply inline-flex items-center justify-center rounded-full px-5 py-2.5 text-[0.75rem] font-semibold uppercase tracking-[0.14em] transition;
     position: relative;
     overflow: hidden;
-    border: 1px solid rgba(100, 55, 20, 0.14);
-    background: rgba(253, 245, 232, 0.82);
-    color: var(--color-moon);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: transparent;
+    color: #e5e0dc;
   }
 
   .button-primary::before,
@@ -375,18 +316,18 @@
   }
 
   .button-secondary::before {
-    background: linear-gradient(90deg, rgba(100, 55, 20, 0.34), transparent);
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.24), transparent);
   }
 
   .button-secondary::after {
-    background: linear-gradient(90deg, transparent, rgba(100, 55, 20, 0.34));
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.24));
   }
 
   .button-secondary:hover {
     transform: translateY(-1px);
-    border-color: rgba(181, 98, 42, 0.28);
-    background: rgba(253, 245, 232, 0.96);
-    color: var(--color-accent);
+    border-color: rgba(204, 153, 103, 0.48);
+    background: rgba(255, 255, 255, 0.03);
+    color: #cc9967;
   }
 
   .link-inline {
@@ -434,13 +375,10 @@
 
   .card-link {
     @apply relative flex h-full flex-col gap-4 rounded-[1rem] border px-5 py-5 transition duration-300;
-    border-color: rgba(120, 80, 40, 0.10);
-    background:
-      linear-gradient(180deg, rgba(253, 245, 232, 0.82), rgba(248, 235, 210, 0.78)),
-      linear-gradient(135deg, rgba(181, 98, 42, 0.03), rgba(120, 60, 20, 0.015) 42%, rgba(26, 13, 5, 0.015) 100%);
+    border-color: rgba(255, 255, 255, 0.08);
+    background: rgba(8, 11, 16, 0.84);
     box-shadow:
-      0 16px 32px rgba(100, 55, 20, 0.07),
-      inset 0 1px 0 rgba(255, 240, 210, 0.6);
+      0 18px 34px rgba(0, 0, 0, 0.35);
   }
 
   .card-link::before {
@@ -466,8 +404,8 @@
   .publication-card {
     @apply gap-5;
     background:
-      linear-gradient(180deg, rgba(253, 245, 232, 0.07), rgba(248, 235, 210, 0.02)),
-      linear-gradient(135deg, rgba(181, 98, 42, 0.04), rgba(120, 60, 20, 0.02) 42%, rgba(26, 13, 5, 0.04) 100%);
+      linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.015)),
+      linear-gradient(135deg, rgba(204, 153, 103, 0.04), rgba(95, 127, 174, 0.02) 42%, rgba(17, 23, 38, 0.04) 100%);
   }
 
   .publication-card:hover {
@@ -481,8 +419,9 @@
 
   .publication-card-year {
     @apply rounded-full border px-2.5 py-1;
-    border-color: rgba(181, 98, 42, 0.18);
-    background: rgba(253, 245, 232, 0.04);
+    border-color: rgba(255, 255, 255, 0.08);
+    background: rgba(8, 11, 16, 0.84);
+    color: var(--color-slate-300);
   }
 
   .publication-card-meta {
@@ -586,17 +525,13 @@
 
   .reading-main {
     min-width: 0;
-    border: 1px solid rgba(120, 80, 40, 0.10);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 1.35rem;
     padding: 1.6rem 1.35rem;
-    background:
-      linear-gradient(180deg, rgba(253, 245, 232, 0.96), rgba(248, 235, 210, 0.92)),
-      linear-gradient(135deg, rgba(181, 98, 42, 0.04), rgba(120, 60, 20, 0.02) 42%, rgba(26, 13, 5, 0.015) 100%);
-    box-shadow:
-      0 16px 34px rgba(100, 55, 20, 0.08),
-      inset 0 1px 0 rgba(255, 240, 210, 0.6);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background: rgba(8, 11, 16, 0.84);
+    box-shadow: 0 18px 34px rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
   }
 
   @media (min-width: 768px) {
@@ -768,8 +703,8 @@
     position: sticky;
     top: 0;
     z-index: 40;
-    border-bottom: 1px solid rgba(120, 80, 40, 0.12);
-    background: rgba(253, 245, 232, 0.88);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(8, 11, 16, 0.84);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
   }
@@ -795,7 +730,7 @@
     font-weight: 600;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--color-accent);
+    color: #cc9967;
     transition: color 0.18s ease;
   }
 
@@ -808,7 +743,7 @@
     font-size: 1.1rem;
     font-weight: 500;
     letter-spacing: 0.08em;
-    color: var(--color-moon);
+    color: #cc9967;
   }
 
   .lotus-header-right {
@@ -829,13 +764,11 @@
     bottom: -12rem;
     height: 26rem;
     background:
-      radial-gradient(ellipse at 16% 58%, rgba(196, 144, 112, 0.18), transparent 42%),
-      radial-gradient(ellipse at 36% 64%, rgba(139, 74, 42, 0.20), transparent 46%),
-      radial-gradient(ellipse at 58% 62%, rgba(181, 98, 42, 0.20), transparent 48%),
-      radial-gradient(ellipse at 82% 52%, rgba(185, 75, 95, 0.14), transparent 42%),
-      linear-gradient(180deg, rgba(253, 245, 232, 0), rgba(253, 245, 232, 0.18) 46%, rgba(100, 55, 20, 0.04) 100%);
-    filter: blur(28px) saturate(110%);
-    opacity: 0.82;
+      radial-gradient(ellipse at 20% 58%, rgba(204,153,103,0.16), transparent 34%),
+      radial-gradient(ellipse at 70% 56%, rgba(95,127,174,0.12), transparent 34%),
+      linear-gradient(180deg, rgba(3,5,8,0) 0%, rgba(3,5,8,0.48) 100%);
+    filter: blur(28px);
+    opacity: 0.8;
     pointer-events: none;
   }
 
@@ -870,22 +803,4 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-}
-
-/* Primary sunrise curtain: 78° warm rose/amber bands, slow drift */
-@keyframes sunrise-primary {
-  0%   { background-position: 0% 50%;   transform: skewX(0.8deg) scaleY(1.0);   opacity: 0.52; }
-  25%  { background-position: 22% 50%;  transform: skewX(-0.3deg) scaleY(1.03); opacity: 0.64; }
-  55%  { background-position: 54% 50%;  transform: skewX(1.2deg) scaleY(0.98);  opacity: 0.58; }
-  80%  { background-position: 78% 50%;  transform: skewX(-0.6deg) scaleY(1.04); opacity: 0.68; }
-  100% { background-position: 100% 50%; transform: skewX(0.9deg) scaleY(1.01);  opacity: 0.56; }
-}
-
-/* Secondary sunrise shimmer: 95° gold/amber drift, reverse */
-@keyframes sunrise-secondary {
-  0%   { background-position: 0% 50%;   transform: skewX(-1.0deg) scaleY(1.02); opacity: 0.44; }
-  30%  { background-position: 28% 50%;  transform: skewX(0.4deg) scaleY(0.97);  opacity: 0.56; }
-  60%  { background-position: 58% 50%;  transform: skewX(-1.4deg) scaleY(1.05); opacity: 0.48; }
-  85%  { background-position: 82% 50%;  transform: skewX(0.7deg) scaleY(0.99);  opacity: 0.60; }
-  100% { background-position: 100% 50%; transform: skewX(-0.8deg) scaleY(1.02); opacity: 0.46; }
 }

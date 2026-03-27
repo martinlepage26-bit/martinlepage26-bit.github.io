@@ -23,7 +23,7 @@ const groupedSigns = classicalElements
   .filter((group) => group.signs.length > 0);
 ---
 
-<div class="space-y-12" id="astral-glossary-grid">
+<div class="space-y-12" id="gaia-glossary-grid">
   <nav class="flex flex-wrap gap-3">
     {groupedSigns.map(({ element }) => (
       <a class="glossary-nav-pill" href={`#${element.slug}`}>
@@ -86,9 +86,9 @@ const groupedSigns = classicalElements
     justify-content: center;
     padding: 0.7rem 1rem;
     border-radius: 999px;
-    border: 1px solid rgba(36, 27, 23, 0.12);
-    background: rgba(251, 246, 239, 0.64);
-    color: var(--color-slate-300);
+    border: 1px solid rgba(204, 153, 103, 0.28);
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--color-moon);
     font-family: var(--font-mono);
     font-size: 0.72rem;
     font-weight: 600;
@@ -97,17 +97,17 @@ const groupedSigns = classicalElements
   }
 
   .glossary-nav-pill:hover {
-    border-color: rgba(127, 83, 178, 0.3);
-    color: var(--color-accent);
+    border-color: rgba(204, 153, 103, 0.52);
+    color: #cc9967;
   }
 
   .glossary-element-group {
     --element-accent: color-mix(in srgb, var(--element-color) 34%, transparent);
     padding-top: 1.2rem;
-    border-top: 1px solid rgba(36, 27, 23, 0.12);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
     background:
       radial-gradient(circle at top left, var(--element-accent) 0%, transparent 45%),
-      linear-gradient(180deg, rgba(251, 246, 239, 0.16), rgba(251, 246, 239, 0));
+      linear-gradient(180deg, rgba(8, 11, 16, 0.34), rgba(8, 11, 16, 0));
   }
 
   .glossary-element-head {
@@ -127,10 +127,10 @@ const groupedSigns = classicalElements
     --card-accent: color-mix(in srgb, var(--sign-color) 24%, transparent);
     height: 100%;
     padding-top: 1.15rem;
-    border-top: 1px solid rgba(36, 27, 23, 0.12);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
     background:
       radial-gradient(circle at top right, var(--card-accent) 0%, transparent 42%),
-      linear-gradient(180deg, rgba(251, 246, 239, 0.18), rgba(251, 246, 239, 0));
+      linear-gradient(180deg, rgba(8, 11, 16, 0.36), rgba(8, 11, 16, 0));
   }
 
   .glossary-sign-meta {
@@ -139,7 +139,7 @@ const groupedSigns = classicalElements
     font-weight: 600;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--color-accent);
+    color: color-mix(in srgb, #5f8a55 68%, #3f5a8a 32%);
   }
 
   .glossary-sign-glyph {
@@ -160,7 +160,7 @@ const groupedSigns = classicalElements
     font-weight: 700;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--color-slate-ink);
+    color: #cc9967;
   }
 
   .glossary-competence span:last-child {
@@ -170,7 +170,7 @@ const groupedSigns = classicalElements
   }
 
   .glossary-field {
-    border-top: 1px solid rgba(36, 27, 23, 0.1);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
     padding-top: 0.85rem;
   }
 
@@ -181,13 +181,13 @@ const groupedSigns = classicalElements
     letter-spacing: 0.18em;
     line-height: 1.4;
     text-transform: uppercase;
-    color: var(--color-slate-400);
+    color: var(--color-slate-300);
   }
 
   .glossary-field dd {
     margin-top: 0.5rem;
     font-size: 0.92rem;
     line-height: 1.7;
-    color: var(--color-moon);
+    color: var(--color-slate-100);
   }
 </style>

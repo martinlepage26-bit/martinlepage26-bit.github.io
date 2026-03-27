@@ -547,9 +547,9 @@ const appData = {
     position: relative;
     overflow: hidden;
     background:
-      radial-gradient(circle at top left, rgba(105, 138, 120, 0.14), transparent 34%),
-      radial-gradient(circle at right bottom, rgba(189, 138, 81, 0.12), transparent 28%),
-      linear-gradient(180deg, rgba(251, 246, 239, 0.52) 0%, rgba(251, 246, 239, 0.16) 100%);
+      radial-gradient(circle at top left, rgba(204, 153, 103, 0.1), transparent 34%),
+      radial-gradient(circle at right bottom, rgba(95, 127, 174, 0.1), transparent 28%),
+      linear-gradient(180deg, rgba(8, 11, 16, 0.88) 0%, rgba(8, 11, 16, 0.72) 100%);
   }
 
   .lotus-control-panel::before,
@@ -560,7 +560,7 @@ const appData = {
     width: 14rem;
     height: 14rem;
     border-radius: 999px;
-    background: radial-gradient(circle, rgba(105, 138, 120, 0.1) 0%, rgba(105, 138, 120, 0) 72%);
+    background: radial-gradient(circle, rgba(204, 153, 103, 0.16) 0%, rgba(204, 153, 103, 0) 72%);
     pointer-events: none;
   }
 
@@ -568,7 +568,7 @@ const appData = {
   .lotus-mini-card,
   .lotus-guidance-strip,
   .lotus-reading-card {
-    border-top: 1px solid rgba(36, 27, 23, 0.12);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
     padding: 1rem 0;
   }
 
@@ -579,15 +579,15 @@ const appData = {
     font-weight: 700;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: #728c7b;
+    color: #cc9967;
   }
 
   .lotus-input,
   .lotus-export {
     width: 100%;
-    border: 1px solid rgba(58, 70, 54, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 1rem;
-    background: rgba(252, 250, 246, 0.8);
+    background: rgba(255, 255, 255, 0.03);
     padding: 0.95rem 1rem;
     color: var(--color-ink);
     transition: border-color 0.18s ease, box-shadow 0.18s ease;
@@ -596,8 +596,8 @@ const appData = {
   .lotus-input:focus,
   .lotus-export:focus {
     outline: none;
-    border-color: rgba(105, 138, 120, 0.48);
-    box-shadow: 0 0 0 3px rgba(105, 138, 120, 0.1);
+    border-color: rgba(204, 153, 103, 0.54);
+    box-shadow: 0 0 0 3px rgba(204, 153, 103, 0.14);
   }
 
   .lotus-textarea,
@@ -624,21 +624,21 @@ const appData = {
   }
 
   .lotus-sample-button {
-    border: 1px solid rgba(58, 70, 54, 0.16);
-    background: rgba(252, 250, 246, 0.68);
-    color: var(--color-ink);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--color-moon);
     transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
   }
 
   .lotus-sample-button:hover {
     transform: translateY(-1px);
-    border-color: rgba(105, 138, 120, 0.38);
+    border-color: rgba(204, 153, 103, 0.38);
   }
 
   .lotus-sample-button[data-selected='true'] {
-    border-color: rgba(105, 138, 120, 0.54);
-    background: rgba(105, 138, 120, 0.12);
-    box-shadow: 0 12px 24px rgba(105, 138, 120, 0.12);
+    border-color: rgba(204, 153, 103, 0.56);
+    background: rgba(204, 153, 103, 0.14);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.28);
   }
 
   .lotus-mark-orbit {
@@ -647,14 +647,16 @@ const appData = {
     width: 4.5rem;
     height: 4.5rem;
     border-radius: 999px;
-    border: 1px solid rgba(189, 138, 81, 0.32);
-    background: radial-gradient(circle, rgba(252, 250, 246, 0.92) 0%, rgba(251, 246, 239, 0.32) 72%);
+    border: 1px solid rgba(204, 153, 103, 0.32);
+    background:
+      radial-gradient(circle, rgba(204, 153, 103, 0.22) 0%, rgba(204, 153, 103, 0) 72%),
+      linear-gradient(180deg, rgba(8, 11, 16, 0.92), rgba(8, 11, 16, 0.72));
   }
 
   .lotus-mark-glyph {
     font-family: var(--font-display);
     font-size: 1.85rem;
-    color: #6b7f70;
+    color: #cc9967;
   }
 
   .lotus-metric-grid,
@@ -673,15 +675,15 @@ const appData = {
 
   .lotus-metric-card,
   .lotus-signal-card {
-    border: 1px solid rgba(58, 70, 54, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 1.2rem;
-    background: rgba(252, 250, 246, 0.64);
+    background: rgba(8, 11, 16, 0.78);
     padding: 1rem;
   }
 
   .lotus-signal-card[data-active='true'] {
-    border-color: rgba(105, 138, 120, 0.38);
-    box-shadow: 0 16px 30px rgba(105, 138, 120, 0.08);
+    border-color: rgba(204, 153, 103, 0.42);
+    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.28);
   }
 
   .lotus-metric-value,
@@ -710,17 +712,17 @@ const appData = {
     font-size: 0.72rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--color-muted);
+    color: var(--color-slate-300);
   }
 
   .lotus-pill {
-    background: rgba(189, 138, 81, 0.12);
-    color: var(--color-heading);
+    background: rgba(204, 153, 103, 0.14);
+    color: var(--color-moon);
   }
 
   .lotus-pill-muted {
-    background: rgba(58, 70, 54, 0.08);
-    color: var(--color-muted);
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--color-slate-100);
   }
 
   .lotus-preview,
@@ -735,11 +737,11 @@ const appData = {
   .lotus-preview {
     min-height: 10rem;
     overflow: auto;
-    border: 1px solid rgba(58, 70, 54, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 1rem;
-    background: rgba(252, 250, 246, 0.62);
+    background: rgba(8, 11, 16, 0.78);
     padding: 1rem;
-    color: var(--color-ink);
+    color: var(--color-slate-100);
   }
 
   @media (max-width: 920px) {
@@ -753,4 +755,5 @@ const appData = {
       grid-template-columns: 1fr;
     }
   }
+
 </style>
