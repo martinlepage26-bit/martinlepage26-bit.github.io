@@ -1,4 +1,4 @@
-export const productionSiteUrl = 'https://martin.govern-ai.ca';
+export const productionSiteUrl = 'https://martinlepage26-bit.github.io';
 
 function normalizeSiteUrl(url) {
   return new URL(url.trim()).toString().replace(/\/$/, '');

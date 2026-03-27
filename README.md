@@ -98,7 +98,7 @@ This binds to `http://127.0.0.1:4510` with `--strictPort`.
 
 Canonical public endpoint:
 
-- `https://martin.govern-ai.ca/api/echo-tts`
+- `https://martinlepage26-bit.github.io/api/echo-tts`
 - site-local path: `/api/echo-tts`
 
 `/echo/` should call `/api/echo-tts` only. The Pages Function then proxies to the dedicated Worker backend (`workers/echo-tts-online/`).
@@ -144,7 +144,7 @@ Optional smoke overrides:
 SMOKE_HOST=127.0.0.1 SMOKE_PORT=4520 npm run smoke
 ```
 
-Production metadata now defaults to `https://martin.govern-ai.ca`.
+Production metadata now defaults to `https://martinlepage26-bit.github.io`.
 Set `PUBLIC_SITE_URL` or `SITE_URL` only when you intentionally want to override that origin for a different environment.
 
 ## Editing Workflow
@@ -237,7 +237,7 @@ If deploying from Git:
 2. Create a Cloudflare Pages project from that repo.
 3. Set the build command to `npm run build`.
 4. Set the output directory to `dist`.
-5. The production origin defaults to `https://martin.govern-ai.ca`. Set `PUBLIC_SITE_URL` only if you intentionally need a different build origin.
+5. The production origin defaults to `https://martinlepage26-bit.github.io`. Set `PUBLIC_SITE_URL` only if you intentionally need a different build origin.
 
 ### GitHub Pages
 

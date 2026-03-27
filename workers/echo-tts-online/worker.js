@@ -12,7 +12,7 @@ const DEFAULT_VOICES = [
   "ariel",
 ];
 const DEFAULT_ALLOWED_ORIGINS = [
-  "https://martin.govern-ai.ca",
+  "https://martinlepage26-bit.github.io",
   "https://martin-lepage-site.pages.dev",
   "https://*.martin-lepage-site.pages.dev",
 ];
