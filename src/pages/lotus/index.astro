@@ -24,7 +24,7 @@ const structuredData = {
 ---
 
 <LotusLayout title="Lotus" description={pageDescription} canonical="/lotus/" structuredData={structuredData}>
-  <section class="relative overflow-hidden border-b border-[rgba(36,27,23,0.12)]">
+  <section class="relative overflow-hidden border-b border-[rgba(255,255,255,0.08)]">
     <div class="section-shell relative lotus-hero-shell">
       <div class="lotus-hero-orbit lotus-hero-orbit-one"></div>
       <div class="lotus-hero-orbit lotus-hero-orbit-two"></div>
@@ -68,7 +68,7 @@ const structuredData = {
     </div>
   </section>
 
-  <section class="section-shell border-y border-[rgba(36,27,23,0.08)] bg-[rgba(251,246,239,0.28)]">
+  <section class="section-shell border-y border-[rgba(255,255,255,0.08)] bg-[rgba(8,11,16,0.72)]">
     <SectionIntro
       eyebrow="How LOTUS helps"
       title="Four ways into a clearer picture."
@@ -101,7 +101,7 @@ const structuredData = {
     </div>
   </section>
 
-  <section id="lotus-vector" class="section-shell border-y border-[rgba(36,27,23,0.08)] bg-[rgba(251,246,239,0.28)]">
+  <section id="lotus-vector" class="section-shell border-y border-[rgba(255,255,255,0.08)] bg-[rgba(8,11,16,0.72)]">
     <SectionIntro
       eyebrow="Vector model"
       title="Rate the pressures and supports. See where agency stands."
@@ -112,7 +112,7 @@ const structuredData = {
     </div>
   </section>
 
-  <section class="section-shell border-y border-[rgba(36,27,23,0.08)] bg-[rgba(251,246,239,0.28)]">
+  <section class="section-shell border-y border-[rgba(255,255,255,0.08)] bg-[rgba(8,11,16,0.72)]">
     <SectionIntro
       eyebrow="Signal library"
       title="Six patterns LOTUS looks for."
@@ -228,6 +228,27 @@ const structuredData = {
       font-family: var(--font-mono);
       font-size: 0.82rem;
       font-weight: 700;
+    }
+
+    /* Homepage alignment override */
+    .lotus-hero-mini-card {
+      border-color: rgba(255, 255, 255, 0.08);
+      background: linear-gradient(180deg, rgba(8, 11, 16, 0.9), rgba(8, 11, 16, 0.72));
+      box-shadow: 0 18px 34px rgba(0, 0, 0, 0.35);
+    }
+
+    .lotus-hero-label {
+      color: #cc9967;
+    }
+
+    .lotus-hero-label::before {
+      border-color: rgba(204, 153, 103, 0.42);
+      background: rgba(204, 153, 103, 0.12);
+    }
+
+    .lotus-weight-badge {
+      background: rgba(204, 153, 103, 0.14);
+      color: var(--color-moon);
     }
   </style>
 </LotusLayout>

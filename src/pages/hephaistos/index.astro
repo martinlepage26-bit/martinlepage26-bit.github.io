@@ -438,6 +438,96 @@ const cfg = {
       ::-webkit-scrollbar { width: 6px; }
       ::-webkit-scrollbar-track { background: transparent; }
       ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+      /* Homepage alignment override */
+      :root {
+        --bg:        #030508;
+        --bg2:       rgba(8, 11, 16, 0.84);
+        --bg3:       rgba(255, 255, 255, 0.03);
+        --border:    rgba(255, 255, 255, 0.08);
+        --border2:   rgba(255, 255, 255, 0.16);
+        --amber:     #cc9967;
+        --amber-dim: #b98755;
+        --amber-hi:  #e0ac79;
+        --text:      #f1eeeb;
+        --text2:     #c7ced7;
+        --text3:     #8b94a3;
+        --user-bg:   rgba(16, 24, 31, 0.92);
+        --user-border: rgba(95, 127, 174, 0.28);
+        --user-text: #e8eef7;
+        --asst-bg:   rgba(8, 11, 16, 0.92);
+        --asst-border: rgba(204, 153, 103, 0.28);
+      }
+
+      body {
+        position: relative;
+        background:
+          radial-gradient(circle at 14% 14%, rgba(204, 153, 103, 0.12), transparent 28%),
+          radial-gradient(circle at 86% 10%, rgba(95, 127, 174, 0.12), transparent 24%),
+          linear-gradient(180deg, #090b10 0%, #04070b 42%, #020408 100%);
+        font-family: "DM Sans", system-ui, sans-serif;
+      }
+
+      .h-mark,
+      .welcome-title {
+        font-family: "Cormorant Garamond", Georgia, serif;
+      }
+
+      .h-tagline,
+      .h-nav a,
+      .sidebar-label,
+      .msg-role,
+      .input-hint,
+      .settings-label,
+      .mode-tab,
+      .mode-badge,
+      .chip,
+      .preset-chip {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+      }
+
+      .h-header,
+      .h-sidebar,
+      .settings-panel,
+      .chat-input-bar,
+      .frame-callout,
+      .mode-tabs {
+        background: rgba(8, 11, 16, 0.84);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+      }
+
+      .h-header {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+      }
+
+      .frame-callout,
+      .chat-textarea,
+      .settings-input,
+      .settings-save,
+      .chip,
+      .preset-chip,
+      .mode-tabs,
+      .msg.assistant .msg-bubble,
+      .msg.user .msg-bubble {
+        border-color: rgba(255, 255, 255, 0.08);
+        box-shadow: 0 18px 34px rgba(0, 0, 0, 0.24);
+      }
+
+      .frame-callout {
+        border-left-color: var(--amber);
+      }
+
+      .chat-textarea,
+      .settings-input {
+        color: var(--text);
+      }
+
+      .send-btn {
+        box-shadow: 0 10px 22px rgba(204, 153, 103, 0.24);
+      }
     </style>
   </head>
   <body>

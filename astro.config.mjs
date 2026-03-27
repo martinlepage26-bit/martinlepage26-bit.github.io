@@ -6,6 +6,13 @@ import tailwindcss from '@tailwindcss/vite';
 import { resolveSiteUrl } from './site-config.js';
 
 const site = resolveSiteUrl(process.env);
+const redirectOnlyPaths = new Set([
+  '/gaia/app/',
+  '/astral/',
+  '/astral-year/',
+  '/astral-year/app/',
+  '/astral-year/glossary/',
+]);
 
 export default defineConfig({
   site,
@@ -13,7 +20,15 @@ export default defineConfig({
   legacy: {
     collectionsBackwardsCompat: true,
   },
-  integrations: [mdx(), sitemap()],
+  integrations: [
+    mdx(),
+    sitemap({
+      filter: (page) => {
+        const { pathname } = new URL(page);
+        return !redirectOnlyPaths.has(pathname);
+      },
+    }),
+  ],
   vite: {
     plugins: [tailwindcss()],
   },

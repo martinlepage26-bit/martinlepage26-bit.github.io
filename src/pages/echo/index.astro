@@ -10,17 +10,17 @@ import '../../styles/echo-standalone.css';
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="ECHO standalone page: human-sounding bilingual text-to-speech with masculine, feminine, and non-gendered voice renditions." />
+    <meta name="description" content="ECHO local file-to-MP3 text-to-speech app with voice selection and no paid API." />
     <meta name="theme-color" content="#5ba7ff" />
     <link rel="stylesheet" href="/martin-portfolio/index.css" />
-    <title>ECHO | Standalone Voice Surface</title>
+    <title>ECHO | File to MP3</title>
   </head>
   <body class="echo-standalone">
     <div class="echo-shell">
       <header class="echo-header">
         <a class="echo-brand" href="/echo/">
           <span class="echo-mark">ECHO</span>
-          <span class="echo-tagline">Standalone Voice Surface</span>
+          <span class="echo-tagline">File-in -> Voice -> MP3-out</span>
         </a>
         <nav class="echo-nav" aria-label="ECHO navigation">
           <a href="/projects/echo/">Project details</a>
@@ -32,255 +32,71 @@ import '../../styles/echo-standalone.css';
       <main class="echo-main">
         <section class="echo-hero">
           <p class="echo-eyebrow">Text-to-Speech</p>
-          <h1>ECHO</h1>
-          <p>ECHO now runs online-only through a single ECHO API endpoint.</p>
-          <p>No local Python, no local Voice11 bundle, no machine-bound runtime.</p>
+          <h1>ECHO / Ariel / Voice11</h1>
+          <p>Drag in a file, choose a real local synthesis voice, and generate a downloadable MP3.</p>
+          <p>No paid API key and no backend inference service are required for this route.</p>
           <div class="echo-actions">
             <a class="echo-button secondary" href="/projects/echo/">Project details</a>
-            <a class="echo-button secondary" href="mailto:martinlepage.ai@gmail.com">Report synthesis issue</a>
+            <a class="echo-button secondary" href="mailto:martinlepage.ai@gmail.com">Report issue</a>
           </div>
         </section>
 
-        <section class="echo-workbench" aria-labelledby="echo-workbench-title">
+        <section class="echo-workbench" aria-labelledby="echo-workbench-title" data-echo-app>
           <div class="echo-workbench-head">
-            <p class="echo-eyebrow">Live Composer</p>
-            <h2 id="echo-workbench-title">Generate speech now</h2>
-            <p>Connect to the deployed API endpoint, then render and preview MP3 output in the browser.</p>
+            <p class="echo-eyebrow">Generator</p>
+            <h2 id="echo-workbench-title">File to MP3</h2>
+            <p>Supported upload formats: <code>.txt</code>, <code>.md</code>, <code>.docx</code>, <code>.pdf</code>.</p>
           </div>
 
-          <div class="echo-bridge-controls">
-            <label class="echo-field-label" for="echo-bridge-url">API endpoint</label>
-            <input id="echo-bridge-url" class="echo-input" data-echo-bridge type="text" value="/api/echo-tts" spellcheck="false" />
-            <button class="echo-button secondary" type="button" data-echo-refresh>Refresh voices</button>
-            <p class="echo-status" data-echo-status data-tone="info">Waiting for API connection...</p>
+          <div class="echo-dropzone" data-echo-dropzone tabindex="0" role="button" aria-label="Drop file here or click to choose file">
+            <p><strong>Drop file here</strong> or click to browse</p>
+            <p>Text will be extracted locally in the browser.</p>
+            <input class="echo-file-input" data-echo-file-input type="file" accept=".txt,.md,.markdown,.docx,.pdf" />
           </div>
+
+          <p class="echo-file-meta" data-echo-file-meta>No file selected yet.</p>
 
           <div class="echo-form-grid">
-            <label class="echo-field echo-field-full" for="echo-text">
-              <span class="echo-field-label">Text</span>
-              <textarea id="echo-text" class="echo-textarea" data-echo-text rows="8">ECHO is ready in English and French.</textarea>
-            </label>
-
             <label class="echo-field" for="echo-voice">
-              <span class="echo-field-label">Voice</span>
-              <select id="echo-voice" class="echo-input" data-echo-voice>
-                <option value="">Load voices first</option>
-              </select>
+              <span class="echo-field-label">Voice Dashboard</span>
+              <select id="echo-voice" class="echo-input" data-echo-voice></select>
             </label>
 
-            <label class="echo-field" for="echo-rate">
-              <span class="echo-field-label">Rate (-75 to 75)</span>
-              <input id="echo-rate" class="echo-input" data-echo-rate type="number" min="-75" max="75" step="1" value="0" />
-            </label>
+            <div class="echo-field">
+              <span class="echo-field-label">Selected Voice</span>
+              <p class="echo-voice-meta" data-echo-voice-meta></p>
+            </div>
 
-            <label class="echo-field echo-field-full" for="echo-filename">
-              <span class="echo-field-label">File name</span>
-              <input id="echo-filename" class="echo-input" data-echo-filename type="text" value="echo-output" spellcheck="false" />
+            <label class="echo-field echo-field-full" for="echo-text">
+              <span class="echo-field-label">Extracted Text</span>
+              <textarea id="echo-text" class="echo-textarea" data-echo-text rows="12" placeholder="Upload a file to populate text. You can edit before generation."></textarea>
             </label>
           </div>
 
           <div class="echo-runner">
-            <button class="echo-button primary" type="button" data-echo-preview>Preview</button>
-            <button class="echo-button secondary" type="button" data-echo-render>Render and download MP3</button>
+            <button class="echo-button primary" type="button" data-echo-generate disabled>Generate MP3</button>
           </div>
 
-          <div class="echo-player" data-echo-player hidden>
+          <div class="echo-progress-shell" aria-live="polite">
+            <p class="echo-status" data-echo-status data-tone="info">Initializing...</p>
+            <progress class="echo-progress" data-echo-progress max="100" value="0"></progress>
+            <p class="echo-progress-label" data-echo-progress-label>Idle</p>
+          </div>
+
+          <section class="echo-result" data-echo-result hidden>
+            <h3>Generated MP3</h3>
             <audio class="echo-audio" data-echo-audio controls preload="metadata"></audio>
-            <a class="echo-button secondary" data-echo-download href="#">Download last render</a>
-            <p class="echo-note" data-echo-file></p>
-          </div>
-
-          <div class="echo-lines">
-            <h3>Online setup</h3>
-            <p>Use this site endpoint: <code>/api/echo-tts</code>.</p>
-            <p>It proxies to the dedicated <code>echo-tts-online</code> Worker backend.</p>
-          </div>
+            <a class="echo-button secondary" data-echo-download href="#">Download MP3</a>
+            <p class="echo-note" data-echo-result-meta></p>
+          </section>
         </section>
       </main>
     </div>
 
-    <script is:inline>
-      (() => {
-        const bridgeInput = document.querySelector('[data-echo-bridge]');
-        const statusNode = document.querySelector('[data-echo-status]');
-        const refreshButton = document.querySelector('[data-echo-refresh]');
-        const textNode = document.querySelector('[data-echo-text]');
-        const voiceNode = document.querySelector('[data-echo-voice]');
-        const rateNode = document.querySelector('[data-echo-rate]');
-        const filenameNode = document.querySelector('[data-echo-filename]');
-        const previewButton = document.querySelector('[data-echo-preview]');
-        const renderButton = document.querySelector('[data-echo-render]');
-        const playerWrap = document.querySelector('[data-echo-player]');
-        const audioNode = document.querySelector('[data-echo-audio]');
-        const downloadNode = document.querySelector('[data-echo-download]');
-        const fileNode = document.querySelector('[data-echo-file]');
+    <script>
+      import { initEchoFileToMp3App } from '../../scripts/echo-file-to-mp3.js';
 
-        if (
-          !bridgeInput ||
-          !statusNode ||
-          !refreshButton ||
-          !textNode ||
-          !voiceNode ||
-          !rateNode ||
-          !filenameNode ||
-          !previewButton ||
-          !renderButton ||
-          !playerWrap ||
-          !audioNode ||
-          !downloadNode ||
-          !fileNode
-        ) {
-          return;
-        }
-
-        let activeBlobUrl = null;
-
-        const normalizeBridge = () => {
-          const value = bridgeInput.value.trim() || '/api/echo-tts';
-          if (value.startsWith('/')) {
-            return window.location.origin + value;
-          }
-          return value.replace(/\/+$/, '');
-        };
-
-        const setStatus = (message, tone = 'info') => {
-          statusNode.textContent = message;
-          statusNode.dataset.tone = tone;
-        };
-
-        const parseError = async (response, fallback) => {
-          try {
-            const payload = await response.json();
-            if (payload && typeof payload.error === 'string' && payload.error) {
-              return payload.error;
-            }
-          } catch (error) {
-            console.error(error);
-          }
-          return fallback;
-        };
-
-        const loadVoices = async () => {
-          const base = normalizeBridge();
-          setStatus('Checking API...', 'info');
-
-          try {
-            const configResponse = await fetch(base);
-            if (!configResponse.ok) {
-              const message = await parseError(configResponse, 'Could not load API config.');
-              throw new Error(message);
-            }
-            const configPayload = await configResponse.json();
-            const defaults = configPayload && typeof configPayload.defaults === 'object' ? configPayload.defaults : {};
-            const voices = Array.isArray(defaults.voices) ? defaults.voices : [];
-
-            voiceNode.innerHTML = '';
-            for (const voice of voices) {
-              const option = document.createElement('option');
-              option.value = voice;
-              option.textContent = voice;
-              voiceNode.append(option);
-            }
-
-            if (!voices.length) {
-              throw new Error('API responded but returned zero voices.');
-            }
-
-            const preferredVoice = voices.find((voice) => voice.toLowerCase().startsWith('en-')) || voices[0];
-            voiceNode.value = preferredVoice;
-
-            const backend = typeof configPayload.backend === 'string' ? configPayload.backend : 'ECHO backend';
-            setStatus('Connected to ' + backend + '. Loaded ' + voices.length + ' voices.', 'ok');
-          } catch (error) {
-            console.error(error);
-            setStatus('API unavailable. Verify deployed endpoint and secrets.', 'error');
-          }
-        };
-
-        const render = async (downloadAfterRender) => {
-          const text = textNode.value.trim();
-          if (!text) {
-            setStatus('Enter text before rendering.', 'error');
-            return;
-          }
-
-          const base = normalizeBridge();
-          const payload = {
-            text,
-            voiceId: voiceNode.value,
-            rate: rateNode.value.trim() || '0',
-            filename: filenameNode.value.trim() || 'echo-output',
-          };
-
-          setStatus('Rendering audio...', 'info');
-
-          try {
-            const response = await fetch(base, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(payload),
-            });
-
-            if (!response.ok) {
-              const message = await parseError(response, 'Synthesis failed.');
-              throw new Error(message);
-            }
-
-            const audioBlob = await response.blob();
-            if (activeBlobUrl) {
-              URL.revokeObjectURL(activeBlobUrl);
-            }
-            activeBlobUrl = URL.createObjectURL(audioBlob);
-
-            audioNode.src = activeBlobUrl;
-            playerWrap.hidden = false;
-            downloadNode.href = activeBlobUrl;
-
-            const disposition = response.headers.get('Content-Disposition') || '';
-            const match = disposition.match(/filename="?([^";]+)"?/i);
-            const filename = match && match[1] ? match[1] : 'echo-output.mp3';
-            downloadNode.download = filename;
-
-            const model = response.headers.get('X-Echo-Model') || '';
-            const voice = response.headers.get('X-Echo-Voice') || '';
-            fileNode.textContent = model || voice ? 'Model: ' + model + ' | Voice: ' + voice : '';
-
-            if (downloadAfterRender) {
-              downloadNode.click();
-              setStatus('Render complete. Download started.', 'ok');
-            } else {
-              audioNode.play().catch(() => {});
-              setStatus('Preview ready.', 'ok');
-            }
-          } catch (error) {
-            console.error(error);
-            setStatus(error instanceof Error ? error.message : 'Unknown synthesis error.', 'error');
-          }
-        };
-
-        refreshButton.addEventListener('click', () => {
-          loadVoices();
-        });
-
-        previewButton.addEventListener('click', () => {
-          render(false);
-        });
-
-        renderButton.addEventListener('click', () => {
-          render(true);
-        });
-
-        window.addEventListener('beforeunload', () => {
-          if (activeBlobUrl) {
-            URL.revokeObjectURL(activeBlobUrl);
-            activeBlobUrl = null;
-          }
-        });
-
-        loadVoices();
-      })();
+      initEchoFileToMp3App();
     </script>
   </body>
 </html>

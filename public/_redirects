@@ -1,5 +1,15 @@
 /projects/agency-social-positioning-tool/ /projects/ 301
-/projects/astral/ /astral/ 301
+/gaia/app/ /gaia/ 301
+/gaia/app /gaia/ 301
+/astral/ /gaia/ 301
+/astral /gaia/ 301
+/astral-year/ /gaia/book/ 301
+/astral-year /gaia/book/ 301
+/astral-year/app/ /gaia/ 301
+/astral-year/app /gaia/ 301
+/astral-year/glossary/ /gaia/glossary/ 301
+/astral-year/glossary /gaia/glossary/ 301
+/projects/astral/ /gaia/ 301
 /Hephaistos/ /hephaistos/ 301
 /projects/govern-ai-practice/ /projects/ai-governance/ 301
 /projects/governess-suite/ /projects/ 301

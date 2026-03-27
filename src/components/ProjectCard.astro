@@ -10,7 +10,7 @@ const { project } = Astro.props;
 const slug = contentSlug(project.id);
 const standaloneProjectRoute = {
   echo: '/echo/',
-  astral: '/astral/',
+  astral: '/gaia/',
   lotus: '/lotus/',
   scriptorium: '/scriptorium/',
   'skill-ecosystem': '/hephaistos/',
@@ -19,7 +19,7 @@ const opensInNewWindow = Boolean(standaloneProjectRoute);
 const projectHref = standaloneProjectRoute ?? `/projects/${slug}/`;
 const projectCta = {
   echo: 'Open ECHO',
-  astral: 'Open Astral',
+  astral: 'Open GAIA',
   lotus: 'Open Lotus',
   scriptorium: 'Open Scriptorium',
   'skill-ecosystem': 'Open Hephaistos',

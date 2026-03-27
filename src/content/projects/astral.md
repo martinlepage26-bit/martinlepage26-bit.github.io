@@ -19,8 +19,8 @@ featured: false
 image: "/social/og-breath-of-the-astral-year.png"
 imageAlt: "A gaialogy app in development drawn from the sign language of Breath of the Astral Year."
 links:
-  - label: "Open Astral app (new window)"
-    url: "/astral/"
+  - label: "Open GAIA app (new window)"
+    url: "/gaia/"
 ---
 
 *Astral* turns the sign language of *Breath of the Astral Year* into a usable app surface. It keeps gaialogy close to season, body, relation, and earthly pressure instead of treating it as a distant sky machine.
