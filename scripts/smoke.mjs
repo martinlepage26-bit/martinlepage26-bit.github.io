@@ -16,6 +16,10 @@ if (Number.isNaN(port)) {
 const baseUrl = `http://${host}:${port}`;
 const baseRoutes = [
   '/',
+  '/gaia/',
+  '/gaia/book/',
+  '/gaia/glossary/',
+  '/lotus/',
   '/projects/',
   '/writing/',
   '/governance/',

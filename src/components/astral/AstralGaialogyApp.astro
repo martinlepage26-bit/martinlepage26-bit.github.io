@@ -49,14 +49,17 @@ const appData = {
 <div class="astral-app-shell" id="gaia-app-shell">
   <div class="grid gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-start">
     <section class="veil-panel astral-control-panel">
-      <p class="eyebrow">GAIA reading tool</p>
-      <h2 class="mt-4 text-[1.56rem] leading-tight md:text-[1.82rem]">Choose your reading path.</h2>
+      <p class="eyebrow">Choose your entry</p>
+      <h2 class="mt-4 text-[1.56rem] leading-tight md:text-[1.82rem]">Generate a grounded seasonal reading.</h2>
       <p class="mt-4 max-w-xl text-base leading-7 text-slate-200">
-        GAIA keeps one Earth-based grammar and offers two outputs: a stable sign profile and a date-modulated daily
-        horoscope. Both come from the same Breath of the Astral Year method fields.
+        This app reads signs the way the book does: as earthly weather, body tone, social motion, pressure, and repair.
+        Choose a stable sign reading or switch to a daily reading built from the same seasonal grammar.
       </p>
 
-      <div class="astral-mode-toggle mt-8" role="group" aria-label="Reading modes">
+      <div class="astral-mode-kicker mt-8">
+        <p class="astral-mini-label">Reading type</p>
+      </div>
+      <div class="astral-mode-toggle mt-4" role="group" aria-label="Reading modes">
         <button id="astral-mode-general" type="button" class="astral-mode-button" data-mode="general" aria-pressed="true">
           General reading
         </button>
@@ -65,24 +68,24 @@ const appData = {
         </button>
       </div>
       <p id="astral-mode-description" class="astral-flow-note mt-4">
-        General reading gives the stable sign architecture: competence, season weather, body register, relation, shadow, ritual.
+        General reading stays with season, temperament, relation, pressure, and repair.
       </p>
 
       <div id="astral-general-controls" class="astral-control-group mt-8 grid gap-5">
         <div class="astral-input-card">
-          <label class="astral-label" for="astral-sign-select">General sign</label>
+          <label class="astral-label" for="astral-sign-select">By sign</label>
           <select id="astral-sign-select" class="astral-select">
             {signs.map((sign) => (
-              <option value={sign.slug}>{sign.name} - {sign.dateLabel}</option>
+              <option value={sign.slug}>{sign.name} · {sign.dateLabel}</option>
             ))}
           </select>
           <p class="mt-3 text-sm leading-6 text-slate-400">
-            Use this for a stable orientation reading that does not depend on one specific day.
+            Use this when you already know the sign you want the reading built around.
           </p>
         </div>
 
         <div class="astral-input-card">
-          <label class="astral-label" for="astral-month-select">Resolve sign by month and day</label>
+          <label class="astral-label" for="astral-month-select">By month and day</label>
           <div class="mt-3 grid gap-3 sm:grid-cols-[minmax(0,1fr)_120px]">
             <select id="astral-month-select" class="astral-select">
               {monthOptions.map((month) => (
@@ -98,7 +101,7 @@ const appData = {
           <div class="mt-4 flex flex-wrap gap-3">
             <button id="astral-date-submit" type="button" class="button-primary">Resolve sign by date</button>
             <button id="astral-general-today" type="button" class="button-secondary">Use today's sign</button>
-            <button id="astral-date-reset" type="button" class="button-secondary">Back to direct sign</button>
+            <button id="astral-date-reset" type="button" class="button-secondary">Return to sign picker</button>
           </div>
           <p id="astral-entry-mode" class="mt-3 text-sm leading-6 text-slate-400">
             Currently showing the direct sign reading.
@@ -111,10 +114,10 @@ const appData = {
 
       <div id="astral-daily-controls" class="astral-control-group mt-8 grid gap-5" hidden>
         <div class="astral-input-card">
-          <label class="astral-label" for="astral-daily-sign-select">Daily sign</label>
+          <label class="astral-label" for="astral-daily-sign-select">Daily sign base</label>
           <select id="astral-daily-sign-select" class="astral-select">
             {signs.map((sign) => (
-              <option value={sign.slug}>{sign.name} - {sign.dateLabel}</option>
+              <option value={sign.slug}>{sign.name} · {sign.dateLabel}</option>
             ))}
           </select>
           <p class="mt-3 text-sm leading-6 text-slate-400">
@@ -138,15 +141,15 @@ const appData = {
 
       <div class="mt-8 grid gap-4 sm:grid-cols-2">
         <div class="astral-mini-card">
-          <p class="astral-mini-label">Method transparency</p>
+          <p class="astral-mini-label">Method</p>
           <p class="mt-2 text-sm leading-6 text-slate-200">
-            GAIA shows how each reading is formed: stable sign profile, date modulation, and input path.
+            Not planetary prediction. The reading stays with season, temperament, relation, and embodied rhythm.
           </p>
         </div>
         <div class="astral-mini-card">
-          <p class="astral-mini-label">Personalization scope</p>
+          <p class="astral-mini-label">Output</p>
           <p class="mt-2 text-sm leading-6 text-slate-200">
-            No natal chart or transit engine yet. This version is sign + season + day rhythm, openly and consistently.
+            Each result gives a key note, a seasonal pressure, a caution, and a ritual small enough to enact.
           </p>
         </div>
       </div>
@@ -160,7 +163,7 @@ const appData = {
     <aside class="veil-panel astral-result-panel" aria-live="polite" aria-atomic="true">
       <div class="astral-result-toolbar">
         <div>
-          <p id="astral-result-mode" class="astral-mini-label">General reading</p>
+          <p id="astral-result-mode" class="astral-mini-label">Direct sign reading</p>
           <p id="astral-result-source" class="mt-2 text-xs uppercase tracking-[0.15em] text-slate-400">
             Stable sign profile
           </p>
@@ -176,7 +179,7 @@ const appData = {
         <div>
           <h3 id="astral-result-sign" class="text-[1.52rem] leading-tight md:text-[1.92rem]">{initialProfile.sign.name}</h3>
           <p id="astral-result-range" class="mt-2 text-sm uppercase tracking-[0.18em] text-slate-400">
-            {initialProfile.sign.dateLabel} - {initialProfile.sign.element}
+            {initialProfile.sign.dateLabel} · {initialProfile.sign.element}
           </p>
         </div>
         <div class="astral-glyph-orbit">
@@ -187,54 +190,37 @@ const appData = {
       <p id="astral-result-summary" class="mt-6 text-lg leading-8 text-slate-100">{initialProfile.summary}</p>
       <p id="astral-result-message" class="mt-4 text-base leading-7 text-slate-300">{initialProfile.message}</p>
 
-      <div class="mt-6 grid gap-4 md:grid-cols-2">
-        <article class="astral-reading-card">
-          <p class="astral-mini-label">Stable baseline</p>
-          <p id="astral-contract-stable" class="mt-2 text-sm leading-6 text-slate-200"></p>
-        </article>
-        <article class="astral-reading-card">
-          <p class="astral-mini-label">Daily modulation</p>
-          <p id="astral-contract-daily" class="mt-2 text-sm leading-6 text-slate-200"></p>
-        </article>
-      </div>
-
-      <article class="astral-reading-card mt-4">
-        <p class="astral-mini-label">Current reading contract</p>
-        <p id="astral-contract-status" class="mt-2 text-sm leading-6 text-slate-200"></p>
-        <ul id="astral-contract-factors" class="mt-3 list-disc space-y-2 pl-5 text-sm leading-6 text-slate-300"></ul>
-      </article>
-
       <div class="mt-8 grid gap-4 md:grid-cols-2">
         <article class="astral-reading-card">
-          <p id="astral-label-note" class="astral-mini-label">Core orientation</p>
+          <p id="astral-label-note" class="astral-mini-label">Key note</p>
           <p id="astral-result-note" class="mt-2 text-base leading-7 text-slate-200">{initialProfile.keyNote}</p>
         </article>
         <article class="astral-reading-card">
-          <p id="astral-label-active" class="astral-mini-label">What is active</p>
+          <p id="astral-label-active" class="astral-mini-label">Season mood</p>
           <p id="astral-result-active" class="mt-2 text-base leading-7 text-slate-200">{initialProfile.seasonMood}</p>
         </article>
         <article class="astral-reading-card">
-          <p id="astral-label-body" class="astral-mini-label">Body register</p>
+          <p id="astral-label-body" class="astral-mini-label">Body feeling</p>
           <p id="astral-result-body" class="mt-2 text-base leading-7 text-slate-200">{initialProfile.bodyFeeling}</p>
         </article>
         <article class="astral-reading-card">
-          <p id="astral-label-social" class="astral-mini-label">Relational pattern</p>
+          <p id="astral-label-social" class="astral-mini-label">How it moves</p>
           <p id="astral-result-social" class="mt-2 text-base leading-7 text-slate-200">{initialProfile.movementPattern}</p>
         </article>
       </div>
 
       <div class="mt-4 grid gap-4 md:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
         <article class="astral-shadow-card">
-          <p id="astral-label-shadow" class="astral-mini-label">Shadow to watch</p>
+          <p id="astral-label-shadow" class="astral-mini-label">Watch for</p>
           <p id="astral-result-shadow" class="mt-2 text-sm leading-6 text-slate-200">{initialProfile.shadow}</p>
         </article>
         <article class="astral-ritual-card">
-          <p id="astral-label-ritual" class="astral-mini-label">Alignment ritual</p>
+          <p id="astral-label-ritual" class="astral-mini-label">Small ritual</p>
           <p id="astral-result-ritual" class="mt-2 text-base leading-7 text-slate-100">{initialProfile.ritual}</p>
         </article>
       </div>
 
-      <article class="astral-prompt-card mt-4">
+      <article class="astral-prompt-card mt-6">
         <p id="astral-label-prompt" class="astral-mini-label">Grounding action</p>
         <p id="astral-result-prompt" class="mt-2 text-base leading-7 text-slate-200">
           Name one concrete action that practices {initialProfile.keyNote.toLowerCase()} in your real day.
@@ -251,7 +237,22 @@ const appData = {
       </div>
 
       <details class="astral-method-details mt-6">
-        <summary>How this reading is formed</summary>
+        <summary>Method and reading details</summary>
+        <div class="mt-4 grid gap-4 md:grid-cols-2">
+          <article class="astral-reading-card">
+            <p class="astral-mini-label">Stable baseline</p>
+            <p id="astral-contract-stable" class="mt-2 text-sm leading-6 text-slate-200"></p>
+          </article>
+          <article class="astral-reading-card">
+            <p class="astral-mini-label">Daily modulation</p>
+            <p id="astral-contract-daily" class="mt-2 text-sm leading-6 text-slate-200"></p>
+          </article>
+        </div>
+        <article class="astral-reading-card mt-4">
+          <p class="astral-mini-label">Current reading contract</p>
+          <p id="astral-contract-status" class="mt-2 text-sm leading-6 text-slate-200"></p>
+          <ul id="astral-contract-factors" class="mt-3 list-disc space-y-2 pl-5 text-sm leading-6 text-slate-300"></ul>
+        </article>
         <div class="astral-method-grid mt-4">
           <div class="astral-method-row">
             <p class="astral-mini-label">Stable sign pattern</p>
@@ -267,7 +268,7 @@ const appData = {
           </div>
         </div>
         <p class="astral-method-note mt-4 text-xs leading-6 text-slate-400">
-          GAIA v2 remains intentionally bounded: no birth time, no birth place, no house system, no transit calculations.
+          GAIA remains intentionally bounded: no birth time, no birth place, no house system, and no transit calculations.
         </p>
       </details>
 
@@ -607,9 +608,9 @@ const appData = {
 
         const modeDescriptions = {
           general:
-            'General reading gives the stable sign architecture: competence, season weather, body register, relation, shadow, ritual.',
+            'General reading stays with season, temperament, relation, pressure, and repair.',
           daily:
-            'Daily horoscope starts from the same sign architecture, then modulates it by Gregorian date, weekday rhythm, and seasonal phase.',
+            'Daily horoscope starts from the same sign architecture, then modulates it through date rhythm and seasonal pressure.',
         };
 
         const buildGeneralView = (profile, sourceText) => {
@@ -617,21 +618,21 @@ const appData = {
           const dayText = daySelect.value;
 
           return {
-            mode: 'General reading',
+            mode: sourceText === 'Date-based sign resolution' ? 'Date-based reading' : 'Direct sign reading',
             source: sourceText,
             modeDescription: modeDescriptions.general,
             sign: profile.sign.name,
-            range: `${profile.sign.dateLabel} - ${profile.sign.element}`,
+            range: `${profile.sign.dateLabel} · ${profile.sign.element}`,
             glyph: profile.sign.glyph,
             summary: `Stable orientation for ${profile.sign.name}: ${profile.sign.competence} carried through ${profile.sign.element.toLowerCase()} seasonality.`,
             message: profile.message,
             labels: {
-              note: 'Core orientation',
-              active: 'What is active',
-              body: 'Body register',
-              social: 'Relational pattern',
-              shadow: 'Shadow to watch',
-              ritual: 'Alignment ritual',
+              note: 'Key note',
+              active: 'Season mood',
+              body: 'Body feeling',
+              social: 'How it moves',
+              shadow: 'Watch for',
+              ritual: 'Small ritual',
               prompt: 'Grounding action',
               guidance: 'Grounded guidance',
             },
@@ -671,7 +672,7 @@ const appData = {
         };
 
         const buildDailyPendingView = (profile, sourceText, reason) => ({
-          mode: 'Daily horoscope',
+          mode: 'Daily reading',
           source: sourceText,
           modeDescription: modeDescriptions.daily,
           sign: profile.sign.name,
@@ -680,14 +681,14 @@ const appData = {
           summary: 'Daily reading is waiting for a valid calendar date.',
           message: reason,
           labels: {
-            note: 'Core orientation',
-            active: 'What is active today',
-            body: 'Body and energy cue',
-            social: 'Relational move',
-            shadow: 'Caution line',
-            ritual: 'Daily alignment ritual',
+            note: 'Key note',
+            active: 'Season mood',
+            body: 'Body feeling',
+            social: 'How it moves',
+            shadow: 'Watch for',
+            ritual: 'Small ritual',
             prompt: 'Grounding action',
-            guidance: "Today's guidance",
+            guidance: 'Grounded guidance',
           },
           values: {
             note: 'No daily modulation applied yet.',
@@ -742,11 +743,11 @@ const appData = {
           const ritualCue = `${ritualLead} ${sign.ritual}`;
 
           return {
-            mode: 'Daily horoscope',
+            mode: 'Daily reading',
             source: sourceText,
             modeDescription: modeDescriptions.daily,
             sign: sign.name,
-            range: `${dayLabel} - ${sign.name} - ${sign.element}`,
+            range: `${dayLabel} · ${sign.name} · ${sign.element}`,
             glyph: sign.glyph,
             summary: `${sign.name} daily weather: ${coreOrientation}`,
             message: [
@@ -755,14 +756,14 @@ const appData = {
               `The practical closing move remains ritual: ${sign.ritual}`,
             ].join(' '),
             labels: {
-              note: 'Core orientation',
-              active: 'What is active today',
-              body: 'Body and energy cue',
-              social: 'Relational move',
-              shadow: 'Caution line',
-              ritual: 'Daily alignment ritual',
+              note: 'Key note',
+              active: 'Season mood',
+              body: 'Body feeling',
+              social: 'How it moves',
+              shadow: 'Watch for',
+              ritual: 'Small ritual',
               prompt: 'Grounding action',
-              guidance: "Today's guidance",
+              guidance: 'Grounded guidance',
             },
             values: {
               note: coreOrientation,
@@ -970,14 +971,24 @@ const appData = {
             lastDirectSignSlug = sign;
           }
 
-          const month = Number(params.get('month'));
-          const day = Number(params.get('day'));
-          if (Number.isInteger(month) && Number.isInteger(day)) {
-            applyMonthDay(month, day);
+          const monthParam = params.get('month');
+          const dayParam = params.get('day');
+          if (monthParam !== null && dayParam !== null) {
+            const month = Number(monthParam);
+            const day = Number(dayParam);
+
+            if (Number.isInteger(month) && Number.isInteger(day)) {
+              applyMonthDay(month, day);
+            }
           }
 
-          const parsedDate = parseDateInputValue(params.get('date'));
-          dailyDateInput.value = parsedDate ? parsedDate.isoDate : '';
+          const dateParam = params.get('date');
+          const parsedDate = dateParam ? parseDateInputValue(dateParam) : null;
+          if (parsedDate) {
+            dailyDateInput.value = parsedDate.isoDate;
+          } else if (dateParam !== null) {
+            dailyDateInput.value = '';
+          }
 
           const entry = params.get('entry');
           if (entry === 'date') {
@@ -1183,10 +1194,13 @@ const appData = {
   .astral-result-panel {
     position: relative;
     overflow: hidden;
+    border: 1px solid rgba(36, 27, 23, 0.12);
     background:
-      radial-gradient(circle at top right, rgba(204, 153, 103, 0.1), transparent 34%),
-      radial-gradient(circle at 12% 88%, rgba(95, 127, 174, 0.1), transparent 42%),
-      linear-gradient(180deg, rgba(8, 11, 16, 0.88) 0%, rgba(8, 11, 16, 0.72) 100%);
+      radial-gradient(circle at top right, rgba(127, 83, 178, 0.11), transparent 34%),
+      radial-gradient(circle at 12% 88%, rgba(92, 110, 198, 0.08), transparent 42%),
+      linear-gradient(180deg, rgba(251, 246, 239, 0.86) 0%, rgba(247, 241, 233, 0.72) 100%);
+    box-shadow: 0 18px 40px rgba(10, 9, 12, 0.18);
+    backdrop-filter: blur(12px);
   }
 
   .astral-control-panel::before,
@@ -1197,8 +1211,38 @@ const appData = {
     width: 14rem;
     height: 14rem;
     border-radius: 999px;
-    background: radial-gradient(circle, rgba(204, 153, 103, 0.16) 0%, rgba(204, 153, 103, 0) 72%);
+    background: radial-gradient(circle, rgba(92, 110, 198, 0.08) 0%, rgba(92, 110, 198, 0) 72%);
     pointer-events: none;
+  }
+
+  .astral-control-panel :is(h2, h3),
+  .astral-result-panel :is(h2, h3) {
+    color: #241b17;
+  }
+
+  .astral-control-panel .text-slate-100,
+  .astral-result-panel .text-slate-100 {
+    color: #241b17;
+  }
+
+  .astral-control-panel .text-slate-200,
+  .astral-result-panel .text-slate-200 {
+    color: rgba(36, 27, 23, 0.84);
+  }
+
+  .astral-control-panel .text-slate-300,
+  .astral-result-panel .text-slate-300 {
+    color: rgba(48, 37, 33, 0.72);
+  }
+
+  .astral-control-panel .text-slate-400,
+  .astral-result-panel .text-slate-400 {
+    color: rgba(73, 60, 53, 0.62);
+  }
+
+  .astral-control-panel .text-slate-500,
+  .astral-result-panel .text-slate-500 {
+    color: rgba(73, 60, 53, 0.54);
   }
 
   .astral-mode-toggle {
@@ -1211,7 +1255,7 @@ const appData = {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(36, 27, 23, 0.16);
     border-radius: 999px;
     padding: 0.58rem 0.9rem;
     font-family: var(--font-mono);
@@ -1219,17 +1263,17 @@ const appData = {
     font-weight: 700;
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: var(--color-moon);
-    background: rgba(255, 255, 255, 0.03);
-    transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+    color: #2a211d;
+    background: rgba(255, 255, 255, 0.34);
+    transition: border-color 160ms ease, background 160ms ease, transform 160ms ease, box-shadow 160ms ease;
   }
 
   .astral-mode-button[aria-pressed='true'] {
-    border-color: rgba(204, 153, 103, 0.56);
+    border-color: rgba(127, 83, 178, 0.34);
     background:
-      linear-gradient(180deg, rgba(8, 11, 16, 0.96), rgba(8, 11, 16, 0.82)),
-      linear-gradient(120deg, rgba(204, 153, 103, 0.14), rgba(95, 127, 174, 0.08));
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(204, 153, 103, 0.14);
+      linear-gradient(180deg, rgba(251, 246, 239, 0.96), rgba(244, 235, 226, 0.84)),
+      linear-gradient(120deg, rgba(127, 83, 178, 0.12), rgba(92, 110, 198, 0.06));
+    box-shadow: 0 10px 24px rgba(31, 25, 28, 0.08), 0 0 0 1px rgba(127, 83, 178, 0.08);
   }
 
   .astral-mode-button:hover {
@@ -1237,9 +1281,9 @@ const appData = {
   }
 
   .astral-flow-note {
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid rgba(36, 27, 23, 0.12);
     padding-top: 0.8rem;
-    color: var(--color-slate-300);
+    color: rgba(48, 37, 33, 0.72);
     font-size: 0.92rem;
     line-height: 1.65;
   }
@@ -1256,7 +1300,7 @@ const appData = {
   .astral-guidance-strip,
   .astral-prompt-card,
   .astral-method-row {
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid rgba(36, 27, 23, 0.12);
     padding: 1rem 0;
   }
 
@@ -1273,9 +1317,9 @@ const appData = {
   .astral-select,
   .astral-date-input {
     width: 100%;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    border-bottom: 1px solid rgba(36, 27, 23, 0.16);
     background: transparent;
-    color: var(--color-moon);
+    color: #241b17;
     padding: 0.95rem 0;
     font-size: 0.96rem;
     line-height: 1.5;
@@ -1291,8 +1335,8 @@ const appData = {
   .astral-select:focus-visible,
   .astral-date-input:focus-visible {
     outline: none;
-    border-color: rgba(204, 153, 103, 0.54);
-    box-shadow: 0 3px 0 0 rgba(204, 153, 103, 0.16);
+    border-color: rgba(127, 83, 178, 0.5);
+    box-shadow: 0 3px 0 0 rgba(127, 83, 178, 0.12);
   }
 
   .astral-link-row {
@@ -1301,12 +1345,44 @@ const appData = {
     gap: 0.6rem;
   }
 
+  .astral-control-panel :is(.button-primary, .button-secondary),
+  .astral-result-panel :is(.button-primary, .button-secondary) {
+    box-shadow: none;
+  }
+
+  .astral-control-panel .button-primary,
+  .astral-result-panel .button-primary {
+    border-color: #241b17;
+    background: #241b17;
+    color: #fbf6ef;
+  }
+
+  .astral-control-panel .button-primary:hover,
+  .astral-result-panel .button-primary:hover {
+    background: #161112;
+    border-color: #161112;
+  }
+
+  .astral-control-panel .button-secondary,
+  .astral-result-panel .button-secondary {
+    border-color: rgba(36, 27, 23, 0.16);
+    background: rgba(255, 255, 255, 0.34);
+    color: #2a211d;
+  }
+
+  .astral-control-panel .button-secondary:hover,
+  .astral-result-panel .button-secondary:hover {
+    border-color: rgba(127, 83, 178, 0.28);
+    background: rgba(255, 255, 255, 0.52);
+    color: #241b17;
+  }
+
   .astral-result-toolbar {
     display: flex;
     gap: 0.8rem;
     justify-content: space-between;
     align-items: start;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid rgba(36, 27, 23, 0.12);
     padding-bottom: 0.8rem;
   }
 
@@ -1320,7 +1396,7 @@ const appData = {
   .astral-status-text {
     min-height: 1.4rem;
     margin-top: 0.5rem;
-    color: var(--color-slate-300);
+    color: rgba(73, 60, 53, 0.62);
     font-size: 0.74rem;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -1332,18 +1408,17 @@ const appData = {
     width: 5.3rem;
     height: 5.3rem;
     border-radius: 1.2rem;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(36, 27, 23, 0.1);
     background:
-      radial-gradient(circle at center, rgba(204, 153, 103, 0.22), rgba(204, 153, 103, 0) 68%),
-      radial-gradient(circle at 24% 16%, rgba(95, 127, 174, 0.14), rgba(95, 127, 174, 0) 62%),
-      linear-gradient(180deg, rgba(8, 11, 16, 0.94), rgba(8, 11, 16, 0.74));
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      radial-gradient(circle at center, rgba(127, 83, 178, 0.14), rgba(127, 83, 178, 0) 65%),
+      linear-gradient(180deg, rgba(251, 246, 239, 0.92), rgba(251, 246, 239, 0.42));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.36);
   }
 
   .astral-result-glyph {
     font-size: 2.4rem;
     line-height: 1;
-    color: #cc9967;
+    color: var(--color-accent);
   }
 
   .astral-guidance-strip ul {
@@ -1352,7 +1427,7 @@ const appData = {
   }
 
   .astral-method-details {
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid rgba(36, 27, 23, 0.12);
     padding-top: 0.8rem;
   }
 
@@ -1366,8 +1441,13 @@ const appData = {
     color: #cc9967;
   }
 
+  .astral-method-grid {
+    display: grid;
+    gap: 0.25rem;
+  }
+
   .astral-method-note {
-    border-top: 1px dashed rgba(255, 255, 255, 0.08);
+    border-top: 1px dashed rgba(36, 27, 23, 0.12);
     padding-top: 0.7rem;
   }
 
