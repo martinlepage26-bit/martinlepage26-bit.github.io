@@ -46,238 +46,236 @@ const appData = {
 };
 ---
 
-<div class="astral-app-shell" id="gaia-app-shell">
-  <div class="grid gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-start">
-    <section class="veil-panel astral-control-panel">
-      <p class="eyebrow">Choose your entry</p>
-      <h2 class="mt-4 text-[1.56rem] leading-tight md:text-[1.82rem]">Generate a grounded seasonal reading.</h2>
-      <p class="mt-4 max-w-xl text-base leading-7 text-slate-200">
-        This app reads signs the way the book does: as earthly weather, body tone, social motion, pressure, and repair.
-        Choose a stable sign reading or switch to a daily reading built from the same seasonal grammar.
-      </p>
+<div class="gaia-surface" id="gaia-app-shell" style={`--gaia-sign-color: ${initialProfile.sign.color};`}>
+  <div class="gaia-background" aria-hidden="true"></div>
 
-      <div class="astral-mode-kicker mt-8">
-        <p class="astral-mini-label">Reading type</p>
-      </div>
-      <div class="astral-mode-toggle mt-4" role="group" aria-label="Reading modes">
-        <button id="astral-mode-general" type="button" class="astral-mode-button" data-mode="general" aria-pressed="true">
-          General reading
-        </button>
-        <button id="astral-mode-daily" type="button" class="astral-mode-button" data-mode="daily" aria-pressed="false">
-          Daily horoscope
-        </button>
-      </div>
-      <p id="astral-mode-description" class="astral-flow-note mt-4">
-        General reading stays with season, temperament, relation, pressure, and repair.
-      </p>
+  <header class="gaia-header">
+    <p class="gaia-kicker">Breath of the Astral Year</p>
+    <h2 class="gaia-wordmark">GAIA</h2>
+    <p class="gaia-subtitle">Earth-based reading surface</p>
+  </header>
 
-      <div id="astral-general-controls" class="astral-control-group mt-8 grid gap-5">
-        <div class="astral-input-card">
-          <label class="astral-label" for="astral-sign-select">By sign</label>
-          <select id="astral-sign-select" class="astral-select">
-            {signs.map((sign) => (
-              <option value={sign.slug}>{sign.name} · {sign.dateLabel}</option>
-            ))}
-          </select>
-          <p class="mt-3 text-sm leading-6 text-slate-400">
-            Use this when you already know the sign you want the reading built around.
-          </p>
-        </div>
+  <main class="gaia-main">
+    <div class="gaia-mode-toggle" role="group" aria-label="Reading modes">
+      <button id="astral-mode-general" type="button" class="gaia-mode-button" aria-pressed="true">
+        General Reading
+      </button>
+      <button id="astral-mode-daily" type="button" class="gaia-mode-button" aria-pressed="false">
+        Daily Horoscope
+      </button>
+    </div>
+    <p id="astral-mode-description" class="gaia-mode-note">
+      General reading stays with season, temperament, relation, pressure, and repair.
+    </p>
 
-        <div class="astral-input-card">
-          <label class="astral-label" for="astral-month-select">By month and day</label>
-          <div class="mt-3 grid gap-3 sm:grid-cols-[minmax(0,1fr)_120px]">
-            <select id="astral-month-select" class="astral-select">
-              {monthOptions.map((month) => (
-                <option value={month.value}>{month.label}</option>
-              ))}
-            </select>
-            <select id="astral-day-select" class="astral-select">
-              {Array.from({ length: monthOptions[0].days }, (_, index) => index + 1).map((day) => (
-                <option value={day}>{day}</option>
-              ))}
-            </select>
-          </div>
-          <div class="mt-4 flex flex-wrap gap-3">
-            <button id="astral-date-submit" type="button" class="button-primary">Resolve sign by date</button>
-            <button id="astral-general-today" type="button" class="button-secondary">Use today's sign</button>
-            <button id="astral-date-reset" type="button" class="button-secondary">Return to sign picker</button>
-          </div>
-          <p id="astral-entry-mode" class="mt-3 text-sm leading-6 text-slate-400">
-            Currently showing the direct sign reading.
-          </p>
-          <p class="mt-2 text-xs leading-6 text-slate-500">
-            Month/day sign resolution is seasonal and year-agnostic. Daily horoscope uses full Gregorian date validation.
-          </p>
-        </div>
-      </div>
-
-      <div id="astral-daily-controls" class="astral-control-group mt-8 grid gap-5" hidden>
-        <div class="astral-input-card">
-          <label class="astral-label" for="astral-daily-sign-select">Daily sign base</label>
-          <select id="astral-daily-sign-select" class="astral-select">
-            {signs.map((sign) => (
-              <option value={sign.slug}>{sign.name} · {sign.dateLabel}</option>
-            ))}
-          </select>
-          <p class="mt-3 text-sm leading-6 text-slate-400">
-            Keep this on your baseline sign, or resolve it from the selected date.
-          </p>
-        </div>
-
-        <div class="astral-input-card">
-          <label class="astral-label" for="astral-daily-date">Forecast date</label>
-          <input id="astral-daily-date" type="date" class="astral-date-input" />
-          <div class="mt-4 flex flex-wrap gap-3">
-            <button id="astral-daily-generate" type="button" class="button-primary">Generate daily horoscope</button>
-            <button id="astral-daily-resolve-sign" type="button" class="button-secondary">Use sign from date</button>
-            <button id="astral-daily-today" type="button" class="button-secondary">Use today</button>
-          </div>
-          <p id="astral-daily-mode" class="mt-3 text-sm leading-6 text-slate-400">
-            Daily reading combines stable sign pattern with date and weekday modulation.
-          </p>
-        </div>
-      </div>
-
-      <div class="mt-8 grid gap-4 sm:grid-cols-2">
-        <div class="astral-mini-card">
-          <p class="astral-mini-label">Method</p>
-          <p class="mt-2 text-sm leading-6 text-slate-200">
-            Not planetary prediction. The reading stays with season, temperament, relation, and embodied rhythm.
-          </p>
-        </div>
-        <div class="astral-mini-card">
-          <p class="astral-mini-label">Output</p>
-          <p class="mt-2 text-sm leading-6 text-slate-200">
-            Each result gives a key note, a seasonal pressure, a caution, and a ritual small enough to enact.
-          </p>
-        </div>
-      </div>
-
-      <div class="astral-link-row mt-8">
-        <a class="button-secondary" href="/gaia/book/">Read the book frame</a>
-        <a class="button-secondary" href="/gaia/glossary/">Open glossary terms</a>
+    <section class="gaia-sign-section">
+      <p class="gaia-section-label">Select your sign</p>
+      <div class="gaia-sign-grid">
+        {signs.map((sign) => (
+          <button
+            type="button"
+            class="gaia-sign-button"
+            data-gaia-sign
+            data-sign={sign.slug}
+            aria-pressed={sign.slug === initialSign.slug ? 'true' : 'false'}
+            style={`--sign-color: ${sign.color};`}
+          >
+            <span class="gaia-sign-symbol">{sign.glyph}</span>
+            <span class="gaia-sign-name">{sign.name}</span>
+          </button>
+        ))}
       </div>
     </section>
 
-    <aside class="veil-panel astral-result-panel" aria-live="polite" aria-atomic="true">
-      <div class="astral-result-toolbar">
+    <section id="gaia-daily-controls" class="gaia-date-card" hidden>
+      <p class="gaia-section-label">Forecast date</p>
+      <div class="gaia-date-row">
+        <input id="astral-daily-date" type="date" class="gaia-date-input" />
+        <button id="astral-daily-resolve-sign" type="button" class="gaia-inline-button">Use sign from date</button>
+        <button id="astral-daily-today" type="button" class="gaia-inline-button gaia-inline-button-accent">Today</button>
+      </div>
+      <p id="astral-daily-mode" class="gaia-helper-text">
+        Daily reading combines stable sign pattern with date and weekday modulation.
+      </p>
+    </section>
+
+    <div class="gaia-hidden-inputs" aria-hidden="true">
+      <select id="astral-sign-select">
+        {signs.map((sign) => (
+          <option value={sign.slug}>{sign.name} · {sign.dateLabel}</option>
+        ))}
+      </select>
+      <select id="astral-daily-sign-select">
+        {signs.map((sign) => (
+          <option value={sign.slug}>{sign.name} · {sign.dateLabel}</option>
+        ))}
+      </select>
+      <select id="astral-month-select">
+        {monthOptions.map((month) => (
+          <option value={month.value}>{month.label}</option>
+        ))}
+      </select>
+      <select id="astral-day-select">
+        {Array.from({ length: monthOptions[0].days }, (_, index) => index + 1).map((day) => (
+          <option value={day}>{day}</option>
+        ))}
+      </select>
+    </div>
+
+    <section class="gaia-preview-card">
+      <div class="gaia-preview-header">
+        <div class="gaia-preview-glyph" id="gaia-preview-glyph">{initialProfile.sign.glyph}</div>
+        <div class="gaia-preview-copy">
+          <div class="gaia-preview-title-row">
+            <h3 id="gaia-preview-sign" class="gaia-preview-sign">{initialProfile.sign.name}</h3>
+            <span id="gaia-preview-element" class="gaia-preview-element">{initialProfile.sign.element}</span>
+          </div>
+          <p id="gaia-preview-range" class="gaia-preview-range">{initialProfile.sign.dateLabel}</p>
+        </div>
+      </div>
+
+      <div class="gaia-preview-grid">
+        <article>
+          <p class="gaia-section-label">Competence</p>
+          <p id="gaia-preview-competence" class="gaia-preview-detail">{initialProfile.sign.competence}</p>
+        </article>
+        <article>
+          <p class="gaia-section-label">Civic theme</p>
+          <p id="gaia-preview-civic" class="gaia-preview-detail">{initialProfile.sign.civicTheme}</p>
+        </article>
+        <article>
+          <p class="gaia-section-label">Body</p>
+          <p id="gaia-preview-body" class="gaia-preview-detail">{initialProfile.sign.bodyRegister}</p>
+        </article>
+        <article>
+          <p class="gaia-section-label">Shadow</p>
+          <p id="gaia-preview-shadow" class="gaia-preview-detail">{initialProfile.sign.shadow}</p>
+        </article>
+      </div>
+
+      <div class="gaia-preview-ritual">
+        <p class="gaia-section-label">Ritual</p>
+        <p id="gaia-preview-ritual" class="gaia-preview-ritual-text">{initialProfile.sign.ritual}</p>
+      </div>
+    </section>
+
+    <p id="astral-entry-mode" class="gaia-helper-text">Currently showing the direct sign reading.</p>
+
+    <button id="gaia-generate" type="button" class="gaia-generate-button">
+      Generate {initialProfile.sign.name} Reading
+    </button>
+
+    <section id="gaia-output" class="gaia-output" hidden>
+      <div class="gaia-output-toolbar">
         <div>
-          <p id="astral-result-mode" class="astral-mini-label">Direct sign reading</p>
-          <p id="astral-result-source" class="mt-2 text-xs uppercase tracking-[0.15em] text-slate-400">
-            Stable sign profile
-          </p>
+          <p id="astral-result-mode" class="gaia-section-label">Direct sign reading</p>
+          <p id="astral-result-source" class="gaia-output-source">Stable sign profile</p>
         </div>
-        <div class="astral-toolbar-actions">
-          <button id="astral-share" type="button" class="button-secondary">Copy share link</button>
-          <button id="astral-reset" type="button" class="button-secondary">Reset</button>
-        </div>
-      </div>
-      <p id="astral-share-status" class="astral-status-text" aria-live="polite"></p>
-
-      <div class="mt-4 flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <h3 id="astral-result-sign" class="text-[1.52rem] leading-tight md:text-[1.92rem]">{initialProfile.sign.name}</h3>
-          <p id="astral-result-range" class="mt-2 text-sm uppercase tracking-[0.18em] text-slate-400">
-            {initialProfile.sign.dateLabel} · {initialProfile.sign.element}
-          </p>
-        </div>
-        <div class="astral-glyph-orbit">
-          <span id="astral-result-glyph" class="astral-result-glyph">{initialProfile.sign.glyph}</span>
+        <div class="gaia-output-actions">
+          <button id="astral-share" type="button" class="gaia-inline-button">Copy share link</button>
+          <button id="astral-reset" type="button" class="gaia-inline-button">Reset</button>
         </div>
       </div>
 
-      <p id="astral-result-summary" class="mt-6 text-lg leading-8 text-slate-100">{initialProfile.summary}</p>
-      <p id="astral-result-message" class="mt-4 text-base leading-7 text-slate-300">{initialProfile.message}</p>
+      <p id="astral-share-status" class="gaia-share-status" aria-live="polite"></p>
+      <p id="astral-result-summary" class="gaia-output-summary">{initialProfile.summary}</p>
+      <p id="astral-result-message" class="gaia-output-message">{initialProfile.message}</p>
 
-      <div class="mt-8 grid gap-4 md:grid-cols-2">
-        <article class="astral-reading-card">
-          <p id="astral-label-note" class="astral-mini-label">Key note</p>
-          <p id="astral-result-note" class="mt-2 text-base leading-7 text-slate-200">{initialProfile.keyNote}</p>
+      <div class="gaia-reading-grid">
+        <article class="gaia-reading-card">
+          <p id="astral-label-note" class="gaia-section-label">Key note</p>
+          <p id="astral-result-note" class="gaia-reading-copy">{initialProfile.keyNote}</p>
         </article>
-        <article class="astral-reading-card">
-          <p id="astral-label-active" class="astral-mini-label">Season mood</p>
-          <p id="astral-result-active" class="mt-2 text-base leading-7 text-slate-200">{initialProfile.seasonMood}</p>
+        <article class="gaia-reading-card">
+          <p id="astral-label-active" class="gaia-section-label">Season mood</p>
+          <p id="astral-result-active" class="gaia-reading-copy">{initialProfile.seasonMood}</p>
         </article>
-        <article class="astral-reading-card">
-          <p id="astral-label-body" class="astral-mini-label">Body feeling</p>
-          <p id="astral-result-body" class="mt-2 text-base leading-7 text-slate-200">{initialProfile.bodyFeeling}</p>
+        <article class="gaia-reading-card">
+          <p id="astral-label-body" class="gaia-section-label">Body feeling</p>
+          <p id="astral-result-body" class="gaia-reading-copy">{initialProfile.bodyFeeling}</p>
         </article>
-        <article class="astral-reading-card">
-          <p id="astral-label-social" class="astral-mini-label">How it moves</p>
-          <p id="astral-result-social" class="mt-2 text-base leading-7 text-slate-200">{initialProfile.movementPattern}</p>
+        <article class="gaia-reading-card">
+          <p id="astral-label-social" class="gaia-section-label">How it moves</p>
+          <p id="astral-result-social" class="gaia-reading-copy">{initialProfile.movementPattern}</p>
         </article>
       </div>
 
-      <div class="mt-4 grid gap-4 md:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
-        <article class="astral-shadow-card">
-          <p id="astral-label-shadow" class="astral-mini-label">Watch for</p>
-          <p id="astral-result-shadow" class="mt-2 text-sm leading-6 text-slate-200">{initialProfile.shadow}</p>
+      <div class="gaia-reading-split">
+        <article class="gaia-reading-card gaia-reading-shadow">
+          <p id="astral-label-shadow" class="gaia-section-label">Watch for</p>
+          <p id="astral-result-shadow" class="gaia-reading-copy gaia-reading-copy-small">{initialProfile.shadow}</p>
         </article>
-        <article class="astral-ritual-card">
-          <p id="astral-label-ritual" class="astral-mini-label">Small ritual</p>
-          <p id="astral-result-ritual" class="mt-2 text-base leading-7 text-slate-100">{initialProfile.ritual}</p>
+        <article class="gaia-reading-card gaia-reading-ritual">
+          <p id="astral-label-ritual" class="gaia-section-label">Small ritual</p>
+          <p id="astral-result-ritual" class="gaia-reading-copy gaia-reading-copy-ritual">{initialProfile.ritual}</p>
         </article>
       </div>
 
-      <article class="astral-prompt-card mt-6">
-        <p id="astral-label-prompt" class="astral-mini-label">Grounding action</p>
-        <p id="astral-result-prompt" class="mt-2 text-base leading-7 text-slate-200">
+      <article class="gaia-reading-card gaia-reading-prompt">
+        <p id="astral-label-prompt" class="gaia-section-label">Grounding action</p>
+        <p id="astral-result-prompt" class="gaia-reading-copy">
           Name one concrete action that practices {initialProfile.keyNote.toLowerCase()} in your real day.
         </p>
       </article>
 
-      <div class="mt-6 astral-guidance-strip">
-        <p id="astral-label-guidance" class="astral-mini-label">Grounded guidance</p>
-        <ul id="astral-result-guidance" class="mt-3 space-y-2 text-sm leading-6 text-slate-200">
+      <article class="gaia-reading-card gaia-reading-guidance">
+        <p id="astral-label-guidance" class="gaia-section-label">Grounded guidance</p>
+        <ul id="astral-result-guidance" class="gaia-guidance-list">
           {initialProfile.guidance.map((line) => (
             <li>{line}</li>
           ))}
         </ul>
-      </div>
+      </article>
 
-      <details class="astral-method-details mt-6">
+      <details class="gaia-method-details">
         <summary>Method and reading details</summary>
-        <div class="mt-4 grid gap-4 md:grid-cols-2">
-          <article class="astral-reading-card">
-            <p class="astral-mini-label">Stable baseline</p>
-            <p id="astral-contract-stable" class="mt-2 text-sm leading-6 text-slate-200"></p>
-          </article>
-          <article class="astral-reading-card">
-            <p class="astral-mini-label">Daily modulation</p>
-            <p id="astral-contract-daily" class="mt-2 text-sm leading-6 text-slate-200"></p>
-          </article>
-        </div>
-        <article class="astral-reading-card mt-4">
-          <p class="astral-mini-label">Current reading contract</p>
-          <p id="astral-contract-status" class="mt-2 text-sm leading-6 text-slate-200"></p>
-          <ul id="astral-contract-factors" class="mt-3 list-disc space-y-2 pl-5 text-sm leading-6 text-slate-300"></ul>
-        </article>
-        <div class="astral-method-grid mt-4">
-          <div class="astral-method-row">
-            <p class="astral-mini-label">Stable sign pattern</p>
-            <p id="astral-method-stable" class="mt-2 text-sm leading-6 text-slate-200"></p>
-          </div>
-          <div class="astral-method-row">
-            <p class="astral-mini-label">Date modulation</p>
-            <p id="astral-method-daily" class="mt-2 text-sm leading-6 text-slate-200"></p>
-          </div>
-          <div class="astral-method-row">
-            <p class="astral-mini-label">Input path used</p>
-            <p id="astral-method-input" class="mt-2 text-sm leading-6 text-slate-200"></p>
-          </div>
-        </div>
-        <p class="astral-method-note mt-4 text-xs leading-6 text-slate-400">
-          GAIA remains intentionally bounded: no birth time, no birth place, no house system, and no transit calculations.
-        </p>
-      </details>
 
-      <div class="astral-link-row mt-8">
-        <a class="button-secondary" href="/gaia/glossary/">Glossary reference</a>
-        <a class="button-secondary" href="/gaia/book/">Book context</a>
+        <div class="gaia-reading-grid gaia-method-grid">
+          <article class="gaia-reading-card">
+            <p class="gaia-section-label">Stable baseline</p>
+            <p id="astral-contract-stable" class="gaia-reading-copy"></p>
+          </article>
+          <article class="gaia-reading-card">
+            <p class="gaia-section-label">Daily modulation</p>
+            <p id="astral-contract-daily" class="gaia-reading-copy"></p>
+          </article>
+        </div>
+
+        <article class="gaia-reading-card">
+          <p class="gaia-section-label">Current reading contract</p>
+          <p id="astral-contract-status" class="gaia-reading-copy gaia-reading-copy-small"></p>
+          <ul id="astral-contract-factors" class="gaia-guidance-list gaia-factors-list"></ul>
+        </article>
+
+        <div class="gaia-method-rows">
+          <article class="gaia-reading-card">
+            <p class="gaia-section-label">Stable sign pattern</p>
+            <p id="astral-method-stable" class="gaia-reading-copy gaia-reading-copy-small"></p>
+          </article>
+          <article class="gaia-reading-card">
+            <p class="gaia-section-label">Date modulation</p>
+            <p id="astral-method-daily" class="gaia-reading-copy gaia-reading-copy-small"></p>
+          </article>
+          <article class="gaia-reading-card">
+            <p class="gaia-section-label">Input path used</p>
+            <p id="astral-method-input" class="gaia-reading-copy gaia-reading-copy-small"></p>
+          </article>
+        </div>
+      </details>
+    </section>
+
+    <footer class="gaia-footer">
+      <div class="gaia-footer-links">
+        <a href="/gaia/book/">Book frame</a>
+        <a href="/gaia/glossary/">Glossary</a>
       </div>
-    </aside>
-  </div>
+      <div class="gaia-footer-meta">
+        GAIA · Martin Lepage, PhD ·
+        <a href="https://martin.govern-ai.ca/gaia/" target="_blank" rel="noreferrer">martin.govern-ai.ca/gaia</a>
+      </div>
+      <div class="gaia-footer-note">No natal chart · No transits · Earth-bound sign grammar only</div>
+    </footer>
+  </main>
 
   <script is:inline type="application/json" id="astral-app-data" set:html={JSON.stringify(appData)}></script>
   <script is:inline>
@@ -291,29 +289,33 @@ const appData = {
       const signOrder = data.signOrder || [];
 
       const requiredIds = [
+        'gaia-app-shell',
         'astral-sign-select',
+        'astral-daily-sign-select',
         'astral-month-select',
         'astral-day-select',
-        'astral-date-submit',
-        'astral-general-today',
-        'astral-date-reset',
-        'astral-daily-sign-select',
         'astral-daily-date',
-        'astral-daily-generate',
         'astral-daily-resolve-sign',
         'astral-daily-today',
         'astral-mode-general',
         'astral-mode-daily',
-        'astral-general-controls',
-        'astral-daily-controls',
         'astral-mode-description',
-        'astral-result-mode',
-        'astral-result-source',
+        'gaia-daily-controls',
+        'gaia-generate',
+        'gaia-output',
+        'gaia-preview-glyph',
+        'gaia-preview-sign',
+        'gaia-preview-element',
+        'gaia-preview-range',
+        'gaia-preview-competence',
+        'gaia-preview-civic',
+        'gaia-preview-body',
+        'gaia-preview-shadow',
+        'gaia-preview-ritual',
         'astral-entry-mode',
         'astral-daily-mode',
-        'astral-result-sign',
-        'astral-result-range',
-        'astral-result-glyph',
+        'astral-result-mode',
+        'astral-result-source',
         'astral-result-summary',
         'astral-result-message',
         'astral-contract-stable',
@@ -350,32 +352,35 @@ const appData = {
       if (missing.length > 0) {
         console.warn('[GAIA] Missing expected DOM nodes:', missing.join(', '));
       } else {
+        const shell = elements['gaia-app-shell'];
         const signSelect = elements['astral-sign-select'];
+        const dailySignSelect = elements['astral-daily-sign-select'];
         const monthSelect = elements['astral-month-select'];
         const daySelect = elements['astral-day-select'];
-        const submitDateButton = elements['astral-date-submit'];
-        const generalTodayButton = elements['astral-general-today'];
-        const resetDateButton = elements['astral-date-reset'];
-
-        const dailySignSelect = elements['astral-daily-sign-select'];
         const dailyDateInput = elements['astral-daily-date'];
-        const dailyGenerateButton = elements['astral-daily-generate'];
         const dailyResolveSignButton = elements['astral-daily-resolve-sign'];
         const dailyTodayButton = elements['astral-daily-today'];
-
         const modeGeneralButton = elements['astral-mode-general'];
         const modeDailyButton = elements['astral-mode-daily'];
-        const generalControls = elements['astral-general-controls'];
-        const dailyControls = elements['astral-daily-controls'];
         const modeDescription = elements['astral-mode-description'];
+        const dailyControls = elements['gaia-daily-controls'];
+        const generateButton = elements['gaia-generate'];
+        const output = elements['gaia-output'];
 
-        const modeLabel = elements['astral-result-mode'];
-        const sourceLabel = elements['astral-result-source'];
+        const previewGlyph = elements['gaia-preview-glyph'];
+        const previewSign = elements['gaia-preview-sign'];
+        const previewElement = elements['gaia-preview-element'];
+        const previewRange = elements['gaia-preview-range'];
+        const previewCompetence = elements['gaia-preview-competence'];
+        const previewCivic = elements['gaia-preview-civic'];
+        const previewBody = elements['gaia-preview-body'];
+        const previewShadow = elements['gaia-preview-shadow'];
+        const previewRitual = elements['gaia-preview-ritual'];
+
         const entryMode = elements['astral-entry-mode'];
         const dailyMode = elements['astral-daily-mode'];
-        const signName = elements['astral-result-sign'];
-        const signRange = elements['astral-result-range'];
-        const signGlyph = elements['astral-result-glyph'];
+        const modeLabel = elements['astral-result-mode'];
+        const sourceLabel = elements['astral-result-source'];
         const summary = elements['astral-result-summary'];
         const message = elements['astral-result-message'];
         const contractStable = elements['astral-contract-stable'];
@@ -390,7 +395,6 @@ const appData = {
         const ritual = elements['astral-result-ritual'];
         const prompt = elements['astral-result-prompt'];
         const guidance = elements['astral-result-guidance'];
-
         const labelNote = elements['astral-label-note'];
         const labelActive = elements['astral-label-active'];
         const labelBody = elements['astral-label-body'];
@@ -399,17 +403,15 @@ const appData = {
         const labelRitual = elements['astral-label-ritual'];
         const labelPrompt = elements['astral-label-prompt'];
         const labelGuidance = elements['astral-label-guidance'];
-
         const methodStable = elements['astral-method-stable'];
         const methodDaily = elements['astral-method-daily'];
         const methodInput = elements['astral-method-input'];
-
         const shareButton = elements['astral-share'];
         const resetButton = elements['astral-reset'];
         const shareStatus = elements['astral-share-status'];
+        const signButtons = Array.from(document.querySelectorAll('[data-gaia-sign]'));
 
         const dayMs = 24 * 60 * 60 * 1000;
-
         const dailyPulseFrames = [
           'The day opens with ignition pressure.',
           'The day asks for steadier pacing.',
@@ -419,14 +421,12 @@ const appData = {
           'The day stretches your horizon of meaning.',
           'The day tests boundaries before giving clarity.',
         ];
-
         const dailyTimingFrames = [
           'Morning favors naming direction before momentum takes over.',
           'Midday favors practical adjustments over declarations.',
-          'Late day favors repair and relational follow-up.',
+          'Late day favors repair and relational follow-through.',
           'Evening favors ritual closure and grounding.',
         ];
-
         const dailySocialFrames = [
           'Move one exchange from abstract to concrete',
           'Name the hidden agreement before acting',
@@ -434,7 +434,6 @@ const appData = {
           'Protect the pace that keeps trust intact',
           'Keep language precise and accountable',
         ];
-
         const dailyCautionFrames = [
           'Do not confuse velocity with direction.',
           'Do not over-interpret noise as signal.',
@@ -442,7 +441,6 @@ const appData = {
           'Do not perform certainty when repair is needed.',
           'Do not hide in abstraction when action is possible.',
         ];
-
         const dailyRitualFrames = [
           'Keep the action small, embodied, and repeatable.',
           'Anchor the day in one concrete adjustment.',
@@ -453,14 +451,14 @@ const appData = {
         const hasSignSlug = (slug) => Object.prototype.hasOwnProperty.call(profiles, slug);
         const firstProfile = profiles[Object.keys(profiles)[0]];
         const signBySlug = (slug) => (hasSignSlug(slug) ? profiles[slug] : firstProfile);
-
-        // Daily modulation uses one consistent Gregorian basis (UTC civil date) for parsing, weekday, and day-of-year.
+        const validMode = (mode) => mode === 'general' || mode === 'daily';
         const buildUtcDate = (year, month, day) => new Date(Date.UTC(year, month - 1, day));
 
         const isValidGregorianDate = (year, month, day) => {
           if (!Number.isInteger(year) || !Number.isInteger(month) || !Number.isInteger(day)) {
             return false;
           }
+
           const date = buildUtcDate(year, month, day);
           return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
         };
@@ -493,6 +491,7 @@ const appData = {
           if (!isValidGregorianDate(year, month, day)) {
             return `${year}-${month}-${day}`;
           }
+
           const date = buildUtcDate(year, month, day);
           return new Intl.DateTimeFormat('en-US', {
             timeZone: 'UTC',
@@ -548,21 +547,8 @@ const appData = {
         };
 
         const resolveSignSlugByMonthDay = (month, day) => dateLookup[`${month}-${day}`];
-
-        const resolveTodaySignSlug = () => {
-          const now = new Date();
-          const key = `${now.getMonth() + 1}-${now.getDate()}`;
-          return dateLookup[key] || signOrder[0];
-        };
-
-        const setGeneralFromToday = () => {
-          const now = new Date();
-          const normalized = applyMonthDay(now.getMonth() + 1, now.getDate());
-          const slug = resolveSignSlugByMonthDay(normalized.month, normalized.day);
-          if (slug) {
-            signSelect.value = slug;
-            dailySignSelect.value = slug;
-          }
+        const setShareStatus = (text = '') => {
+          shareStatus.textContent = text;
         };
 
         const dayOfYear = (dateParts) => {
@@ -613,71 +599,60 @@ const appData = {
             'Daily horoscope starts from the same sign architecture, then modulates it through date rhythm and seasonal pressure.',
         };
 
-        const buildGeneralView = (profile, sourceText) => {
-          const monthText = monthSelect.options[monthSelect.selectedIndex].text;
-          const dayText = daySelect.value;
-
-          return {
-            mode: sourceText === 'Date-based sign resolution' ? 'Date-based reading' : 'Direct sign reading',
-            source: sourceText,
-            modeDescription: modeDescriptions.general,
-            sign: profile.sign.name,
-            range: `${profile.sign.dateLabel} · ${profile.sign.element}`,
-            glyph: profile.sign.glyph,
-            summary: `Stable orientation for ${profile.sign.name}: ${profile.sign.competence} carried through ${profile.sign.element.toLowerCase()} seasonality.`,
-            message: profile.message,
-            labels: {
-              note: 'Key note',
-              active: 'Season mood',
-              body: 'Body feeling',
-              social: 'How it moves',
-              shadow: 'Watch for',
-              ritual: 'Small ritual',
-              prompt: 'Grounding action',
-              guidance: 'Grounded guidance',
-            },
-            values: {
-              note: `${profile.sign.competence} is your durable organizing tone.`,
-              active: profile.seasonMood,
-              body: profile.bodyFeeling,
-              social: profile.movementPattern,
-              shadow: profile.shadow,
-              ritual: profile.ritual,
-              prompt: `Where can you practice ${profile.sign.competence.toLowerCase()} in one concrete, accountable way today?`,
-              guidance: profile.guidance,
-            },
-            method: {
-              stable: `${profile.sign.name} profile from Breath of the Astral Year fields: competence, civic theme, body register, social pattern, shadow, ritual.`,
-              daily: 'No daily modulation in this mode. This is the stable sign baseline.',
-              input:
-                sourceText === 'Date-based sign resolution'
-                  ? `Sign resolved from ${monthText} ${dayText}, then rendered as a stable profile.`
-                  : `Sign selected directly as ${profile.sign.name}.`,
-            },
-            contract: {
-              stable: `${profile.sign.name} baseline is fully active.`,
-              daily: 'Daily modulation is intentionally off in General mode.',
-              status: 'This output is a stable sign architecture reading.',
-            },
-            factors: [
-              `Sign baseline: ${profile.sign.competence}`,
-              `Seasonal frame: ${profile.sign.civicTheme}`,
-              `Input path: ${sourceText === 'Date-based sign resolution' ? `resolved from ${monthText} ${dayText}` : 'direct sign selection'}`,
-            ],
-            entryMessage:
+        const buildGeneralView = (profile, sourceText) => ({
+          mode: sourceText === 'Date-based sign resolution' ? 'Date-based reading' : 'Stable sign reading',
+          source: sourceText,
+          modeDescription: modeDescriptions.general,
+          summary: `Stable orientation for ${profile.sign.name}: ${profile.sign.competence} carried through ${profile.sign.element.toLowerCase()} seasonality.`,
+          message: profile.message,
+          labels: {
+            note: 'Key note',
+            active: 'Season mood',
+            body: 'Body feeling',
+            social: 'How it moves',
+            shadow: 'Watch for',
+            ritual: 'Small ritual',
+            prompt: 'Grounding action',
+            guidance: 'Grounded guidance',
+          },
+          values: {
+            note: `${profile.sign.competence} is your durable organizing tone.`,
+            active: profile.seasonMood,
+            body: profile.bodyFeeling,
+            social: profile.movementPattern,
+            shadow: profile.shadow,
+            ritual: profile.ritual,
+            prompt: `Where can you practice ${profile.sign.competence.toLowerCase()} in one concrete, accountable way today?`,
+            guidance: profile.guidance,
+          },
+          method: {
+            stable: `${profile.sign.name} profile from Breath of the Astral Year fields: competence, civic theme, body register, social pattern, shadow, ritual.`,
+            daily: 'No daily modulation in this mode. This is the stable sign baseline.',
+            input:
               sourceText === 'Date-based sign resolution'
-                ? `Resolved from ${monthText} ${dayText}.`
-                : 'Currently showing the direct sign reading.',
-          };
-        };
+                ? `Sign resolved from ${monthSelect.options[monthSelect.selectedIndex].text} ${daySelect.value}, then rendered as a stable profile.`
+                : `Sign selected directly as ${profile.sign.name}.`,
+          },
+          contract: {
+            stable: `${profile.sign.name} baseline is fully active.`,
+            daily: 'Daily modulation is intentionally off in General mode.',
+            status: 'This output is a stable sign architecture reading.',
+          },
+          factors: [
+            `Sign baseline: ${profile.sign.competence}`,
+            `Seasonal frame: ${profile.sign.civicTheme}`,
+            `Input path: ${
+              sourceText === 'Date-based sign resolution'
+                ? `resolved from ${monthSelect.options[monthSelect.selectedIndex].text} ${daySelect.value}`
+                : 'direct sign selection'
+            }`,
+          ],
+        });
 
         const buildDailyPendingView = (profile, sourceText, reason) => ({
-          mode: 'Daily reading',
+          mode: 'Daily horoscope',
           source: sourceText,
           modeDescription: modeDescriptions.daily,
-          sign: profile.sign.name,
-          range: 'Awaiting a valid date',
-          glyph: profile.sign.glyph,
           summary: 'Daily reading is waiting for a valid calendar date.',
           message: reason,
           labels: {
@@ -692,7 +667,7 @@ const appData = {
           },
           values: {
             note: 'No daily modulation applied yet.',
-            active: 'Enter a valid date to compute today-specific weather.',
+            active: 'Enter a valid date to compute day-specific weather.',
             body: 'Body cue appears once date modulation is valid.',
             social: 'Relational move appears once date modulation is valid.',
             shadow: 'Caution line appears once date modulation is valid.',
@@ -700,7 +675,7 @@ const appData = {
             prompt: 'Complete date input to generate today-specific action.',
             guidance: [
               'Daily output is paused until date validation succeeds.',
-              'General reading remains available as stable baseline.',
+              'Stable sign reading remains available as your baseline.',
             ],
           },
           method: {
@@ -718,7 +693,6 @@ const appData = {
             'Date factor: pending valid YYYY-MM-DD input',
             'Weekday/day-of-year factors: pending date validation',
           ],
-          dailyMessage: reason,
         });
 
         const buildDailyView = (profile, dateParts, sourceText) => {
@@ -743,12 +717,9 @@ const appData = {
           const ritualCue = `${ritualLead} ${sign.ritual}`;
 
           return {
-            mode: 'Daily reading',
+            mode: 'Daily horoscope',
             source: sourceText,
             modeDescription: modeDescriptions.daily,
-            sign: sign.name,
-            range: `${dayLabel} · ${sign.name} · ${sign.element}`,
-            glyph: sign.glyph,
             summary: `${sign.name} daily weather: ${coreOrientation}`,
             message: [
               `Today's reading starts from ${sign.name}'s stable profile and applies date-based modulation.`,
@@ -796,7 +767,6 @@ const appData = {
               `Day-of-year pulse: ${ordinal}`,
               `Seasonal sign phase: ${phase}`,
             ],
-            dailyMessage: `Daily forecast for ${dayLabel}.`,
           };
         };
 
@@ -804,9 +774,6 @@ const appData = {
           modeLabel.textContent = view.mode;
           sourceLabel.textContent = view.source;
           modeDescription.textContent = view.modeDescription;
-          signName.textContent = view.sign;
-          signRange.textContent = view.range;
-          signGlyph.textContent = view.glyph;
           summary.textContent = view.summary;
           message.textContent = view.message;
           contractStable.textContent = view.contract.stable;
@@ -849,36 +816,63 @@ const appData = {
           methodInput.textContent = view.method.input;
         };
 
-        const validMode = (mode) => mode === 'general' || mode === 'daily';
-        const setShareStatus = (text = '') => {
-          shareStatus.textContent = text;
+        const syncSignButtons = (activeSlug) => {
+          signButtons.forEach((button) => {
+            const isActive = button.dataset.sign === activeSlug;
+            button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+          });
         };
 
-        let currentMode = 'general';
-        let lastGeneralSource = 'Direct sign selection';
-        let lastDailySource = 'Manual sign + date';
-        let lastDirectSignSlug = signOrder[0];
+        const syncHiddenSignSelections = (slug) => {
+          if (hasSignSlug(slug)) {
+            signSelect.value = slug;
+            dailySignSelect.value = slug;
+          }
+        };
+
+        const updateGenerateLabel = () => {
+          const profile = signBySlug(currentSignSlug);
+          generateButton.textContent =
+            currentMode === 'daily' ? 'Generate Daily Horoscope' : `Generate ${profile.sign.name} Reading`;
+        };
+
+        const renderPreview = (slug) => {
+          const profile = signBySlug(slug);
+          if (!profile) {
+            return;
+          }
+
+          shell.style.setProperty('--gaia-sign-color', profile.sign.color);
+          previewGlyph.textContent = profile.sign.glyph;
+          previewSign.textContent = profile.sign.name;
+          previewElement.textContent = profile.sign.element;
+          previewRange.textContent = profile.sign.dateLabel;
+          previewCompetence.textContent = profile.sign.competence;
+          previewCivic.textContent = profile.sign.civicTheme;
+          previewBody.textContent = profile.sign.bodyRegister;
+          previewShadow.textContent = profile.sign.shadow;
+          previewRitual.textContent = profile.sign.ritual;
+          syncSignButtons(profile.sign.slug);
+          updateGenerateLabel();
+        };
 
         const applyUrlState = () => {
-          const params = new URLSearchParams(window.location.search);
-          const generalDate = normalizeGeneralMonthDay(Number(monthSelect.value), Number(daySelect.value));
-
+          const params = new URLSearchParams();
           params.set('mode', currentMode);
-          params.set('sign', currentMode === 'daily' ? dailySignSelect.value : signSelect.value);
-          params.set('month', String(generalDate.month));
-          params.set('day', String(generalDate.day));
+          params.set('sign', currentSignSlug);
+
+          const generalDate = normalizeGeneralMonthDay(Number(monthSelect.value || 1), Number(daySelect.value || 1));
+          if (lastGeneralSource === 'Date-based sign resolution') {
+            params.set('month', String(generalDate.month));
+            params.set('day', String(generalDate.day));
+            params.set('entry', 'date');
+          } else if (currentMode === 'daily' && dailyDateInput.value) {
+            params.set('entry', lastDailySource === 'Sign resolved from date + daily modulation' ? 'date-sign' : 'manual');
+          }
 
           const parsedDailyDate = parseDateInputValue(dailyDateInput.value);
           if (parsedDailyDate) {
             params.set('date', parsedDailyDate.isoDate);
-          } else {
-            params.delete('date');
-          }
-
-          if (currentMode === 'general') {
-            params.set('entry', lastGeneralSource === 'Date-based sign resolution' ? 'date' : 'direct');
-          } else {
-            params.set('entry', lastDailySource === 'Sign resolved from date + daily modulation' ? 'date-sign' : 'manual');
           }
 
           const query = params.toString();
@@ -886,89 +880,99 @@ const appData = {
           window.history.replaceState(null, '', nextUrl);
         };
 
-        const renderGeneralFromSign = (sourceText = 'Direct sign selection') => {
-          const profile = signBySlug(signSelect.value);
+        const clearOutput = () => {
+          output.hidden = true;
+          output.removeAttribute('data-visible');
+          setShareStatus();
+        };
+
+        const showOutput = () => {
+          output.hidden = false;
+          output.setAttribute('data-visible', 'true');
+        };
+
+        let currentMode = 'general';
+        let currentSignSlug = signOrder[0];
+        let lastGeneralSource = 'Direct sign selection';
+        let lastDailySource = 'Manual sign + date';
+
+        const generateCurrentView = () => {
+          const profile = signBySlug(currentSignSlug);
           if (!profile) {
             return false;
           }
 
-          if (sourceText === 'Direct sign selection' && hasSignSlug(signSelect.value)) {
-            lastDirectSignSlug = signSelect.value;
+          if (currentMode === 'general') {
+            renderView(buildGeneralView(profile, lastGeneralSource));
+            entryMode.textContent =
+              lastGeneralSource === 'Date-based sign resolution'
+                ? `Resolved from ${monthSelect.options[monthSelect.selectedIndex].text} ${daySelect.value}.`
+                : 'Currently showing the direct sign reading.';
+            dailyMode.textContent = 'Daily reading combines stable sign pattern with date and weekday modulation.';
+          } else {
+            const parsed = parseDateInputValue(dailyDateInput.value);
+            if (!parsed) {
+              renderView(buildDailyPendingView(profile, lastDailySource, 'Choose a valid date to generate the daily reading.'));
+            } else {
+              renderView(buildDailyView(profile, parsed, lastDailySource));
+            }
+            entryMode.textContent = 'Stable sign reading remains available as your baseline.';
           }
 
-          lastGeneralSource = sourceText;
-          const view = buildGeneralView(profile, sourceText);
-          renderView(view);
-          entryMode.textContent = view.entryMessage;
-          dailyMode.textContent = 'Daily reading will appear when you switch modes.';
+          showOutput();
           setShareStatus();
           applyUrlState();
           return true;
         };
 
-        const renderDailyFromInputs = (sourceText = 'Manual sign + date') => {
-          const profile = signBySlug(dailySignSelect.value);
-          const parsed = parseDateInputValue(dailyDateInput.value);
-          lastDailySource = sourceText;
-
-          if (!profile) {
-            return false;
-          }
-
-          if (!parsed) {
-            const reason = 'Choose a valid date to generate the daily reading.';
-            const pendingView = buildDailyPendingView(profile, sourceText, reason);
-            renderView(pendingView);
-            dailyMode.textContent = pendingView.dailyMessage;
-            entryMode.textContent = 'General reading stays available as your stable baseline.';
-            setShareStatus(reason);
-            applyUrlState();
-            return false;
-          }
-
-          const view = buildDailyView(profile, parsed, sourceText);
-          renderView(view);
-          dailyMode.textContent = view.dailyMessage;
-          entryMode.textContent = 'General reading stays available as your stable baseline.';
-          setShareStatus();
-          applyUrlState();
-          return true;
-        };
-
-        const setMode = (mode) => {
+        const setMode = (mode, options = {}) => {
           if (!validMode(mode)) {
             return;
           }
 
           currentMode = mode;
           const isGeneral = mode === 'general';
-
           modeGeneralButton.setAttribute('aria-pressed', isGeneral ? 'true' : 'false');
           modeDailyButton.setAttribute('aria-pressed', isGeneral ? 'false' : 'true');
-
-          generalControls.hidden = !isGeneral;
           dailyControls.hidden = isGeneral;
+          modeDescription.textContent = isGeneral ? modeDescriptions.general : modeDescriptions.daily;
+          updateGenerateLabel();
+          applyUrlState();
 
-          if (isGeneral) {
-            renderGeneralFromSign(lastGeneralSource);
-          } else {
-            renderDailyFromInputs(lastDailySource);
+          if (!options.preserveOutput) {
+            clearOutput();
           }
+        };
+
+        const selectSign = (slug, sourceText = 'Direct sign selection') => {
+          if (!hasSignSlug(slug)) {
+            return;
+          }
+
+          currentSignSlug = slug;
+          syncHiddenSignSelections(slug);
+          lastGeneralSource = sourceText;
+          if (currentMode === 'daily' && sourceText === 'Sign resolved from date + daily modulation') {
+            lastDailySource = sourceText;
+          }
+
+          renderPreview(slug);
+          clearOutput();
+          applyUrlState();
         };
 
         const hydrateFromUrl = () => {
           const params = new URLSearchParams(window.location.search);
-
           const mode = params.get('mode');
           if (validMode(mode)) {
             currentMode = mode;
           }
 
-          const sign = params.get('sign');
-          if (sign && hasSignSlug(sign)) {
-            signSelect.value = sign;
-            dailySignSelect.value = sign;
-            lastDirectSignSlug = sign;
+          const dateParam = params.get('date');
+          const parsedDate = dateParam ? parseDateInputValue(dateParam) : null;
+          if (parsedDate) {
+            dailyDateInput.value = parsedDate.isoDate;
+            applyMonthDay(parsedDate.month, parsedDate.day);
           }
 
           const monthParam = params.get('month');
@@ -976,35 +980,29 @@ const appData = {
           if (monthParam !== null && dayParam !== null) {
             const month = Number(monthParam);
             const day = Number(dayParam);
-
             if (Number.isInteger(month) && Number.isInteger(day)) {
               applyMonthDay(month, day);
             }
           }
 
-          const dateParam = params.get('date');
-          const parsedDate = dateParam ? parseDateInputValue(dateParam) : null;
-          if (parsedDate) {
-            dailyDateInput.value = parsedDate.isoDate;
-          } else if (dateParam !== null) {
-            dailyDateInput.value = '';
-          }
-
-          const entry = params.get('entry');
-          if (entry === 'date') {
-            lastGeneralSource = 'Date-based sign resolution';
+          const sign = params.get('sign');
+          if (sign && hasSignSlug(sign)) {
+            currentSignSlug = sign;
+            syncHiddenSignSelections(sign);
+          } else if (params.get('entry') === 'date') {
             const slug = resolveSignSlugByMonthDay(Number(monthSelect.value), Number(daySelect.value));
             if (slug) {
-              signSelect.value = slug;
+              currentSignSlug = slug;
+              syncHiddenSignSelections(slug);
             }
-          } else {
-            lastGeneralSource = 'Direct sign selection';
           }
 
-          if (entry === 'date-sign') {
+          if (params.get('entry') === 'date') {
+            lastGeneralSource = 'Date-based sign resolution';
+          }
+
+          if (params.get('entry') === 'date-sign') {
             lastDailySource = 'Sign resolved from date + daily modulation';
-          } else {
-            lastDailySource = 'Manual sign + date';
           }
         };
 
@@ -1012,151 +1010,74 @@ const appData = {
         const todayValue = toDateInputValue(now);
         const todayMonth = now.getMonth() + 1;
         const todayDay = now.getDate();
+        const todaySign = resolveSignSlugByMonthDay(todayMonth, todayDay) || signOrder[0];
 
         rebuildDays(Number(monthSelect.value || 1), Number(daySelect.value || 1));
         applyMonthDay(todayMonth, todayDay);
         dailyDateInput.value = todayValue;
-
-        const todaySign = resolveTodaySignSlug();
-        if (todaySign) {
-          signSelect.value = todaySign;
-          dailySignSelect.value = todaySign;
-          lastDirectSignSlug = todaySign;
-        }
+        currentSignSlug = todaySign;
+        syncHiddenSignSelections(todaySign);
 
         hydrateFromUrl();
+        renderPreview(currentSignSlug);
+        setMode(currentMode, { preserveOutput: true });
 
-        modeGeneralButton.addEventListener('click', () => setMode('general'));
-        modeDailyButton.addEventListener('click', () => setMode('daily'));
-
-        signSelect.addEventListener('change', () => {
-          if (hasSignSlug(signSelect.value)) {
-            lastDirectSignSlug = signSelect.value;
-          }
-          lastGeneralSource = 'Direct sign selection';
-          if (currentMode === 'general') {
-            renderGeneralFromSign('Direct sign selection');
-          } else {
-            setShareStatus();
-            applyUrlState();
-          }
+        signButtons.forEach((button) => {
+          button.addEventListener('click', () => {
+            selectSign(button.dataset.sign || '', 'Direct sign selection');
+          });
         });
 
-        monthSelect.addEventListener('change', () => {
-          applyMonthDay(Number(monthSelect.value), Number(daySelect.value || 1));
-          applyUrlState();
+        modeGeneralButton.addEventListener('click', () => {
+          setMode('general');
         });
 
-        daySelect.addEventListener('change', () => {
-          applyMonthDay(Number(monthSelect.value), Number(daySelect.value || 1));
-          applyUrlState();
+        modeDailyButton.addEventListener('click', () => {
+          setMode('daily');
         });
 
-        submitDateButton.addEventListener('click', () => {
-          const normalized = applyMonthDay(Number(monthSelect.value), Number(daySelect.value || 1));
-          const slug = resolveSignSlugByMonthDay(normalized.month, normalized.day);
-          if (slug) {
-            signSelect.value = slug;
-            dailySignSelect.value = slug;
+        dailyDateInput.addEventListener('change', () => {
+          const parsed = parseDateInputValue(dailyDateInput.value);
+          if (parsed) {
+            applyMonthDay(parsed.month, parsed.day);
           }
-          if (currentMode !== 'general') {
-            setMode('general');
-          }
-          renderGeneralFromSign('Date-based sign resolution');
-        });
-
-        generalTodayButton.addEventListener('click', () => {
-          setGeneralFromToday();
-          if (currentMode !== 'general') {
-            setMode('general');
-          }
-          renderGeneralFromSign('Date-based sign resolution');
-        });
-
-        resetDateButton.addEventListener('click', () => {
-          if (hasSignSlug(lastDirectSignSlug)) {
-            signSelect.value = lastDirectSignSlug;
-            dailySignSelect.value = lastDirectSignSlug;
-          }
-          if (currentMode !== 'general') {
-            setMode('general');
-          }
-          renderGeneralFromSign('Direct sign selection');
-        });
-
-        dailyGenerateButton.addEventListener('click', () => {
           lastDailySource = 'Manual sign + date';
-          if (currentMode !== 'daily') {
-            setMode('daily');
-            return;
-          }
-          renderDailyFromInputs(lastDailySource);
+          clearOutput();
+          applyUrlState();
         });
 
         dailyResolveSignButton.addEventListener('click', () => {
           const parsed = parseDateInputValue(dailyDateInput.value);
           if (!parsed) {
+            clearOutput();
             setShareStatus('Enter a valid daily date before resolving sign.');
-            applyUrlState();
-            if (currentMode !== 'daily') {
-              setMode('daily');
-            } else {
-              renderDailyFromInputs(lastDailySource);
-            }
             return;
           }
 
           const slug = resolveSignSlugByMonthDay(parsed.month, parsed.day);
           if (slug) {
-            dailySignSelect.value = slug;
+            currentSignSlug = slug;
+            syncHiddenSignSelections(slug);
+            lastDailySource = 'Sign resolved from date + daily modulation';
+            renderPreview(slug);
+            clearOutput();
+            applyUrlState();
           }
-          lastDailySource = 'Sign resolved from date + daily modulation';
-
-          if (currentMode !== 'daily') {
-            setMode('daily');
-            return;
-          }
-          renderDailyFromInputs(lastDailySource);
         });
 
         dailyTodayButton.addEventListener('click', () => {
           dailyDateInput.value = todayValue;
-          lastDailySource = 'Manual sign + date';
-          if (currentMode !== 'daily') {
-            setMode('daily');
-            return;
-          }
-          renderDailyFromInputs(lastDailySource);
-        });
-
-        dailySignSelect.addEventListener('change', () => {
-          if (currentMode === 'daily') {
-            renderDailyFromInputs(lastDailySource);
-          } else {
-            setShareStatus();
-            applyUrlState();
-          }
-        });
-
-        dailyDateInput.addEventListener('change', () => {
-          if (currentMode === 'daily') {
-            renderDailyFromInputs(lastDailySource);
-          } else {
-            applyUrlState();
-          }
-        });
-
-        resetButton.addEventListener('click', () => {
-          setShareStatus();
           applyMonthDay(todayMonth, todayDay);
-          dailyDateInput.value = todayValue;
-          signSelect.value = todaySign;
-          dailySignSelect.value = todaySign;
-          lastDirectSignSlug = todaySign;
-          lastGeneralSource = 'Direct sign selection';
+          currentSignSlug = todaySign;
+          syncHiddenSignSelections(todaySign);
           lastDailySource = 'Manual sign + date';
-          setMode('general');
-          renderGeneralFromSign('Direct sign selection');
+          renderPreview(todaySign);
+          clearOutput();
+          applyUrlState();
+        });
+
+        generateButton.addEventListener('click', () => {
+          generateCurrentView();
         });
 
         shareButton.addEventListener('click', async () => {
@@ -1175,10 +1096,26 @@ const appData = {
           }
         });
 
-        if (currentMode === 'daily') {
-          setMode('daily');
+        resetButton.addEventListener('click', () => {
+          currentMode = 'general';
+          currentSignSlug = todaySign;
+          lastGeneralSource = 'Direct sign selection';
+          lastDailySource = 'Manual sign + date';
+          dailyDateInput.value = todayValue;
+          applyMonthDay(todayMonth, todayDay);
+          syncHiddenSignSelections(todaySign);
+          renderPreview(todaySign);
+          setMode('general', { preserveOutput: true });
+          clearOutput();
+          window.history.replaceState(null, '', window.location.pathname);
+          setShareStatus();
+          entryMode.textContent = 'Currently showing the direct sign reading.';
+        });
+
+        if (window.location.search) {
+          generateCurrentView();
         } else {
-          setMode('general');
+          clearOutput();
         }
       }
     }
@@ -1186,291 +1123,548 @@ const appData = {
 </div>
 
 <style>
-  .astral-app-shell {
-    position: relative;
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap');
+
+  @keyframes gaiaFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+
+    to {
+      opacity: 1;
+      transform: none;
+    }
   }
 
-  .astral-control-panel,
-  .astral-result-panel {
+  .gaia-surface {
     position: relative;
+    min-height: 100vh;
     overflow: hidden;
-    border: 1px solid rgba(36, 27, 23, 0.12);
-    background:
-      radial-gradient(circle at top right, rgba(127, 83, 178, 0.11), transparent 34%),
-      radial-gradient(circle at 12% 88%, rgba(92, 110, 198, 0.08), transparent 42%),
-      linear-gradient(180deg, rgba(251, 246, 239, 0.86) 0%, rgba(247, 241, 233, 0.72) 100%);
-    box-shadow: 0 18px 40px rgba(10, 9, 12, 0.18);
-    backdrop-filter: blur(12px);
+    border: 1px solid rgba(212, 185, 106, 0.08);
+    background: linear-gradient(160deg, #0e0d0b 0%, #1a1814 50%, #0f1210 100%);
+    color: #e8dfc8;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    box-shadow: 0 28px 70px rgba(0, 0, 0, 0.26);
   }
 
-  .astral-control-panel::before,
-  .astral-result-panel::before {
-    content: '';
+  .gaia-background {
     position: absolute;
-    inset: -20% auto auto -10%;
-    width: 14rem;
-    height: 14rem;
-    border-radius: 999px;
-    background: radial-gradient(circle, rgba(92, 110, 198, 0.08) 0%, rgba(92, 110, 198, 0) 72%);
+    inset: 0;
     pointer-events: none;
-  }
-
-  .astral-control-panel :is(h2, h3),
-  .astral-result-panel :is(h2, h3) {
-    color: #241b17;
-  }
-
-  .astral-control-panel .text-slate-100,
-  .astral-result-panel .text-slate-100 {
-    color: #241b17;
-  }
-
-  .astral-control-panel .text-slate-200,
-  .astral-result-panel .text-slate-200 {
-    color: rgba(36, 27, 23, 0.84);
-  }
-
-  .astral-control-panel .text-slate-300,
-  .astral-result-panel .text-slate-300 {
-    color: rgba(48, 37, 33, 0.72);
-  }
-
-  .astral-control-panel .text-slate-400,
-  .astral-result-panel .text-slate-400 {
-    color: rgba(73, 60, 53, 0.62);
-  }
-
-  .astral-control-panel .text-slate-500,
-  .astral-result-panel .text-slate-500 {
-    color: rgba(73, 60, 53, 0.54);
-  }
-
-  .astral-mode-toggle {
-    display: inline-flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-  }
-
-  .astral-mode-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid rgba(36, 27, 23, 0.16);
-    border-radius: 999px;
-    padding: 0.58rem 0.9rem;
-    font-family: var(--font-mono);
-    font-size: 0.64rem;
-    font-weight: 700;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: #2a211d;
-    background: rgba(255, 255, 255, 0.34);
-    transition: border-color 160ms ease, background 160ms ease, transform 160ms ease, box-shadow 160ms ease;
-  }
-
-  .astral-mode-button[aria-pressed='true'] {
-    border-color: rgba(127, 83, 178, 0.34);
     background:
-      linear-gradient(180deg, rgba(251, 246, 239, 0.96), rgba(244, 235, 226, 0.84)),
-      linear-gradient(120deg, rgba(127, 83, 178, 0.12), rgba(92, 110, 198, 0.06));
-    box-shadow: 0 10px 24px rgba(31, 25, 28, 0.08), 0 0 0 1px rgba(127, 83, 178, 0.08);
+      radial-gradient(ellipse at 20% 30%, rgba(180, 120, 40, 0.08) 0%, transparent 58%),
+      radial-gradient(ellipse at 80% 70%, rgba(60, 100, 80, 0.08) 0%, transparent 60%),
+      radial-gradient(circle at center, color-mix(in srgb, var(--gaia-sign-color) 18%, transparent) 0%, transparent 46%);
+    opacity: 0.92;
   }
 
-  .astral-mode-button:hover {
+  .gaia-header,
+  .gaia-main {
+    position: relative;
+    z-index: 1;
+  }
+
+  .gaia-header {
+    padding: 2.6rem 1.6rem 1.5rem;
+    text-align: center;
+    border-bottom: 1px solid rgba(200, 170, 100, 0.15);
+  }
+
+  .gaia-kicker,
+  .gaia-section-label,
+  .gaia-output-source,
+  .gaia-share-status,
+  .gaia-footer-links {
+    font-family: var(--font-mono, 'IBM Plex Mono', 'SFMono-Regular', monospace);
+    text-transform: uppercase;
+  }
+
+  .gaia-kicker {
+    margin: 0 0 0.5rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.35em;
+    color: #8a7a55;
+  }
+
+  .gaia-wordmark {
+    margin: 0;
+    font-size: clamp(2.6rem, 6vw, 4.2rem);
+    font-weight: 400;
+    letter-spacing: 0.16em;
+    color: #d4b96a;
+    text-shadow: 0 0 40px rgba(212, 185, 106, 0.28);
+  }
+
+  .gaia-subtitle {
+    margin: 0.35rem 0 0;
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    color: #6a5e3e;
+    text-transform: uppercase;
+  }
+
+  .gaia-main {
+    width: min(100%, 46rem);
+    margin: 0 auto;
+    padding: 2rem 1.4rem 3rem;
+  }
+
+  .gaia-mode-toggle {
+    display: flex;
+    margin-bottom: 1rem;
+    overflow: hidden;
+    border: 1px solid rgba(200, 170, 100, 0.2);
+    border-radius: 2px;
+  }
+
+  .gaia-mode-button,
+  .gaia-sign-button,
+  .gaia-inline-button,
+  .gaia-generate-button {
+    cursor: pointer;
+    transition: background 180ms ease, border-color 180ms ease, color 180ms ease, transform 180ms ease;
+  }
+
+  .gaia-mode-button {
+    flex: 1;
+    border: 0;
+    background: transparent;
+    padding: 0.86rem 0.8rem;
+    color: #6a5e3e;
+    font-family: inherit;
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .gaia-mode-button + .gaia-mode-button {
+    border-left: 1px solid rgba(200, 170, 100, 0.2);
+  }
+
+  .gaia-mode-button[aria-pressed='true'] {
+    background: rgba(212, 185, 106, 0.15);
+    color: #d4b96a;
+  }
+
+  .gaia-mode-button:hover,
+  .gaia-sign-button:hover,
+  .gaia-inline-button:hover,
+  .gaia-generate-button:hover {
     transform: translateY(-1px);
   }
 
-  .astral-flow-note {
-    border-top: 1px solid rgba(36, 27, 23, 0.12);
-    padding-top: 0.8rem;
-    color: rgba(48, 37, 33, 0.72);
-    font-size: 0.92rem;
-    line-height: 1.65;
+  .gaia-mode-note,
+  .gaia-helper-text {
+    margin: 0 0 1.6rem;
+    color: #8f7e5c;
+    font-size: 0.96rem;
+    line-height: 1.7;
   }
 
-  .astral-control-group[hidden] {
+  .gaia-section-label {
+    margin: 0 0 0.95rem;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    color: #6a5e3e;
+  }
+
+  .gaia-sign-section {
+    margin-bottom: 1.8rem;
+  }
+
+  .gaia-sign-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+
+  .gaia-sign-button {
+    border: 1px solid rgba(200, 170, 100, 0.1);
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.02);
+    padding: 0.7rem 0.3rem;
+    color: #6a5e3e;
+    font-family: inherit;
+    text-align: center;
+  }
+
+  .gaia-sign-button[aria-pressed='true'] {
+    border-color: color-mix(in srgb, var(--sign-color) 55%, transparent);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--sign-color) 18%, transparent),
+      color-mix(in srgb, var(--sign-color) 8%, transparent)
+    );
+    color: #e8dfc8;
+  }
+
+  .gaia-sign-symbol {
+    display: block;
+    margin-bottom: 0.22rem;
+    font-size: 1.25rem;
+    line-height: 1;
+  }
+
+  .gaia-sign-name {
+    display: block;
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+  }
+
+  .gaia-date-card,
+  .gaia-preview-card,
+  .gaia-output {
+    border: 1px solid rgba(200, 170, 100, 0.16);
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .gaia-date-card {
+    margin-bottom: 1.8rem;
+    padding: 1.2rem;
+  }
+
+  .gaia-date-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  .gaia-date-input {
+    min-width: min(100%, 15rem);
+    flex: 1 1 14rem;
+    border: 1px solid rgba(200, 170, 100, 0.2);
+    border-radius: 2px;
+    background: rgba(14, 13, 11, 0.82);
+    padding: 0.58rem 0.7rem;
+    color: #d8c7a1;
+    font: inherit;
+  }
+
+  .gaia-date-input:focus-visible {
+    outline: 1px solid rgba(212, 185, 106, 0.5);
+    outline-offset: 2px;
+  }
+
+  .gaia-inline-button {
+    border: 1px solid rgba(200, 170, 100, 0.18);
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.58rem 0.78rem;
+    color: #b8a880;
+    font-family: inherit;
+    font-size: 0.84rem;
+  }
+
+  .gaia-inline-button-accent {
+    background: rgba(212, 185, 106, 0.1);
+    color: #d4b96a;
+  }
+
+  .gaia-hidden-inputs {
     display: none;
   }
 
-  .astral-input-card,
-  .astral-mini-card,
-  .astral-reading-card,
-  .astral-shadow-card,
-  .astral-ritual-card,
-  .astral-guidance-strip,
-  .astral-prompt-card,
-  .astral-method-row {
-    border-top: 1px solid rgba(36, 27, 23, 0.12);
-    padding: 1rem 0;
+  .gaia-preview-card {
+    margin-bottom: 1rem;
+    padding: 1.45rem;
+    border-color: color-mix(in srgb, var(--gaia-sign-color) 42%, rgba(200, 170, 100, 0.16));
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--gaia-sign-color) 8%, rgba(14, 13, 11, 0.72)),
+      rgba(14, 13, 11, 0.48)
+    );
   }
 
-  .astral-label,
-  .astral-mini-label {
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: #cc9967;
-  }
-
-  .astral-select,
-  .astral-date-input {
-    width: 100%;
-    border-bottom: 1px solid rgba(36, 27, 23, 0.16);
-    background: transparent;
-    color: #241b17;
-    padding: 0.95rem 0;
-    font-size: 0.96rem;
-    line-height: 1.5;
-  }
-
-  .astral-date-input {
-    border-top: 0;
-    border-left: 0;
-    border-right: 0;
-    border-radius: 0;
-  }
-
-  .astral-select:focus-visible,
-  .astral-date-input:focus-visible {
-    outline: none;
-    border-color: rgba(127, 83, 178, 0.5);
-    box-shadow: 0 3px 0 0 rgba(127, 83, 178, 0.12);
-  }
-
-  .astral-link-row {
+  .gaia-preview-header {
     display: flex;
+    gap: 1.15rem;
+    align-items: flex-start;
+  }
+
+  .gaia-preview-glyph {
+    flex-shrink: 0;
+    font-size: 3rem;
+    line-height: 1;
+    color: var(--gaia-sign-color);
+    text-shadow: 0 0 20px color-mix(in srgb, var(--gaia-sign-color) 50%, transparent);
+  }
+
+  .gaia-preview-copy {
+    flex: 1;
+  }
+
+  .gaia-preview-title-row {
+    display: flex;
+    gap: 0.75rem;
+    align-items: baseline;
     flex-wrap: wrap;
-    gap: 0.6rem;
+    margin-bottom: 0.25rem;
   }
 
-  .astral-control-panel :is(.button-primary, .button-secondary),
-  .astral-result-panel :is(.button-primary, .button-secondary) {
-    box-shadow: none;
+  .gaia-preview-sign {
+    margin: 0;
+    font-size: 1.9rem;
+    font-weight: 400;
+    color: #f0e4c9;
   }
 
-  .astral-control-panel .button-primary,
-  .astral-result-panel .button-primary {
-    border-color: #241b17;
-    background: #241b17;
-    color: #fbf6ef;
+  .gaia-preview-element {
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7a55;
   }
 
-  .astral-control-panel .button-primary:hover,
-  .astral-result-panel .button-primary:hover {
-    background: #161112;
-    border-color: #161112;
+  .gaia-preview-range {
+    margin: 0 0 1rem;
+    color: #9d8b66;
+    font-size: 0.86rem;
   }
 
-  .astral-control-panel .button-secondary,
-  .astral-result-panel .button-secondary {
-    border-color: rgba(36, 27, 23, 0.16);
-    background: rgba(255, 255, 255, 0.34);
-    color: #2a211d;
+  .gaia-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.8rem 1rem;
   }
 
-  .astral-control-panel .button-secondary:hover,
-  .astral-result-panel .button-secondary:hover {
-    border-color: rgba(127, 83, 178, 0.28);
-    background: rgba(255, 255, 255, 0.52);
-    color: #241b17;
+  .gaia-preview-detail,
+  .gaia-reading-copy {
+    margin: 0;
+    color: #c8b888;
+    line-height: 1.55;
+    font-size: 0.9rem;
   }
 
-  .astral-result-toolbar {
+  .gaia-preview-ritual {
+    margin-top: 1rem;
+    padding: 0.72rem 0.85rem;
+    border-left: 2px solid color-mix(in srgb, var(--gaia-sign-color) 60%, transparent);
+    background: rgba(0, 0, 0, 0.18);
+  }
+
+  .gaia-preview-ritual-text,
+  .gaia-reading-copy-ritual {
+    margin: 0;
+    color: #d7c69d;
+    font-style: italic;
+    line-height: 1.6;
+  }
+
+  .gaia-generate-button {
+    width: 100%;
+    margin: 0 0 2rem;
+    border: 1px solid color-mix(in srgb, var(--gaia-sign-color) 68%, rgba(200, 170, 100, 0.24));
+    border-radius: 2px;
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--gaia-sign-color) 22%, transparent),
+      color-mix(in srgb, var(--gaia-sign-color) 10%, transparent)
+    );
+    padding: 1rem 1rem 0.96rem;
+    color: #d4b96a;
+    font-family: inherit;
+    font-size: 0.82rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+  }
+
+  .gaia-output {
+    padding: 1.8rem;
+  }
+
+  .gaia-output[data-visible='true'] {
+    animation: gaiaFadeIn 260ms ease;
+  }
+
+  .gaia-output-toolbar {
     display: flex;
-    gap: 0.8rem;
     justify-content: space-between;
-    align-items: start;
-    border-bottom: 1px solid rgba(36, 27, 23, 0.12);
-    padding-bottom: 0.8rem;
+    gap: 0.8rem;
+    align-items: flex-start;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(200, 170, 100, 0.12);
   }
 
-  .astral-toolbar-actions {
+  .gaia-output-actions {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
-    justify-content: flex-end;
   }
 
-  .astral-status-text {
-    min-height: 1.4rem;
-    margin-top: 0.5rem;
-    color: rgba(73, 60, 53, 0.62);
-    font-size: 0.74rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+  .gaia-output-source,
+  .gaia-share-status {
+    margin: 0.3rem 0 0;
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    color: #8a7a55;
   }
 
-  .astral-glyph-orbit {
+  .gaia-share-status {
+    min-height: 1rem;
+    margin-top: 0.75rem;
+  }
+
+  .gaia-output-summary {
+    margin: 1.4rem 0 0;
+    color: #f0e4c9;
+    font-size: 1.08rem;
+    line-height: 1.8;
+  }
+
+  .gaia-output-message {
+    margin: 1rem 0 0;
+    color: #c8b888;
+    font-size: 0.96rem;
+    line-height: 1.8;
+  }
+
+  .gaia-reading-grid {
     display: grid;
-    place-items: center;
-    width: 5.3rem;
-    height: 5.3rem;
-    border-radius: 1.2rem;
-    border: 1px solid rgba(36, 27, 23, 0.1);
-    background:
-      radial-gradient(circle at center, rgba(127, 83, 178, 0.14), rgba(127, 83, 178, 0) 65%),
-      linear-gradient(180deg, rgba(251, 246, 239, 0.92), rgba(251, 246, 239, 0.42));
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.36);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.85rem 1rem;
+    margin-top: 1.5rem;
   }
 
-  .astral-result-glyph {
-    font-size: 2.4rem;
-    line-height: 1;
-    color: var(--color-accent);
+  .gaia-reading-split {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: 1rem;
+    margin-top: 1rem;
   }
 
-  .astral-guidance-strip ul {
+  .gaia-reading-card {
+    padding: 1rem 0 0;
+    border-top: 1px solid rgba(200, 170, 100, 0.12);
+  }
+
+  .gaia-reading-copy-small {
+    font-size: 0.84rem;
+    line-height: 1.7;
+  }
+
+  .gaia-reading-prompt,
+  .gaia-reading-guidance {
+    margin-top: 1rem;
+  }
+
+  .gaia-guidance-list {
     margin: 0;
     padding-left: 1rem;
+    color: #c8b888;
+    font-size: 0.88rem;
+    line-height: 1.7;
   }
 
-  .astral-method-details {
-    border-top: 1px solid rgba(36, 27, 23, 0.12);
-    padding-top: 0.8rem;
+  .gaia-method-details {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(200, 170, 100, 0.12);
   }
 
-  .astral-method-details summary {
+  .gaia-method-details summary {
     cursor: pointer;
-    font-family: var(--font-mono);
+    color: #d4b96a;
+    font-family: var(--font-mono, 'IBM Plex Mono', 'SFMono-Regular', monospace);
     font-size: 0.72rem;
-    font-weight: 700;
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: #cc9967;
   }
 
-  .astral-method-grid {
-    display: grid;
-    gap: 0.25rem;
+  .gaia-method-grid,
+  .gaia-method-rows {
+    margin-top: 1rem;
   }
 
-  .astral-method-note {
-    border-top: 1px dashed rgba(36, 27, 23, 0.12);
-    padding-top: 0.7rem;
+  .gaia-factors-list {
+    margin-top: 0.8rem;
   }
 
-  @media (max-width: 900px) {
-    .astral-result-toolbar {
+  .gaia-footer {
+    margin-top: 2.8rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(200, 170, 100, 0.1);
+    text-align: center;
+  }
+
+  .gaia-footer-links {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 0.9rem;
+    font-size: 0.66rem;
+    letter-spacing: 0.22em;
+  }
+
+  .gaia-footer-meta,
+  .gaia-footer-note {
+    color: #5f5237;
+    font-size: 0.72rem;
+    line-height: 1.6;
+  }
+
+  .gaia-footer-note {
+    margin-top: 0.3rem;
+    color: #4a4030;
+    font-size: 0.64rem;
+  }
+
+  .gaia-footer a {
+    color: #8f7e5c;
+    text-decoration: none;
+  }
+
+  .gaia-footer a:hover {
+    color: #d4b96a;
+  }
+
+  .gaia-date-input::-webkit-calendar-picker-indicator {
+    filter: invert(84%) sepia(14%) saturate(412%) hue-rotate(356deg) brightness(91%) contrast(84%);
+  }
+
+  @media (max-width: 720px) {
+    .gaia-main {
+      padding-inline: 1rem;
+    }
+
+    .gaia-sign-grid,
+    .gaia-preview-grid,
+    .gaia-reading-grid,
+    .gaia-reading-split {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .gaia-output-toolbar {
       flex-direction: column;
       align-items: flex-start;
     }
-
-    .astral-toolbar-actions {
-      justify-content: flex-start;
-    }
   }
 
-  @media (max-width: 768px) {
-    .astral-glyph-orbit {
-      width: 4.6rem;
-      height: 4.6rem;
+  @media (max-width: 540px) {
+    .gaia-header {
+      padding-inline: 1rem;
     }
 
-    .astral-result-glyph {
-      font-size: 2rem;
+    .gaia-wordmark {
+      letter-spacing: 0.12em;
+    }
+
+    .gaia-sign-grid,
+    .gaia-preview-grid,
+    .gaia-reading-grid,
+    .gaia-reading-split {
+      grid-template-columns: 1fr;
+    }
+
+    .gaia-date-row {
+      align-items: stretch;
+    }
+
+    .gaia-date-input {
+      min-width: 100%;
     }
   }
-
 </style>
