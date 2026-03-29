@@ -1,7 +1,4 @@
 ---
-import '@fontsource-variable/space-grotesk';
-import '@fontsource/ibm-plex-sans/400.css';
-import '@fontsource/ibm-plex-sans/600.css';
 import '../../styles/echo-standalone.css';
 ---
 
@@ -10,17 +7,25 @@ import '../../styles/echo-standalone.css';
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="ECHO local file-to-MP3 text-to-speech app with voice selection and no paid API." />
-    <meta name="theme-color" content="#5ba7ff" />
-    <link rel="stylesheet" href="/martin-portfolio/index.css" />
-    <title>ECHO | File to MP3</title>
+    <meta
+      name="description"
+      content="ECHO is a browser-native voice reader with file import, live word tracking, and system voice playback."
+    />
+    <meta name="theme-color" content="#090b10" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <title>ECHO | Browser Voice Reader</title>
   </head>
   <body class="echo-standalone">
-    <div class="echo-shell">
+    <div class="echo-shell" data-echo-app>
       <header class="echo-header">
         <a class="echo-brand" href="/echo/">
           <span class="echo-mark">ECHO</span>
-          <span class="echo-tagline">File-in -> Voice -> MP3-out</span>
+          <span class="echo-tagline">Browser voice reader</span>
         </a>
         <nav class="echo-nav" aria-label="ECHO navigation">
           <a href="/projects/echo/">Project details</a>
@@ -30,73 +35,177 @@ import '../../styles/echo-standalone.css';
       </header>
 
       <main class="echo-main">
-        <section class="echo-hero">
-          <p class="echo-eyebrow">Text-to-Speech</p>
-          <h1>ECHO / Ariel / Voice11</h1>
-          <p>Drag in a file, choose a real local synthesis voice, and generate a downloadable MP3.</p>
-          <p>No paid API key and no backend inference service are required for this route.</p>
-          <div class="echo-actions">
-            <a class="echo-button secondary" href="/projects/echo/">Project details</a>
-            <a class="echo-button secondary" href="mailto:martinlepage.ai@gmail.com">Report issue</a>
+        <section class="echo-intro">
+          <div class="echo-intro-copy">
+            <p class="echo-eyebrow">Text-to-Speech</p>
+            <h1>Listen to drafts out loud with local system voices.</h1>
+            <p class="echo-intro-lede">
+              Import a note, PDF, or DOCX, tune the delivery, and hear the text back with live
+              word tracking in your browser.
+            </p>
+          </div>
+          <div class="echo-intro-meta">
+            <p>No backend, no API key, no upload.</p>
+            <p>Voice availability depends on the browser and operating system on this device.</p>
           </div>
         </section>
 
-        <section class="echo-workbench" aria-labelledby="echo-workbench-title" data-echo-app>
-          <div class="echo-workbench-head">
-            <p class="echo-eyebrow">Generator</p>
-            <h2 id="echo-workbench-title">File to MP3</h2>
-            <p>Supported upload formats: <code>.txt</code>, <code>.md</code>, <code>.docx</code>, <code>.pdf</code>.</p>
-          </div>
+        <section class="echo-grid" aria-labelledby="echo-workbench-title">
+          <section class="echo-panel echo-editor-panel">
+            <div class="echo-panel-head">
+              <div>
+                <p class="echo-eyebrow">Source</p>
+                <h2 id="echo-workbench-title">Draft or document</h2>
+              </div>
+              <div class="echo-panel-actions">
+                <button class="echo-ghost-button" type="button" data-echo-sample>Load sample</button>
+                <button class="echo-ghost-button" type="button" data-echo-clear>Clear</button>
+              </div>
+            </div>
 
-          <div class="echo-dropzone" data-echo-dropzone tabindex="0" role="button" aria-label="Drop file here or click to choose file">
-            <p><strong>Drop file here</strong> or click to browse</p>
-            <p>Text will be extracted locally in the browser.</p>
-            <input class="echo-file-input" data-echo-file-input type="file" accept=".txt,.md,.markdown,.docx,.pdf" />
-          </div>
+            <div
+              class="echo-dropzone"
+              data-echo-dropzone
+              tabindex="0"
+              role="button"
+              aria-label="Drop file here or click to choose file"
+            >
+              <div>
+                <p><strong>Drop a file or browse</strong></p>
+                <p>Supports <code>.txt</code>, <code>.md</code>, <code>.docx</code>, and <code>.pdf</code>.</p>
+              </div>
+              <span class="echo-dropzone-cta">Choose file</span>
+              <input
+                class="echo-file-input"
+                data-echo-file-input
+                type="file"
+                accept=".txt,.md,.markdown,.docx,.pdf"
+              />
+            </div>
 
-          <p class="echo-file-meta" data-echo-file-meta>No file selected yet.</p>
-
-          <div class="echo-form-grid">
-            <label class="echo-field" for="echo-voice">
-              <span class="echo-field-label">Voice Dashboard</span>
-              <select id="echo-voice" class="echo-input" data-echo-voice></select>
-            </label>
-
-            <div class="echo-field">
-              <span class="echo-field-label">Selected Voice</span>
-              <p class="echo-voice-meta" data-echo-voice-meta></p>
+            <div class="echo-meta-row">
+              <p class="echo-file-meta" data-echo-file-meta>No file selected yet.</p>
+              <p class="echo-text-meta" data-echo-text-meta>0 words · 0 chars · ~0 min</p>
             </div>
 
             <label class="echo-field echo-field-full" for="echo-text">
-              <span class="echo-field-label">Extracted Text</span>
-              <textarea id="echo-text" class="echo-textarea" data-echo-text rows="12" placeholder="Upload a file to populate text. You can edit before generation."></textarea>
+              <span class="echo-field-label">Text canvas</span>
+              <textarea
+                id="echo-text"
+                class="echo-textarea"
+                data-echo-text
+                rows="18"
+                placeholder="Paste writing here or import a file. ECHO will keep the text in your browser and read it back with the system voices available on this device."
+              ></textarea>
             </label>
-          </div>
+          </section>
 
-          <div class="echo-runner">
-            <button class="echo-button primary" type="button" data-echo-generate disabled>Generate MP3</button>
-          </div>
+          <aside class="echo-panel echo-side-panel">
+            <div class="echo-panel-head">
+              <div>
+                <p class="echo-eyebrow">Controls</p>
+                <h2>Delivery and playback</h2>
+              </div>
+            </div>
 
-          <div class="echo-progress-shell" aria-live="polite">
-            <p class="echo-status" data-echo-status data-tone="info">Initializing...</p>
-            <progress class="echo-progress" data-echo-progress max="100" value="0"></progress>
-            <p class="echo-progress-label" data-echo-progress-label>Idle</p>
-          </div>
+            <div class="echo-profile-list" role="group" aria-label="ECHO voice profiles">
+              <button class="echo-profile-chip" type="button" data-echo-profile="echo">ECHO</button>
+              <button class="echo-profile-chip" type="button" data-echo-profile="ariel">Ariel</button>
+              <button class="echo-profile-chip" type="button" data-echo-profile="voice11">Voice11</button>
+            </div>
+            <p class="echo-profile-copy" data-echo-profile-copy></p>
 
-          <section class="echo-result" data-echo-result hidden>
-            <h3>Generated MP3</h3>
-            <audio class="echo-audio" data-echo-audio controls preload="metadata"></audio>
-            <a class="echo-button secondary" data-echo-download href="#">Download MP3</a>
-            <p class="echo-note" data-echo-result-meta></p>
+            <label class="echo-field" for="echo-voice">
+              <span class="echo-field-label">System voice</span>
+              <select id="echo-voice" class="echo-input" data-echo-voice></select>
+            </label>
+            <p class="echo-voice-meta" data-echo-voice-meta></p>
+
+            <div class="echo-slider-stack">
+              <label class="echo-slider" for="echo-rate">
+                <span class="echo-slider-label">Rate</span>
+                <input
+                  id="echo-rate"
+                  class="echo-range"
+                  data-echo-rate
+                  type="range"
+                  min="0.6"
+                  max="1.6"
+                  step="0.05"
+                  value="1"
+                />
+                <span class="echo-slider-value" data-echo-rate-value>1.00</span>
+              </label>
+
+              <label class="echo-slider" for="echo-pitch">
+                <span class="echo-slider-label">Pitch</span>
+                <input
+                  id="echo-pitch"
+                  class="echo-range"
+                  data-echo-pitch
+                  type="range"
+                  min="0.6"
+                  max="1.5"
+                  step="0.05"
+                  value="1"
+                />
+                <span class="echo-slider-value" data-echo-pitch-value>1.00</span>
+              </label>
+
+              <label class="echo-slider" for="echo-volume">
+                <span class="echo-slider-label">Volume</span>
+                <input
+                  id="echo-volume"
+                  class="echo-range"
+                  data-echo-volume
+                  type="range"
+                  min="0.1"
+                  max="1"
+                  step="0.05"
+                  value="1"
+                />
+                <span class="echo-slider-value" data-echo-volume-value>1.00</span>
+              </label>
+            </div>
+
+            <div class="echo-waveform" data-echo-waveform aria-hidden="true"></div>
+
+            <div class="echo-runner">
+              <button class="echo-button primary" type="button" data-echo-play>Play</button>
+              <button class="echo-button secondary" type="button" data-echo-pause>Pause</button>
+              <button class="echo-button secondary danger" type="button" data-echo-stop>Stop</button>
+            </div>
+
+            <div class="echo-progress-shell" aria-live="polite">
+              <p class="echo-status" data-echo-status data-tone="info">Initializing...</p>
+              <div class="echo-progress-track">
+                <div class="echo-progress-bar" data-echo-progress></div>
+              </div>
+              <p class="echo-progress-label" data-echo-progress-label>Idle</p>
+            </div>
+          </aside>
+
+          <section class="echo-panel echo-reader-panel" aria-labelledby="echo-reader-title">
+            <div class="echo-panel-head">
+              <div>
+                <p class="echo-eyebrow">Readback</p>
+                <h2 id="echo-reader-title">Live reading surface</h2>
+              </div>
+            </div>
+            <div class="echo-output" data-echo-output></div>
+            <p class="echo-note">
+              Word highlighting depends on browser speech-boundary support and may vary slightly
+              across devices.
+            </p>
           </section>
         </section>
       </main>
     </div>
 
     <script>
-      import { initEchoFileToMp3App } from '../../scripts/echo-file-to-mp3.js';
+      import { initEchoReaderApp } from '../../scripts/echo-reader.js';
 
-      initEchoFileToMp3App();
+      initEchoReaderApp();
     </script>
   </body>
 </html>
