@@ -33,7 +33,7 @@ const utilityItems = [{ href: '/contact/', label: 'Contact', isActive: isActiveP
       </span>
     </a>
 
-    <nav aria-label="Primary" class="hidden min-w-0 items-center gap-3 xl:flex 2xl:gap-4">
+    <nav aria-label="Primary" class="hidden min-w-0 items-center gap-3 min-[1440px]:flex 2xl:gap-4">
       {
         navItems.map(({ href, isActive, label }) => (
           <a
@@ -52,7 +52,7 @@ const utilityItems = [{ href: '/contact/', label: 'Contact', isActive: isActiveP
       }
     </nav>
 
-    <div class="hidden items-center gap-3 xl:flex">
+    <div class="hidden items-center gap-3 min-[1440px]:flex">
       {utilityItems.map(({ href, isActive, label }) => (
         <a
           href={href}
@@ -67,7 +67,7 @@ const utilityItems = [{ href: '/contact/', label: 'Contact', isActive: isActiveP
       ))}
     </div>
 
-    <details class="group relative xl:hidden">
+    <details class="group relative min-[1440px]:hidden">
       <summary class="flex list-none cursor-pointer items-center gap-3 rounded-full border border-[rgba(17,23,38,0.12)] bg-[rgba(250,247,242,0.94)] px-4 py-2 font-mono text-[0.56rem] uppercase tracking-[0.12em] text-slate-200 transition hover:border-[rgba(95,127,174,0.3)] hover:text-moon [&::-webkit-details-marker]:hidden">
         Menu
         <span class="text-[0.7rem] leading-none text-slate-200 transition group-open:rotate-45 group-open:text-accent" aria-hidden="true">
