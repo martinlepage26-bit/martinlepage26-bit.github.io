@@ -6,6 +6,11 @@ const SAMPLE_TEXT =
 const STORAGE_KEY = 'echo-reader-state-v1';
 const VOICE_POLL_INTERVAL_MS = 700;
 const VOICE_POLL_MAX_ATTEMPTS = 12;
+const PREVIEW_RENDER_DEBOUNCE_MS = 80;
+const DEFAULT_SURFACE_BATCH_SIZE = 420;
+const LARGE_SURFACE_BATCH_SIZE = 240;
+const LARGE_DRAFT_WORD_THRESHOLD = 4000;
+const HIGHLIGHT_SCROLL_THROTTLE_MS = 140;
 
 const SUPPORTED_EXTENSIONS = new Set(['txt', 'md', 'markdown', 'docx', 'pdf']);
 const TEXT_EXTENSIONS = new Set(['txt', 'md', 'markdown']);
@@ -278,7 +283,23 @@ function setWaveformActive(container, active) {
   });
 }
 
-function renderWordSurface(container, text) {
+function waitForPaint() {
+  return new Promise((resolve) => {
+    if (typeof window !== 'undefined' && typeof window.requestAnimationFrame === 'function') {
+      window.requestAnimationFrame(() => resolve());
+      return;
+    }
+
+    window.setTimeout(resolve, 16);
+  });
+}
+
+async function renderWordSurface(container, text, options = {}) {
+  const {
+    batchSize = DEFAULT_SURFACE_BATCH_SIZE,
+    isStale = () => false,
+  } = options;
+
   container.innerHTML = '';
 
   if (!text) {
@@ -286,13 +307,18 @@ function renderWordSurface(container, text) {
     return [];
   }
 
-  const fragment = document.createDocumentFragment();
   const wordRanges = [];
   const matcher = /\S+/g;
   let lastIndex = 0;
   let match;
+  let fragment = document.createDocumentFragment();
+  let wordsInBatch = 0;
 
   while ((match = matcher.exec(text))) {
+    if (isStale()) {
+      return null;
+    }
+
     if (match.index > lastIndex) {
       fragment.append(text.slice(lastIndex, match.index));
     }
@@ -309,6 +335,14 @@ function renderWordSurface(container, text) {
     });
 
     lastIndex = match.index + match[0].length;
+    wordsInBatch += 1;
+
+    if (wordsInBatch >= batchSize) {
+      container.append(fragment);
+      fragment = document.createDocumentFragment();
+      wordsInBatch = 0;
+      await waitForPaint();
+    }
   }
 
   if (lastIndex < text.length) {
@@ -500,8 +534,10 @@ export function initEchoReaderApp() {
   let paused = false;
   let extracting = false;
   let previewRenderTimer = 0;
+  let previewRenderVersion = 0;
   let voicePollTimer = 0;
   let voicePollAttempts = 0;
+  let lastHighlightScrollAt = 0;
 
   const setStatus = (message, tone = 'info') => {
     statusNode.textContent = message;
@@ -532,6 +568,19 @@ export function initEchoReaderApp() {
     highlightedWordIndex = -1;
   };
 
+  const shouldScrollHighlightedWord = (node) => {
+    const now = Date.now();
+    if (now - lastHighlightScrollAt < HIGHLIGHT_SCROLL_THROTTLE_MS) {
+      return false;
+    }
+
+    const containerRect = outputNode.getBoundingClientRect();
+    const nodeRect = node.getBoundingClientRect();
+    const visibleTop = containerRect.top + 18;
+    const visibleBottom = containerRect.bottom - 18;
+    return nodeRect.top < visibleTop || nodeRect.bottom > visibleBottom;
+  };
+
   const highlightWord = (charIndex) => {
     if (!wordRanges.length) {
       return;
@@ -545,7 +594,10 @@ export function initEchoReaderApp() {
     clearHighlights();
     const target = wordRanges[nextIndex];
     target.node.classList.add('is-active');
-    target.node.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    if (shouldScrollHighlightedWord(target.node)) {
+      target.node.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      lastHighlightScrollAt = Date.now();
+    }
     highlightedWordIndex = nextIndex;
   };
 
@@ -574,12 +626,34 @@ export function initEchoReaderApp() {
     });
   };
 
+  const renderPreviewSurface = async (text) => {
+    const normalized = normalizeText(text);
+    const renderVersion = ++previewRenderVersion;
+    const wordCount = countWords(normalized);
+    const batchSize = wordCount >= LARGE_DRAFT_WORD_THRESHOLD
+      ? LARGE_SURFACE_BATCH_SIZE
+      : DEFAULT_SURFACE_BATCH_SIZE;
+
+    const nextWordRanges = await renderWordSurface(outputNode, normalized, {
+      batchSize,
+      isStale: () => renderVersion !== previewRenderVersion,
+    });
+
+    if (!nextWordRanges || renderVersion !== previewRenderVersion) {
+      return false;
+    }
+
+    wordRanges = nextWordRanges;
+    highlightedWordIndex = -1;
+    lastHighlightScrollAt = 0;
+    return true;
+  };
+
   const schedulePreviewRender = () => {
     window.clearTimeout(previewRenderTimer);
     previewRenderTimer = window.setTimeout(() => {
-      wordRanges = renderWordSurface(outputNode, normalizeText(textArea.value));
-      highlightedWordIndex = -1;
-    }, 80);
+      void renderPreviewSurface(textArea.value);
+    }, PREVIEW_RENDER_DEBOUNCE_MS);
   };
 
   const refreshVoiceMeta = () => {
@@ -632,6 +706,7 @@ export function initEchoReaderApp() {
       synth.cancel();
     }
     clearHighlights();
+    lastHighlightScrollAt = 0;
     setWaveformActive(waveformNode, false);
     if (resetStatus) {
       setStatus('Idle. Press Play to start reading.', 'info');
@@ -729,7 +804,7 @@ export function initEchoReaderApp() {
     synth.speak(utterance);
   };
 
-  const startPlayback = () => {
+  const startPlayback = async () => {
     if (!synth || typeof window.SpeechSynthesisUtterance !== 'function') {
       setStatus('This browser does not support speech synthesis on this route.', 'error');
       return;
@@ -761,11 +836,19 @@ export function initEchoReaderApp() {
     playbackChunkIndex = 0;
     playbackSessionId += 1;
     const sessionId = playbackSessionId;
-    wordRanges = renderWordSurface(outputNode, normalizedText);
-    clearHighlights();
     setProgress(0, `Preparing ${playbackChunks.length} chunk(s)...`);
     setStatus('Starting browser playback...', 'info');
     setButtons();
+
+    const didRender = await renderPreviewSurface(normalizedText);
+    if (!didRender || normalizeText(textArea.value) !== normalizedText) {
+      setStatus('Text changed while preparing the reading surface. Press Play again.', 'info');
+      setProgress(0, 'Edited');
+      setButtons();
+      return;
+    }
+
+    clearHighlights();
     startChunkPlayback(sessionId, normalizedText);
   };
 
@@ -785,8 +868,7 @@ export function initEchoReaderApp() {
       textArea.value = extractedText;
       fileMetaNode.textContent = safeFileMeta(file, extractedText);
       updateTextMeta();
-      wordRanges = renderWordSurface(outputNode, extractedText);
-      highlightedWordIndex = -1;
+      await renderPreviewSurface(extractedText);
       setStatus('File imported. Adjust the voice and press Play.', 'ok');
       setProgress(0, 'Ready');
       persistState();
@@ -795,7 +877,7 @@ export function initEchoReaderApp() {
       textArea.value = '';
       fileMetaNode.textContent = file ? file.name : 'No file selected yet.';
       updateTextMeta();
-      wordRanges = renderWordSurface(outputNode, '');
+      await renderPreviewSurface('');
       setStatus(message, 'error');
       setProgress(0, 'Import failed');
     } finally {
@@ -888,7 +970,7 @@ export function initEchoReaderApp() {
 
   syncSliderLabels();
   fileMetaNode.textContent = 'No file selected yet.';
-  wordRanges = renderWordSurface(outputNode, normalizeText(textArea.value));
+  void renderPreviewSurface(textArea.value);
   applyProfile(activeProfileId, false);
   if (!queryProfile && storedState) {
     rateInput.value = clampNumber(storedState.rate, 0.6, 1.6, 1).toFixed(2);
@@ -991,25 +1073,24 @@ export function initEchoReaderApp() {
     }
   });
 
-  sampleButton.addEventListener('click', () => {
+  sampleButton.addEventListener('click', async () => {
     stopPlayback(false);
     textArea.value = SAMPLE_TEXT;
     fileMetaNode.textContent = 'Loaded the built-in sample text.';
     updateTextMeta();
-    wordRanges = renderWordSurface(outputNode, normalizeText(textArea.value));
-    highlightedWordIndex = -1;
+    await renderPreviewSurface(textArea.value);
     setStatus('Sample text loaded.', 'ok');
     setProgress(0, 'Ready');
     persistState();
     setButtons();
   });
 
-  clearButton.addEventListener('click', () => {
+  clearButton.addEventListener('click', async () => {
     stopPlayback(false);
     textArea.value = '';
     fileMetaNode.textContent = 'Canvas cleared.';
     updateTextMeta();
-    wordRanges = renderWordSurface(outputNode, '');
+    await renderPreviewSurface('');
     setStatus('Text cleared.', 'info');
     setProgress(0, 'Idle');
     persistState();

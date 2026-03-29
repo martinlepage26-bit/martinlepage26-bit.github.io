@@ -16,6 +16,7 @@ if (Number.isNaN(port)) {
 const baseUrl = `http://${host}:${port}`;
 const baseRoutes = [
   '/',
+  '/echo/',
   '/gaia/',
   '/gaia/book/',
   '/gaia/glossary/',
@@ -28,6 +29,23 @@ const baseRoutes = [
 ];
 
 const contentChecks = {
+  '/echo/': {
+    includes: [
+      'data-echo-page-lock="gaia-sibling-reader"',
+      'data-echo-page-shell="reading-surface"',
+      'data-echo-design-lock="gaia-sibling-reader-2026-03-29"',
+      'data-echo-lock-block="intro"',
+      'data-echo-lock-block="editor-panel"',
+      'data-echo-lock-block="controls-panel"',
+      'data-echo-lock-block="readback-panel"',
+    ],
+    excludes: [
+      'File to MP3',
+      'Generate MP3',
+      'File-in -&gt; Voice -&gt; MP3-out',
+      'No paid API key and no backend inference service are required for this route.',
+    ],
+  },
   '/gaia/': {
     includes: [
       'data-gaia-page-lock="full-bleed-app"',

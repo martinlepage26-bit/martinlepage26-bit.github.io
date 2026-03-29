@@ -20,8 +20,19 @@ import '../../styles/echo-standalone.css';
     />
     <title>ECHO | Browser Voice Reader</title>
   </head>
-  <body class="echo-standalone">
-    <div class="echo-shell" data-echo-app>
+  <!--
+    ECHO design lock:
+    Preserve the GAIA-sibling reading surface, the intro -> editor -> controls -> readback order,
+    and the restrained copper-on-charcoal tool styling unless an explicit redesign is requested.
+    If this visual contract changes, update the smoke lock markers in scripts/smoke.mjs.
+  -->
+  <body class="echo-standalone" data-echo-page-lock="gaia-sibling-reader">
+    <div
+      class="echo-shell"
+      data-echo-app
+      data-echo-page-shell="reading-surface"
+      data-echo-design-lock="gaia-sibling-reader-2026-03-29"
+    >
       <header class="echo-header">
         <a class="echo-brand" href="/echo/">
           <span class="echo-mark">ECHO</span>
@@ -35,7 +46,7 @@ import '../../styles/echo-standalone.css';
       </header>
 
       <main class="echo-main">
-        <section class="echo-intro">
+        <section class="echo-intro" data-echo-lock-block="intro">
           <div class="echo-intro-copy">
             <p class="echo-eyebrow">Text-to-Speech</p>
             <h1>Listen to drafts out loud with local system voices.</h1>
@@ -51,7 +62,7 @@ import '../../styles/echo-standalone.css';
         </section>
 
         <section class="echo-grid" aria-labelledby="echo-workbench-title">
-          <section class="echo-panel echo-editor-panel">
+          <section class="echo-panel echo-editor-panel" data-echo-lock-block="editor-panel">
             <div class="echo-panel-head">
               <div>
                 <p class="echo-eyebrow">Source</p>
@@ -100,7 +111,7 @@ import '../../styles/echo-standalone.css';
             </label>
           </section>
 
-          <aside class="echo-panel echo-side-panel">
+          <aside class="echo-panel echo-side-panel" data-echo-lock-block="controls-panel">
             <div class="echo-panel-head">
               <div>
                 <p class="echo-eyebrow">Controls</p>
@@ -185,7 +196,11 @@ import '../../styles/echo-standalone.css';
             </div>
           </aside>
 
-          <section class="echo-panel echo-reader-panel" aria-labelledby="echo-reader-title">
+          <section
+            class="echo-panel echo-reader-panel"
+            aria-labelledby="echo-reader-title"
+            data-echo-lock-block="readback-panel"
+          >
             <div class="echo-panel-head">
               <div>
                 <p class="echo-eyebrow">Readback</p>
