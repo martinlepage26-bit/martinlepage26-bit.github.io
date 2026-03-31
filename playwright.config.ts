@@ -21,9 +21,10 @@ export default defineConfig({
     video: 'retain-on-failure',
   },
   webServer: {
-    command: 'npm run build && npm run preview -- --host 127.0.0.1 --port 4519 --strictPort',
+    // Preview the existing dist build so Lotus interaction tests stay isolated from unrelated dev-server churn.
+    command: 'npm run preview -- --host 127.0.0.1 --port 4519 --strictPort',
     url: 'http://127.0.0.1:4519/lotus/',
-    reuseExistingServer: false,
+    reuseExistingServer: true,
     timeout: 120_000,
   },
 });

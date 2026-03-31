@@ -14,7 +14,7 @@
     "lotus:check": "node ./scripts/lotus-validate.mjs",
     "lotus:full-check": "npm run build && npm run lotus:smoke",
     "lotus:smoke": "node ./scripts/lotus-smoke.mjs",
-    "lotus:e2e": "playwright test tests/lotus-bloom-e2e.spec.ts",
+    "lotus:e2e": "npm run build && playwright test tests/lotus-bloom-e2e.spec.ts",
     "smoke": "node ./scripts/smoke.mjs",
     "deploy:echo:worker": "cd workers/echo-tts-online && npx wrangler deploy",
     "deploy:echo:site": "npm run build && npx wrangler pages deploy dist --project-name martin-lepage-site --branch main --commit-dirty=true",

@@ -28,10 +28,15 @@ test.describe('Lotus agency scorer', () => {
     await expect(activePills.first()).toBeVisible();
 
     await page.locator('[data-lotus-sample="operations-handoff"]').click();
+    await expect(page.locator('[data-lotus-sample="operations-handoff"]')).toHaveAttribute('aria-pressed', 'true');
     await expect(page.locator('#lotus-title-input')).toHaveValue('Workflow handoff and monitoring memo');
     await page.locator('#lotus-score-button').click();
     await expect(page.locator('#lotus-result-title')).toHaveText('Workflow handoff and monitoring memo');
     await expect(page.locator('#lotus-preview')).toContainText('The team needs a clearer implementation process');
+
+    await page.locator('#lotus-reset-button').click();
+    await expect(page.locator('#lotus-title-input')).toHaveValue('Bonded intelligence under constraint');
+    await expect(page.locator('[data-lotus-sample="bonded-intelligence"]')).toHaveAttribute('aria-pressed', 'true');
 
     const vector = page.locator('#lotus-vector');
     await vector.scrollIntoViewIfNeeded();
@@ -60,5 +65,25 @@ test.describe('Lotus agency scorer', () => {
     await expect(vector.getByText('Agency Vector', { exact: true })).toBeVisible();
     await expect(vector.getByText('Effective LOTUS State', { exact: true })).toBeVisible();
     await expect(vector.getByText('Formula Trace', { exact: true })).toBeVisible();
+  });
+
+  test('normalizes markdown-heavy notes without leaking formatting noise into the reading surface', async ({ page }) => {
+    await page.goto('/lotus/');
+
+    await page.locator('#lotus-title-input').fill('');
+    await page.locator('#lotus-text-input').fill(`# Markdown pressure note
+
+- Governance drift is narrowing choice.
+- Support collapse is reducing room to act.
+- Meaning and ritual practice are helping coherence return.
+`);
+
+    await page.locator('#lotus-score-button').click();
+
+    await expect(page.locator('#lotus-result-title')).toHaveText('Markdown pressure note');
+    await expect(page.locator('#lotus-preview')).toContainText('Governance drift is narrowing choice.');
+    await expect(page.locator('#lotus-preview')).not.toContainText('# Markdown pressure note');
+    await expect(page.locator('#lotus-preview')).not.toContainText('- Governance drift is narrowing choice.');
+    await expect(page.locator('#lotus-active-signal-count')).not.toHaveText('0');
   });
 });
