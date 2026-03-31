@@ -7,7 +7,7 @@ import LotusLayout from '../../layouts/LotusLayout.astro';
 import { buildCanonical } from '../../lib/seo';
 
 const pageDescription =
-  'LOTUS is a reflective support and agency-scoring system that helps people make sense of stress, instability, isolation, blocked options, and social invisibility.';
+  'LOTUS is a reflective support and agency-scoring system for naming how pressure narrows choice, support, meaning, and room to move.';
 
 const structuredData = {
   '@context': 'https://schema.org',
@@ -30,31 +30,40 @@ const structuredData = {
         <p class="eyebrow">Lotus</p>
         <h1 class="mt-5">Agency scorer and reflective workbench.</h1>
         <p class="mt-5 max-w-3xl text-lg leading-8 text-slate-100 md:text-xl">
-          Score a note in the browser, inspect the active signal groups, and move straight into the full LOTUS vector
-          model with all the categories and narrative questions below. This page is the app, not a landing page for it.
+          Score a note in the browser, see which pressures rise to the surface, and move straight into the full LOTUS
+          vector model below.
         </p>
         <div class="mt-8 flex flex-wrap gap-3 lotus-top-actions">
           <a class="button-primary" href="#lotus-workbench">Start scoring</a>
           <a class="button-secondary" href="#lotus-vector">Jump to the questions</a>
-          <a class="button-secondary" href="/projects/bonded-intelligence-under-constraint/">Read the framework paper</a>
-          <a class="button-secondary" href="/projects/lotus/">Open the project record</a>
         </div>
+        <p class="mt-4 max-w-2xl lotus-top-note">
+          One route, two depths: a quick reading of the note, then the longer vector model when you need to stay with
+          the shape of the situation.
+        </p>
       </div>
 
       <aside class="veil-panel lotus-orientation-card">
         <p class="eyebrow">Orientation</p>
         <div class="mt-5 space-y-4">
           <div class="lotus-orientation-item">
-            <p class="lotus-orientation-label">Browser-first</p>
-            <p class="lotus-orientation-copy">Paste a note, score it, and inspect the active signals without leaving the page.</p>
+            <p class="lotus-orientation-label">In browser</p>
+            <p class="lotus-orientation-copy">
+              Paste a note, score it in place, and read the active signals without stepping into another tool.
+            </p>
           </div>
           <div class="lotus-orientation-item">
-            <p class="lotus-orientation-label">Questions intact</p>
-            <p class="lotus-orientation-copy">The full narrative guide and vector categories remain on this same route below the scorer.</p>
+            <p class="lotus-orientation-label">Full model</p>
+            <p class="lotus-orientation-copy">
+              The longer questions and vector categories stay on this same route, so the quick read and deeper pass stay
+              in one frame.
+            </p>
           </div>
           <div class="lotus-orientation-item">
-            <p class="lotus-orientation-label">Boundary</p>
-            <p class="lotus-orientation-copy">LOTUS is not diagnosis or crisis care. It is a bounded reflective and analytical tool.</p>
+            <p class="lotus-orientation-label">Bounded use</p>
+            <p class="lotus-orientation-copy">
+              LOTUS is a reflective and analytical aid, not diagnosis, crisis care, or a substitute for human judgment.
+            </p>
           </div>
         </div>
       </aside>
@@ -64,8 +73,8 @@ const structuredData = {
   <section id="lotus-workbench" class="section-shell">
     <SectionIntro
       eyebrow="Workbench"
-      title="Map the pressure points in your own words."
-      description="Paste text — a journal entry, a situation description, a note — and LOTUS identifies which signal groups are present. No text is uploaded or stored. The reading stays in your browser."
+      title="Map the pressure in your own words."
+      description="Paste a journal entry, a situation note, or a working fragment. LOTUS reads for signal groups that gather around constraint, support, meaning, and room to act. The reading stays in your browser."
     />
 
     <div class="mt-12">
@@ -76,8 +85,8 @@ const structuredData = {
   <section id="lotus-vector" class="section-shell border-y border-[rgba(255,255,255,0.08)] bg-[rgba(8,11,16,0.72)]">
     <SectionIntro
       eyebrow="Vector model"
-      title="Rate the pressures and supports. See where agency stands."
-      description="This tool is designed for researchers, clinicians, and practitioners. Rate each dimension of a person's situation — base state, constraints, and scaffolds — and LOTUS computes the effective agency vector using the full formula chain."
+      title="Trace what narrows agency, and what keeps it open."
+      description="For researchers, clinicians, and practitioners who need a structured reading of a situation. Rate base state, constraints, and supports, and LOTUS computes the effective agency vector through the full formula chain."
     />
     <div class="mt-12">
       <LotusVectorWorkbench />
@@ -87,8 +96,8 @@ const structuredData = {
   <section class="section-shell border-y border-[rgba(255,255,255,0.08)] bg-[rgba(8,11,16,0.72)]">
     <SectionIntro
       eyebrow="Signal library"
-      title="Six patterns LOTUS looks for."
-      description="LOTUS reads text for signals across six dimensions of a person's situation. Each group names a different kind of pressure, condition, or capacity — from how choices are made under stress to how meaning and identity hold under load."
+      title="Six patterns LOTUS listens for."
+      description="These are not personality types. They are recurring forms of pressure, condition, and capacity: how choices narrow, how institutions bear down, how execution frays, and how meaning or creative life either holds or thins out."
     />
 
     <div class="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
@@ -111,8 +120,8 @@ const structuredData = {
   <section id="lotus-boundary" class="section-shell">
     <SectionIntro
       eyebrow="What LOTUS does not claim"
-      title="LOTUS maps what it can. It does not define who you are."
-      description="Clarity can be a form of support. But interpretation must remain revisable. LOTUS is designed to open understanding, not close it down — and to hold both the human and the structural dimensions without collapsing either."
+      title="LOTUS can clarify a situation. It cannot finish the interpretation."
+      description="A clear read can widen room to act. But any reading remains partial, revisable, and answerable to context. LOTUS is built to support reflection without collapsing the person into the frame."
     />
 
     <div class="mt-12 grid gap-6 lg:grid-cols-3">
@@ -189,6 +198,12 @@ const structuredData = {
       font-weight: 700;
       background: rgba(204, 153, 103, 0.14);
       color: var(--color-moon);
+    }
+
+    .lotus-top-note {
+      color: var(--lotus-text-soft);
+      font-size: 0.96rem;
+      line-height: 1.72;
     }
   </style>
 </LotusLayout>

@@ -142,7 +142,7 @@ export const lotusSurfaces = [
     eyebrow: 'Primary route',
     title: 'Open the Lotus agency scorer.',
     description:
-      'The main Lotus route is the analytical workbench again: note scoring, signal groups, category-based reading, and the full agency-oriented interface.',
+      'The main Lotus route now holds the quick reading and the deeper model together: note scoring, signal groups, and the full agency-oriented interface on one surface.',
     href: '/lotus/#lotus-workbench',
     cta: 'Open the workbench',
   },
@@ -150,7 +150,7 @@ export const lotusSurfaces = [
     eyebrow: 'For researchers',
     title: 'Analyze constrained agency across scales.',
     description:
-      'LOTUS offers a structured, non-reductionist framework for mapping how regulatory load, perceptual narrowing, blocked access, and social legibility interact under conditions of stress, trauma, precarity, or institutional mismatch.',
+      'LOTUS offers a structured, non-reductionist way to trace how regulatory load, perceptual narrowing, blocked access, and social legibility interact under stress, precarity, trauma, or institutional mismatch.',
     href: '/lotus/#lotus-vector',
     cta: 'Run the vector model',
   },
@@ -166,7 +166,7 @@ export const lotusSurfaces = [
     eyebrow: 'Limits',
     title: 'Understand what LOTUS does not do.',
     description:
-      'LOTUS does not diagnose, predict fixed futures, or replace therapy, crisis care, or medical treatment. Any high-stakes use should include human judgment and appropriate ethical safeguards.',
+      'LOTUS does not diagnose, predict fixed futures, or replace therapy, crisis care, or medical treatment. Any high-stakes use should remain accountable to human judgment and appropriate ethical safeguards.',
     href: '/lotus/#lotus-boundary',
     cta: 'Read the limits',
   },
@@ -176,17 +176,17 @@ export const lotusBoundaryCards = [
   {
     title: 'LOTUS does not diagnose.',
     body:
-      'LOTUS is not a medical or diagnostic device. It is a reflective and interpretive tool. It may help identify patterns, but it does not produce clinical conclusions or replace professional assessment.',
+      'LOTUS is not a medical or diagnostic device. It can surface patterns and language around pressure, but it does not produce clinical conclusions or replace professional assessment.',
   },
   {
-    title: 'The person is more than the score.',
+    title: 'A score is not a self.',
     body:
-      'LOTUS may generate structure, but it does not reduce a person to a number. A score reflects conditions and pressures — not character, worth, or fixed identity. Interpretation must remain revisable.',
+      'Any score is a reading of conditions, constraints, and supports at a moment in time. It is not character, worth, destiny, or fixed identity. Interpretation must remain revisable.',
   },
   {
-    title: 'The website surface is intentionally bounded.',
+    title: 'Boundaries protect dignity.',
     body:
-      'LOTUS should not be used to exploit or manipulate vulnerable people. It is designed to support understanding, dignity, and better pathways to care or action — not to make high-stakes decisions without human judgment.',
+      'LOTUS should not be used to sort, exploit, or manipulate vulnerable people. It is designed to support understanding, dignity, and better pathways to care or action, not high-stakes decisions without human judgment.',
   },
 ] as const;
 
