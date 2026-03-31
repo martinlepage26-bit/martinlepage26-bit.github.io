@@ -1,35 +1,31 @@
 ---
 title: "Lotus"
-subtitle: "Sequential bloom journaling app with a separate research route"
+subtitle: "Agency scorer and reflective workbench"
 year: 2026
-status: "App in development · bloom journaling route + research tooling"
-description: "A local-first bloom journaling app with a separate Lotus research route for scoring, vector analysis, and signal-library work."
+status: "App in development · agency scorer and workbench"
+description: "A local-first agency scorer and reflective workbench for note scoring, vector analysis, and signal-library reading."
 role: "Creator"
 outputs:
-  - "Sequential one-bloom journaling flow"
-  - "Browser-side Lotus research workbench"
+  - "Agency-scoring browser workbench"
   - "Vector model and signal-library route"
 tags:
   - App in development
   - Local-first
-  - Bloom journaling
-  - Reflective UX
+  - Agency scoring
+  - Reflective workbench
   - Research tooling
-  - Agency analysis
 featured: false
 image: "/assets/geometric-motif-bottomleft.png"
-imageAlt: "A local-first bloom journaling app with a separate research route for agency, strategy, governance, and meaning signals."
+imageAlt: "A local-first agency scorer and reflective workbench."
 links:
   - label: "Open Lotus"
     url: "/lotus/"
-  - label: "Open Lotus research"
-    url: "/lotus/research/"
   - label: "Read the framework paper"
     url: "/projects/bonded-intelligence-under-constraint/"
   - label: "GitHub repo"
     url: "https://github.com/martinlepage26-bit/Agency"
 ---
 
-*Lotus* is a local-first app in development built around a sequential bloom journaling experience. The public `/lotus/` route now holds the ritual surface: one question, one writing zone, one upward movement at a time.
+*Lotus* is a local-first app in development built as an agency scorer and reflective workbench. The public `/lotus/` route is the main analytical surface: the workbench, scoring categories, signal groups, and vector model all live there.
 
-The analytical workbench still exists, but it now lives on `/lotus/research/` so the reflective bloom flow can stay singular and legible. *Lotus* is the app; the research route is its supporting method surface.
+*Lotus* is the scorer and workbench. Older companion-route experiments are no longer the public shape of the product.

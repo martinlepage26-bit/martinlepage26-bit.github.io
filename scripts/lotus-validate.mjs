@@ -18,38 +18,33 @@ async function runRouteContractChecks() {
 
   assert.match(
     lotusRoute,
-    /import\s+LotusBloomJourney\s+from\s+['"]\.\.\/\.\.\/components\/lotus\/LotusBloomJourney\.astro['"]/,
-    'LOTUS route should include the bloom journey component.',
+    /import\s+LotusWorkbench\s+from\s+['"]\.\.\/\.\.\/components\/lotus\/LotusWorkbench\.astro['"]/,
+    'LOTUS route should include the browser workbench.',
   );
   assert.match(
     lotusRoute,
-    /<LotusBloomJourney\s*\/>/,
-    'LOTUS route should render the bloom journey.',
+    /import\s+LotusVectorWorkbench\s+from\s+['"]\.\.\/\.\.\/components\/lotus\/LotusVectorWorkbench\.astro['"]/,
+    'LOTUS route should include the vector workbench.',
   );
   assert.match(lotusRoute, /<LotusLayout/, 'LOTUS route should render inside the Lotus layout.');
   assert.match(lotusRoute, /canonical="\/lotus\/"/, 'LOTUS route should keep the primary canonical path.');
   assert.match(
     lotusRoute,
-    /sequential bloom journaling experience: one question, one active writing surface, and one upward movement at a time\./,
-    'LOTUS route should describe the bloom journey.',
+    /When life gets harder to carry, LOTUS helps make the pattern clearer\./,
+    'LOTUS route should restore the analytical Lotus hero copy.',
+  );
+  assert.match(lotusRoute, /id="lotus-workbench"/, 'LOTUS route should expose the workbench anchor.');
+  assert.match(lotusRoute, /id="lotus-vector"/, 'LOTUS route should expose the vector model anchor.');
+  assert.match(
+    lotusRoute,
+    /Run the vector model/,
+    'LOTUS route should foreground the scorer and vector workflow on the main route.',
   );
 
   assert.match(
     lotusResearchRoute,
-    /import\s+LotusWorkbench\s+from\s+['"]\.\.\/\.\.\/\.\.\/components\/lotus\/LotusWorkbench\.astro['"]/,
-    'LOTUS research route should include the browser workbench.',
-  );
-  assert.match(
-    lotusResearchRoute,
-    /import\s+LotusVectorWorkbench\s+from\s+['"]\.\.\/\.\.\/\.\.\/components\/lotus\/LotusVectorWorkbench\.astro['"]/,
-    'LOTUS research route should include the vector workbench surface.',
-  );
-  assert.match(lotusResearchRoute, /id="lotus-workbench"/, 'LOTUS research route should expose the workbench anchor.');
-  assert.match(lotusResearchRoute, /id="lotus-vector"/, 'LOTUS research route should expose the vector model anchor.');
-  assert.match(
-    lotusResearchRoute,
-    /The analytical Lotus tools now live beside the bloom, not inside it\./,
-    'LOTUS research route should explain the split.',
+    /The Lotus agency scorer is back on the main route\./,
+    'LOTUS research route should explain that the analytical surface has been restored to /lotus/.',
   );
   assert.match(
     lotusResearchRoute,
@@ -62,9 +57,10 @@ async function runRouteContractChecks() {
   assert.match(lotusStyles, /rgba\(246,\s*182,\s*212,\s*0\.4\)/, 'LOTUS styles should preserve the Bloom background palette.');
   assert.match(
     lotusData,
-    /href:\s*'\/lotus\/research\/#lotus-vector'/,
-    'LOTUS data links should point the research tool CTA to the research route.',
+    /href:\s*'\/lotus\/#lotus-workbench'/,
+    'LOTUS data links should point the primary Lotus CTA to the restored scorer route.',
   );
+  assert.doesNotMatch(lotusData, /\/lotus\/bloom\//, 'LOTUS data should not expose a split bloom route.');
   assert.match(
     lotusBloomJourney,
     /aria-labelledby="lotus-phase-label lotus-question-text"/,

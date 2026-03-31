@@ -120,29 +120,28 @@ async function main() {
       '/lotus',
       /<title>Lotus \| LOTUS<\/title>/,
       [
-        /Open the first bloom\./,
-        /What closes into the stalk is still kept\./,
-        /Begin ascent/,
+        /When life gets harder to carry, LOTUS helps make the pattern clearer\./,
+        /id="lotus-workbench"/,
+        /id="lotus-vector"/,
       ],
-      [/id="lotus-workbench"/, /When life gets harder to carry, LOTUS helps make the pattern clearer\./],
+      [/Open the first bloom\./],
     );
     await fetchHtmlOk(
       '/lotus/',
       /<title>Lotus \| LOTUS<\/title>/,
       [
-        /Open the first bloom\./,
-        /What closes into the stalk is still kept\./,
-        /Begin ascent/,
+        /When life gets harder to carry, LOTUS helps make the pattern clearer\./,
+        /id="lotus-workbench"/,
+        /id="lotus-vector"/,
       ],
-      [/id="lotus-workbench"/, /When life gets harder to carry, LOTUS helps make the pattern clearer\./],
+      [/Open the first bloom\./],
     );
     await fetchHtmlOk(
       '/lotus/research/',
-      /<title>Lotus Research \| LOTUS<\/title>/,
+      /<title>Lotus Research Route \| LOTUS<\/title>/,
       [
-        /The analytical Lotus tools now live beside the bloom, not inside it\./,
-        /id="lotus-workbench"/,
-        /id="lotus-vector"/,
+        /The Lotus agency scorer is back on the main route\./,
+        /Open the Lotus scorer/,
       ],
     );
     console.log('LOTUS smoke test passed.');

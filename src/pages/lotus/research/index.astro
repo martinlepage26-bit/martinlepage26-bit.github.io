@@ -1,20 +1,15 @@
 ---
-import LotusWorkbench from '../../../components/lotus/LotusWorkbench.astro';
-import LotusVectorWorkbench from '../../../components/lotus/LotusVectorWorkbench.astro';
-import SectionIntro from '../../../components/SectionIntro.astro';
-import { lotusBoundaryCards, lotusSignalGroups, lotusSurfaces } from '../../../data/lotus';
 import LotusLayout from '../../../layouts/LotusLayout.astro';
 import { buildCanonical } from '../../../lib/seo';
 
 const pageDescription =
-  'Lotus research tools: the browser scoring workbench, vector model, signal library, and boundary notes that support the primary bloom journaling experience.';
+  'Lotus research continuity route. The agency scorer, workbench, and vector model now live on the main /lotus/ surface.';
 
 const structuredData = {
   '@context': 'https://schema.org',
-  '@type': 'WebApplication',
-  name: 'Lotus Research Tools',
+  '@type': 'WebPage',
+  name: 'Lotus Research Route',
   description: pageDescription,
-  applicationCategory: 'ResearchApplication',
   url: buildCanonical('/lotus/research/'),
   creator: {
     '@type': 'Person',
@@ -24,136 +19,23 @@ const structuredData = {
 ---
 
 <LotusLayout
-  title="Lotus Research"
+  title="Lotus Research Route"
   description={pageDescription}
   canonical="/lotus/research/"
   structuredData={structuredData}
 >
-  <section class="relative overflow-hidden border-b border-[rgba(17,23,38,0.08)]">
-    <div class="section-shell relative lotus-hero-shell">
-      <div class="lotus-hero-orbit lotus-hero-orbit-one"></div>
-      <div class="lotus-hero-orbit lotus-hero-orbit-two"></div>
-      <div class="grid gap-10 lg:grid-cols-[minmax(0,1.08fr)_minmax(320px,0.92fr)] lg:items-end">
-        <div class="relative z-10 max-w-4xl">
-          <p class="eyebrow">Lotus Research</p>
-          <h1 class="mt-5">The analytical Lotus tools now live beside the bloom, not inside it.</h1>
-          <p class="mt-6 max-w-3xl text-lg leading-8 text-slate-100 md:text-xl">
-            This research route preserves the browser scoring workbench, the vector model, and the signal library that
-            previously lived on the main Lotus page. The primary <code>/lotus/</code> route is now reserved for the
-            sequential bloom journaling experience.
-          </p>
-          <div class="mt-8 flex flex-wrap gap-3">
-            <a class="button-primary" href="/lotus/">Enter the bloom</a>
-            <a class="button-secondary" href="#lotus-workbench">Open the browser workbench</a>
-            <a class="button-secondary" href="#lotus-vector">Run the vector model</a>
-            <a class="button-secondary" href="/projects/lotus/">Open the project record</a>
-          </div>
-        </div>
-
-        <div class="veil-panel relative z-10 lotus-hero-card">
-          <p class="eyebrow">Boundary</p>
-          <div class="mt-5 grid gap-4">
-            <div class="lotus-hero-mini-card">
-              <p class="lotus-hero-label">Primary route</p>
-              <p class="mt-2 text-base leading-7 text-slate-200">
-                <code>/lotus/</code> is the ritual surface: one bloom, one question, one upward movement at a time.
-              </p>
-            </div>
-            <div class="lotus-hero-mini-card">
-              <p class="lotus-hero-label">Research route</p>
-              <p class="mt-2 text-base leading-7 text-slate-200">
-                This page keeps the analytical tooling accessible without letting it fracture the primary journaling
-                experience.
-              </p>
-            </div>
-          </div>
-        </div>
+  <section class="section-shell">
+    <div class="veil-panel mx-auto max-w-4xl">
+      <p class="eyebrow">Lotus research route</p>
+      <h1 class="mt-5">The Lotus agency scorer is back on the main route.</h1>
+      <p class="mt-6 text-lg leading-8 text-slate-200">
+        This continuity route remains available for older links, but the primary Lotus surface is once again the agency
+        scorer, workbench, and vector model on <code>/lotus/</code>.
+      </p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a class="button-primary" href="/lotus/">Open the Lotus scorer</a>
+        <a class="button-secondary" href="/projects/lotus/">Open the project record</a>
       </div>
-    </div>
-  </section>
-
-  <section class="section-shell border-y border-[rgba(17,23,38,0.08)] bg-[rgba(255,255,255,0.36)]">
-    <SectionIntro
-      eyebrow="Route map"
-      title="Two Lotus surfaces, two jobs."
-      description="The bloom route is for reflective ascent. This research route is for scoring, vector analysis, and signal-library exploration."
-    />
-
-    <div class="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-      {lotusSurfaces.map((item) => (
-        <article class="veil-panel h-full">
-          <p class="eyebrow">{item.eyebrow}</p>
-          <h2 class="mt-4 text-[1.08rem] md:text-[1.2rem]">{item.title}</h2>
-          <p class="mt-4 text-base leading-7 text-slate-200">{item.description}</p>
-          <div class="mt-5">
-            <a class="link-inline" href={item.href}>{item.cta}</a>
-          </div>
-        </article>
-      ))}
-    </div>
-  </section>
-
-  <section id="lotus-workbench" class="section-shell">
-    <SectionIntro
-      eyebrow="Browser workbench"
-      title="Score a note through agency, governance, strategy, and meaning."
-      description="Paste markdown or plain text, and Lotus reads the note against its six signal groups. This remains a research tool, not the main bloom journey."
-    />
-
-    <div class="mt-12">
-      <LotusWorkbench />
-    </div>
-  </section>
-
-  <section id="lotus-vector" class="section-shell border-y border-[rgba(17,23,38,0.08)] bg-[rgba(255,255,255,0.36)]">
-    <SectionIntro
-      eyebrow="Vector model"
-      title="Rate the pressures and supports. See where agency stands."
-      description="This route still keeps the more formal Lotus vector tool available for researchers, clinicians, and practitioners."
-    />
-    <div class="mt-12">
-      <LotusVectorWorkbench />
-    </div>
-  </section>
-
-  <section class="section-shell border-y border-[rgba(17,23,38,0.08)] bg-[rgba(255,255,255,0.36)]">
-    <SectionIntro
-      eyebrow="Signal library"
-      title="Six patterns the Lotus research model reads for."
-      description="These signal groups remain part of the analytical toolchain, even though the primary bloom route is now a writing experience rather than a scoring interface."
-    />
-
-    <div class="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-      {lotusSignalGroups.map((group) => (
-        <article class="veil-panel h-full">
-          <div class="flex items-start justify-between gap-3">
-            <div>
-              <p class="eyebrow">{group.label}</p>
-              <h2 class="mt-4 text-[1.08rem] md:text-[1.18rem]">{group.description}</h2>
-            </div>
-            <span class="lotus-weight-badge">{group.weight}</span>
-          </div>
-          <p class="mt-5 text-sm uppercase tracking-[0.18em] text-slate-400">Representative terms</p>
-          <p class="mt-3 text-base leading-7 text-slate-200">{group.terms.slice(0, 5).join(', ')}</p>
-        </article>
-      ))}
-    </div>
-  </section>
-
-  <section id="lotus-boundary" class="section-shell">
-    <SectionIntro
-      eyebrow="Boundaries"
-      title="The research tools are still bounded."
-      description="Moving the scoring and vector logic off the main Lotus route does not relax the boundary rules around interpretation, diagnosis, or care."
-    />
-
-    <div class="mt-12 grid gap-6 lg:grid-cols-3">
-      {lotusBoundaryCards.map((item) => (
-        <article class="veil-panel h-full">
-          <h2 class="text-[1.08rem] md:text-[1.18rem]">{item.title}</h2>
-          <p class="mt-4 text-base leading-7 text-slate-200">{item.body}</p>
-        </article>
-      ))}
     </div>
   </section>
 </LotusLayout>

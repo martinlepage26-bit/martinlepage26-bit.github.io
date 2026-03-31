@@ -139,20 +139,20 @@ export const lotusSignalGroups: readonly LotusSignalGroup[] = [
 
 export const lotusSurfaces = [
   {
-    eyebrow: 'Bloom flow',
-    title: 'Enter the one-bloom Lotus ascent.',
+    eyebrow: 'Primary route',
+    title: 'Open the Lotus agency scorer.',
     description:
-      'The primary Lotus surface is now a sequential journaling experience: one question, one bloom, one writing surface, and one upward movement at a time.',
-    href: '/lotus/',
-    cta: 'Enter Lotus',
+      'The main Lotus route is the analytical workbench again: note scoring, signal groups, category-based reading, and the full agency-oriented interface.',
+    href: '/lotus/#lotus-workbench',
+    cta: 'Open the workbench',
   },
   {
     eyebrow: 'For researchers',
     title: 'Analyze constrained agency across scales.',
     description:
       'LOTUS offers a structured, non-reductionist framework for mapping how regulatory load, perceptual narrowing, blocked access, and social legibility interact under conditions of stress, trauma, precarity, or institutional mismatch.',
-    href: '/lotus/research/#lotus-vector',
-    cta: 'Run the research tools',
+    href: '/lotus/#lotus-vector',
+    cta: 'Run the vector model',
   },
   {
     eyebrow: 'Framework paper',
@@ -167,7 +167,7 @@ export const lotusSurfaces = [
     title: 'Understand what LOTUS does not do.',
     description:
       'LOTUS does not diagnose, predict fixed futures, or replace therapy, crisis care, or medical treatment. Any high-stakes use should include human judgment and appropriate ethical safeguards.',
-    href: '/lotus/research/#lotus-boundary',
+    href: '/lotus/#lotus-boundary',
     cta: 'Read the limits',
   },
 ] as const;
