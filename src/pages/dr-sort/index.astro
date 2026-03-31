@@ -12,18 +12,18 @@ import '../../styles/drsort-standalone.css';
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="Dr.Sort standalone: booking-style workflow shell with a gothic interface for document triage and review."
+      content="Dr.Sort standalone: local-first triage workbench for document review."
     />
     <meta name="theme-color" content="#120f17" />
     <link rel="stylesheet" href="/martin-portfolio/index.css" />
-    <title>Dr.Sort | Gothic Booking Board</title>
+    <title>Dr.Sort | Local Triage Workbench</title>
   </head>
   <body class="drsort-standalone">
     <div class="drsort-shell">
       <header class="drsort-header">
         <a class="drsort-brand" href="/dr-sort/">
           <span class="drsort-mark">Dr.Sort</span>
-          <span class="drsort-tagline">Gothic Booking Board</span>
+          <span class="drsort-tagline">Local Triage Workbench</span>
         </a>
         <nav class="drsort-nav" aria-label="Dr.Sort navigation">
           <a href="/projects/dr-sort/">Project record</a>
@@ -34,132 +34,270 @@ import '../../styles/drsort-standalone.css';
 
       <main class="drsort-main">
         <section class="drsort-hero" aria-labelledby="drsort-title">
-          <p class="drsort-eyebrow">Desktop-first sorting app</p>
-          <h1 id="drsort-title">Reserve triage slots. Sort without losing the thread.</h1>
+          <p class="drsort-eyebrow">Desktop-first triage app</p>
+          <h1 id="drsort-title">Local document triage. Sort with real persistence.</h1>
           <p>
-            Dr.Sort combines a booking-style queue with a darker research atmosphere: orderly intake, structured
-            review windows, and explicit decision notes for each document set.
+            Dr.Sort is a browser-phase triage prototype. It uses local storage to maintain your sorting state, decision notes, and staged moves across sessions.
           </p>
-          <ol class="drsort-steps" aria-label="Booking flow">
-            <li><span>01</span>Choose document set</li>
-            <li><span>02</span>Pick sorting window</li>
-            <li><span>03</span>Reserve and begin pass</li>
+          <ol class="drsort-steps" aria-label="Triage flow">
+            <li><span>01</span>Start local sort pass</li>
+            <li><span>02</span>Inspect queue items</li>
+            <li><span>03</span>Stage destinations</li>
           </ol>
         </section>
 
         <section class="drsort-intake" aria-labelledby="drsort-intake-title">
           <div class="drsort-section-head">
-            <p class="drsort-kicker">Booking intake</p>
-            <h2 id="drsort-intake-title">Structured reservation console</h2>
+            <p class="drsort-kicker">Pass Control</p>
+            <h2 id="drsort-intake-title">Local Pass Management</h2>
           </div>
-          <form class="drsort-booking-bar" aria-label="Dr.Sort booking shell">
+          <form class="drsort-booking-bar" id="pass-form" aria-label="Dr.Sort pass control">
             <label>
-              Document set
-              <input type="text" value="Governance corpus batch A" readonly />
+              Scope Label
+              <input type="text" id="scope-input" value="Governance corpus batch A" />
             </label>
             <label>
-              Slot
-              <input type="text" value="Tonight · 21:30" readonly />
+              Status
+              <input type="text" id="status-display" value="Idle" readonly />
             </label>
             <label>
-              Priority
-              <input type="text" value="High consequence" readonly />
+              Active Since
+              <input type="text" id="time-display" value="--" readonly />
             </label>
-            <button type="button" id="reserve-btn">Reserve sorting pass</button>
+            <button type="button" id="pass-btn">Start Local Sort Pass</button>
           </form>
-
-          <script>
-            const btn = document.getElementById('reserve-btn');
-            const slotsList = document.querySelector('.drsort-grid article:nth-child(2) ul');
-            const cabinetStatus = document.querySelector('.drsort-grid article:nth-child(3) ul');
-
-            if (btn && slotsList && cabinetStatus) {
-              btn.addEventListener('click', () => {
-                const originalText = btn.textContent;
-                btn.disabled = true;
-                btn.textContent = 'Reserving...';
-                btn.style.opacity = '0.7';
-                btn.style.cursor = 'wait';
-
-                setTimeout(() => {
-                  // Update button state
-                  btn.textContent = 'Slot Reserved';
-                  btn.style.background = '#5f7fae';
-                  btn.style.color = '#f1eeeb';
-                  btn.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-                  btn.style.boxShadow = '0 10px 24px rgba(95, 127, 174, 0.24)';
-
-                  // Add new slot to the list
-                  const newSlot = document.createElement('li');
-                  newSlot.textContent = '23:45 – New triage pass (Reserved)';
-                  newSlot.style.color = '#cc9967';
-                  newSlot.style.fontWeight = '600';
-                  slotsList.appendChild(newSlot);
-
-                  // Update cabinet status
-                  const pendingItem = cabinetStatus.querySelector('li:nth-child(2)');
-                  if (pendingItem) {
-                    pendingItem.textContent = 'Pending bins: 6';
-                    pendingItem.style.color = '#cc9967';
-                  }
-
-                  // Reset button after a delay
-                  setTimeout(() => {
-                    btn.disabled = false;
-                    btn.textContent = originalText;
-                    btn.style.background = '';
-                    btn.style.color = '';
-                    btn.style.borderColor = '';
-                    btn.style.boxShadow = '';
-                    btn.style.opacity = '';
-                    btn.style.cursor = '';
-                    newSlot.style.color = '';
-                    newSlot.style.fontWeight = '';
-                    if (pendingItem) pendingItem.style.color = '';
-                  }, 3000);
-                }, 800);
-              });
-            }
-          </script>
-          <p class="drsort-intake-note">
-            Queue reservations are explicit handoff points: each slot binds scope, priority, and review accountability.
+          <p class="drsort-intake-note" id="pass-note">
+            Starting a pass creates a persistent record in your browser's local storage.
           </p>
         </section>
 
         <section class="drsort-board" aria-labelledby="drsort-board-title">
           <div class="drsort-section-head">
-            <p class="drsort-kicker">Board status</p>
-            <h2 id="drsort-board-title">Current floor: queue, slots, and cabinet readiness.</h2>
+            <p class="drsort-kicker">Workbench Status</p>
+            <h2 id="drsort-board-title">Current Triage State</h2>
           </div>
 
           <div class="drsort-grid" aria-label="Dr.Sort board">
-            <article class="drsort-card">
-              <h3>Incoming queue</h3>
-              <ul>
-                <li>Policy drafts awaiting first-pass clustering</li>
-                <li>Unsorted literature records with missing tags</li>
-                <li>Contradiction-heavy packets flagged for arbitration</li>
+            <article class="drsort-card" id="queue-card">
+              <h3>Incoming Queue</h3>
+              <ul id="queue-list">
+                <!-- Populated by JS -->
               </ul>
             </article>
-            <article class="drsort-card">
-              <h3>Tonight’s slots</h3>
-              <ul>
-                <li>21:30 – Category cleanup and boundary check</li>
-                <li>22:15 – Evidence confidence sweep</li>
-                <li>23:00 – Export and handoff packet</li>
+            <article class="drsort-card" id="staged-card">
+              <h3>Staged Moves</h3>
+              <ul id="staged-list">
+                <!-- Populated by JS -->
               </ul>
             </article>
-            <article class="drsort-card">
-              <h3>Cabinet status</h3>
-              <ul>
-                <li>Sorted bins: 17</li>
-                <li>Pending bins: 5</li>
-                <li>Escalation notes: 2 active</li>
+            <article class="drsort-card" id="status-card">
+              <h3>Readiness Score</h3>
+              <ul id="readiness-list">
+                <!-- Populated by JS -->
               </ul>
             </article>
           </div>
         </section>
+
+        <!-- Inspector Panel (Hidden by default) -->
+        <section id="inspector" class="drsort-card" style="display: none; margin-top: 1rem; border-color: var(--drsort-wine);">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <h3 id="ins-title">Item Inspector</h3>
+            <button id="ins-close" style="background: none; border: none; color: var(--drsort-wine); cursor: pointer; font-weight: bold;">[CLOSE]</button>
+          </div>
+          <div id="ins-content" style="font-size: 0.9rem; line-height: 1.5;">
+            <p><strong>File:</strong> <span id="ins-filename"></span></p>
+            <p><strong>Path:</strong> <span id="ins-path"></span></p>
+            <p><strong>Snippet:</strong> <em id="ins-snippet"></em></p>
+            <hr style="border: 0; border-top: 1px solid var(--drsort-border); margin: 1rem 0;" />
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div>
+                <p><strong>Suggested Bin:</strong> <span id="ins-bin"></span></p>
+                <p><strong>Confidence:</strong> <span id="ins-conf"></span>%</p>
+              </div>
+              <div>
+                <p><strong>Status:</strong> <span id="ins-status"></span></p>
+                <p><strong>Risks:</strong> <span id="ins-risks"></span></p>
+              </div>
+            </div>
+            <div style="margin-top: 1rem;">
+              <label style="display: block; font-size: 0.7rem; text-transform: uppercase; margin-bottom: 0.3rem;">Decision Rationale</label>
+              <textarea id="ins-note" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--drsort-border); color: white; padding: 0.5rem; border-radius: 0.4rem; min-height: 60px;"></textarea>
+            </div>
+            <div style="margin-top: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <button id="btn-accept" class="drsort-nav-a" style="background: var(--drsort-wine); color: black; border: none; padding: 0.5rem 1rem; border-radius: 0.4rem; cursor: pointer; font-weight: bold;">Accept Suggestion</button>
+              <button id="btn-defer" style="background: none; border: 1px solid var(--drsort-border); color: white; padding: 0.5rem 1rem; border-radius: 0.4rem; cursor: pointer;">Defer</button>
+              <button id="btn-contradiction" style="background: none; border: 1px solid #ff4444; color: #ff4444; padding: 0.5rem 1rem; border-radius: 0.4rem; cursor: pointer;">Mark Contradiction</button>
+            </div>
+          </div>
+        </section>
       </main>
     </div>
+
+    <script>
+      // Inlined state logic for simplicity in one file, but following the defined models
+      const STORAGE_KEY = 'dr_sort_state_v1';
+      const SEED_QUEUE = [
+        { id: 'q-001', fileName: 'policy_draft_v2.pdf', relativePath: '/inbox/governance/', fileType: 'pdf', size: 46080, modifiedAt: '2026-03-28T14:20:00Z', textSnippet: 'This policy outlines the governance framework for agentic systems...', suggestedBin: 'Policy Frameworks', confidence: 0.88, status: 'ready', riskFlags: [] },
+        { id: 'q-002', fileName: 'literature_review_notes.md', relativePath: '/inbox/research/', fileType: 'md', size: 12288, modifiedAt: '2026-03-29T09:15:00Z', textSnippet: 'Key themes identified in the 2025 AI ethics survey include...', suggestedBin: 'Research Literature', confidence: 0.65, status: 'needs_review', riskFlags: ['missing_tags'] },
+        { id: 'q-003', fileName: 'contradictory_evidence_A.docx', relativePath: '/inbox/audit/', fileType: 'docx', size: 90112, modifiedAt: '2026-03-30T16:45:00Z', textSnippet: 'The audit logs show a discrepancy between the reported and actual...', suggestedBin: 'Audit Logs', confidence: 0.42, status: 'contradiction', riskFlags: ['high_risk', 'arbitration_required'] },
+        { id: 'q-004', fileName: 'duplicate_report_final.pdf', relativePath: '/inbox/reports/', fileType: 'pdf', size: 159744, modifiedAt: '2026-03-31T08:00:00Z', textSnippet: 'Final summary of the quarterly performance review...', suggestedBin: 'Quarterly Reports', confidence: 0.95, status: 'duplicate_risk', riskFlags: ['potential_duplicate'] }
+      ];
+
+      let state = { currentPass: null, queue: SEED_QUEUE, notes: [], moves: [] };
+
+      function load() {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+          try { state = JSON.parse(stored); } catch (e) { console.error(e); }
+        }
+        render();
+      }
+
+      function save() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        render();
+      }
+
+      function render() {
+        // Update Pass UI
+        const passBtn = document.getElementById('pass-btn');
+        const statusDisplay = document.getElementById('status-display');
+        const timeDisplay = document.getElementById('time-display');
+        const scopeInput = document.getElementById('scope-input');
+
+        if (state.currentPass) {
+          passBtn.textContent = 'End Local Sort Pass';
+          statusDisplay.value = 'Active';
+          timeDisplay.value = new Date(state.currentPass.openedAt).toLocaleTimeString();
+          scopeInput.value = state.currentPass.scopeLabel;
+          scopeInput.readOnly = true;
+        } else {
+          passBtn.textContent = 'Start Local Sort Pass';
+          statusDisplay.value = 'Idle';
+          timeDisplay.value = '--';
+          scopeInput.readOnly = false;
+        }
+
+        // Render Queue
+        const qList = document.getElementById('queue-list');
+        qList.innerHTML = '';
+        state.queue.forEach(item => {
+          const li = document.createElement('li');
+          li.style.cursor = 'pointer';
+          li.style.padding = '0.2rem 0';
+          li.innerHTML = `<span style="color: ${item.status === 'staged' ? '#888' : 'inherit'}">${item.fileName}</span> <small style="opacity: 0.6">[${item.status}]</small>`;
+          li.onclick = () => inspect(item.id);
+          qList.appendChild(li);
+        });
+
+        // Render Staged
+        const sList = document.getElementById('staged-list');
+        sList.innerHTML = '';
+        state.moves.forEach(move => {
+          const li = document.createElement('li');
+          li.textContent = `${move.sourceLabel} -> ${move.destinationLabel}`;
+          sList.appendChild(li);
+        });
+
+        // Render Readiness
+        const rList = document.getElementById('readiness-list');
+        const total = state.queue.length;
+        const staged = state.queue.filter(i => i.status === 'staged').length;
+        const contradictions = state.queue.filter(i => i.status === 'contradiction').length;
+        const score = total > 0 ? Math.round((staged / total) * 100) : 0;
+
+        rList.innerHTML = `
+          <li>Classification: ${score}%</li>
+          <li>Unresolved: ${total - staged}</li>
+          <li>Contradictions: ${contradictions}</li>
+        `;
+      }
+
+      // Actions
+      document.getElementById('pass-btn').onclick = () => {
+        if (state.currentPass) {
+          state.currentPass = null;
+        } else {
+          state.currentPass = {
+            id: 'pass-' + Date.now(),
+            scopeLabel: document.getElementById('scope-input').value,
+            openedAt: new Date().toISOString()
+          };
+        }
+        save();
+      };
+
+      let currentItemId = null;
+      function inspect(id) {
+        currentItemId = id;
+        const item = state.queue.find(i => i.id === id);
+        if (!item) return;
+
+        document.getElementById('inspector').style.display = 'block';
+        document.getElementById('ins-filename').textContent = item.fileName;
+        document.getElementById('ins-path').textContent = item.relativePath;
+        document.getElementById('ins-snippet').textContent = item.textSnippet;
+        document.getElementById('ins-bin').textContent = item.suggestedBin;
+        document.getElementById('ins-conf').textContent = Math.round(item.confidence * 100);
+        document.getElementById('ins-status').textContent = item.status;
+        document.getElementById('ins-risks').textContent = item.riskFlags.join(', ') || 'None';
+        
+        const note = state.notes.find(n => n.queueItemId === id);
+        document.getElementById('ins-note').value = note ? note.rationale : '';
+      }
+
+      document.getElementById('ins-close').onclick = () => {
+        document.getElementById('inspector').style.display = 'none';
+      };
+
+      document.getElementById('btn-accept').onclick = () => {
+        if (!currentItemId) return;
+        const item = state.queue.find(i => i.id === currentItemId);
+        
+        // Add note
+        state.notes = state.notes.filter(n => n.queueItemId !== currentItemId);
+        state.notes.push({
+          id: 'note-' + Date.now(),
+          queueItemId: currentItemId,
+          action: 'accept',
+          rationale: document.getElementById('ins-note').value || 'Accepted suggestion',
+          createdAt: new Date().toISOString()
+        });
+
+        // Stage move
+        state.moves = state.moves.filter(m => m.queueItemId !== currentItemId);
+        state.moves.push({
+          id: 'move-' + Date.now(),
+          queueItemId: currentItemId,
+          sourceLabel: item.relativePath + item.fileName,
+          destinationLabel: '/cabinet/' + item.suggestedBin + '/' + item.fileName,
+          state: 'staged'
+        });
+
+        item.status = 'staged';
+        save();
+        document.getElementById('inspector').style.display = 'none';
+      };
+
+      document.getElementById('btn-defer').onclick = () => {
+        if (!currentItemId) return;
+        const item = state.queue.find(i => i.id === currentItemId);
+        item.status = 'deferred';
+        save();
+        document.getElementById('inspector').style.display = 'none';
+      };
+
+      document.getElementById('btn-contradiction').onclick = () => {
+        if (!currentItemId) return;
+        const item = state.queue.find(i => i.id === currentItemId);
+        item.status = 'contradiction';
+        save();
+        document.getElementById('inspector').style.display = 'none';
+      };
+
+      // Init
+      load();
+    </script>
   </body>
 </html>
