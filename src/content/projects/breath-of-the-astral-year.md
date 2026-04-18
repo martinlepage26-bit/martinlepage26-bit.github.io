@@ -21,11 +21,11 @@ image: "/social/og-breath-of-the-astral-year.png"
 imageAlt: "Breath of the Astral Year cover-style graphic with orbiting gaialogy geometry and a public book framing."
 links:
   - label: "Open the book page"
-    url: "/gaia/book/"
+    url: "/astral-year/"
   - label: "Browse the sign glossary"
-    url: "/gaia/glossary/"
-  - label: "Open the GAIA app"
-    url: "/gaia/"
+    url: "/astral-year/glossary/"
+  - label: "Open the Astral app"
+    url: "/astral-year/app/"
 ---
 *Breath of the Astral Year* is a self-published book by Martin Lepage available on Amazon. It treats gaialogy as a grammar of collective life, keeping signs, seasons, and social experience in the same frame.
 
