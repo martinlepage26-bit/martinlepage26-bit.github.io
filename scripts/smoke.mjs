@@ -16,12 +16,54 @@ if (Number.isNaN(port)) {
 const baseUrl = `http://${host}:${port}`;
 const baseRoutes = [
   '/',
+  '/echo/',
+  '/gaia/',
+  '/gaia/book/',
+  '/gaia/glossary/',
+  '/lotus/',
   '/projects/',
   '/writing/',
   '/governance/',
   '/governance/methods/',
   '/projects/from-ai-anxiety-to-recursive-governance-under-constraint/',
 ];
+
+const contentChecks = {
+  '/echo/': {
+    includes: [
+      'data-echo-page-lock="hardline-reader"',
+      'data-echo-page-shell="front-console"',
+      'data-echo-design-lock="hardline-reader-2026-04-02"',
+      'data-echo-lock-block="intro"',
+      'data-echo-lock-block="editor-panel"',
+      'data-echo-lock-block="controls-panel"',
+      'data-echo-lock-block="readback-panel"',
+    ],
+    excludes: [
+      'File to MP3',
+      'Generate MP3',
+      'File-in -&gt; Voice -&gt; MP3-out',
+      'No paid API key and no backend inference service are required for this route.',
+    ],
+  },
+  '/gaia/': {
+    includes: [
+      'data-gaia-page-lock="full-bleed-app"',
+      'data-gaia-page-shell="reference-surface"',
+      'data-gaia-design-lock="reference-surface-2026-03-29"',
+      'data-gaia-lock-block="sign-grid"',
+      'data-gaia-lock-block="preview-card"',
+      'data-gaia-lock-block="generate-action"',
+      'data-gaia-lock-block="reading-output"',
+    ],
+    excludes: [
+      'gaia-cosmos-shell',
+      'Use GAIA directly from this page.',
+      'GAIA surfaces',
+      'How it works',
+    ],
+  },
+};
 
 function runNpm(args) {
   return new Promise((resolve, reject) => {
@@ -142,6 +184,24 @@ async function run() {
       if (response.status < 200 || response.status >= 400) {
         throw new Error(`Route failed: ${route} -> HTTP ${response.status}`);
       }
+
+      const contentCheck = contentChecks[route];
+      if (contentCheck) {
+        const html = await response.text();
+
+        for (const needle of contentCheck.includes) {
+          if (!html.includes(needle)) {
+            throw new Error(`Route failed content check: ${route} is missing "${needle}"`);
+          }
+        }
+
+        for (const needle of contentCheck.excludes) {
+          if (html.includes(needle)) {
+            throw new Error(`Route failed content check: ${route} should not include "${needle}"`);
+          }
+        }
+      }
+
       console.log(`ok ${route} -> ${response.status}`);
     }
 

@@ -1,17 +1,16 @@
 ---
-title: "Astral"
-subtitle: "Gaialogy app in development grounded in Breath of the Astral Year"
+title: "GAIA"
+subtitle: "Grounded gaialogy app built from Breath of the Astral Year"
 year: 2026
-status: "App in development · 85% complete"
-description: "An interactive gaialogy app in development that turns Breath of the Astral Year into a grounded seasonal reading and sign-reading surface."
+status: "Public app surface · grounded reading app"
+description: "A public gaialogy reading surface that turns Breath of the Astral Year into grounded sign profiles, seasonal guidance, and daily modulation."
 role: "Creator"
 outputs:
   - "Interactive gaialogy interface"
-  - "Grounded seasonal readings"
-  - "Companion app concept for Breath of the Astral Year"
+  - "Grounded seasonal and daily readings"
+  - "Companion surfaces for the book and glossary"
 tags:
   - App in development
-  - Gaialogy
   - Gaialogy
   - Seasonal reading
   - Symbolic systems
@@ -19,10 +18,14 @@ featured: false
 image: "/social/og-breath-of-the-astral-year.png"
 imageAlt: "A gaialogy app in development drawn from the sign language of Breath of the Astral Year."
 links:
-  - label: "Open Astral app (new window)"
-    url: "/astral/"
+  - label: "Open GAIA app (new window)"
+    url: "/gaia/"
+  - label: "Open the book frame"
+    url: "/gaia/book/"
+  - label: "Browse the glossary"
+    url: "/gaia/glossary/"
 ---
 
-*Astral* turns the sign language of *Breath of the Astral Year* into a usable app surface. It keeps gaialogy close to season, body, relation, and earthly pressure instead of treating it as a distant sky machine.
+*GAIA* is the public app name for the earlier Astral line. It turns the sign language of *Breath of the Astral Year* into a usable reading surface and keeps gaialogy close to season, body, relation, and earthly pressure instead of treating it as a distant sky machine.
 
-The public page treats Astral as an app in development with a strong companion surface already in place. What matters here is the translation from book logic into a readable, interactive gaialogy tool.
+The app works together with the book frame and glossary. What matters is the translation from book logic into a readable, interactive gaialogy tool whose public boundary stays grounded and explicit.

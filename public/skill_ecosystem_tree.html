@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The SKILL Ecosystem</title>
+<meta name="description" content="Interactive skill ecosystem map for the Hephaistos governance stack on Martin Lepage's public methods surface.">
+<style>
+  :root {
+    --color-text-primary: #142033;
+    --color-text-secondary: #677283;
+    --color-text-info: #173d74;
+    --color-background-secondary: #f7f4ee;
+    --color-background-tertiary: #efebe2;
+    --color-background-info: #e6eefb;
+    --color-border-secondary: #d0c8ba;
+    --color-border-tertiary: #ddd6c9;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: #f4f2ed;
+    color: var(--color-text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.6;
+  }
+
+  main {
+    width: min(calc(100% - 2rem), 1120px);
+    margin: 0 auto;
+    padding: 2.5rem 0 4rem;
+  }
+</style>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.tree{padding:1rem .5rem}
+.node{position:relative}
+.node-row{display:flex;align-items:flex-start;gap:8px;padding:5px 8px;border-radius:8px;cursor:pointer;transition:background .12s;border:.5px solid transparent}
+.node-row:hover{background:var(--color-background-secondary);border-color:var(--color-border-tertiary)}
+.toggle{flex-shrink:0;width:18px;height:18px;margin-top:2px;border-radius:4px;border:.5px solid var(--color-border-secondary);background:var(--color-background-secondary);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--color-text-secondary);font-weight:500;transition:all .15s;user-select:none}
+.toggle.open{background:var(--color-background-info);color:var(--color-text-info);border-color:var(--color-border-info)}
+.toggle.leaf{opacity:0;pointer-events:none}
+.label-wrap{flex:1;min-width:0}
+.badge{display:inline-block;font-size:10px;font-weight:500;padding:1px 7px;border-radius:20px;margin-bottom:2px;line-height:1.6}
+.b-research{background:#EEEDFE;color:#3C3489}.b-write{background:#E1F5EE;color:#085041}.b-strat{background:#FAEEDA;color:#633806}.b-orch{background:#FAECE7;color:#993C1D}.b-arch{background:#E6F1FB;color:#0C447C}.b-prompt{background:#EAF3DE;color:#3B6D11}.b-context{background:#FBEAF0;color:#72243E}
+@media(prefers-color-scheme:dark){.b-research{background:#26215C;color:#CECBF6}.b-write{background:#04342C;color:#9FE1CB}.b-strat{background:#412402;color:#FAC775}.b-orch{background:#4A1B0C;color:#F5C4B3}.b-arch{background:#042C53;color:#B5D4F4}.b-prompt{background:#173404;color:#C0DD97}.b-context{background:#4B1528;color:#F4C0D1}}
+.node-title{font-size:14px;font-weight:500;color:var(--color-text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.node-sub{font-size:12px;color:var(--color-text-secondary);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.children{margin-left:26px;border-left:.5px solid var(--color-border-tertiary);padding-left:12px;overflow:hidden;max-height:0;transition:max-height .35s ease}
+.children.open{max-height:3000px}
+.panel{margin:4px 0 6px;padding:8px 12px;background:var(--color-background-secondary);border-radius:8px;border-left:2px solid var(--color-border-secondary);font-size:12px;color:var(--color-text-secondary);line-height:1.65;display:none}
+.panel.open{display:block}
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.pill{font-size:10px;padding:1px 6px;border-radius:20px;background:var(--color-background-tertiary);color:var(--color-text-secondary);border:.5px solid var(--color-border-tertiary)}
+.root-title{font-size:16px;font-weight:500;color:var(--color-text-primary);margin-bottom:.2rem}
+.root-sub{font-size:12px;color:var(--color-text-secondary);margin-bottom:1rem}
+.arch-block{margin-top:6px;padding:8px 10px;border-radius:6px;border:.5px solid var(--color-border-tertiary);font-size:12px;color:var(--color-text-secondary);line-height:1.6}
+.arch-block strong{font-weight:500;color:var(--color-text-primary)}
+.arch-pair{display:flex;gap:8px;margin-top:8px}
+.arch-half{flex:1;padding:7px 9px;border-radius:6px;font-size:11px;line-height:1.6}
+.arch-brain{background:#EAF3DE;color:#3B6D11;border:.5px solid #C0DD97}
+.arch-map{background:#FBEAF0;color:#72243E;border:.5px solid #F4C0D1}
+@media(prefers-color-scheme:dark){.arch-brain{background:#173404;color:#C0DD97;border-color:#3B6D11}.arch-map{background:#4B1528;color:#F4C0D1;border-color:#72243E}}
+</style>
+</head>
+<body>
+<main>
+<div class="tree">
+  <div class="root-title">Martin Lepage — Skill Ecosystem</div>
+  <div class="root-sub">Governance-primary routing + dual-engine architecture</div>
+  <div id="root"></div>
+</div>
+
+<script>
+const SKILLS = [
+  {
+    id:"research", label:"Research & Analysis", badge:"b-research", tag:"Research",
+    children:[
+      {id:"gov", label:"Recursive Governance Method", sub:"SKILL_gov",
+       desc:"Turns heterogeneous archives into bounded governance analysis. Separates source, generated, and control layers. Extracts controls bound to owners, evidence, and review intervals.",
+       tags:["recursive analysis","archive triage","control extraction","evidence hierarchy","method lock"],
+       trigger:"recursive data analysis · mixed archives · disclosure language"},
+      {id:"trace", label:"Trace Investigator", sub:"SKILL_trace",
+       desc:"Traces how authority, accountability, and definitions move across a document pack. Identifies softening, narrowing, delegations, and disappearances into passive voice or collective nouns.",
+       tags:["authority flow","definition drift","handoff mapping","bounded conclusions"],
+       trigger:"compare policies · trace accountability · mixed governance artifacts"},
+      {id:"power", label:"Power Analyst", sub:"fully-rounded-power-analyst",
+       desc:"Maps actors, incentives, dependencies, hidden rules, leverage points, and consequence distribution in plain language. Co-equal right-arm to philosopher; governance arbitrates disagreements.",
+       tags:["actor map","incentives","leverage","hidden rules","structural power"],
+       trigger:"power analysis · institutional capture · who benefits · structural constraints"},
+      {id:"qualit", label:"Qualitative Methods", sub:"SKILL_qualit",
+       desc:"Maps research questions to appropriate methods: thematic analysis, phenomenology, ethnography, narrative inquiry, discourse analysis, autoethnography, or digital/visual ethnography.",
+       tags:["thematic analysis","ethnography","discourse analysis","emic/etic","positionality"],
+       trigger:"qualitative study design · coding · interpretation · French/English methods"},
+      {id:"tri", label:"Triangulation", sub:"SKILL_tri",
+       desc:"Solves angle-based location problems using the Law of Sines or two-sensor intersection. Distinguishes triangulation (angles) from trilateration (distances).",
+       tags:["Law of Sines","two-sensor","bearing angles","surveying","navigation"],
+       trigger:"locate from two angles · unknown triangle sides · sensor coordinates"},
+      {id:"red", label:"Red Team", sub:"SKILL_red",
+       desc:"Plans, scopes, and reports authorized red team exercises. Focuses on exercise design, rules of engagement, stakeholder communication, and defender-learning value — not intrusion tradecraft.",
+       tags:["authorized exercise","rules of engagement","purple team","executive reporting","adversary emulation"],
+       trigger:"red team design · penetration test comparison · RoE package"},
+    ]
+  },
+  {
+    id:"write", label:"Writing & Publishing", badge:"b-write", tag:"Writing",
+    children:[
+      {id:"peer", label:"Peer-Reviewed Paper Writer", sub:"SKILL_peer",
+       desc:"Plans, drafts, and revises scholarly manuscripts for peer-reviewed publication. Centers governing claim, bounded scope, contribution ladder, and evidence discipline. No fabricated citations.",
+       tags:["governing claim","contribution ladder","reviewer response","submission polish","evidence sufficiency"],
+       trigger:"academic manuscript · abstract · literature review · reviewer response letter"},
+      {id:"novel", label:"Novelist", sub:"SKILL_novel",
+       desc:"Plans, drafts, revises, and critiques novels with attention to character psychology, plot momentum, scene design, POV, voice, dialogue, and worldbuilding.",
+       tags:["character arc","plot momentum","POV control","scene structure","revision"],
+       trigger:"novel premise · outline · manuscript draft · developmental editing"},
+      {id:"publish", label:"Publisher", sub:"SKILL_publish",
+       desc:"Evaluates, refines, and packages books for publication. Combines editorial judgment (clarity, structure, voice) with publishing strategy (audience fit, positioning, metadata, jacket copy).",
+       tags:["editorial letter","acquisitions memo","jacket copy","metadata","cover brief"],
+       trigger:"manuscript readiness · jacket copy · author bio · publishing plan"},
+      {id:"speech", label:"Speech Generation", sub:"SKILL_speech",
+       desc:"Generates spoken audio via OpenAI Audio API. Handles single clips or batched prompts. Defaults to gpt-4o-mini-tts with built-in voices. Requires OPENAI_API_KEY.",
+       tags:["TTS","voiceover","IVR","accessibility reads","batch generation"],
+       trigger:"text-to-speech · narration · audio prompts · voiceover · accessibility"},
+    ]
+  },
+  {
+    id:"strat", label:"Strategy & Identity", badge:"b-strat", tag:"Strategy",
+    children:[
+      {id:"brand", label:"Brand Identity System", sub:"SKILL_brandID",
+       desc:"Analyzes and develops brand identity systems for consultancies, research groups, and governance practices. Diagnoses before decorating — strategic brief first, logo concepts only after.",
+       tags:["strategic brief","logo concepts","website direction","typography","professional services"],
+       trigger:"brand diagnosis · logo critique · website visual direction · mini style guide"},
+      {id:"hum", label:"Humanize", sub:"SKILL_hum",
+       desc:"Redrafts compliance, ethics, and governance rules so they fit real human behavior. Applies behavioral-science lenses (RADAR, COM-B, TDF). Preserves hard constraints while reducing friction.",
+       tags:["rule redesign","behavioral science","COM-B","compliance","plain language"],
+       trigger:"rewrite policy · failing rule diagnosis · cultural calibration · SOP"},
+      {id:"ma", label:"MA Degree Guide", sub:"SKILL_MA",
+       desc:"Explains and compares Master of Arts degrees: fields, program structure, thesis vs capstone, regional differences, MA vs MS/MFA distinctions, and doctoral pathways. In the current architecture it functions as a specialized formation layer under philosopher, while remaining callable when the task is explicitly about MA formation or degree structure.",
+       tags:["MA programs","thesis","capstone","Bologna system","academic formation"],
+       trigger:"MA degree · graduate school · MA vs MS · program structure"},
+    ]
+  },
+  {
+    id:"orch", label:"Orchestration", badge:"b-orch", tag:"Orchestration",
+    children:[
+      {id:"pair", label:"Skill Pairing", sub:"SKILL_pair",
+       desc:"Chooses and sequences two skills for one request, carrying the first output into the second without rewriting either skill's core logic. Stops and explains if one skill is sufficient.",
+       tags:["two-skill coordination","handoff artifact","analysis→writing","diagnosis→revision"],
+       trigger:"two-stage task · analysis then drafting · strategy then execution"},
+      {id:"philosopher", label:"Philosopher", sub:"SKILL_PhD",
+       desc:"Applies philosophical reasoning to governance dilemmas, value tensions, debate structures, and questions of meaning and knowledge. Co-equal right-arm to power-analyst. Frames conceptual stakes and routes companion skills when work crosses domains.",
+       tags:["debate engine","meta-router","value tension","concept clarification","epistemic pressure"],
+       trigger:"governance dilemma · philosophical framing · debate · cross-domain routing"},
+    ]
+  },
+  {
+    id:"arch", label:"Skill Architecture", badge:"b-arch", tag:"Architecture",
+    isArch: true,
+    children:[
+      {id:"prompt-eng", label:"Prompt Engineering Layer", sub:"The Brain",
+       badge:"b-prompt", badgeLabel:"Brain",
+       desc:"Controls how the skill thinks and acts. Sets persona, execution logic, negative constraints, and few-shot examples. Focuses on instruction quality for the model.",
+       tags:["persona","chain-of-thought","negative constraints","few-shot examples","action verbs"],
+       archItems:["Role & persona → defines identity and tone","Step logic → conditions and action branches","Negative constraints → explicit 'never do' rules","Few-shot examples → input/output pairs for calibration","Output format → markdown, JSON, or code block"],
+       trigger:"how to phrase instructions · logic flow · persona · constraints"},
+      {id:"context-eng", label:"Context Engineering Layer", sub:"The Map",
+       badge:"b-context", badgeLabel:"Map",
+       desc:"Controls what the skill knows and can access. Maps files, tools, and state so the model fetches only what it needs — preventing hallucination through directory references instead of data dumps.",
+       tags:["knowledge retrieval","tool orchestration","memory management","context pruning","RAG"],
+       archItems:["Knowledge map → file paths loaded only when needed","Tool orchestration → scripts and APIs called deterministically","Memory strategy → preferences and session state","Context pruning → remove stale tokens to prevent drift","Progressive disclosure → deep refs in /references/ subfolder"],
+       trigger:"what the model knows · file references · tool routing · RAG · memory"},
+      {id:"dual", label:"Dual-Engine Pattern", sub:"Brain + Map combined",
+       badge:"b-arch", badgeLabel:"Unified",
+       desc:"A SKILL.md is a dual-layer blueprint. The Brain layer (Prompt Engineering) controls reasoning and behavior. The Map layer (Context Engineering) controls data access and tool routing. Together they replace hallucination-prone prose with deterministic, reconstructable workflows.",
+       tags:["SKILL.md","YAML frontmatter","kebab-case","progressive disclosure","token efficiency"],
+       archItems:["YAML frontmatter → discovery + trigger keywords","Body < 500 lines → move heavy refs to /references/","Scripts over descriptions → deterministic results, no token waste","Table of Contents approach → AI fetches only what it needs","XML-style sections → <instructions> <knowledge_retrieval> <tool_orchestration>"],
+       trigger:"SKILL.md design · unified template · prompt + context together"},
+    ]
+  }
+];
+
+function panel(n) {
+  if (n.isArch) return '';
+  const archBit = n.archItems ? `
+    <div style="margin-top:8px;font-weight:500;font-size:11px;color:var(--color-text-primary);margin-bottom:4px">Key components</div>
+    ${n.archItems.map(i=>`<div style="font-size:11px;padding:2px 0;border-bottom:.5px solid var(--color-border-tertiary)">${i}</div>`).join('')}
+  ` : '';
+  return `
+    <div class="panel" id="p-${n.id}">
+      ${n.desc}
+      ${archBit}
+      <div class="tags">${(n.tags||[]).map(t=>`<span class="pill">${t}</span>`).join('')}</div>
+      <div style="margin-top:6px;font-size:10px;color:var(--color-text-secondary)">Triggers: ${n.trigger||''}</div>
+    </div>
+  `;
+}
+
+function makeLeaf(n) {
+  const el = document.createElement('div');
+  el.className = 'node';
+  const badgeCls = n.badge || 'b-arch';
+  const badgeLbl = n.badgeLabel || n.sub;
+  el.innerHTML = `
+    <div class="node-row" onclick="togglePanel('${n.id}')">
+      <span class="toggle leaf">+</span>
+      <div class="label-wrap">
+        <span class="badge ${badgeCls}">${badgeLbl}</span>
+        <div class="node-title">${n.label}</div>
+      </div>
+    </div>
+    ${panel(n)}
+  `;
+  return el;
+}
+
+function makeArchLeaf(n) {
+  const el = document.createElement('div');
+  el.className = 'node';
+  const badgeCls = n.badge || 'b-arch';
+  const badgeLbl = n.badgeLabel || n.sub;
+  el.innerHTML = `
+    <div class="node-row" onclick="togglePanel('${n.id}')">
+      <span class="toggle leaf">+</span>
+      <div class="label-wrap">
+        <span class="badge ${badgeCls}">${badgeLbl}</span>
+        <div class="node-title">${n.label}</div>
+        <div class="node-sub">${n.sub}</div>
+      </div>
+    </div>
+    <div class="panel" id="p-${n.id}">
+      ${n.desc}
+      ${n.archItems ? `<div style="margin-top:8px;font-weight:500;font-size:11px;color:var(--color-text-primary);margin-bottom:4px">Components</div>${n.archItems.map(i=>`<div style="font-size:11px;padding:2px 0;border-bottom:.5px solid var(--color-border-tertiary)">${i}</div>`).join('')}` : ''}
+      <div class="tags">${(n.tags||[]).map(t=>`<span class="pill">${t}</span>`).join('')}</div>
+      <div style="margin-top:6px;font-size:10px;color:var(--color-text-secondary)">Triggers: ${n.trigger||''}</div>
+    </div>
+  `;
+  return el;
+}
+
+function makeBranch(n) {
+  const el = document.createElement('div');
+  el.className = 'node';
+  el.innerHTML = `
+    <div class="node-row" onclick="toggleBranch('${n.id}')">
+      <span class="toggle" id="tog-${n.id}">+</span>
+      <div class="label-wrap">
+        <span class="badge ${n.badge}">${n.tag}</span>
+        <div class="node-title">${n.label}</div>
+        <div class="node-sub">${(n.children||[]).length} skills</div>
+      </div>
+    </div>
+    <div class="children" id="ch-${n.id}"></div>
+  `;
+  const ch = el.querySelector(`#ch-${n.id}`);
+  (n.children||[]).forEach(c => {
+    ch.appendChild(n.isArch ? makeArchLeaf(c) : makeLeaf(c));
+  });
+  return el;
+}
+
+function toggleBranch(id) {
+  const ch = document.getElementById('ch-'+id);
+  const tog = document.getElementById('tog-'+id);
+  const open = ch.classList.toggle('open');
+  tog.textContent = open ? '−' : '+';
+  tog.classList.toggle('open', open);
+}
+
+function togglePanel(id) {
+  document.getElementById('p-'+id).classList.toggle('open');
+}
+
+const root = document.getElementById('root');
+SKILLS.forEach(n => root.appendChild(makeBranch(n)));
+</script>
+
+</main>
+</body>
+</html>

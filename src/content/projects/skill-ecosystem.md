@@ -1,27 +1,29 @@
 ---
-title: "Bounded AI Agent Governance: Fourteen Operational Constitutions and Dual-Layer Architecture"
-subtitle: "Governance Infrastructure · Operational — SKILL.md instruction layer with philosopher as sovereign meta-router"
+title: "Bounded AI Agent Governance: Governance-Primary Skill Architecture and Dual-Layer Design"
+subtitle: "Governance Infrastructure · Operational — governance-primary routing with philosopher and power-analyst as co-equal right-arms"
 year: 2026
 status: "Operational governance infrastructure"
-description: "Fourteen SKILL.md instruction-layer documents governing how AI agents operate within the practice. The philosopher skill functions as sovereign meta-router: it frames every other skill and holds the Debate Engine. Each skill separates prompt engineering from context engineering through a dual-layer brain-and-map architecture."
+description: "A governance-primary SKILL.md stack for bounded AI work. Governance owns constraints and validation, philosopher and power-analyst operate as co-equal right-arms, and each skill separates execution logic from context/tool routing through a dual-layer brain-and-map architecture."
 role: "Author and governance architect"
 outputs:
-  - "Fourteen SKILL.md operational constitutions"
-  - "Philosopher skill as sovereign meta-router"
+  - "Governance-primary skill routing"
+  - "Philosopher and power-analyst as co-equal right-arms"
   - "Dual-layer brain-and-map architecture"
   - "Debate Engine specification"
   - "Bounded agent governance framework"
+  - "Public tree and narrative surface on martin.govern-ai.ca"
 tags:
   - SKILL.md
-  - philosopher skill
-  - meta-router
+  - governance primary
+  - philosopher
+  - power analyst
   - agent governance
   - bounded agency
   - dual-layer architecture
   - AI Governance Master Project
 featured: false
 image: "/assets/geometric-motif-bottomleft.png"
-imageAlt: "The SKILL Ecosystem: fourteen operational constitutions with philosopher as sovereign meta-router."
+imageAlt: "The SKILL Ecosystem: governance-primary skill architecture with philosopher and power-analyst as co-equal right-arms."
 links:
   - label: "Open Hephaistos"
     url: "/hephaistos/"
@@ -35,7 +37,9 @@ The system was built from skills the creator already holds, then optimized for w
 
 > **FRAME** — Hephaistos exists to support oversight, not to replace it. It cannot dismantle the structures you're trying to work around. You have to want to. What it can do is make your existing skills faster, more systematic, and harder to talk yourself out of. User agency and consent are non-negotiable.
 
-The SKILL Ecosystem is the governance layer underneath Hephaistos. Each of the fourteen SKILL.md documents is an operational constitution: it defines what the agent is permitted to do, what it must refuse, and how it retrieves knowledge without inventing from memory. The philosopher skill is the meta-router — it does not perform one task; it frames every other skill and routes requests across the ecosystem when work spans more than one domain. The dual-layer architecture separates execution logic from knowledge retrieval, making each skill auditable, replaceable, and honest about what it is doing.
+The SKILL Ecosystem is the governance layer underneath Hephaistos. Governance is primary: it owns admissibility, consequence routing, validation, and refusal. Philosopher and fully-rounded-power-analyst are the two co-equal right-arms. Philosopher handles conceptual framing, debate pressure, and cross-domain routing; power-analyst handles actors, incentives, hidden rules, and leverage. The dual-layer architecture separates execution logic from knowledge retrieval, making each skill auditable, replaceable, and honest about what it is doing.
+
+As of March 30, 2026, the public Hephaistos narratives and authored tree artifacts live on `martin.govern-ai.ca`, while PHAROS product and service material remains on `pharos-ai.ca`. That boundary is part of the operating model, not a branding preference: the Martin surface carries identity, narratives, and standalone apps, while the PHAROS surface carries product/service operations.
 
 ---
 

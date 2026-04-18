@@ -1,6 +1,9 @@
 const DEFAULT_MODEL = "@cf/deepgram/aura-2-en";
+const DEFAULT_TRANSCRIBE_MODEL = "@cf/openai/whisper-large-v3-turbo";
 const DEFAULT_VOICE = "athena";
 const DEFAULT_FORMAT = "mp3";
+const DEFAULT_TRANSCRIBE_TASK = "transcribe";
+const MAX_TRANSCRIBE_BYTES = 25 * 1024 * 1024;
 const DEFAULT_VOICES = [
   "athena",
   "luna",
@@ -91,6 +94,13 @@ function safeFilename(name) {
   return base.toLowerCase().endsWith(".mp3") ? base : `${base}.mp3`;
 }
 
+function safeInputName(name, fallback = "echo-dictation.webm") {
+  const cleaned = String(name || fallback)
+    .replace(/[^A-Za-z0-9._-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  return cleaned || fallback;
+}
+
 function corsHeaders(origin) {
   return {
     "Access-Control-Allow-Origin": origin,
@@ -116,6 +126,19 @@ function decodeBase64(base64) {
     bytes[index] = binary.charCodeAt(index);
   }
   return bytes;
+}
+
+function encodeBase64(buffer) {
+  const bytes = buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer);
+  let binary = "";
+  const chunkSize = 0x8000;
+
+  for (let index = 0; index < bytes.length; index += chunkSize) {
+    const chunk = bytes.subarray(index, Math.min(bytes.length, index + chunkSize));
+    binary += String.fromCharCode(...chunk);
+  }
+
+  return btoa(binary);
 }
 
 function toAudioBody(result) {
@@ -162,6 +185,143 @@ function buildModelInput(model, text, voice, speed) {
   };
 }
 
+function normalizeLanguage(rawLanguage) {
+  const candidate = String(rawLanguage || "").trim();
+  if (!candidate) {
+    return "";
+  }
+
+  const normalized = candidate
+    .replace(/_/g, "-")
+    .toLowerCase()
+    .replace(/[^a-z-]/g, "");
+
+  if (/^[a-z]{2}$/.test(normalized)) {
+    return normalized;
+  }
+
+  if (/^[a-z]{2}-[a-z]{2}$/.test(normalized)) {
+    return normalized;
+  }
+
+  return "";
+}
+
+function normalizeTranscribeTask(rawTask) {
+  const candidate = String(rawTask || DEFAULT_TRANSCRIBE_TASK).trim().toLowerCase();
+  return candidate === "translate" ? "translate" : DEFAULT_TRANSCRIBE_TASK;
+}
+
+function countWords(text) {
+  return String(text || "")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean).length;
+}
+
+async function handleTranscription(request, env, responseOrigin, transcribeModel) {
+  const url = new URL(request.url);
+  const contentType = String(request.headers.get("Content-Type") || "application/octet-stream").trim();
+  const inputName = safeInputName(request.headers.get("X-Echo-Filename"));
+  const language = normalizeLanguage(url.searchParams.get("language") || request.headers.get("X-Echo-Language"));
+  const task = normalizeTranscribeTask(url.searchParams.get("task") || request.headers.get("X-Echo-Task"));
+
+  let audioBuffer;
+  try {
+    audioBuffer = await request.arrayBuffer();
+  } catch (_error) {
+    return jsonResponse({ ok: false, error: "Audio body could not be read." }, 400, responseOrigin);
+  }
+
+  if (!audioBuffer.byteLength) {
+    return jsonResponse({ ok: false, error: "Audio body is empty." }, 400, responseOrigin);
+  }
+
+  if (audioBuffer.byteLength > MAX_TRANSCRIBE_BYTES) {
+    return jsonResponse(
+      {
+        ok: false,
+        error: `Audio body exceeds ${MAX_TRANSCRIBE_BYTES} bytes.`,
+      },
+      413,
+      responseOrigin,
+    );
+  }
+
+  const modelInput = {
+    audio: encodeBase64(audioBuffer),
+    task,
+    vad_filter: true,
+    condition_on_previous_text: false,
+  };
+
+  if (language) {
+    modelInput.language = language;
+  }
+
+  let transcriptResult;
+  try {
+    transcriptResult = await env.AI.run(transcribeModel, modelInput);
+  } catch (error) {
+    return jsonResponse(
+      {
+        ok: false,
+        error: "Upstream transcription request failed.",
+        details: String(error?.message || error).slice(0, 400),
+      },
+      502,
+      responseOrigin,
+    );
+  }
+
+  const text = String(transcriptResult?.text || "").trim();
+  if (!text) {
+    return jsonResponse(
+      {
+        ok: false,
+        error: "Transcription returned no text.",
+      },
+      502,
+      responseOrigin,
+    );
+  }
+
+  const wordCount = Number.isFinite(transcriptResult?.word_count)
+    ? transcriptResult.word_count
+    : countWords(text);
+
+  return new Response(
+    JSON.stringify({
+      ok: true,
+      text,
+      word_count: wordCount,
+      segments: Array.isArray(transcriptResult?.segments) ? transcriptResult.segments : [],
+      transcription_info:
+        transcriptResult?.transcription_info && typeof transcriptResult.transcription_info === "object"
+          ? transcriptResult.transcription_info
+          : {},
+      input: {
+        name: inputName,
+        contentType,
+        sizeBytes: audioBuffer.byteLength,
+      },
+      task,
+      backend: "Cloudflare Workers AI",
+      model: transcribeModel,
+    }),
+    {
+      status: 200,
+      headers: {
+        ...corsHeaders(responseOrigin),
+        "Content-Type": "application/json; charset=utf-8",
+        "X-Echo-Backend": "Cloudflare Workers AI",
+        "X-Echo-Model": transcribeModel,
+        "X-Echo-Task": task,
+      },
+    },
+  );
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -172,6 +332,7 @@ export default {
     const responseOrigin = originAllowed ? origin : "*";
     const voiceCatalog = parseVoices(env);
     const model = (env.ECHO_TTS_MODEL || DEFAULT_MODEL).trim();
+    const transcribeModel = (env.ECHO_STT_MODEL || DEFAULT_TRANSCRIBE_MODEL).trim();
     const format = (env.ECHO_TTS_FORMAT || DEFAULT_FORMAT).trim().toLowerCase();
 
     if (request.method === "OPTIONS") {
@@ -181,17 +342,27 @@ export default {
       });
     }
 
-    if (request.method === "GET" && (path === "/" || path === "/health" || path === "/api/echo-tts")) {
+    if (
+      request.method === "GET" &&
+      (path === "/" || path === "/health" || path === "/api/echo-tts" || path === "/api/echo-transcribe")
+    ) {
       return jsonResponse(
         {
           ok: true,
           mode: "online-only",
           backend: "Cloudflare Workers AI",
           defaults: {
-            model,
-            voice: DEFAULT_VOICE,
-            format,
-            voices: voiceCatalog,
+            synthesis: {
+              model,
+              voice: DEFAULT_VOICE,
+              format,
+              voices: voiceCatalog,
+            },
+            transcription: {
+              model: transcribeModel,
+              task: DEFAULT_TRANSCRIBE_TASK,
+              maxBytes: MAX_TRANSCRIBE_BYTES,
+            },
           },
         },
         200,
@@ -199,12 +370,16 @@ export default {
       );
     }
 
-    if (request.method !== "POST" || (path !== "/" && path !== "/api/echo-tts")) {
+    if (request.method !== "POST" || (path !== "/" && path !== "/api/echo-tts" && path !== "/api/echo-transcribe")) {
       return jsonResponse({ ok: false, error: "Not found." }, 404, responseOrigin);
     }
 
     if (!originAllowed) {
       return jsonResponse({ ok: false, error: "Origin is not allowed for this endpoint." }, 403, responseOrigin);
+    }
+
+    if (path === "/api/echo-transcribe") {
+      return handleTranscription(request, env, responseOrigin, transcribeModel);
     }
 
     let body;

@@ -1,9 +1,11 @@
 ---
-import '@fontsource-variable/space-grotesk';
 import '@fontsource-variable/newsreader';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/500.css';
+import '@fontsource/ibm-plex-mono/700.css';
 import '@fontsource/ibm-plex-sans/400.css';
+import '@fontsource/ibm-plex-sans/500.css';
 import '@fontsource/ibm-plex-sans/600.css';
-import '../../styles/scripto-standalone.css';
 ---
 
 <!doctype html>
@@ -13,138 +15,529 @@ import '../../styles/scripto-standalone.css';
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="SCRIPTO standalone: parchment-toned writing and analysis surface for deterministic packet building."
+      content="SCRIPTO is Martin Lepage's deterministic packet builder for manuscript setup, claim mapping, recursive checks, review pressure, controls, and bounded export."
     />
-    <meta name="theme-color" content="#6f4b1f" />
-    <link rel="stylesheet" href="/martin-portfolio/index.css" />
-    <title>SCRIPTO | Parchment Builder Surface</title>
+    <meta name="theme-color" content="#17130f" />
+    <link rel="stylesheet" href="/scripto/scripto-standalone.css" />
+    <title>SCRIPTO | Deterministic Packet Builder</title>
   </head>
-  <body class="scripto-standalone">
-    <div class="scripto-shell">
-      <header class="scripto-header">
-        <a class="scripto-brand" href="/scripto/">
-          <span class="scripto-mark">SCRIPTO</span>
-          <span class="scripto-tagline">Deterministic Packet Instrument</span>
-        </a>
-        <nav class="scripto-nav" aria-label="SCRIPTO navigation">
-          <a href="/scriptorium/">Open full app</a>
-          <a href="/projects/scriptorium/">Project record</a>
-          <a href="/contact/">Contact</a>
-        </nav>
-      </header>
+  <body class="scripto-page">
+    <div class="scripto-toast" id="scripto-toast" role="status" aria-live="polite"></div>
 
-      <main class="scripto-main">
-        <section class="scripto-hero" aria-labelledby="scripto-title">
-          <div class="scripto-hero-grid">
+    <header class="scripto-topbar">
+      <div class="scripto-brand-block">
+        <a class="scripto-logo" href="/scripto/">SCRIPTO</a>
+        <div class="scripto-brand-copy">
+          <p class="scripto-kicker">Deterministic packet builder</p>
+          <p class="scripto-topline">A control surface for manuscripts under pressure.</p>
+        </div>
+      </div>
+
+      <div class="scripto-topbar-actions">
+        <div class="scripto-packet-score" aria-label="Packet completion">
+          <span class="scripto-score-label">Packet</span>
+          <div class="scripto-score-pips" id="header-pips">
+            <div class="scripto-score-pip" id="hp0"></div>
+            <div class="scripto-score-pip" id="hp1"></div>
+            <div class="scripto-score-pip" id="hp2"></div>
+            <div class="scripto-score-pip" id="hp3"></div>
+            <div class="scripto-score-pip" id="hp4"></div>
+            <div class="scripto-score-pip" id="hp5"></div>
+          </div>
+        </div>
+        <div class="scripto-header-status" id="header-readiness-text">Not ready</div>
+        <button class="scripto-top-button secondary" id="download-snapshot-button" type="button">
+          Download snapshot
+        </button>
+        <button class="scripto-top-button secondary" id="clear-draft-button" type="button">
+          Clear local draft
+        </button>
+        <a class="scripto-top-button ghost" href="/projects/scriptorium/">Project record</a>
+        <a class="scripto-top-button ghost" href="/">Martin site</a>
+      </div>
+    </header>
+
+    <div class="scripto-app-shell">
+      <nav class="scripto-steps-rail" aria-label="Packet flow">
+        <div class="scripto-steps-label">Packet flow</div>
+
+        <button class="scripto-step-button active" data-step-button="0" type="button">
+          <span class="scripto-step-num">01</span>
+          <span class="scripto-step-copy">
+            <strong>Packet Setup</strong>
+            <small>Object, domain, pressure, manuscript</small>
+          </span>
+          <span class="scripto-step-done" id="step-done-0"></span>
+        </button>
+
+        <button class="scripto-step-button" data-step-button="1" type="button">
+          <span class="scripto-step-num">02</span>
+          <span class="scripto-step-copy">
+            <strong>Claim Mapping</strong>
+            <small>Direct, inferred, unresolved lanes</small>
+          </span>
+          <span class="scripto-step-done" id="step-done-1"></span>
+        </button>
+
+        <button class="scripto-step-button" data-step-button="2" type="button">
+          <span class="scripto-step-num">03</span>
+          <span class="scripto-step-copy">
+            <strong>Recursive Checks</strong>
+            <small>Contradiction and overclaim pressure</small>
+          </span>
+          <span class="scripto-step-done" id="step-done-2"></span>
+        </button>
+
+        <button class="scripto-step-button" data-step-button="3" type="button">
+          <span class="scripto-step-num">04</span>
+          <span class="scripto-step-copy">
+            <strong>Henry Review</strong>
+            <small>Supportive, cold, harsh local review</small>
+          </span>
+          <span class="scripto-step-done" id="step-done-3"></span>
+        </button>
+
+        <button class="scripto-step-button" data-step-button="4" type="button">
+          <span class="scripto-step-num">05</span>
+          <span class="scripto-step-copy">
+            <strong>Controls</strong>
+            <small>Owner, evidence, interval</small>
+          </span>
+          <span class="scripto-step-done" id="step-done-4"></span>
+        </button>
+
+        <button class="scripto-step-button" data-step-button="5" type="button">
+          <span class="scripto-step-num">06</span>
+          <span class="scripto-step-copy">
+            <strong>Export</strong>
+            <small>Bounded markdown packet</small>
+          </span>
+          <span class="scripto-step-done" id="step-done-5"></span>
+        </button>
+      </nav>
+
+      <main class="scripto-main-panel">
+        <section class="scripto-step-panel active" data-step-panel="0" aria-labelledby="scripto-step-0-title">
+          <div class="scripto-panel-head">
             <div>
-              <p class="scripto-eyebrow">Deterministic writing app</p>
-              <h1 id="scripto-title">A control surface for manuscripts under pressure.</h1>
-              <p>
-                SCRIPTO is not a text generator. It is a packet builder that forces every draft through an explicit
-                sequence: intake, recursive testing, control assignment, and bounded export.
+              <p class="scripto-eyebrow">Step 01</p>
+              <h1 id="scripto-step-0-title">Packet setup</h1>
+              <p class="scripto-panel-subtitle">
+                Define the governing object, consequence domain, recursive pressure, and manuscript body before any
+                polished prose starts to harden.
               </p>
-              <p>
-                The objective is simple and strict: make claims travel only as far as their visible evidence trail can
-                carry them.
-              </p>
-              <div class="scripto-actions">
-                <a class="scripto-button primary" href="/scriptorium/#scriptorium-builder">Open builder</a>
-                <a class="scripto-button secondary" href="/scriptorium/#scriptorium-method">Method commitments</a>
-              </div>
             </div>
-
-            <aside class="scripto-meta-panel" aria-label="Instrument frame">
-              <h2>Instrument Frame</h2>
-              <ul>
-                <li><span>Mode</span><strong>Packet-first drafting</strong></li>
-                <li><span>Input</span><strong>Manuscript, quotes, and references</strong></li>
-                <li><span>Control</span><strong>Fail-closed claim discipline</strong></li>
-                <li><span>Output</span><strong>Reviewable markdown packet</strong></li>
-              </ul>
-            </aside>
-          </div>
-        </section>
-
-        <section class="scripto-section" aria-labelledby="scripto-flow-title">
-          <div class="scripto-section-head">
-            <p class="scripto-kicker">Packet flow</p>
-            <h2 id="scripto-flow-title">From intake to export, one visible manuscript chain.</h2>
+            <span class="scripto-panel-badge">Local-first public surface</span>
           </div>
 
-          <div class="scripto-grid" aria-label="SCRIPTO workflow">
-            <article class="scripto-card">
-              <p class="scripto-step">01</p>
-              <h3>Packet Setup</h3>
-              <p>Set governing object, consequence domain, and recursive pressure before any polish pass begins.</p>
-            </article>
-            <article class="scripto-card">
-              <p class="scripto-step">02</p>
-              <h3>Recursive Checks</h3>
-              <p>Run contradiction and overclaim checks so revision pressure stays accountable to the manuscript body.</p>
-            </article>
-            <article class="scripto-card">
-              <p class="scripto-step">03</p>
-              <h3>Control Assignment</h3>
-              <p>Attach finding, owner, evidence requirement, and review interval to each load-bearing claim path.</p>
-            </article>
-            <article class="scripto-card">
-              <p class="scripto-step">04</p>
-              <h3>Export Layer</h3>
-              <p>Export a bounded packet with readiness call, controls, and disclosure language ready for human review.</p>
-            </article>
-          </div>
-        </section>
-
-        <section class="scripto-section" aria-labelledby="scripto-control-title">
-          <div class="scripto-section-head">
-            <p class="scripto-kicker">Control lattice</p>
-            <h2 id="scripto-control-title">What SCRIPTO enforces before a packet can travel.</h2>
+          <div class="scripto-summary-strip">
+            <div>
+              <strong>What changed:</strong> this route is now the actual packet-builder app, not a brochure page.
+            </div>
+            <div>
+              <strong>Boundary:</strong> reviewer output is generated locally from the visible draft, claims, checks,
+              and controls. No hidden remote model call is required.
+            </div>
           </div>
 
-          <div class="scripto-grid scripto-grid-2" aria-label="SCRIPTO control architecture">
+          <div class="scripto-card-grid scripto-card-grid-2">
             <article class="scripto-card">
-              <h3>Support Corroboration</h3>
-              <p>Separate direct evidence from supported inference and unresolved uncertainty in every revision cycle.</p>
+              <label class="scripto-label" for="packet-title">Packet title</label>
+              <input
+                id="packet-title"
+                class="scripto-input"
+                type="text"
+                placeholder="Name the manuscript, brief, or packet"
+              />
+              <div class="scripto-field-footer">
+                <span class="scripto-field-hint">Use the real paper title or the working argument.</span>
+                <span class="scripto-inline-count" id="title-count"></span>
+              </div>
             </article>
+
             <article class="scripto-card">
-              <h3>Recursive Triangulation</h3>
-              <p>Require pre-pass and post-pass checks so each rewrite keeps or strengthens support anchors.</p>
-            </article>
-            <article class="scripto-card">
-              <h3>Henry Reviewer Stack</h3>
-              <p>Stress-test the manuscript with supportive, cold-method, and harsh review pressure before promotion.</p>
-            </article>
-            <article class="scripto-card">
-              <h3>Bounded Conclusion</h3>
-              <p>Force an explicit limit statement and disclosure language before external circulation.</p>
+              <div class="scripto-card-head">
+                <label class="scripto-label" for="packet-file">Manuscript file</label>
+                <span class="scripto-card-tag">TXT, MD, DOCX</span>
+              </div>
+              <input id="packet-file" class="scripto-file-input" type="file" accept=".txt,.md,.docx,text/plain" />
+              <p class="scripto-support-copy" id="packet-file-status">
+                No file loaded yet. Upload <code>.txt</code>, <code>.md</code>, or <code>.docx</code>. Older
+                <code>.doc</code> files should be resaved as <code>.docx</code> first.
+              </p>
             </article>
           </div>
-        </section>
 
-        <section class="scripto-ledger" aria-labelledby="scripto-ledger-title">
-          <article class="scripto-sheet" aria-label="Packet example">
-            <h2 id="scripto-ledger-title">Live packet ledger</h2>
-            <p class="scripto-sheet-subhead">Packet status snapshot</p>
-            <p class="sheet-line">Object: governance brief packet</p>
-            <p class="sheet-line">Readiness call: revise before external review</p>
-            <p class="sheet-line">Evidence floor: source-bound references and unresolved unknowns</p>
-            <p class="sheet-line">Controls: owner + evidence + review interval defined</p>
-            <p class="sheet-line">Output: structured markdown, disclosure-ready</p>
+          <div class="scripto-card-grid scripto-card-grid-3">
+            <article class="scripto-card">
+              <label class="scripto-label" for="packet-object">Governing object</label>
+              <input
+                id="packet-object"
+                class="scripto-input"
+                type="text"
+                placeholder="e.g. Governance brief on AI oversight frameworks"
+              />
+              <div class="scripto-field-footer">
+                <span class="scripto-field-hint">The single sentence this packet remains accountable to.</span>
+                <span class="scripto-inline-count" id="object-count"></span>
+              </div>
+            </article>
+
+            <article class="scripto-card">
+              <label class="scripto-label" for="packet-domain">Consequence domain</label>
+              <select id="packet-domain" class="scripto-select">
+                <option value="">Select domain</option>
+                <option value="Policy / Regulatory">Policy / Regulatory</option>
+                <option value="Research / Academic">Research / Academic</option>
+                <option value="Legal / Compliance">Legal / Compliance</option>
+                <option value="Organizational / Internal">Organizational / Internal</option>
+                <option value="Public communication">Public communication</option>
+                <option value="Technical specification">Technical specification</option>
+              </select>
+              <p class="scripto-support-copy">
+                This frames the risk surface and the level of precision the packet must satisfy.
+              </p>
+            </article>
+
+            <article class="scripto-card">
+              <label class="scripto-label" for="packet-pressure">Recursive pressure</label>
+              <select id="packet-pressure" class="scripto-select">
+                <option value="">Select pressure</option>
+                <option value="Low - single review pass">Low - single review pass</option>
+                <option value="Medium - two-pass contradiction check">Medium - two-pass contradiction check</option>
+                <option value="High - full triangulation required">High - full triangulation required</option>
+                <option value="Critical - adversarial plus cold-method review">
+                  Critical - adversarial plus cold-method review
+                </option>
+              </select>
+              <p class="scripto-support-copy">
+                Pressure level decides how aggressively the packet should challenge its own wording.
+              </p>
+            </article>
+          </div>
+
+          <article class="scripto-card">
+            <div class="scripto-card-head">
+              <label class="scripto-label" for="packet-body">Manuscript body</label>
+              <span class="scripto-card-tag">Paste or upload text</span>
+            </div>
+            <textarea
+              id="packet-body"
+              class="scripto-textarea"
+              rows="12"
+              placeholder="Paste the draft, source passages, or manuscript body here."
+            ></textarea>
+            <div class="scripto-field-footer">
+              <span class="scripto-field-hint">
+                The page works on the text you provide locally in the browser. It does not fabricate external sources.
+              </span>
+              <span class="scripto-inline-count" id="body-count"></span>
+            </div>
           </article>
 
-          <aside class="scripto-margin-note" aria-label="Margin notes">
-            <h3>Margin Notes</h3>
-            <p>Each pass keeps three lanes visible: verified evidence, supported inference, and unresolved unknowns.</p>
-            <ul>
-              <li>Keep source classes explicit.</li>
-              <li>Capture contradictions before closure.</li>
-              <li>Name the control owner before handoff.</li>
-              <li>Export only bounded claims.</li>
-            </ul>
-            <a class="scripto-note-link" href="/projects/scriptorium/">Open project record</a>
-          </aside>
+          <div class="scripto-button-row">
+            <button class="scripto-button ghost" id="seed-claims-primary" type="button">
+              Seed claim candidates
+            </button>
+            <button class="scripto-button ghost" id="reset-session-button" type="button">Reset session</button>
+            <button class="scripto-button primary" data-advance-button="0" type="button">
+              Set up packet
+            </button>
+          </div>
+        </section>
+
+        <section class="scripto-step-panel" data-step-panel="1" aria-labelledby="scripto-step-1-title">
+          <div class="scripto-panel-head">
+            <div>
+              <p class="scripto-eyebrow">Step 02</p>
+              <h2 id="scripto-step-1-title">Claim mapping</h2>
+              <p class="scripto-panel-subtitle">
+                Keep direct evidence, supported inference, and unresolved unknowns visible instead of laundering them
+                into one polished lane.
+              </p>
+            </div>
+            <span class="scripto-panel-badge">Support lanes stay explicit</span>
+          </div>
+
+          <div class="scripto-note">
+            <strong>Method rule:</strong> if a claim outruns its visible source anchor, narrow it or mark it as
+            unresolved. Do not let fluent wording impersonate evidence.
+          </div>
+
+          <div class="scripto-note">
+            <strong>Accuracy boundary:</strong> seeded claims are heuristic candidates based on visible lexical cues.
+            Confirm the text, class, and anchor note manually before letting any seeded line travel.
+          </div>
+
+          <div class="scripto-summary-strip">
+            <span id="claim-total-label">0 claims mapped</span>
+            <div class="scripto-chip-row">
+              <span class="scripto-chip direct" id="claim-direct-label">0 direct</span>
+              <span class="scripto-chip inferred" id="claim-inferred-label">0 inferred</span>
+              <span class="scripto-chip unresolved" id="claim-unresolved-label">0 unresolved</span>
+            </div>
+          </div>
+
+          <div class="scripto-claim-list" id="claim-list"></div>
+
+          <div class="scripto-button-row">
+            <button class="scripto-button ghost" id="add-claim-button" type="button">Add claim</button>
+            <button class="scripto-button ghost" id="seed-claims-secondary" type="button">Seed claim candidates</button>
+            <button class="scripto-button primary" data-advance-button="1" type="button">
+              Claim mapping complete
+            </button>
+          </div>
+        </section>
+
+        <section class="scripto-step-panel" data-step-panel="2" aria-labelledby="scripto-step-2-title">
+          <div class="scripto-panel-head">
+            <div>
+              <p class="scripto-eyebrow">Step 03</p>
+              <h2 id="scripto-step-2-title">Recursive checks</h2>
+              <p class="scripto-panel-subtitle">
+                Run contradiction, boundary, and overclaim checks before this packet is allowed to circulate.
+              </p>
+            </div>
+            <span class="scripto-panel-badge">Fail-closed pressure</span>
+          </div>
+
+          <div class="scripto-progress-head">
+            <span>Progress</span>
+            <span id="check-progress-text">0 / 6 passed</span>
+          </div>
+          <div class="scripto-progress-track">
+            <div class="scripto-progress-fill" id="check-progress-fill"></div>
+          </div>
+
+          <div class="scripto-check-list" id="check-list"></div>
+
+          <article class="scripto-card">
+            <label class="scripto-label" for="contradiction-notes">Contradiction notes</label>
+            <textarea
+              id="contradiction-notes"
+              class="scripto-textarea scripto-textarea-small"
+              rows="6"
+              placeholder="Document contradictions, overclaims, or unproven jumps discovered during this pass."
+            ></textarea>
+          </article>
+
+          <div class="scripto-button-row">
+            <button class="scripto-button primary" data-advance-button="2" type="button">
+              Checks complete
+            </button>
+          </div>
+        </section>
+
+        <section class="scripto-step-panel" data-step-panel="3" aria-labelledby="scripto-step-3-title">
+          <div class="scripto-panel-head">
+            <div>
+              <p class="scripto-eyebrow">Step 04</p>
+              <h2 id="scripto-step-3-title">Henry reviewer stack</h2>
+              <p class="scripto-panel-subtitle">
+                Generate supportive, cold-method, and harsh heuristic review pressure locally from the visible packet
+                state.
+              </p>
+            </div>
+            <span class="scripto-panel-badge">Deterministic heuristic reviews</span>
+          </div>
+
+          <div class="scripto-note">
+            <strong>Improvement:</strong> the old one-file version attempted a direct model call from the browser. This
+            public route now produces bounded local review pressure from visible packet data so the app actually works
+            after deployment.
+          </div>
+
+          <div class="scripto-run-all-row">
+            <p>Run all three reviewers at once for full pressure coverage.</p>
+            <button class="scripto-button primary" id="run-all-reviews-button" type="button">Run all three</button>
+          </div>
+
+          <div class="scripto-review-tabs" role="tablist" aria-label="Henry reviewer modes">
+            <button class="scripto-review-tab active" data-review-tab="supportive" type="button">Supportive</button>
+            <button class="scripto-review-tab" data-review-tab="cold" type="button">Cold method</button>
+            <button class="scripto-review-tab" data-review-tab="harsh" type="button">Harsh</button>
+          </div>
+
+          <div class="scripto-review-panels">
+            <article class="scripto-review-panel active" data-review-panel="supportive">
+              <p class="scripto-review-label">Supportive focus</p>
+              <p class="scripto-review-support-copy">
+                Confirms what the manuscript already anchors well and where the argument is behaving responsibly.
+              </p>
+              <div class="scripto-review-output" id="review-output-supportive">Awaiting review trigger.</div>
+              <div class="scripto-button-row">
+                <button class="scripto-button ghost" data-run-review="supportive" type="button">
+                  Run supportive review
+                </button>
+              </div>
+            </article>
+
+            <article class="scripto-review-panel" data-review-panel="cold">
+              <p class="scripto-review-label">Cold-method focus</p>
+              <p class="scripto-review-support-copy">
+                Evaluates inference drift, missing source classes, and unearned causality without praise language.
+              </p>
+              <div class="scripto-review-output" id="review-output-cold">Awaiting review trigger.</div>
+              <div class="scripto-button-row">
+                <button class="scripto-button ghost" data-run-review="cold" type="button">
+                  Run cold-method review
+                </button>
+              </div>
+            </article>
+
+            <article class="scripto-review-panel" data-review-panel="harsh">
+              <p class="scripto-review-label">Harsh focus</p>
+              <p class="scripto-review-support-copy">
+                Names the single sentence most likely to fail under cross-examination and explains why.
+              </p>
+              <div class="scripto-review-output" id="review-output-harsh">Awaiting review trigger.</div>
+              <div class="scripto-button-row">
+                <button class="scripto-button ghost" data-run-review="harsh" type="button">
+                  Run harsh review
+                </button>
+              </div>
+            </article>
+          </div>
+
+          <div class="scripto-button-row">
+            <button class="scripto-button primary" data-advance-button="3" type="button">Review complete</button>
+          </div>
+        </section>
+
+        <section class="scripto-step-panel" data-step-panel="4" aria-labelledby="scripto-step-4-title">
+          <div class="scripto-panel-head">
+            <div>
+              <p class="scripto-eyebrow">Step 05</p>
+              <h2 id="scripto-step-4-title">Control assignment</h2>
+              <p class="scripto-panel-subtitle">
+                Attach a named owner, evidence requirement, and review interval to each load-bearing claim path.
+              </p>
+            </div>
+            <span class="scripto-panel-badge">Controls bind to interfaces</span>
+          </div>
+
+          <div class="scripto-note">
+            <strong>Gate:</strong> export should not travel without at least one complete control row. If nobody owns
+            the next review, the packet is not ready.
+          </div>
+
+          <div class="scripto-control-list" id="control-list"></div>
+
+          <div class="scripto-button-row">
+            <button class="scripto-button ghost" id="add-control-button" type="button">Add control row</button>
+            <button class="scripto-button primary" data-advance-button="4" type="button">Controls set</button>
+          </div>
+        </section>
+
+        <section class="scripto-step-panel" data-step-panel="5" aria-labelledby="scripto-step-5-title">
+          <div class="scripto-panel-head">
+            <div>
+              <p class="scripto-eyebrow">Step 06</p>
+              <h2 id="scripto-step-5-title">Export layer</h2>
+              <p class="scripto-panel-subtitle">
+                Export a bounded packet with readiness, controls, disclosure language, and review pressure visible in
+                one markdown file.
+              </p>
+            </div>
+            <span class="scripto-panel-badge">Markdown packet ready</span>
+          </div>
+
+          <div class="scripto-metric-grid">
+            <article class="scripto-metric-card">
+              <span class="scripto-metric-label">Readiness</span>
+              <strong class="scripto-metric-value" id="export-readiness">Not ready</strong>
+            </article>
+            <article class="scripto-metric-card">
+              <span class="scripto-metric-label">Words</span>
+              <strong class="scripto-metric-value" id="export-word-count">0</strong>
+            </article>
+            <article class="scripto-metric-card">
+              <span class="scripto-metric-label">Mapped claims</span>
+              <strong class="scripto-metric-value" id="export-claim-count">0</strong>
+            </article>
+            <article class="scripto-metric-card">
+              <span class="scripto-metric-label">Complete controls</span>
+              <strong class="scripto-metric-value" id="export-control-count">0</strong>
+            </article>
+          </div>
+
+          <article class="scripto-export-shell">
+            <div class="scripto-card-head">
+              <p class="scripto-label">Markdown export</p>
+              <span class="scripto-card-tag" id="export-status">Ready for bounded export</span>
+            </div>
+            <textarea id="export-preview" class="scripto-export-box" readonly></textarea>
+          </article>
+
+          <div class="scripto-button-row">
+            <button class="scripto-button primary" id="download-packet-button" type="button">Download .md packet</button>
+            <button class="scripto-button ghost" id="copy-packet-button" type="button">Copy packet</button>
+          </div>
         </section>
       </main>
+
+      <aside class="scripto-ledger-panel" aria-label="Live packet ledger">
+        <div class="scripto-ledger-head">
+          <p>Live packet ledger</p>
+          <div class="scripto-readiness-bar" id="readiness-bar">
+            <div class="scripto-readiness-segment" id="rb0"></div>
+            <div class="scripto-readiness-segment" id="rb1"></div>
+            <div class="scripto-readiness-segment" id="rb2"></div>
+            <div class="scripto-readiness-segment" id="rb3"></div>
+            <div class="scripto-readiness-segment" id="rb4"></div>
+            <div class="scripto-readiness-segment" id="rb5"></div>
+          </div>
+        </div>
+
+        <div class="scripto-ledger-body">
+          <div class="scripto-ledger-item">
+            <span class="scripto-ledger-key">Source</span>
+            <span class="scripto-ledger-value" id="ledger-source">Paste text or upload a file</span>
+          </div>
+          <div class="scripto-ledger-item">
+            <span class="scripto-ledger-key">Object</span>
+            <span class="scripto-ledger-value is-empty" id="ledger-object">not set</span>
+          </div>
+          <div class="scripto-ledger-item">
+            <span class="scripto-ledger-key">Domain</span>
+            <span class="scripto-ledger-value is-empty" id="ledger-domain">not set</span>
+          </div>
+          <div class="scripto-ledger-item">
+            <span class="scripto-ledger-key">Pressure</span>
+            <span class="scripto-ledger-value is-empty" id="ledger-pressure">not set</span>
+          </div>
+          <div class="scripto-ledger-item">
+            <span class="scripto-ledger-key">Words</span>
+            <span class="scripto-ledger-value" id="ledger-words">0 words</span>
+          </div>
+          <div class="scripto-ledger-item">
+            <span class="scripto-ledger-key">Claim lanes</span>
+            <span class="scripto-ledger-value" id="ledger-claims">0 mapped</span>
+          </div>
+          <div class="scripto-ledger-item">
+            <span class="scripto-ledger-key">Checks</span>
+            <span class="scripto-ledger-value" id="ledger-checks">0 / 6 passed</span>
+          </div>
+          <div class="scripto-ledger-item">
+            <span class="scripto-ledger-key">Reviews</span>
+            <span class="scripto-ledger-value" id="ledger-reviews">0 / 3 run</span>
+          </div>
+          <div class="scripto-ledger-item">
+            <span class="scripto-ledger-key">Draft status</span>
+            <span class="scripto-ledger-value" id="ledger-draft-status">Autosave idle</span>
+          </div>
+          <div class="scripto-ledger-item">
+            <span class="scripto-ledger-key">Readiness call</span>
+            <span class="scripto-ledger-value" id="ledger-readiness">
+              <span class="scripto-status-pill not-ready">Not ready</span>
+            </span>
+          </div>
+        </div>
+      </aside>
     </div>
+
+    <script>
+      import '../../scripts/scripto-standalone.js';
+    </script>
   </body>
 </html>

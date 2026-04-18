@@ -10,18 +10,20 @@ const { project } = Astro.props;
 const slug = contentSlug(project.id);
 const standaloneProjectRoute = {
   echo: '/echo/',
-  astral: '/astral/',
+  astral: '/gaia/',
   lotus: '/lotus/',
-  scriptorium: '/scriptorium/',
+  'dr-sort': '/dr-sort/',
+  scriptorium: '/scripto/',
   'skill-ecosystem': '/hephaistos/',
 }[slug];
 const opensInNewWindow = Boolean(standaloneProjectRoute);
 const projectHref = standaloneProjectRoute ?? `/projects/${slug}/`;
 const projectCta = {
   echo: 'Open ECHO',
-  astral: 'Open Astral',
-  lotus: 'Open Lotus',
-  scriptorium: 'Open Scriptorium',
+  astral: 'Open GAIA',
+  'dr-sort': 'Open Dr.Sort',
+  lotus: 'Open LOTUS',
+  scriptorium: 'Open SCRIPTO',
   'skill-ecosystem': 'Open Hephaistos',
 }[slug] ?? 'View project';
 const motifClass =

@@ -2,57 +2,50 @@
 import { getCollection } from 'astro:content';
 import FilterBar from '../../components/FilterBar.astro';
 import PracticeHero from '../../components/PracticeHero.astro';
-import PublicationCard from '../../components/PublicationCard.astro';
 import SectionIntro from '../../components/SectionIntro.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { collectTags, isPublishedPaper, sortByYear } from '../../lib/content';
+import { clampText, collectTags, contentSlug, isPublishedPaper, sortByYear } from '../../lib/content';
 import { researchOverview, researchProfile } from '../../data/research';
 import { pageMeta, siteMeta } from '../../data/site';
 
-const publications = sortByYear((await getCollection('papers')).filter(isPublishedPaper));
+const allPaperRecords = await getCollection('papers');
+const publications = sortByYear(allPaperRecords.filter(isPublishedPaper));
+const totalPaperCount = allPaperRecords.length;
+const workingPaperCount = totalPaperCount - publications.length;
 const tags = collectTags(publications);
-const paperYears = publications
-  .map((paper) => paper.data.year)
-  .filter((year): year is number => typeof year === 'number');
-const archiveStartYear = paperYears.length > 0 ? Math.min(...paperYears) : undefined;
-const archiveEndYear = paperYears.length > 0 ? Math.max(...paperYears) : undefined;
-const archiveSpan =
-  archiveStartYear && archiveEndYear
-    ? archiveStartYear === archiveEndYear
-      ? `${archiveStartYear}`
-      : `${archiveStartYear}-${archiveEndYear}`
-    : 'Selected years';
 ---
 
 <BaseLayout
   title={pageMeta.publications.title}
   description={pageMeta.publications.description}
+  pageClass="page-papers"
 >
   <PracticeHero
     eyebrow="Publications"
-    title="Published research and verified academic records."
-    description="This section holds published articles, chapters, reviews, and dissertation-linked records. It keeps the publication boundary explicit so readers can distinguish validated outputs from in-progress work."
-    details="The larger outward archive remains on Academia.edu. Manuscripts, unresolved leads, and exploratory material stay under Projects until they are publication-ready."
+    title="Published research with the fuller paper line kept in view."
+    description="This section holds the verified published spine of a larger on-site paper line. It keeps articles, chapters, reviews, editorials, and dissertation-linked records distinct while pointing clearly to the working-paper side of the archive."
+    details={`The full on-site paper line currently spans ${totalPaperCount} records. ${publications.length} are published and verified here; the remaining ${workingPaperCount} stay public elsewhere on the site until status or bibliographic confirmation changes.`}
     links={[
       { label: 'Open Academia.edu', url: siteMeta.academia, variant: 'primary' },
       { label: 'Browse on-site index', url: '#publication-archive', variant: 'secondary' },
       { label: 'Open resume and CV', url: '/resume/', variant: 'inline' },
-      { label: 'View in-progress work in Projects', url: '/projects/', variant: 'inline' },
+      { label: 'Open working-paper records in Projects', url: '/projects/#unpublished-papers', variant: 'inline' },
     ]}
     sideEyebrow="Archive boundary"
-    sideTitle="What this page includes."
-    sideDescription="This archive remains intentionally strict: published records only, each with enough metadata to stand on its own."
+    sideTitle="What this page includes now."
+    sideDescription="This archive remains intentionally strict about publication status, but it no longer hides the existence of the broader on-site paper line."
     sidePoints={[
-      'Published articles, chapters, dissertation records, and reviews are indexed here as bounded entries.',
+      'Published articles, chapters, dissertation records, reviews, and editorials are indexed here as bounded entries.',
+      'The site-wide paper line currently spans published work, circulating manuscripts, and confirmation-stage leads.',
       'Academia.edu remains the wider outward archive for additional publication context.',
-      'Manuscripts and unresolved bibliographic leads remain under Projects until verification is complete.',
+      'Working papers and unresolved bibliographic leads remain under Projects until verification is complete.',
     ]}
     stats={[
       {
-        eyebrow: 'Archive span',
-        value: archiveSpan,
-        label: 'Years covered',
-        description: 'Years currently represented in the on-site publication index.',
+        eyebrow: 'Paper line',
+        value: totalPaperCount,
+        label: 'On-site records',
+        description: 'Published, circulating, and development-stage paper records currently represented on the site.',
       },
       {
         eyebrow: 'Published',
@@ -61,10 +54,10 @@ const archiveSpan =
         description: 'Entries currently presented as verified published work.',
       },
       {
-        eyebrow: 'In progress',
-        value: 'Projects',
-        label: 'Unpublished work',
-        description: 'Manuscripts and unresolved leads stay public under Projects until status changes.',
+        eyebrow: 'Elsewhere on site',
+        value: workingPaperCount,
+        label: 'Working-paper records',
+        description: 'Manuscripts in circulation, in development, or pending confirmation remain public under Projects.',
       },
     ]}
   />
@@ -73,23 +66,23 @@ const archiveSpan =
     <div class="grid gap-6 xl:grid-cols-[minmax(0,1.35fr)_minmax(0,0.65fr)]">
       <article class="veil-panel">
         <p class="eyebrow">Canonical archive</p>
-        <h2 class="mt-3 text-[1.42rem] md:text-[1.62rem]">The complete outward stack remains on Academia.edu.</h2>
+        <h2 class="mt-3 text-[1.42rem] md:text-[1.62rem]">The published spine lives here, with Academia.edu as the wider outward mirror.</h2>
         <p class="mt-4 max-w-[58ch] text-base text-slate-200">
-          This on-site index is designed for precision and readability. It keeps publication claims bounded while
-          preserving a clear route to the broader external archive.
+          This on-site index is designed for precision and readability, but it is no longer framed as a thin selective
+          sampler. It names the broader paper line while keeping publication claims properly bounded.
         </p>
         <div class="mt-6 flex flex-wrap gap-3">
           <a class="button-primary" href={siteMeta.academia}>Open Academia.edu</a>
-          <a class="button-secondary" href="#publication-archive">Browse on-site index</a>
+          <a class="button-secondary" href="#publication-archive">Browse published spine</a>
         </div>
       </article>
 
       <div class="veil-panel">
         <p class="eyebrow">On-site method</p>
-        <h2 class="mt-3 text-[1.28rem] md:text-[1.44rem]">Selective index, not exhaustive repository.</h2>
+        <h2 class="mt-3 text-[1.28rem] md:text-[1.44rem]">Published spine, not the whole paper line.</h2>
         <p class="mt-4 text-base text-slate-200">
           Publication entries stay separate from drafts and exploratory records so readers can evaluate claims at the
-          right confidence level.
+          right confidence level without losing sight of the broader archive.
         </p>
       </div>
     </div>
@@ -101,18 +94,19 @@ const archiveSpan =
     <div class="mt-12 grid gap-6 lg:grid-cols-3">
       {researchOverview.map((item) => (
         <article class="veil-panel h-full">
-          <p class="eyebrow">Archive guide</p>
+          <p class="eyebrow">Research genealogy</p>
           <h2 class="mt-3 text-[1.24rem] md:text-[1.38rem]">{item.title}</h2>
           <p class="mt-4 text-base text-slate-200">{item.body}</p>
         </article>
       ))}
     </div>
 
+    <!-- Bibliography list replaces card grid -->
     <div class="mt-14" id="publication-archive">
       <SectionIntro
         eyebrow="On-site index"
-        title="Search the published record."
-        description="Filter published articles, chapters, reviews, and dissertation-linked records by title, venue, year, and topic."
+        title="Search the published spine."
+        description="Filter published articles, chapters, reviews, editorials, and dissertation-linked records by title, venue, year, and topic."
       />
     </div>
 
@@ -120,8 +114,32 @@ const archiveSpan =
       <FilterBar scopeId="papers" tags={tags} searchPlaceholder="Search publications" />
     </div>
 
-    <div class="mt-10 grid gap-6 lg:grid-cols-2" data-filter-scope="papers">
-      {publications.map((paper) => <PublicationCard paper={paper} />)}
+    <!-- Bibliography format: ruled list instead of card grid -->
+    <div class="biblio-list mt-4" data-filter-scope="papers">
+      {publications.map((paper) => {
+        const href = isPublishedPaper(paper) ? `/papers/${contentSlug(paper.id)}/` : `/projects/${contentSlug(paper.id)}/`;
+        const summary = clampText(paper.data.abstract, 200);
+        return (
+          <article
+            class="biblio-entry"
+            data-filter-item
+            data-tags={paper.data.tags.join('|').toLowerCase()}
+            data-search={`${paper.data.title} ${paper.data.venue} ${paper.data.abstract} ${paper.data.tags.join(' ')}`.toLowerCase()}
+          >
+            <div class="biblio-year-col">
+              {paper.data.year && <span class="biblio-year">{paper.data.year}</span>}
+              <span class="biblio-type-label">{paper.data.type}</span>
+            </div>
+            <div class="biblio-body">
+              <a class="biblio-title-link" href={href}>{paper.data.title}</a>
+              <p class="biblio-venue">{paper.data.venue}</p>
+              <span class="biblio-status-tag">{paper.data.status}</span>
+              {summary && <p class="biblio-summary">{summary}</p>}
+              <a class="biblio-cta" href={href}>Open record →</a>
+            </div>
+          </article>
+        );
+      })}
     </div>
   </section>
 </BaseLayout>

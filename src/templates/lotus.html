@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Lotus Bloom</title>
+    <style>
+        :root {
+            --bg-black: #02030a;
+            --bg-deep: #07101d;
+            --bg-abyss: #0b1223;
+            --bg-indigo: #14092a;
+            --bg-violet: #1f0d35;
+            --petal-outer-tip: rgba(255, 245, 249, 0.92);
+            --petal-outer-blush: rgba(255, 191, 221, 0.82);
+            --petal-outer-body: rgba(215, 96, 190, 0.78);
+            --petal-outer-base: rgba(84, 22, 89, 0.92);
+            --petal-middle-tip: rgba(255, 251, 252, 0.96);
+            --petal-middle-blush: rgba(255, 214, 234, 0.9);
+            --petal-middle-body: rgba(247, 128, 204, 0.82);
+            --petal-middle-base: rgba(117, 27, 104, 0.95);
+            --petal-inner-tip: rgba(255, 253, 247, 0.98);
+            --petal-inner-blush: rgba(255, 228, 237, 0.92);
+            --petal-inner-body: rgba(255, 165, 215, 0.88);
+            --petal-inner-base: rgba(145, 36, 116, 0.96);
+            --petal-micro-tip: rgba(255, 255, 250, 1);
+            --petal-micro-blush: rgba(255, 236, 242, 0.96);
+            --petal-micro-body: rgba(255, 189, 219, 0.92);
+            --petal-micro-base: rgba(180, 64, 132, 0.96);
+            --core-light: rgba(255, 247, 218, 1);
+            --core-warm: rgba(255, 203, 146, 0.95);
+            --core-rose: rgba(247, 134, 170, 0.86);
+            --glow-pale: rgba(255, 230, 242, 0.88);
+            --glow-pink: rgba(246, 120, 205, 0.54);
+            --glow-violet: rgba(158, 78, 209, 0.34);
+            --lotus-size: clamp(18rem, 74vmin, 42rem);
+            --ease-bloom: cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at 50% 44%, rgba(39, 18, 70, 0.9) 0 12%, rgba(9, 14, 31, 0.72) 22%, rgba(3, 7, 17, 0) 42%),
+                radial-gradient(circle at 50% 112%, rgba(29, 73, 121, 0.34) 0 14%, rgba(9, 17, 30, 0.08) 32%, rgba(0, 0, 0, 0) 54%),
+                linear-gradient(180deg, #03040d 0%, #06111d 48%, #02030a 100%);
+            font-family: Georgia, "Times New Roman", serif;
+        }
+
+        .scene {
+            position: relative;
+            min-height: 100vh;
+            width: 100%;
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+            isolation: isolate;
+            padding: clamp(0.75rem, 3vmin, 2rem);
+            background:
+                radial-gradient(circle at 50% 46%, rgba(30, 14, 56, 0.86) 0 16%, rgba(6, 10, 24, 0.72) 36%, rgba(2, 3, 10, 0) 60%),
+                linear-gradient(180deg, rgba(1, 3, 9, 0.28) 0%, rgba(1, 3, 9, 0) 18%, rgba(1, 3, 9, 0.22) 100%);
+        }
+
+        .scene::before,
+        .scene::after {
+            content: "";
+            position: absolute;
+            inset: -12vmax;
+            pointer-events: none;
+        }
+
+        .scene::before {
+            background:
+                radial-gradient(circle at 50% 48%, rgba(255, 255, 255, 0.06) 0 0.11rem, transparent 0.16rem),
+                radial-gradient(circle at 18% 24%, rgba(255, 255, 255, 0.045) 0 0.1rem, transparent 0.16rem),
+                radial-gradient(circle at 74% 18%, rgba(255, 255, 255, 0.03) 0 0.09rem, transparent 0.16rem),
+                radial-gradient(circle at 80% 82%, rgba(255, 255, 255, 0.025) 0 0.09rem, transparent 0.16rem),
+                radial-gradient(circle at 12% 74%, rgba(255, 255, 255, 0.022) 0 0.08rem, transparent 0.15rem),
+                radial-gradient(circle at 50% 58%, rgba(174, 93, 228, 0.16) 0 12%, rgba(10, 13, 25, 0) 44%),
+                radial-gradient(circle at 50% 110%, rgba(46, 86, 133, 0.35) 0 16%, rgba(5, 11, 22, 0) 46%);
+            opacity: 0.85;
+            animation: waterShift 24s ease-in-out infinite alternate;
+        }
+
+        .scene::after {
+            inset: auto -18vw -18vh;
+            height: 52vh;
+            background:
+                radial-gradient(ellipse at 50% 10%, rgba(255, 198, 229, 0.2) 0 10%, rgba(255, 198, 229, 0) 40%),
+                repeating-radial-gradient(
+                    ellipse at 50% 12%,
+                    rgba(133, 179, 255, 0.1) 0 1.1%,
+                    rgba(133, 179, 255, 0) 1.7% 4.7%
+                ),
+                radial-gradient(ellipse at 50% 100%, rgba(3, 9, 20, 0.86) 0 38%, rgba(3, 9, 20, 0) 72%);
+            filter: blur(clamp(0.2rem, 1.4vmin, 0.8rem));
+            opacity: 0.55;
+            transform: translateY(16%);
+            animation: rippleDrift 18s ease-in-out infinite;
+        }
+
+        .lotus {
+            position: relative;
+            width: calc(var(--lotus-size) * 1.08);
+            aspect-ratio: 1;
+            isolation: isolate;
+            filter:
+                drop-shadow(0 0 0.6rem rgba(255, 255, 255, 0.06))
+                drop-shadow(0 0 2.2rem rgba(240, 118, 208, 0.14))
+                drop-shadow(0 0 4rem rgba(122, 63, 180, 0.12));
+            animation: lotusBreathe 11s ease-in-out infinite 3.4s;
+        }
+
+        .lotus::before,
+        .lotus::after {
+            content: "";
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .lotus::before {
+            inset: 20%;
+            border-radius: 50%;
+            background:
+                radial-gradient(circle, rgba(255, 213, 238, 0.42) 0 8%, rgba(255, 163, 219, 0.22) 24%, rgba(83, 20, 84, 0.08) 48%, rgba(0, 0, 0, 0) 74%);
+            filter: blur(calc(var(--lotus-size) * 0.06));
+            opacity: 0.96;
+            animation: haloPulse 9s ease-in-out infinite 2.8s;
+        }
+
+        .lotus::after {
+            left: 50%;
+            bottom: 6%;
+            width: calc(var(--lotus-size) * 0.64);
+            height: calc(var(--lotus-size) * 0.14);
+            transform: translateX(-50%);
+            border-radius: 50%;
+            background:
+                radial-gradient(ellipse at 50% 50%, rgba(255, 184, 226, 0.3) 0 14%, rgba(147, 94, 194, 0.18) 32%, rgba(13, 26, 48, 0.06) 58%, rgba(13, 26, 48, 0) 76%);
+            filter: blur(calc(var(--lotus-size) * 0.018));
+            opacity: 0.72;
+            animation: reflectionPulse 10s ease-in-out infinite 3s;
+        }
+
+        .halo {
+            position: absolute;
+            inset: 18%;
+            border-radius: 50%;
+            background:
+                radial-gradient(circle at 50% 50%, rgba(255, 239, 245, 0.3) 0 10%, rgba(255, 164, 218, 0.18) 28%, rgba(125, 50, 151, 0.12) 44%, rgba(0, 0, 0, 0) 72%);
+            filter: blur(calc(var(--lotus-size) * 0.03));
+            mix-blend-mode: screen;
+            opacity: 0.9;
+            animation: haloPulse 8s ease-in-out infinite 3.2s reverse;
+        }
+
+        .ring {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .ring.outer {
+            z-index: 1;
+            --petal-w: calc(var(--lotus-size) * 0.15);
+            --petal-h: calc(var(--lotus-size) * 0.34);
+            --shift: calc(var(--lotus-size) * 0.17);
+            --bud-shift: calc(var(--lotus-size) * 0.035);
+            --step: 30deg;
+            --offset: 0deg;
+            --opacity: 0.72;
+            --blur: calc(var(--lotus-size) * 0.0024);
+            --start-delay: 0.18s;
+            --stagger: 0.045s;
+            --duration: 2.85s;
+            --tip-color: var(--petal-outer-tip);
+            --blush-color: var(--petal-outer-blush);
+            --body-color: var(--petal-outer-body);
+            --base-color: var(--petal-outer-base);
+            animation: ringSwayOuter 13s ease-in-out infinite 3.65s;
+        }
+
+        .ring.middle {
+            z-index: 2;
+            --petal-w: calc(var(--lotus-size) * 0.132);
+            --petal-h: calc(var(--lotus-size) * 0.29);
+            --shift: calc(var(--lotus-size) * 0.127);
+            --bud-shift: calc(var(--lotus-size) * 0.028);
+            --step: 36deg;
+            --offset: 18deg;
+            --opacity: 0.82;
+            --blur: calc(var(--lotus-size) * 0.0019);
+            --start-delay: 0.72s;
+            --stagger: 0.05s;
+            --duration: 2.55s;
+            --tip-color: var(--petal-middle-tip);
+            --blush-color: var(--petal-middle-blush);
+            --body-color: var(--petal-middle-body);
+            --base-color: var(--petal-middle-base);
+            animation: ringSwayMiddle 11s ease-in-out infinite 3.95s;
+        }
+
+        .ring.inner {
+            z-index: 3;
+            --petal-w: calc(var(--lotus-size) * 0.114);
+            --petal-h: calc(var(--lotus-size) * 0.228);
+            --shift: calc(var(--lotus-size) * 0.088);
+            --bud-shift: calc(var(--lotus-size) * 0.022);
+            --step: 45deg;
+            --offset: 22.5deg;
+            --opacity: 0.9;
+            --blur: calc(var(--lotus-size) * 0.00135);
+            --start-delay: 1.14s;
+            --stagger: 0.055s;
+            --duration: 2.15s;
+            --tip-color: var(--petal-inner-tip);
+            --blush-color: var(--petal-inner-blush);
+            --body-color: var(--petal-inner-body);
+            --base-color: var(--petal-inner-base);
+            animation: ringSwayInner 9.6s ease-in-out infinite 4.15s;
+        }
+
+        .ring.micro {
+            z-index: 4;
+            --petal-w: calc(var(--lotus-size) * 0.078);
+            --petal-h: calc(var(--lotus-size) * 0.15);
+            --shift: calc(var(--lotus-size) * 0.053);
+            --bud-shift: calc(var(--lotus-size) * 0.016);
+            --step: 60deg;
+            --offset: 30deg;
+            --opacity: 0.94;
+            --blur: calc(var(--lotus-size) * 0.001);
+            --start-delay: 1.42s;
+            --stagger: 0.06s;
+            --duration: 1.85s;
+            --tip-color: var(--petal-micro-tip);
+            --blush-color: var(--petal-micro-blush);
+            --body-color: var(--petal-micro-body);
+            --base-color: var(--petal-micro-base);
+            animation: ringSwayMicro 8.4s ease-in-out infinite 4.35s;
+        }
+
+        .petal {
+            position: absolute;
+            left: 50%;
+            bottom: 50%;
+            width: var(--petal-w);
+            height: var(--petal-h);
+            transform-origin: 50% 100%;
+            transform:
+                translateX(-50%)
+                rotate(calc(var(--offset) + (var(--i) * var(--step))))
+                translateY(calc(var(--bud-shift) * -1))
+                rotate(0deg)
+                scale(0.18, 0.28);
+            border-radius: 58% 58% 18% 18% / 90% 90% 18% 18%;
+            overflow: hidden;
+            opacity: 0;
+            mix-blend-mode: screen;
+            background:
+                linear-gradient(180deg, var(--tip-color) 0%, var(--blush-color) 18%, var(--body-color) 58%, var(--base-color) 100%);
+            box-shadow:
+                inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+                inset 0 -0.8rem 1rem rgba(34, 2, 34, 0.24),
+                0 0 1.6rem rgba(255, 181, 223, 0.24),
+                0 0 2.8rem rgba(184, 79, 198, 0.12);
+            filter: blur(var(--blur)) saturate(1.12);
+            animation:
+                bloom var(--duration) var(--ease-bloom) forwards;
+            animation-delay: calc(var(--start-delay) + (var(--i) * var(--stagger)));
+        }
+
+        .petal::before,
+        .petal::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+        }
+
+        .petal::before {
+            inset: 8% 17% 28%;
+            background:
+                radial-gradient(circle at 50% 10%, rgba(255, 255, 255, 0.86) 0 8%, rgba(255, 255, 255, 0) 52%),
+                linear-gradient(180deg, rgba(255, 255, 255, 0.46) 0%, rgba(255, 255, 255, 0.05) 68%, rgba(255, 255, 255, 0) 100%);
+            filter: blur(calc(var(--lotus-size) * 0.004));
+            mix-blend-mode: screen;
+            opacity: 0.84;
+        }
+
+        .petal::after {
+            inset: 11% 43% 10%;
+            border-radius: 999px;
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 240, 247, 0.24) 42%, rgba(96, 7, 72, 0.22) 100%);
+            opacity: 0.62;
+            filter: blur(calc(var(--lotus-size) * 0.0012));
+        }
+
+        .ring.outer .petal:nth-child(odd) {
+            --flare: -7deg;
+        }
+
+        .ring.outer .petal:nth-child(even) {
+            --flare: 7deg;
+        }
+
+        .ring.outer .petal:nth-child(3n) {
+            opacity: 0.68;
+            filter: blur(calc(var(--blur) + (var(--lotus-size) * 0.001))) saturate(1.08);
+        }
+
+        .ring.middle .petal:nth-child(odd) {
+            --flare: -5deg;
+        }
+
+        .ring.middle .petal:nth-child(even) {
+            --flare: 5deg;
+        }
+
+        .ring.middle .petal:nth-child(3n + 2) {
+            opacity: 0.78;
+        }
+
+        .ring.inner .petal:nth-child(odd) {
+            --flare: -3.5deg;
+        }
+
+        .ring.inner .petal:nth-child(even) {
+            --flare: 3.5deg;
+        }
+
+        .ring.micro .petal:nth-child(odd) {
+            --flare: -2deg;
+        }
+
+        .ring.micro .petal:nth-child(even) {
+            --flare: 2deg;
+        }
+
+        .core {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: calc(var(--lotus-size) * 0.17);
+            aspect-ratio: 1;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 6;
+            background:
+                radial-gradient(circle at 50% 26%, var(--core-light) 0 16%, var(--core-warm) 30%, var(--core-rose) 62%, rgba(78, 14, 58, 0.96) 100%);
+            box-shadow:
+                0 0 1.8rem rgba(255, 214, 173, 0.5),
+                0 0 3.8rem rgba(246, 141, 190, 0.28),
+                0 0 5rem rgba(165, 84, 206, 0.18);
+            animation: corePulse 8.8s ease-in-out infinite 2.8s;
+        }
+
+        .core::before,
+        .core::after {
+            content: "";
+            position: absolute;
+            border-radius: 50%;
+        }
+
+        .core::before {
+            inset: 12%;
+            background:
+                radial-gradient(circle at 50% 30%, rgba(255, 255, 244, 0.96) 0 18%, rgba(255, 231, 186, 0.84) 36%, rgba(255, 171, 181, 0.22) 68%, rgba(255, 171, 181, 0) 100%);
+            filter: blur(calc(var(--lotus-size) * 0.003));
+        }
+
+        .core::after {
+            left: 50%;
+            top: 52%;
+            width: calc(var(--lotus-size) * 0.11);
+            height: calc(var(--lotus-size) * 0.11);
+            transform: translate(-50%, -50%);
+            background:
+                radial-gradient(circle at 50% 38%, rgba(255, 248, 232, 0.9) 0 28%, rgba(255, 205, 146, 0.78) 46%, rgba(255, 205, 146, 0) 70%);
+            filter: blur(calc(var(--lotus-size) * 0.0045));
+            opacity: 0.88;
+        }
+
+        @keyframes bloom {
+            0% {
+                opacity: 0;
+                transform:
+                    translateX(-50%)
+                    rotate(calc(var(--offset) + (var(--i) * var(--step))))
+                    translateY(calc(var(--bud-shift) * -1))
+                    rotate(0deg)
+                    scale(0.18, 0.28);
+                filter: blur(calc(var(--blur) + (var(--lotus-size) * 0.012))) saturate(0.8);
+            }
+
+            40% {
+                opacity: calc(var(--opacity) * 0.72);
+            }
+
+            100% {
+                opacity: var(--opacity);
+                transform:
+                    translateX(-50%)
+                    rotate(calc(var(--offset) + (var(--i) * var(--step))))
+                    translateY(calc(var(--shift) * -1))
+                    rotate(var(--flare, 0deg))
+                    scale(1, 1);
+                filter: blur(var(--blur)) saturate(1.12);
+            }
+        }
+
+        @keyframes lotusBreathe {
+            0%,
+            100% {
+                transform: translateY(0) scale(1);
+            }
+
+            50% {
+                transform: translateY(calc(var(--lotus-size) * -0.01)) scale(1.012);
+            }
+        }
+
+        @keyframes haloPulse {
+            0%,
+            100% {
+                opacity: 0.82;
+                transform: scale(0.98);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.04);
+            }
+        }
+
+        @keyframes corePulse {
+            0%,
+            100% {
+                transform: translate(-50%, -50%) scale(0.98);
+                box-shadow:
+                    0 0 1.8rem rgba(255, 214, 173, 0.46),
+                    0 0 3.6rem rgba(246, 141, 190, 0.24),
+                    0 0 4.6rem rgba(165, 84, 206, 0.16);
+            }
+
+            50% {
+                transform: translate(-50%, -50%) scale(1.04);
+                box-shadow:
+                    0 0 2.2rem rgba(255, 225, 186, 0.58),
+                    0 0 4.2rem rgba(255, 165, 205, 0.32),
+                    0 0 5.2rem rgba(165, 84, 206, 0.22);
+            }
+        }
+
+        @keyframes ringSwayOuter {
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg) scale(1);
+            }
+
+            50% {
+                transform: translateY(calc(var(--lotus-size) * 0.01)) rotate(-1deg) scale(1.008);
+            }
+        }
+
+        @keyframes ringSwayMiddle {
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg) scale(1);
+            }
+
+            50% {
+                transform: translateY(calc(var(--lotus-size) * -0.008)) rotate(0.8deg) scale(1.01);
+            }
+        }
+
+        @keyframes ringSwayInner {
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg) scale(1);
+            }
+
+            50% {
+                transform: translateY(calc(var(--lotus-size) * -0.006)) rotate(-0.65deg) scale(1.012);
+            }
+        }
+
+        @keyframes ringSwayMicro {
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg) scale(1);
+            }
+
+            50% {
+                transform: translateY(calc(var(--lotus-size) * -0.004)) rotate(0.45deg) scale(1.016);
+            }
+        }
+
+        @keyframes waterShift {
+            0% {
+                transform: translate3d(0, 0, 0) scale(1);
+            }
+
+            100% {
+                transform: translate3d(0, -1.5%, 0) scale(1.035);
+            }
+        }
+
+        @keyframes rippleDrift {
+            0%,
+            100% {
+                transform: translateY(16%) scaleX(1);
+                opacity: 0.52;
+            }
+
+            50% {
+                transform: translateY(14%) scaleX(1.03);
+                opacity: 0.64;
+            }
+        }
+
+        @keyframes reflectionPulse {
+            0%,
+            100% {
+                opacity: 0.6;
+                transform: translateX(-50%) scaleX(0.98);
+            }
+
+            50% {
+                opacity: 0.78;
+                transform: translateX(-50%) scaleX(1.03);
+            }
+        }
+
+        @media (max-width: 640px) {
+            :root {
+                --lotus-size: clamp(16rem, 82vmin, 32rem);
+            }
+
+            .lotus {
+                width: calc(var(--lotus-size) * 1.1);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+
+            .petal {
+                opacity: var(--opacity);
+                transform:
+                    translateX(-50%)
+                    rotate(calc(var(--offset) + (var(--i) * var(--step))))
+                    translateY(calc(var(--shift) * -1))
+                    rotate(var(--flare, 0deg))
+                    scale(1, 1);
+                filter: blur(var(--blur)) saturate(1.12);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="scene">
+        <div class="lotus" role="img" aria-label="A luminous lotus flower blooming over deep midnight water.">
+            <div class="halo"></div>
+            <div class="ring outer">
+                <div class="petal" style="--i: 0;"></div>
+                <div class="petal" style="--i: 1;"></div>
+                <div class="petal" style="--i: 2;"></div>
+                <div class="petal" style="--i: 3;"></div>
+                <div class="petal" style="--i: 4;"></div>
+                <div class="petal" style="--i: 5;"></div>
+                <div class="petal" style="--i: 6;"></div>
+                <div class="petal" style="--i: 7;"></div>
+                <div class="petal" style="--i: 8;"></div>
+                <div class="petal" style="--i: 9;"></div>
+                <div class="petal" style="--i: 10;"></div>
+                <div class="petal" style="--i: 11;"></div>
+            </div>
+            <div class="ring middle">
+                <div class="petal" style="--i: 0;"></div>
+                <div class="petal" style="--i: 1;"></div>
+                <div class="petal" style="--i: 2;"></div>
+                <div class="petal" style="--i: 3;"></div>
+                <div class="petal" style="--i: 4;"></div>
+                <div class="petal" style="--i: 5;"></div>
+                <div class="petal" style="--i: 6;"></div>
+                <div class="petal" style="--i: 7;"></div>
+                <div class="petal" style="--i: 8;"></div>
+                <div class="petal" style="--i: 9;"></div>
+            </div>
+            <div class="ring inner">
+                <div class="petal" style="--i: 0;"></div>
+                <div class="petal" style="--i: 1;"></div>
+                <div class="petal" style="--i: 2;"></div>
+                <div class="petal" style="--i: 3;"></div>
+                <div class="petal" style="--i: 4;"></div>
+                <div class="petal" style="--i: 5;"></div>
+                <div class="petal" style="--i: 6;"></div>
+                <div class="petal" style="--i: 7;"></div>
+            </div>
+            <div class="ring micro">
+                <div class="petal" style="--i: 0;"></div>
+                <div class="petal" style="--i: 1;"></div>
+                <div class="petal" style="--i: 2;"></div>
+                <div class="petal" style="--i: 3;"></div>
+                <div class="petal" style="--i: 4;"></div>
+                <div class="petal" style="--i: 5;"></div>
+            </div>
+            <div class="core"></div>
+        </div>
+    </div>
+</body>
+</html>

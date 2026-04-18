@@ -1,0 +1,41 @@
+---
+import LotusLayout from '../../../layouts/LotusLayout.astro';
+import { buildCanonical } from '../../../lib/seo';
+
+const pageDescription =
+  'Lotus research continuity route. The agency scorer, workbench, and vector model now live on the main /lotus/ surface.';
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: 'Lotus Research Route',
+  description: pageDescription,
+  url: buildCanonical('/lotus/research/'),
+  creator: {
+    '@type': 'Person',
+    name: 'Martin Lepage',
+  },
+};
+---
+
+<LotusLayout
+  title="Lotus Research Route"
+  description={pageDescription}
+  canonical="/lotus/research/"
+  structuredData={structuredData}
+>
+  <section class="section-shell">
+    <div class="veil-panel mx-auto max-w-4xl">
+      <p class="eyebrow">Lotus research route</p>
+      <h1 class="mt-5">The Lotus agency scorer is back on the main route.</h1>
+      <p class="mt-6 text-lg leading-8 text-slate-200">
+        This continuity route stays up for older links, but the main Lotus surface now lives again on <code>/lotus/</code>,
+        where the scorer, workbench, and vector model sit together.
+      </p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a class="button-primary" href="/lotus/">Open the Lotus scorer</a>
+        <a class="button-secondary" href="/projects/lotus/">Open the project record</a>
+      </div>
+    </div>
+  </section>
+</LotusLayout>

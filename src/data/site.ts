@@ -105,7 +105,7 @@ export const pageMeta = {
 
 export const navigation = [
   { href: '/', label: 'Home' },
-  { href: '/papers/', label: 'Institutional Analysis' },
+  { href: '/papers/', label: 'Papers' },
   { href: '/governance/', label: 'AI\u00A0Governance' },
   { href: '/writing/', label: 'Public Writing' },
   { href: '/projects/', label: 'Apps' },
@@ -116,8 +116,11 @@ export const navigation = [
 ] as const;
 
 export const publicProjectOrder = [
-  'scriptorium',
+  'lotus',
   'echo',
+  'scriptorium',
+  'astral',
+  'dr-sort',
   'compassai-governance-engine',
   'aurorai',
   'from-ai-anxiety-to-recursive-governance-under-constraint',
@@ -127,12 +130,10 @@ export const publicProjectOrder = [
   'master-annotated-thematic-bibliography',
   'gaialogy-as-social-grammar',
   'bonded-intelligence-under-constraint',
-  'lotus',
 ] as const;
 
 export const hiddenProjectArchiveSlugs = [
   'agency-social-positioning-tool',
-  'astral',
   'governess-suite',
   'recurso',
   'socialcompass-agatha',

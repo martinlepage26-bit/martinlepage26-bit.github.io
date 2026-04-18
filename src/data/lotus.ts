@@ -13,7 +13,14 @@ export interface LotusSampleNote {
   text: string;
 }
 
+export interface LotusBloomQuestion {
+  id: string;
+  prompt: string;
+  note: string;
+}
+
 const UNTITLED_NOTE = 'Untitled Lotus note';
+const EMPTY_NOTE_TITLE = 'Paste or load a Lotus note';
 
 export const lotusSignalGroups: readonly LotusSignalGroup[] = [
   {
@@ -133,19 +140,19 @@ export const lotusSignalGroups: readonly LotusSignalGroup[] = [
 
 export const lotusSurfaces = [
   {
-    eyebrow: 'For people',
-    title: 'Map what is exhausting you.',
+    eyebrow: 'Primary route',
+    title: 'Open the Lotus agency scorer.',
     description:
-      'If life feels too heavy, too confusing, or too hard to explain, LOTUS can help you see the shape of what is happening — what you are carrying, where options have closed, and what kinds of support might help.',
-    href: '#lotus-workbench',
+      'The main Lotus route now holds the quick reading and the deeper model together: note scoring, signal groups, and the full agency-oriented interface on one surface.',
+    href: '/lotus/#lotus-workbench',
     cta: 'Open the workbench',
   },
   {
     eyebrow: 'For researchers',
     title: 'Analyze constrained agency across scales.',
     description:
-      'LOTUS offers a structured, non-reductionist framework for mapping how regulatory load, perceptual narrowing, blocked access, and social legibility interact under conditions of stress, trauma, precarity, or institutional mismatch.',
-    href: '#lotus-vector',
+      'LOTUS offers a structured, non-reductionist way to trace how regulatory load, perceptual narrowing, blocked access, and social legibility interact under stress, precarity, trauma, or institutional mismatch.',
+    href: '/lotus/#lotus-vector',
     cta: 'Run the vector model',
   },
   {
@@ -160,8 +167,8 @@ export const lotusSurfaces = [
     eyebrow: 'Limits',
     title: 'Understand what LOTUS does not do.',
     description:
-      'LOTUS does not diagnose, predict fixed futures, or replace therapy, crisis care, or medical treatment. Any high-stakes use should include human judgment and appropriate ethical safeguards.',
-    href: '#lotus-boundary',
+      'LOTUS does not diagnose, predict fixed futures, or replace therapy, crisis care, or medical treatment. Any high-stakes use should remain accountable to human judgment and appropriate ethical safeguards.',
+    href: '/lotus/#lotus-boundary',
     cta: 'Read the limits',
   },
 ] as const;
@@ -170,17 +177,17 @@ export const lotusBoundaryCards = [
   {
     title: 'LOTUS does not diagnose.',
     body:
-      'LOTUS is not a medical or diagnostic device. It is a reflective and interpretive tool. It may help identify patterns, but it does not produce clinical conclusions or replace professional assessment.',
+      'LOTUS is not a medical or diagnostic device. It can surface patterns and language around pressure, but it does not produce clinical conclusions or replace professional assessment.',
   },
   {
-    title: 'The person is more than the score.',
+    title: 'A score is not a self.',
     body:
-      'LOTUS may generate structure, but it does not reduce a person to a number. A score reflects conditions and pressures — not character, worth, or fixed identity. Interpretation must remain revisable.',
+      'Any score is a reading of conditions, constraints, and supports at a moment in time. It is not character, worth, destiny, or fixed identity. Interpretation must remain revisable.',
   },
   {
-    title: 'The website surface is intentionally bounded.',
+    title: 'Boundaries protect dignity.',
     body:
-      'LOTUS should not be used to exploit or manipulate vulnerable people. It is designed to support understanding, dignity, and better pathways to care or action — not to make high-stakes decisions without human judgment.',
+      'LOTUS should not be used to sort, exploit, or manipulate vulnerable people. It is designed to support understanding, dignity, and better pathways to care or action, not high-stakes decisions without human judgment.',
   },
 ] as const;
 
@@ -205,6 +212,44 @@ export const lotusSampleNotes: readonly LotusSampleNote[] = [
     title: 'Workflow handoff and monitoring memo',
     text:
       'The team needs a clearer implementation process before the next delivery cycle. Current workflow and coordination patterns leave too much ambiguity at the scheduling and monitoring stage, which weakens execution capacity and creates governance risk. The recommendation is a small operational control set: name the owner, document the process, preserve accountability, and keep the review path legible across the whole project team.',
+  },
+] as const;
+
+export const lotusBloomQuestions: readonly LotusBloomQuestion[] = [
+  {
+    id: 'weight',
+    prompt: 'What feels heaviest right now?',
+    note: 'Name the pressure plainly. You do not need to explain everything at once.',
+  },
+  {
+    id: 'narrowing',
+    prompt: 'Where have your options narrowed?',
+    note: 'Describe where movement, choice, or flexibility has become harder to reach.',
+  },
+  {
+    id: 'hidden-load',
+    prompt: 'What are you carrying that other people may not see?',
+    note: 'Let the invisible part become visible here, even if only in fragments.',
+  },
+  {
+    id: 'support',
+    prompt: 'What kind of support would change the shape of this moment?',
+    note: 'Think in concrete terms: a person, a condition, a pause, a resource, a boundary.',
+  },
+  {
+    id: 'agency',
+    prompt: 'Where do you still feel some agency, even if it is small?',
+    note: 'Look for the smallest real place where choice, refusal, care, or direction still exists.',
+  },
+  {
+    id: 'next-step',
+    prompt: 'What would a kinder next step look like?',
+    note: 'Name the next move that feels survivable, not the perfect move.',
+  },
+  {
+    id: 'carry-forward',
+    prompt: 'What do you want to carry upward with you?',
+    note: 'Let this final bloom hold what should remain present as you continue.',
   },
 ] as const;
 
@@ -363,8 +408,11 @@ export function buildLotusAssessment({
 }) {
   const rawText = text ?? '';
   const extracted = extractMarkdownParts(rawText);
-  const resolvedTitle = inferLotusTitle(title, rawText);
   const cleanedText = extracted.cleanedText;
+  const hasMeaningfulText = cleanedText.trim().length > 0;
+  const resolvedTitle = hasMeaningfulText || cleanCandidateText(title ?? '')
+    ? inferLotusTitle(title, rawText)
+    : EMPTY_NOTE_TITLE;
   const fullText = [resolvedTitle, cleanedText.slice(0, 24000)].join('\n');
 
   const groups = lotusSignalGroups.map((group) => {
@@ -392,9 +440,11 @@ export function buildLotusAssessment({
   const activeSignals = groups.filter((group) => group.matchedTerms.length > 0).map((group) => group.label);
   const dominantGroups = [...groups].sort((left, right) => right.score - left.score).filter((group) => group.score > 0).slice(0, 3);
   const totalMatchedTerms = groups.reduce((sum, group) => sum + group.matchedTerms.length, 0);
-  const summary = dominantGroups.length
-    ? `This note currently reads strongest through ${joinHumanList(dominantGroups.map((group) => group.label))} signals.`
-    : 'This note does not yet strongly activate the Lotus signal library. Add more concrete governance, agency, operational, creative, or meaning-rich language to shift the score.';
+  const summary = !hasMeaningfulText
+    ? 'Paste a note or load a public sample to see which Lotus signals rise to the surface.'
+    : dominantGroups.length
+      ? `This note currently reads strongest through ${joinHumanList(dominantGroups.map((group) => group.label))} signals.`
+      : 'This note does not yet strongly activate the Lotus signal library. Add more concrete governance, agency, operational, creative, or meaning-rich language to shift the score.';
   const boundary =
     'The website workbench scores only the text pasted into the browser. The canonical desktop and local repo line still owns file imports, local workspaces, and deeper note review.';
 

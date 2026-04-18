@@ -1,176 +1,23 @@
 ---
-import SectionIntro from '../SectionIntro.astro';
 import AstralGaialogyApp from '../astral/AstralGaialogyApp.astro';
 import { gaialogySigns } from '../../data/astralYear';
-
-const gaiaSurfaces = [
-  {
-    eyebrow: 'App core',
-    title: 'General reading and daily horoscope.',
-    description: 'Use one interface for full sign readings and date-linked daily guidance rooted in the book vocabulary.',
-    href: '#gaia-tool',
-    cta: 'Open GAIA interface',
-  },
-  {
-    eyebrow: 'Book context',
-    title: 'Read Breath of the Astral Year.',
-    description: 'Return to the book-facing page that frames the whole seasonal language and conceptual method.',
-    href: '/gaia/book/',
-    cta: 'Open the book page',
-  },
-  {
-    eyebrow: 'Glossary',
-    title: 'Browse the sign glossary.',
-    description: 'Review the stable vocabulary behind each reading: competence, weather, body, relation, shadow, and ritual.',
-    href: '/gaia/glossary/',
-    cta: 'Open the glossary',
-  },
-  {
-    eyebrow: 'Project record',
-    title: 'See the archive record for the title.',
-    description: 'View the public project entry that links the published book, glossary, and app as one bounded record.',
-    href: '/projects/breath-of-the-astral-year/',
-    cta: 'Open the archive record',
-  },
-] as const;
-
-const seasonalMethod = [
-  {
-    label: '1. Earth-first entry',
-    body: 'GAIA begins with sign language or calendar date, keeping interpretation anchored in lived season rather than remote mechanism.',
-  },
-  {
-    label: '2. Shared grammar',
-    body: 'General readings and daily horoscope output use the same sign fields from Breath of the Astral Year: key note, civic weather, body, relation, shadow, ritual.',
-  },
-  {
-    label: '3. Daily cadence',
-    body: 'The daily mode modulates sign logic through weekday rhythm and date pressure, so guidance changes each day while staying method-consistent.',
-  },
-  {
-    label: '4. Practical output',
-    body: 'Every result ends in usable orientation: what to focus, what to watch, and what ritual action keeps you grounded.',
-  },
-] as const;
 ---
 
-<section class="relative overflow-hidden border-b border-[rgba(255,255,255,0.08)]">
-  <div class="section-shell gaia-cosmos-shell">
-    <div class="gaia-orbit gaia-orbit-one"></div>
-    <div class="gaia-orbit gaia-orbit-two"></div>
-    <div class="grid gap-10 lg:grid-cols-[minmax(0,1.08fr)_minmax(320px,0.92fr)] lg:items-end">
-      <div class="relative z-10 max-w-4xl">
-        <p class="eyebrow">GAIA online app</p>
-        <h1 class="mt-5">Earth-based astrology for general readings and daily horoscope.</h1>
-        <p class="mt-6 max-w-3xl text-lg leading-8 text-slate-100 md:text-xl">
-          GAIA translates <em>Breath of the Astral Year</em> into a public-facing reading surface. It keeps the same
-          gaialogy logic while making it usable in two flows: full interpretive reading and daily horoscope.
-        </p>
-        <div class="mt-8 flex flex-wrap gap-3">
-          <a class="button-primary" href="#gaia-tool">Start GAIA now</a>
-          <a class="button-secondary" href="/gaia/glossary/">Open sign glossary</a>
-          <a class="button-secondary" href="/gaia/book/">Read book context</a>
-        </div>
-      </div>
-
-      <div class="veil-panel gaia-panel relative z-10">
-        <p class="eyebrow">What it gives you</p>
-        <div class="mt-5 grid gap-4">
-          <div class="gaia-mini-card">
-            <p class="gaia-mini-label">General reading</p>
-            <p class="mt-2 text-base leading-7 text-slate-200">
-              A full sign-based interpretation with seasonal mood, body register, relation movement, shadow, and ritual.
-            </p>
-          </div>
-          <div class="gaia-mini-card">
-            <p class="gaia-mini-label">Daily horoscope</p>
-            <p class="mt-2 text-base leading-7 text-slate-200">
-              Date-aware guidance generated through the same Earth-bound sign framework, not detached generic zodiac copy.
-            </p>
-          </div>
-          <div class="gaia-mini-card">
-            <p class="gaia-mini-label">Method integrity</p>
-            <p class="mt-2 text-base leading-7 text-slate-200">
-              The app reuses project-native terminology and conceptual mappings from the book and glossary pages.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="gaia-tool" class="section-shell">
-  <SectionIntro
-    eyebrow="Interactive reading"
-    title="Use GAIA directly from this page."
-    description="General reading and daily horoscope both run from the same sign grammar and Earth-based vocabulary as Breath of the Astral Year."
-  />
-
-  <div class="mt-12">
+<!-- GAIA design lock: keep this route as a direct full-bleed app surface unless an explicit redesign is requested. -->
+<section id="gaia-tool" class="gaia-app-page" data-gaia-page-lock="full-bleed-app">
+  <div class="gaia-app-bleed" data-gaia-page-shell="reference-surface">
     <AstralGaialogyApp signs={gaialogySigns} />
   </div>
 </section>
 
-<section class="section-shell border-y border-[rgba(255,255,255,0.08)] bg-[rgba(8,11,16,0.72)]">
-  <SectionIntro
-    eyebrow="GAIA surfaces"
-    title="Use the project across its local pages."
-    description="The app is canonical at /gaia/, with book and glossary pages available as supporting references."
-  />
+<style>
+  .gaia-app-page {
+    padding: 0;
+  }
 
-  <div class="mt-12 gaia-grid-4">
-    {gaiaSurfaces.map((item) => (
-      <article class="veil-panel gaia-panel h-full">
-        <p class="gaia-mini-label">{item.eyebrow}</p>
-        <h2 class="mt-4 text-[1.08rem] md:text-[1.2rem]">{item.title}</h2>
-        <p class="mt-4 text-base leading-7 text-slate-200">{item.description}</p>
-        <div class="mt-5">
-          <a class="gaia-link-pill" href={item.href}>{item.cta}</a>
-        </div>
-      </article>
-    ))}
-  </div>
-</section>
-
-<section class="section-shell border-y border-[rgba(255,255,255,0.08)] bg-[rgba(8,11,16,0.72)]">
-  <SectionIntro
-    eyebrow="How it works"
-    title="A seasonal method, not a natal chart engine."
-    description="GAIA renders repeatable readings from the book's sign calendar and vocabulary. It does not calculate planets, houses, or transits."
-  />
-
-  <div class="mt-12 gaia-grid-4">
-    {seasonalMethod.map((item) => (
-      <article class="veil-panel gaia-panel h-full">
-        <p class="gaia-mini-label">{item.label}</p>
-        <p class="mt-4 text-base leading-7 text-slate-200">{item.body}</p>
-      </article>
-    ))}
-  </div>
-
-  <div class="mt-10 grid gap-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.95fr)]">
-    <article class="veil-panel gaia-panel">
-      <p class="eyebrow">What it does not do</p>
-      <h2 class="mt-4 text-[1.16rem] md:text-[1.28rem]">No hidden astronomy claims.</h2>
-      <ul class="mt-4 ml-5 list-disc space-y-2 text-base leading-7 text-slate-200">
-        <li>No birth time or birth place input.</li>
-        <li>No planetary positions, houses, aspects, or transit layers.</li>
-        <li>No claim that the method needs a natal chart engine in order to speak.</li>
-      </ul>
-    </article>
-
-    <article class="veil-panel gaia-panel">
-      <p class="eyebrow">If full charts come later</p>
-      <h2 class="mt-4 text-[1.16rem] md:text-[1.28rem]">That would be a separate build step.</h2>
-      <p class="mt-4 text-base leading-7 text-slate-200">
-        To render full natal gaialogys later, the project would need a declared gaialogy system, real astronomical
-        calculations or an external chart engine, and additional birth inputs such as exact time and place.
-      </p>
-      <p class="mt-4 text-base leading-7 text-slate-200">
-        The current GAIA app is intentionally narrower: a public Earth-based reading experience grounded in
-        <em>Breath of the Astral Year</em>.
-      </p>
-    </article>
-  </div>
-</section>
+  .gaia-app-bleed {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+  }
+</style>

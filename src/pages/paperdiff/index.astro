@@ -1,0 +1,363 @@
+---
+import PaperDiffIsland from '../../components/paperdiff/PaperDiffIsland.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { buildCanonical } from '../../lib/seo';
+
+const pageDescription =
+  'PaperDiff is a browser-side document comparison surface for comparing text, DOCX, and PDF drafts on martin.govern-ai.ca.';
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'PaperDiff',
+  description: pageDescription,
+  applicationCategory: 'ResearchApplication',
+  operatingSystem: 'Any',
+  url: buildCanonical('/paperdiff/'),
+  creator: {
+    '@type': 'Person',
+    name: 'Martin Lepage',
+  },
+  featureList: [
+    'Upload text, markdown, DOCX, or PDF files',
+    'Paste source and revised drafts directly',
+    'Line-by-line comparison with inline change highlighting',
+    'Adjust surrounding context lines inside the result table',
+  ],
+};
+---
+
+<BaseLayout title="PaperDiff" description={pageDescription} canonical="/paperdiff/" structuredData={structuredData}>
+  <section class="section-shell paperdiff-top-shell">
+    <div class="paperdiff-ledger">
+      <div class="paperdiff-copy">
+        <p class="eyebrow">PaperDiff</p>
+        <h1>Comparative draft desk.</h1>
+        <p class="paperdiff-lede">
+          Upload or paste two versions of a paper, note, or working draft, then inspect the revision line by line.
+        </p>
+      </div>
+
+      <div class="paperdiff-intro-specs">
+        <article class="paperdiff-intro-card">
+          <span class="paperdiff-intro-label">Input</span>
+          <strong class="paperdiff-intro-value">TXT · MD · DOCX · PDF</strong>
+          <p class="paperdiff-intro-body">Upload files or paste source and revised text directly into the surface.</p>
+        </article>
+        <article class="paperdiff-intro-card">
+          <span class="paperdiff-intro-label">Scope</span>
+          <strong class="paperdiff-intro-value">Browser only</strong>
+          <p class="paperdiff-intro-body">Comparison runs locally. No content is uploaded or transmitted.</p>
+        </article>
+        <article class="paperdiff-intro-card">
+          <span class="paperdiff-intro-label">Output</span>
+          <strong class="paperdiff-intro-value">Inline line diff</strong>
+          <p class="paperdiff-intro-body">Changes highlighted per line with adjustable surrounding context.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-shell paperdiff-app-shell">
+    <PaperDiffIsland />
+  </section>
+
+  <section class="section-shell paperdiff-reference-shell">
+    <div class="paperdiff-support-grid">
+      <aside class="paperdiff-note">
+        <p class="paperdiff-note-label">Scope</p>
+        <p>
+          Built for manuscript comparison, tracked rewrites, and close reading of draft changes without leaving the
+          browser.
+        </p>
+        <ul class="paperdiff-note-list">
+          <li>Local browser extraction for TXT, Markdown, DOCX, and PDF</li>
+          <li>Inline rewrite highlighting for changed lines</li>
+          <li>Claude artifact preserved below as an appendix, not the primary surface</li>
+        </ul>
+      </aside>
+
+      <details class="paperdiff-reference" name="paperdiff-appendix">
+        <summary class="paperdiff-reference-summary">
+          <span>Appendix A</span>
+          <span>Claude reference surface</span>
+        </summary>
+
+        <div class="paperdiff-reference-body">
+          <div class="paperdiff-reference-copy">
+            <p>
+              The original Claude-hosted artifact is preserved here as supporting context. It no longer competes with the
+              main work surface.
+            </p>
+            <a
+              class="paperdiff-reference-link"
+              href="https://claude.site/public/artifacts/dbf1fd69-85f7-4c94-801d-2fa99bc4c769/embed"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Open the artifact in a new tab
+            </a>
+          </div>
+
+          <div class="paperdiff-frame-wrap">
+            <iframe
+              src="https://claude.site/public/artifacts/dbf1fd69-85f7-4c94-801d-2fa99bc4c769/embed"
+              title="Claude Artifact"
+              width="100%"
+              height="600"
+              frameborder="0"
+              allow="clipboard-write"
+              allowfullscreen
+              loading="lazy"
+            ></iframe>
+          </div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <style>
+    .paperdiff-top-shell {
+      padding-bottom: 1.2rem;
+    }
+
+    .paperdiff-ledger {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 1.4rem;
+    }
+
+    .paperdiff-lede {
+      margin-top: 0.85rem;
+      color: var(--color-slate-100);
+      max-width: 34rem;
+    }
+
+    .paperdiff-intro-specs {
+      display: grid;
+      gap: 0.72rem;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-top: 1.6rem;
+    }
+
+    .paperdiff-intro-card {
+      position: relative;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 0.72rem;
+      padding: 0.9rem 1rem;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01)),
+        rgba(8, 11, 16, 0.64);
+      overflow: hidden;
+    }
+
+    .paperdiff-intro-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 1rem;
+      right: 1rem;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(204, 153, 103, 0.62), rgba(204, 153, 103, 0));
+    }
+
+    .paperdiff-intro-label {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #cc9967;
+    }
+
+    .paperdiff-intro-value {
+      display: block;
+      margin-top: 0.45rem;
+      font-family: var(--font-sans);
+      font-size: 0.98rem;
+      font-weight: 650;
+      color: var(--color-moon);
+      letter-spacing: -0.01em;
+    }
+
+    .paperdiff-intro-body {
+      margin-top: 0.48rem;
+      font-size: 0.86rem;
+      line-height: 1.56;
+      color: var(--color-slate-200);
+    }
+
+    @media (max-width: 680px) {
+      .paperdiff-intro-specs {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .paperdiff-note {
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 0.45rem;
+      padding: 1.05rem 1.05rem 0.95rem;
+      background:
+        linear-gradient(180deg, rgba(8, 11, 16, 0.72), rgba(8, 11, 16, 0.62)),
+        repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0 1px, transparent 1px 34px);
+      box-shadow: none;
+      position: relative;
+    }
+
+    .paperdiff-note::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: rgba(204, 153, 103, 0.7);
+    }
+
+    .paperdiff-note-label {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #cc9967;
+    }
+
+    .paperdiff-note p + p {
+      margin-top: 0.9rem;
+    }
+
+    .paperdiff-note-list {
+      margin: 0.9rem 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 0.6rem;
+    }
+
+    .paperdiff-note-list li {
+      color: var(--color-slate-200);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      position: relative;
+      padding-left: 1rem;
+    }
+
+    .paperdiff-note-list li::before {
+      content: '·';
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: #cc9967;
+    }
+
+    .paperdiff-app-shell {
+      padding-top: 0;
+    }
+
+    .paperdiff-reference-shell {
+      padding-top: 1rem;
+    }
+
+    .paperdiff-support-grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .paperdiff-reference {
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 0.45rem;
+      background:
+        linear-gradient(180deg, rgba(8, 11, 16, 0.72), rgba(8, 11, 16, 0.64)),
+        repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0 1px, transparent 1px 34px);
+      box-shadow: none;
+    }
+
+    .paperdiff-reference[open] {
+      padding: 1rem 1rem 1.15rem;
+    }
+
+    .paperdiff-reference-summary {
+      list-style: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      gap: 1rem;
+      padding: 0.95rem 1rem;
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-slate-100);
+    }
+
+    .paperdiff-reference-summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .paperdiff-reference-summary span:first-child {
+      color: #cc9967;
+      flex-shrink: 0;
+    }
+
+    .paperdiff-reference-body {
+      display: grid;
+      gap: 1rem;
+      padding-top: 0.8rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .paperdiff-reference-copy p {
+      color: var(--color-slate-100);
+    }
+
+    .paperdiff-reference-link {
+      margin-top: 1rem;
+      display: inline-flex;
+      align-items: center;
+      padding-bottom: 0.15rem;
+      border-bottom: 1px solid rgba(204, 153, 103, 0.34);
+      color: #cc9967;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+
+    .paperdiff-reference-link:hover {
+      border-color: rgba(204, 153, 103, 0.86);
+      color: #e0ac79;
+    }
+
+    .paperdiff-frame-wrap {
+      overflow: hidden;
+      border-radius: 0.35rem;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .paperdiff-frame-wrap iframe {
+      display: block;
+      width: 100%;
+      min-height: 600px;
+      background: #fff;
+    }
+
+    @media (min-width: 980px) {
+      .paperdiff-support-grid {
+        grid-template-columns: minmax(280px, 0.7fr) minmax(0, 1fr);
+        align-items: start;
+      }
+
+      .paperdiff-reference-body {
+        grid-template-columns: minmax(260px, 0.36fr) minmax(0, 1fr);
+        align-items: start;
+      }
+    }
+  </style>
+</BaseLayout>

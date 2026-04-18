@@ -170,7 +170,7 @@ Who controls triggers, file maps, and tool calls controls what counts as evidenc
 
 The system is safer when these controls are explicit and reviewable, because hidden routing policy functions as unaccountable authority.
 
-The philosopher layer is decisive here. Because it functions as a meta-router with a debate engine, it behaves like an executive-value layer: it determines which cognitive tool should run and can refuse misaligned routing. Without that layer, the stack would degrade into a skill drawer.
+The routing layer is decisive here. Governance owns final constraint authority, while philosopher and fully-rounded-power-analyst operate as co-equal right-arms: philosopher frames conceptual stakes and debate structure; power-analyst maps actors, incentives, and hidden leverage. Without that governed split, the stack would degrade into a skill drawer.
 
 ## Ethical stakes
 
@@ -211,6 +211,15 @@ The corpus now supports a proto-cognitive classification, but three capabilities
 
 The existing RECURSOTRUE governance structures suggest a pathway to all three, but those loops are not yet continuously active in this repository runtime.
 
+## Current operational baseline
+
+As of 2026-03-30, this operating layer is anchored to a live two-surface deployment.
+
+- `martin.govern-ai.ca` carries the Hephaistos narratives, the authored governance tree, the skill ecosystem tree, and the standalone Martin-side apps.
+- `pharos-ai.ca` carries the PHAROS public shell, COMPASSai, AurorA, and PHAROS-side operational records such as the email baseline.
+
+That separation matters methodologically. Narrative interpretation, authored map publication, product/service routing, and production mail operations are now documented on the surfaces that actually own them rather than being blended into one ambiguous public host.
+
 ## Relation to other entries in the corpus
 
 - [Authored Governance Tree and Skill Ecosystem Maps](/governance/methods/authored-governance-tree-and-skill-ecosystem-maps/) records authored taxonomy intent.
@@ -220,4 +229,4 @@ The existing RECURSOTRUE governance structures suggest a pathway to all three, b
 
 ## Why it matters
 
-Calling this stack HEPHAISTOS is not branding language. It is a governance claim: execution logic and context routing form a coherent operating layer. Once treated that way, architecture choices become inspectable policy rather than invisible prompt craft.
+Calling this stack HEPHAISTOS is not branding language. It is a governance claim: execution logic and context routing form a coherent operating layer. Once treated that way, architecture choices become inspectable policy rather than invisible prompt craft, and live surface boundaries become part of the operating system rather than an afterthought.

@@ -19,11 +19,20 @@ interface Props {
 }
 
 const { eyebrow, title, description, meta, backHref, backLabel, tags = [], links = [] } = Astro.props;
-const standaloneRoutes = new Set(['/echo/', '/astral/', '/lotus/', '/scriptorium/', '/hephaistos/']);
+const standaloneRoutes = new Set([
+  '/echo/',
+  '/gaia/',
+  '/gaia/app/',
+  '/gaia/glossary/',
+  '/gaia/book/',
+  '/lotus/',
+  '/scriptorium/',
+  '/hephaistos/',
+]);
 const opensInNewWindow = (url: string) => standaloneRoutes.has(url) || /^https?:\/\//.test(url);
 ---
 
-<section class="relative overflow-hidden border-b border-[rgba(36,27,23,0.12)]">
+<section class="relative overflow-hidden border-b border-[rgba(255,255,255,0.08)]">
   <BackgroundTreatment variant="panel" />
   <div class="section-shell relative">
     <div class="hero-copy-panel mt-2 max-w-4xl">

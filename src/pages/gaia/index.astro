@@ -1,11 +1,10 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GaiaAppExperience from '../../components/gaia/GaiaAppExperience.astro';
-import '../../styles/gaia-theme.css';
 import { buildCanonical } from '../../lib/seo';
 
 const pageDescription =
-  "GAIA is an Earth-based online astrology app built from Breath of the Astral Year, with general readings and daily horoscope.";
+  "GAIA is the public gaialogy reading surface built from Breath of the Astral Year, with grounded sign profiles, seasonal readings, and daily modulation.";
 
 const structuredData = {
   '@context': 'https://schema.org',
@@ -27,11 +26,12 @@ const structuredData = {
 ---
 
 <BaseLayout
-  title="GAIA App"
+  title="GAIA"
   description={pageDescription}
   image="/social/og-breath-of-the-astral-year.png"
   canonical="/gaia/"
   structuredData={structuredData}
+  extraStyles={['/gaia/gaia-theme.css']}
 >
   <GaiaAppExperience />
 </BaseLayout>

@@ -97,6 +97,15 @@ This reconciliation pattern scales.
 
 Systemically, this turns site architecture from static layout into governed metadata with explicit source-control lineage.
 
+## Current publication state
+
+As of 2026-03-30, these authored artifacts are no longer just source files or offline exports. They are published control surfaces on the Martin site:
+
+- `https://martin.govern-ai.ca/martin_lepage_governance_tree`
+- `https://martin.govern-ai.ca/skill_ecosystem_tree`
+
+Legacy PHAROS-side paths now redirect to those Martin-side URLs. That matters because the tree artifacts are part of Martin's public methods and identity layer, while PHAROS now remains bounded to product and service surfaces only.
+
 ## Relation to other entries in the corpus
 
 - [Corpus Ingestion and Governance Tree](/governance/methods/corpus-ingestion-and-governance-tree/) defines baseline ingestion logic and dual-layer naming.
@@ -106,4 +115,4 @@ Systemically, this turns site architecture from static layout into governed meta
 
 ## Why it matters
 
-Without authored-map reconciliation, taxonomy drift accumulates invisibly and portability claims become weak. With it, the site carries both interpretive discipline and architectural flexibility: source labels remain intact, normalized labels remain legible, and future migrations can reconstruct why each structural decision was made.
+Without authored-map reconciliation, taxonomy drift accumulates invisibly and portability claims become weak. With it, the site carries both interpretive discipline and architectural flexibility: source labels remain intact, normalized labels remain legible, public URLs point to the correct owning surface, and future migrations can reconstruct why each structural decision was made.

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Martin Lepage Research &amp; Governance Methods</title>
+<meta name="description" content="Interactive governance tree for Martin Lepage's governance methods corpus and the Hephaistos / PHAROS crosswalk.">
+<style>
+  :root {
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    --border-radius-md: 10px;
+    --color-text-primary: #142033;
+    --color-text-secondary: #677283;
+    --color-text-info: #173d74;
+    --color-background-secondary: #f7f4ee;
+    --color-background-tertiary: #efebe2;
+    --color-background-info: #e6eefb;
+    --color-border-secondary: #d0c8ba;
+    --color-border-tertiary: #ddd6c9;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: #f4f2ed;
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
+    line-height: 1.6;
+  }
+
+  main {
+    width: min(calc(100% - 2rem), 1120px);
+    margin: 0 auto;
+    padding: 2.5rem 0 4rem;
+  }
+
+  a {
+    color: inherit;
+  }
+</style>
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+.tree { padding: 1rem 0.5rem; }
+.node { position: relative; }
+.node-row {
+  display: flex; align-items: flex-start; gap: 8px;
+  padding: 5px 8px; border-radius: var(--border-radius-md);
+  cursor: pointer; transition: background 0.12s;
+  border: 0.5px solid transparent;
+}
+.node-row:hover { background: var(--color-background-secondary); border-color: var(--color-border-tertiary); }
+.toggle {
+  flex-shrink: 0; width: 18px; height: 18px; margin-top: 1px;
+  border-radius: 4px; border: 0.5px solid var(--color-border-secondary);
+  background: var(--color-background-secondary);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; color: var(--color-text-secondary);
+  transition: transform 0.18s; line-height: 1; font-weight: 500;
+}
+.toggle.open { background: var(--color-background-info); color: var(--color-text-info); border-color: var(--color-border-info); }
+.toggle.leaf { cursor: default; opacity: 0; pointer-events: none; }
+.label-wrap { flex: 1; min-width: 0; }
+.label-tag {
+  display: inline-block; font-size: 10px; font-weight: 500;
+  padding: 1px 7px; border-radius: 20px; margin-bottom: 2px;
+  line-height: 1.6; vertical-align: middle;
+}
+.tag-research { background: #EEEDFE; color: #3C3489; }
+.tag-method   { background: #E1F5EE; color: #085041; }
+.tag-infra    { background: #FAEEDA; color: #633806; }
+.tag-sub      { background: var(--color-background-secondary); color: var(--color-text-secondary); }
+@media (prefers-color-scheme: dark) {
+  .tag-research { background: #26215C; color: #CECBF6; }
+  .tag-method   { background: #04342C; color: #9FE1CB; }
+  .tag-infra    { background: #412402; color: #FAC775; }
+}
+.node-title {
+  font-size: 14px; font-weight: 500; color: var(--color-text-primary);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.node-sub {
+  font-size: 12px; color: var(--color-text-secondary); margin-top: 1px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.children {
+  margin-left: 26px; border-left: 0.5px solid var(--color-border-tertiary);
+  padding-left: 12px; overflow: hidden;
+  max-height: 0; transition: max-height 0.3s ease;
+}
+.children.open { max-height: 2000px; }
+.abstract-panel {
+  margin: 4px 0 6px; padding: 8px 12px;
+  background: var(--color-background-secondary);
+  border-radius: var(--border-radius-md);
+  border-left: 2px solid var(--color-border-secondary);
+  font-size: 12px; color: var(--color-text-secondary); line-height: 1.6;
+  display: none;
+}
+.abstract-panel.open { display: block; }
+.link-out {
+  display: inline-block; margin-top: 6px; font-size: 11px;
+  color: var(--color-text-info); text-decoration: none;
+}
+.link-out:hover { text-decoration: underline; }
+.tags-row { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
+.tag-pill {
+  font-size: 10px; padding: 1px 6px; border-radius: 20px;
+  background: var(--color-background-tertiary); color: var(--color-text-secondary);
+  border: 0.5px solid var(--color-border-tertiary);
+}
+.root-title {
+  font-size: 16px; font-weight: 500; color: var(--color-text-primary);
+  margin-bottom: 0.25rem;
+}
+.root-sub { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 1rem; }
+</style>
+</head>
+<body>
+<main>
+<div class="tree">
+  <div class="root-title">Martin Lepage</div>
+  <div class="root-sub">Research &amp; Governance Methods — martin.govern-ai.ca</div>
+  <div id="tree-root"></div>
+</div>
+
+<script>
+const data = [
+  {
+    id: "research", label: "Research", tag: "research", tagClass: "tag-research", children: [
+      { id:"rdaig", label:"Recursive Deterministic AI Governance: Extracting Workflow Controls from Recursive Transformation of a Bounded Corpus", sub:"Core Method · First Implementation Results", tagClass:"tag-research",
+        abstract:"Presents recursive deterministic AI governance as a governance-control method for AI-assisted workflows. Uses recursive transformation of a bounded corpus to identify where AI outputs stabilize, where drift enters, and where workflow controls must attach. Documents first implementation results.",
+        tags:["recursive governance","bounded corpus","workflow controls","agentic AI","auditability"],
+        href:"research/rdaig-methods-paper.html" },
+      { id:"dast", label:"Discursive Authority Under Recursive Pressure: A Stress Test of the Möbius Protocol", sub:"Experimental Governance · Authority Claim Analysis", tagClass:"tag-research",
+        abstract:"Subjects the Möbius Protocol to recursive governance analysis. Measures how AI systems generate authority claims exceeding their evidential warrant under recursive self-audit conditions. Applies Goodhart's Law as a governance instrument.",
+        tags:["discursive authority","DAST","Möbius Protocol","Goodhart's Law","stress testing"],
+        href:"research/discursive-authority-stress-test.html" },
+      { id:"ritual", label:"Ritual Authority in the Digital Age: Proof Regimes, Legitimacy, and the Recomposition of Wiccan Practice", sub:"Cultural Governance · Ethnographic Analysis", tagClass:"tag-research",
+        abstract:"Analyzes the recomposition of Wiccan witchcraft under conditions of digital circulation. Drawn from ethnographic fieldwork in Montréal and Québec. Shows how ritual authority becomes a governance problem when proof regimes shift from embodied community validation to digital visibility.",
+        tags:["ritual authority","Wicca","proof regimes","ethnography","Québec"],
+        href:"research/ritual-authority-digital-witchcraft.html" },
+      { id:"sealed", label:"Legitimacy as Pathway Authorization: A Governance Protocol for Accountability Under Consequence Pressure", sub:"Research · Experimental Governance · Final Phase of Conceptualisation", tagClass:"tag-research",
+        abstract:"Examines how legitimacy operates as pathway authorization under consequence pressure. Develops a five-term apparatus — glitch, seam, charging, legibility, legitimacy — analyzed across art, academia, and ritual contexts. Final conceptual phase of the AI Governance Master Project.",
+        tags:["legitimacy","pathway authorization","proof regimes","accountability","consequence pressure"],
+        href:"research/sealed-card-protocol.html" },
+      { id:"wheel", label:"The Wheel and the Watcher: Process Ontology, Recursive Deployment, and the Limits of AI Self-Knowledge", sub:"Experimental Governance · Companion Study", tagClass:"tag-research",
+        abstract:"Companion study analyzing the 22-iteration Claude deployment of the Möbius Protocol through process ontology, Buddhist philosophy, ritual theory, and STS. Examines what recursive self-interrogation reveals about the conditions and limits of AI self-knowledge.",
+        tags:["process ontology","Möbius Protocol","AI self-knowledge","Buddhist philosophy","STS"],
+        href:"research/wheel-and-the-watcher.html" },
+    ]
+  },
+  {
+    id: "method", label: "Method", tag: "method", tagClass: "tag-method", children: [
+      { id:"rdaig-pip", label:"The RDAIG Pipeline: A Canonical Twelve-Stage Governance-Control Architecture", sub:"Core Pipeline · Corpus Formation Through Failure Harvesting", tagClass:"tag-method",
+        abstract:"Canonical twelve-stage governance-control pipeline. Converts a bounded corpus into auditable workflow controls: corpus formation, intent embedding, multi-model rendering, triangulation, recursive return, control extraction, determinism hardening, deployment binding, logging, and failure harvesting. The endpoint is workflow binding, not recursive fluency.",
+        tags:["RDAIG pipeline","twelve stages","control extraction","workflow binding","failure harvesting"],
+        href:"method/rdaig-pipeline.html" },
+      { id:"mobius", label:"The Möbius Protocol: A Twenty-Eight-Step Adversarial Diagnostic Instrument for AI Reasoning Coherence", sub:"Experimental Protocol · Recursive Self-Audit and Forced Terminal Synthesis", tagClass:"tag-method",
+        abstract:"A twenty-eight-step adversarial diagnostic instrument to stress-test AI reasoning coherence through recursive self-audit, context persistence testing, perturbation probes, and forced terminal synthesis. Each new conversation reinjects the full prior archive.",
+        tags:["Möbius Protocol","self-polygraph","recursive interrogation","perturbation testing","adversarial diagnostic"],
+        href:"method/mobius-protocol.html" },
+      { id:"triang", label:"Three-Agent Triangulation Audit: Cross-System Recursive Evaluation of the Governance Framework", sub:"Experimental Protocol · Three Agents, Three Passes, One Auditable Event", tagClass:"tag-method",
+        abstract:"A governance framework subjected to recursive cross-system evaluation: Agatha (ChatGPT) performs first-order audit, Gemini performs second-order evaluation, Claude evaluates Gemini's evaluation. Three agents, three passes, recursive depth collapsing into a single auditable governance event.",
+        tags:["triangulation","three-agent audit","meta-evaluation","cross-system","recursive depth"],
+        href:"method/triangulation-audit.html" },
+      { id:"shadow", label:"SHADOWMASTER: Systematic Adversarial Inversion of the Governance Framework", sub:"Red-Team Protocol · Legitimacy Theater Detection", tagClass:"tag-method",
+        abstract:"Systematic adversarial inversion of every governance principle. Does not abolish governance language — colonizes it. Tests whether each control survives institutional co-optation or collapses into legitimacy theater under adversarial pressure.",
+        tags:["SHADOWMASTER","red team","adversarial inversion","legitimacy theater","institutional co-optation"],
+        href:"method/shadowmaster.html" },
+    ]
+  },
+  {
+    id: "infra", label: "Governance Infrastructure", tag: "infra", tagClass: "tag-infra", children: [
+      { id:"const", label:"AI Governance Constitutional Framework: Oversight Infrastructure and Constraint Design", sub:"Constitutional · Supreme Governance Instrument", tagClass:"tag-infra",
+        abstract:"Supreme written governance instrument. Defines voice constraints, receipts doctrine, operator engine, ontology commitments, and stewardship posture. Establishes that legitimacy depends on reconstructability.",
+        tags:["constitution","voice constraints","receipts doctrine","stewardship","enforcement"],
+        href:"infrastructure/constitution.html" },
+      { id:"alambic", label:"ALAMBIC: Constitutional Governance Architecture with Six-Layer Precedence Hierarchy", sub:"Constitutional · Precedence, Amendment, and Drift Prevention", tagClass:"tag-infra",
+        abstract:"Defines what counts as law, method, implementation, and laboratory within the governance framework. Establishes a six-layer precedence hierarchy and a five-step amendment channel that prevents drift, tone-smuggling, and ontology betrayal across the full governance stack.",
+        tags:["ALAMBIC","precedence hierarchy","amendment channel","governance architecture","drift prevention"],
+        href:"infrastructure/alambic.html" },
+      { id:"violet", label:"Operational Governance Protocol: Switchback Architecture, Voice Specification, and Field Carry-Kit", sub:"Governance Infrastructure · Operational · Field Carry-Kit", tagClass:"tag-infra",
+        abstract:"Operational carry-kit for the AI Governance Master Project. Contains the Witches' Road Switchback Governance Protocol, voice specification, milestone map, and layer architecture. Seven trials with four switchback reversals prevent premature closure.",
+        tags:["switchback protocol","field carry-kit","voice specification","milestone map","layer architecture"],
+        href:"infrastructure/violet-gem.html" },
+      { id:"recurso", label:"RDAIG Phase 1: Live Implementation and Governance Testing Record", sub:"Governance Infrastructure · Operational · Phase 1", tagClass:"tag-infra",
+        abstract:"The first live implementation and testing phase of recursive deterministic AI governance against a real bounded corpus. Produced the baseline instability record, correction and stabilization passes, recursive plateau data, and failure harvest evidence that the RDAIG manuscript reports as its first implementation results.",
+        tags:["RDAIG phase 1","live implementation","governance testing","stabilization","failure harvest"],
+        href:"infrastructure/recursotrue.html" },
+      { id:"skill", label:"The SKILL Ecosystem: Governance-Primary Agent Architecture for Bounded AI Work", sub:"Governance Infrastructure · Operational · Agent Governance", tagClass:"tag-infra",
+        abstract:"Governance is primary in the Hephaistos stack. Philosopher and power-analyst operate as co-equal right-arms, while recursive governance, trace, red-team, and companion skills execute within that bounded routing. Public narratives and tree artifacts publish from martin.govern-ai.ca, while PHAROS product and service surfaces remain on pharos-ai.ca.",
+        tags:["SKILL.md","governance primary","philosopher","power-analyst","bounded agency"],
+        href:"/skill_ecosystem_tree.html" },
+      { id:"arch", label:"Archive Governance Layer: Meta-Documents for Recursive Process Control and Canon Management", sub:"Governance Infrastructure · Operational · Thirteen-Layer Stack", tagClass:"tag-infra",
+        abstract:"Six meta-documents governing the RDAIG archive. Prevents recursive process logs from silently becoming the command layer for new work. Defines the thirteen-layer governance stack from root anchor through runtime operations and enforces the boundary between source material and generated artifact.",
+        tags:["archive governance","canon management","thirteen-layer stack","three-agent alignment","method lock"],
+        href:"infrastructure/archive-governance.html" },
+    ]
+  }
+];
+
+function makeLeaf(n) {
+  const el = document.createElement('div');
+  el.className = 'node';
+  const resolvedHref = n.href.startsWith('http') || n.href.startsWith('/') ? n.href : `https://martin.govern-ai.ca/${n.href}`;
+  const target = resolvedHref.startsWith('http') ? '_blank' : '_self';
+  el.innerHTML = `
+    <div class="node-row" onclick="toggleAbstract('${n.id}')">
+      <span class="toggle leaf">+</span>
+      <div class="label-wrap">
+        <div class="node-title">${n.label}</div>
+        <div class="node-sub">${n.sub}</div>
+      </div>
+    </div>
+    <div class="abstract-panel" id="abs-${n.id}">
+      ${n.abstract}
+      <div class="tags-row">${n.tags.map(t=>`<span class="tag-pill">${t}</span>`).join('')}</div>
+      <a class="link-out" href="${resolvedHref}" target="${target}">Read full entry →</a>
+    </div>
+  `;
+  return el;
+}
+
+function makeBranch(n) {
+  const el = document.createElement('div');
+  el.className = 'node';
+  const tagCls = n.tagClass || 'tag-sub';
+  el.innerHTML = `
+    <div class="node-row" onclick="toggleBranch('${n.id}')">
+      <span class="toggle" id="tog-${n.id}">+</span>
+      <div class="label-wrap">
+        <span class="label-tag ${tagCls}">${n.tag || n.label}</span>
+        <div class="node-title">${n.label}</div>
+      </div>
+    </div>
+    <div class="children" id="ch-${n.id}"></div>
+  `;
+  const ch = el.querySelector(`#ch-${n.id}`);
+  n.children.forEach(c => ch.appendChild(makeLeaf(c)));
+  return el;
+}
+
+function toggleBranch(id) {
+  const ch = document.getElementById('ch-'+id);
+  const tog = document.getElementById('tog-'+id);
+  const open = ch.classList.toggle('open');
+  tog.textContent = open ? '−' : '+';
+  tog.classList.toggle('open', open);
+}
+
+function toggleAbstract(id) {
+  document.getElementById('abs-'+id).classList.toggle('open');
+}
+
+const root = document.getElementById('tree-root');
+data.forEach(n => root.appendChild(makeBranch(n)));
+</script>
+
+</main>
+</body>
+</html>

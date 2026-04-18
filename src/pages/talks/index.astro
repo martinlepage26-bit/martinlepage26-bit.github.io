@@ -1,84 +1,93 @@
 ---
 import { getCollection } from 'astro:content';
-import PracticeHero from '../../components/PracticeHero.astro';
-import SectionIntro from '../../components/SectionIntro.astro';
-import { pageMeta } from '../../data/site';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { pageMeta } from '../../data/site';
 import { sortByDate } from '../../lib/content';
 
 const talks = sortByDate(await getCollection('talks'));
 const talkYears = talks.map((talk) => talk.data.date.getFullYear());
 const latestTalkYear = talkYears.length ? Math.max(...talkYears) : 'Current';
 const earliestTalkYear = talkYears.length ? Math.min(...talkYears) : 'Current';
-const talkSpan = earliestTalkYear === latestTalkYear ? `${latestTalkYear}` : `${earliestTalkYear}-${latestTalkYear}`;
+const talkSpan = earliestTalkYear === latestTalkYear ? `${latestTalkYear}` : `${earliestTalkYear}–${latestTalkYear}`;
 const talkFormatCount = new Set(talks.map((talk) => talk.data.format)).size;
 ---
 
-<BaseLayout title={pageMeta.talks.title} description={pageMeta.talks.description}>
-  <PracticeHero
-    eyebrow="Talks and media"
-    title="Talks, panels, and invited public argument."
-    description="A concise speaking archive of conference presentations, panels, and invited appearances across governance, legitimacy, and cultural analysis."
-    details="This page keeps the speaking record readable and bounded without folding it into publication or writing archives."
-    links={[
-      { label: 'Browse talks', url: '#talk-archive', variant: 'primary' },
-      { label: 'Open resume and CV', url: '/resume/', variant: 'secondary' },
-      { label: 'Read publications', url: '/papers/', variant: 'inline' },
-      { label: 'Contact about talks', url: '/contact/', variant: 'inline' },
-    ]}
-    sideEyebrow="Speaking profile"
-    sideTitle="What this archive makes visible."
-    sideDescription="The talks archive shows how the work translates across scholarly, professional, and public-facing contexts."
-    sidePoints={[
-      'Conference talks and panel sessions remain organized as one readable archive.',
-      'Format labels keep event context legible at a glance.',
-      'Readers can move directly from talks into publications, writing, or contact.',
-    ]}
-    stats={[
-      {
-        eyebrow: 'Appearances',
-        value: talks.length,
-        label: 'Talk records',
-        description: 'Conference talks, panels, sessions, and public-facing speaking entries.',
-      },
-      {
-        eyebrow: 'Archive span',
-        value: talkSpan,
-        label: 'Years covered',
-        description: 'Years represented in the current on-site speaking archive.',
-      },
-      {
-        eyebrow: 'Formats',
-        value: talkFormatCount,
-        label: 'Distinct formats',
-        description: 'Different appearance formats represented across the archive.',
-      },
-    ]}
-  />
-
+<BaseLayout title={pageMeta.talks.title} description={pageMeta.talks.description} pageClass="page-talks">
   <section class="section-shell">
-    <div id="talk-archive">
-      <SectionIntro
-        eyebrow="Talk archive"
-        title="Talks, panels, and presentations."
-        description="Conference presentations, panels, sessions, and related speaking records from the public archive."
-      />
-    </div>
 
-    <div class="mt-10 space-y-5">
+    <!-- Minimal masthead: no hero composition, no glass panel -->
+    <header class="talks-masthead">
+      <p class="eyebrow">Talks and media</p>
+      <h1 class="talks-masthead-h1">Talks, panels, and<br class="hidden md:block" /> invited public argument.</h1>
+      <p class="talks-masthead-lead">
+        A concise speaking archive of conference presentations, panels, and invited appearances
+        across governance, legitimacy, and cultural analysis. Kept bounded: format labels preserve
+        event context at a glance.
+      </p>
+      <div class="talks-masthead-actions">
+        <a class="button-secondary" href="/resume/">Resume and CV</a>
+        <a class="button-secondary" href="/papers/">Read publications</a>
+        <a class="button-secondary" href="/contact/">Contact about talks</a>
+      </div>
+
+      <!-- Stats as inline strip, not card grid -->
+      <div class="stats-strip">
+        <div class="stats-strip-item">
+          <span class="stats-strip-value">{talks.length}</span>
+          <span class="stats-strip-label">Talk records</span>
+        </div>
+        <div class="stats-strip-item">
+          <span class="stats-strip-value">{talkSpan}</span>
+          <span class="stats-strip-label">Years covered</span>
+        </div>
+        <div class="stats-strip-item">
+          <span class="stats-strip-value">{talkFormatCount}</span>
+          <span class="stats-strip-label">Distinct formats</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Ledger rows: no card backgrounds, just ruled horizontal entries -->
+    <div class="talks-ledger">
       {talks.map((talk) => (
-        <article class="veil-panel grid gap-5 md:grid-cols-[160px_minmax(0,1fr)]">
-          <div>
-            <p class="eyebrow">{talk.data.dateLabel ?? talk.data.date.getFullYear()}</p>
-            <p class="mt-3 text-sm uppercase tracking-[0.2em] text-slate-400">{talk.data.format}</p>
+        <article class="ledger-row">
+          <div class="ledger-date-col">
+            <span class="ledger-year">{talk.data.dateLabel ?? talk.data.date.getFullYear()}</span>
+            <span class="ledger-format">{talk.data.format}</span>
           </div>
-          <div>
-            <h2 class="text-[1.3rem] md:text-[1.46rem]">{talk.data.title}</h2>
-            <p class="mt-2 text-sm uppercase tracking-[0.2em] text-slate-400">{talk.data.event}{talk.data.location ? ` · ${talk.data.location}` : ''}</p>
-            <p class="mt-4 text-base text-slate-200">{talk.data.description}</p>
+          <div class="ledger-content-col">
+            <p class="ledger-title">{talk.data.title}</p>
+            <p class="ledger-event">
+              {talk.data.event}{talk.data.location ? ` · ${talk.data.location}` : ''}
+            </p>
+            <p class="ledger-desc">{talk.data.description}</p>
           </div>
         </article>
       ))}
     </div>
+
   </section>
 </BaseLayout>
+
+<style>
+  .talks-masthead-h1 {
+    font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+    line-height: 1.06;
+    letter-spacing: -0.036em;
+    margin-top: 1.25rem;
+    max-width: 26ch;
+  }
+  .talks-masthead-lead {
+    font-size: clamp(1.02rem, 1.4vw, 1.18rem);
+    line-height: 1.8;
+    color: var(--color-slate-100);
+    max-width: 56ch;
+    margin-top: 1.25rem;
+  }
+  .talks-masthead-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.75rem;
+  }
+</style>

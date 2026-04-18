@@ -1,0 +1,1368 @@
+---
+import { lotusBloomQuestions } from '../../data/lotus';
+
+const appData = {
+  questions: lotusBloomQuestions,
+};
+---
+
+<section class="lotus-bloom-app" data-lotus-bloom-root data-mode="forward" data-bloom-state="bud" data-save-state="idle">
+  <div class="lotus-bloom-stage">
+    <header class="lotus-bloom-rail">
+      <button id="lotus-nav-down" class="lotus-rail-button" type="button" disabled>
+        Back down
+      </button>
+      <div class="lotus-rail-copy">
+        <p id="lotus-progress-label" class="lotus-rail-progress">Before the first bloom</p>
+        <p id="lotus-mode-label" class="lotus-rail-mode">Begin when ready</p>
+      </div>
+      <button id="lotus-return-current" class="lotus-rail-button" type="button" hidden>
+        Return upward
+      </button>
+    </header>
+
+    <div class="lotus-bloom-viewport">
+      <p id="lotus-trust-note" class="lotus-trust-note">
+        What closes into the stalk is still kept. To recover earlier answers, move back down the stalk deliberately.
+      </p>
+
+      <div class="lotus-bloom-focus">
+        <div class="lotus-bloom-shell">
+          <div class="lotus-bloom-aura" aria-hidden="true"></div>
+          <div class="lotus-bloom-petal lotus-bloom-petal-one" aria-hidden="true"></div>
+          <div class="lotus-bloom-petal lotus-bloom-petal-two" aria-hidden="true"></div>
+          <div class="lotus-bloom-petal lotus-bloom-petal-three" aria-hidden="true"></div>
+          <div class="lotus-bloom-petal lotus-bloom-petal-four" aria-hidden="true"></div>
+
+          <div id="lotus-bud-panel" class="lotus-panel lotus-panel-bud">
+            <p class="eyebrow">Lotus</p>
+            <h1 id="lotus-bud-title" class="lotus-bloom-title">Open the first bloom.</h1>
+            <p id="lotus-bud-copy" class="lotus-bloom-copy">
+              One question. One writing surface. Forward is always upward.
+            </p>
+            <button id="lotus-open-bloom" type="button" class="button-primary lotus-bloom-open">
+              Begin ascent
+            </button>
+          </div>
+
+          <div id="lotus-active-panel" class="lotus-panel lotus-panel-active" hidden>
+            <p id="lotus-phase-label" class="eyebrow">Current bloom</p>
+            <h1 id="lotus-question-text" class="lotus-bloom-title"></h1>
+            <p id="lotus-question-note" class="lotus-bloom-copy lotus-bloom-note"></p>
+
+            <textarea
+              id="lotus-bloom-input"
+              class="lotus-bloom-input"
+              rows="7"
+              spellcheck="true"
+              autocomplete="off"
+              autocapitalize="sentences"
+              aria-labelledby="lotus-phase-label lotus-question-text"
+              aria-describedby="lotus-word-status lotus-submit-hint"
+            ></textarea>
+
+            <div class="lotus-bloom-meta">
+              <p id="lotus-word-status" class="lotus-word-status">100 words available</p>
+              <p id="lotus-draft-status" class="lotus-draft-status">Drafts save quietly as you write.</p>
+            </div>
+
+            <p id="lotus-error-status" class="lotus-error-status" hidden>
+              Couldn't save — your words are still here.
+            </p>
+
+            <div class="lotus-submit-shell">
+              <button id="lotus-submit" type="button" class="button-primary lotus-submit-button" disabled>
+                <span id="lotus-submit-label">Prepare bloom closure</span>
+                <span id="lotus-submit-progress" class="lotus-submit-progress" aria-hidden="true"></span>
+              </button>
+              <p id="lotus-submit-hint" class="lotus-submit-hint">
+                First prepare, then hold the button to close the bloom.
+              </p>
+            </div>
+          </div>
+
+          <div id="lotus-complete-panel" class="lotus-panel lotus-panel-complete" hidden>
+            <p class="eyebrow">Completion</p>
+            <h1 class="lotus-bloom-title">The stalk holds all that you carried upward.</h1>
+            <p class="lotus-bloom-copy">
+              Nothing has been scored. Nothing has been reduced. The path below keeps every closed bloom, and you can
+              return through it whenever you need to.
+            </p>
+            <div class="lotus-complete-actions">
+              <button id="lotus-review-answers" type="button" class="button-primary">Review your answers</button>
+              <a class="button-secondary" href="/lotus/research/">Open research tools</a>
+              <a class="button-secondary" href="/projects/lotus/">Read the project record</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="lotus-stalk-column">
+          <div class="lotus-stalk-line" aria-hidden="true"></div>
+          <div id="lotus-node-stack" class="lotus-node-stack" aria-label="Completed Lotus blooms"></div>
+          <p id="lotus-node-overflow" class="lotus-node-overflow" hidden></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script is:inline type="application/json" id="lotus-bloom-data" set:html={JSON.stringify(appData)}></script>
+  <script is:inline>
+    const lotusRoot = document.querySelector('[data-lotus-bloom-root]');
+    const lotusDataElement = document.getElementById('lotus-bloom-data');
+
+    if (lotusRoot && lotusDataElement) {
+      const { questions = [] } = JSON.parse(lotusDataElement.textContent || '{}');
+      const STORAGE_KEY = 'lotus-bloom-session-v1';
+      const WORD_LIMIT = 100;
+      const HOLD_MS = 650;
+
+      const elements = {
+        progressLabel: document.getElementById('lotus-progress-label'),
+        modeLabel: document.getElementById('lotus-mode-label'),
+        navDown: document.getElementById('lotus-nav-down'),
+        returnCurrent: document.getElementById('lotus-return-current'),
+        trustNote: document.getElementById('lotus-trust-note'),
+        budPanel: document.getElementById('lotus-bud-panel'),
+        budTitle: document.getElementById('lotus-bud-title'),
+        budCopy: document.getElementById('lotus-bud-copy'),
+        openBloom: document.getElementById('lotus-open-bloom'),
+        activePanel: document.getElementById('lotus-active-panel'),
+        phaseLabel: document.getElementById('lotus-phase-label'),
+        questionText: document.getElementById('lotus-question-text'),
+        questionNote: document.getElementById('lotus-question-note'),
+        input: document.getElementById('lotus-bloom-input'),
+        wordStatus: document.getElementById('lotus-word-status'),
+        draftStatus: document.getElementById('lotus-draft-status'),
+        errorStatus: document.getElementById('lotus-error-status'),
+        submit: document.getElementById('lotus-submit'),
+        submitLabel: document.getElementById('lotus-submit-label'),
+        submitHint: document.getElementById('lotus-submit-hint'),
+        submitProgress: document.getElementById('lotus-submit-progress'),
+        completePanel: document.getElementById('lotus-complete-panel'),
+        reviewAnswers: document.getElementById('lotus-review-answers'),
+        nodeStack: document.getElementById('lotus-node-stack'),
+        nodeOverflow: document.getElementById('lotus-node-overflow'),
+      };
+
+      let draftTimer = null;
+      let holdTimer = null;
+      let holdResetTimer = null;
+      let holdTriggered = false;
+      let armedTimer = null;
+      let viewportResizeHandler = null;
+
+      const defaultState = () => ({
+        answers: [],
+        currentIndex: 0,
+        currentOpen: false,
+        forwardDraft: '',
+        mode: 'forward',
+        reviewIndex: null,
+        reviewDraft: '',
+        saveState: 'idle',
+        completed: false,
+        transition: '',
+      });
+
+      const countWords = (value) => {
+        const matches = (value || '').trim().match(/\S+/g);
+        return matches ? matches.length : 0;
+      };
+
+      const trimToWordLimit = (value, limit) => {
+        const parts = (value || '').match(/\S+\s*/g);
+        if (!parts || parts.length <= limit) {
+          return value;
+        }
+        return parts.slice(0, limit).join('').trimEnd();
+      };
+
+      const nowIso = () => new Date().toISOString();
+
+      const cloneState = (source) => JSON.parse(JSON.stringify(source));
+
+      const normalizeLoadedState = (source) => {
+        const base = defaultState();
+        const loaded = source && typeof source === 'object' ? source : {};
+        const answers = Array.isArray(loaded.answers)
+          ? loaded.answers
+              .filter((entry) => entry && typeof entry.questionId === 'string' && typeof entry.answerText === 'string')
+              .slice(0, questions.length)
+          : [];
+
+        const completed = Boolean(loaded.completed) || answers.length >= questions.length;
+        const currentIndex = completed
+          ? questions.length - 1
+          : Math.min(Number.isInteger(loaded.currentIndex) ? loaded.currentIndex : answers.length, questions.length - 1);
+
+        return {
+          ...base,
+          answers,
+          currentIndex: Math.max(0, currentIndex),
+          currentOpen: Boolean(loaded.currentOpen) || Boolean(loaded.forwardDraft),
+          forwardDraft: trimToWordLimit(String(loaded.forwardDraft || ''), WORD_LIMIT),
+          mode: loaded.mode === 'review' && answers.length ? 'review' : 'forward',
+          reviewIndex:
+            loaded.mode === 'review' && Number.isInteger(loaded.reviewIndex) && loaded.reviewIndex >= 0
+              ? Math.min(loaded.reviewIndex, Math.max(0, answers.length - 1))
+              : null,
+          reviewDraft: trimToWordLimit(String(loaded.reviewDraft || ''), WORD_LIMIT),
+          saveState: 'idle',
+          completed,
+          transition: '',
+        };
+      };
+
+      let state = defaultState();
+
+      const readStoredState = () => {
+        try {
+          const raw = window.localStorage.getItem(STORAGE_KEY);
+          if (!raw) {
+            return defaultState();
+          }
+          return normalizeLoadedState(JSON.parse(raw));
+        } catch (_error) {
+          return defaultState();
+        }
+      };
+
+      const persistState = () => {
+        const payload = cloneState({
+          answers: state.answers,
+          currentIndex: state.currentIndex,
+          currentOpen: state.currentOpen,
+          forwardDraft: state.forwardDraft,
+          mode: state.mode,
+          reviewIndex: state.reviewIndex,
+          reviewDraft: state.reviewDraft,
+          completed: state.completed,
+        });
+
+        try {
+          window.localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+          state.saveState = 'saved';
+          window.clearTimeout(holdResetTimer);
+          holdResetTimer = window.setTimeout(() => {
+            if (state.saveState === 'saved') {
+              state.saveState = 'idle';
+              render();
+            }
+          }, 1200);
+          return true;
+        } catch (_error) {
+          state.saveState = 'error';
+          return false;
+        }
+      };
+
+      const scheduleDraftSave = () => {
+        window.clearTimeout(draftTimer);
+        state.saveState = 'draft-saving';
+        draftTimer = window.setTimeout(() => {
+          persistState();
+          render();
+        }, 500);
+      };
+
+      const flushPendingDraftSave = () => {
+        if (draftTimer === null) {
+          return;
+        }
+
+        window.clearTimeout(draftTimer);
+        draftTimer = null;
+        persistState();
+      };
+
+      const currentQuestionIndex = () =>
+        state.mode === 'review'
+          ? Math.max(0, state.reviewIndex ?? 0)
+          : Math.min(state.currentIndex, Math.max(0, questions.length - 1));
+
+      const currentQuestion = () => questions[currentQuestionIndex()] || questions[questions.length - 1];
+
+      const currentText = () => (state.mode === 'review' ? state.reviewDraft : state.forwardDraft);
+
+      const setCurrentText = (value) => {
+        if (state.mode === 'review') {
+          state.reviewDraft = value;
+        } else {
+          state.forwardDraft = value;
+        }
+      };
+
+      const currentWordCount = () => countWords(currentText());
+
+      const canSubmit = () => currentWordCount() > 0;
+
+      const setTransition = (nextTransition, callback) => {
+        state.transition = nextTransition;
+        render();
+        window.setTimeout(() => {
+          state.transition = '';
+          callback();
+        }, nextTransition === 'closing' ? 760 : 420);
+      };
+
+      const disarmSubmit = () => {
+        state.submitArmed = false;
+        window.clearTimeout(armedTimer);
+      };
+
+      const armSubmit = () => {
+        state.submitArmed = true;
+        window.clearTimeout(armedTimer);
+        armedTimer = window.setTimeout(() => {
+          state.submitArmed = false;
+          render();
+        }, 5000);
+      };
+
+      const renderNodes = () => {
+        const showFullStalk = state.completed || state.mode === 'review';
+        const visibleNodes = (showFullStalk ? state.answers : state.answers.slice(-4)).slice().reverse();
+        elements.nodeStack.innerHTML = '';
+
+        visibleNodes.forEach((answer, visibleIndex) => {
+          const absoluteIndex = state.answers.findIndex((entry) => entry.questionId === answer.questionId);
+          const node = document.createElement('button');
+          node.type = 'button';
+          node.className = 'lotus-node';
+          node.dataset.depth = showFullStalk
+            ? String(state.answers.length - absoluteIndex)
+            : String(visibleNodes.length - visibleIndex);
+          node.dataset.selected = state.mode === 'review' && state.reviewIndex === absoluteIndex ? 'true' : 'false';
+          node.setAttribute('aria-label', `Review question ${absoluteIndex + 1}: ${answer.questionText}`);
+
+          const inner = document.createElement('span');
+          inner.className = 'lotus-node-core';
+          node.appendChild(inner);
+
+          node.addEventListener('click', () => {
+            enterReview(absoluteIndex);
+          });
+
+          elements.nodeStack.appendChild(node);
+        });
+
+        const hiddenCount = Math.max(0, state.answers.length - visibleNodes.length);
+        elements.nodeOverflow.hidden = hiddenCount === 0 && !showFullStalk;
+        elements.nodeOverflow.textContent = showFullStalk
+          ? `Full stalk visible: ${state.answers.length} closed blooms held below.`
+          : hiddenCount
+            ? `${hiddenCount} more lower on the stalk`
+            : '';
+      };
+
+      const syncKeyboardOffset = () => {
+        if (!window.visualViewport) {
+          return;
+        }
+
+        const keyboardHeight = Math.max(0, window.innerHeight - window.visualViewport.height - window.visualViewport.offsetTop);
+        lotusRoot.style.setProperty('--lotus-keyboard-offset', `${keyboardHeight}px`);
+      };
+
+      const ensureFocusedBloomVisible = () => {
+        syncKeyboardOffset();
+        if (!state.currentOpen && state.mode !== 'review') {
+          return;
+        }
+
+        window.requestAnimationFrame(() => {
+          elements.activePanel.scrollIntoView({
+            block: 'center',
+            inline: 'nearest',
+            behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+          });
+        });
+      };
+
+      const renderBudCopy = () => {
+        if (state.completed) {
+          elements.budTitle.textContent = 'All blooms are closed.';
+          elements.budCopy.textContent = 'You can review the stalk below whenever you want to return.';
+          elements.openBloom.textContent = 'Review the last bloom';
+          return;
+        }
+
+        if (!state.answers.length && !state.forwardDraft) {
+          elements.budTitle.textContent = 'Open the first bloom.';
+          elements.budCopy.textContent = 'One question. One writing surface. Forward is always upward.';
+          elements.openBloom.textContent = 'Begin ascent';
+          return;
+        }
+
+        if (state.forwardDraft) {
+          elements.budTitle.textContent = 'Your current bloom is waiting.';
+          elements.budCopy.textContent = 'The stalk remembers where you paused. Reopen the bloom when you are ready.';
+          elements.openBloom.textContent = 'Reopen current bloom';
+          return;
+        }
+
+        elements.budTitle.textContent = 'Pause before the next bloom.';
+        elements.budCopy.textContent = 'The last answer has settled into the stalk. Open the next bloom when you are ready.';
+        elements.openBloom.textContent = 'Open next bloom';
+      };
+
+      const renderActivePanel = () => {
+        const question = currentQuestion();
+        const wordCount = currentWordCount();
+        const remaining = WORD_LIMIT - wordCount;
+        const reviewMode = state.mode === 'review';
+
+        elements.phaseLabel.textContent = reviewMode ? 'Reviewing bloom' : 'Current bloom';
+        elements.questionText.textContent = question.prompt;
+        elements.questionNote.textContent = question.note;
+
+        if (elements.input.value !== currentText()) {
+          elements.input.value = currentText();
+        }
+
+        if (wordCount >= WORD_LIMIT) {
+          elements.wordStatus.textContent = 'Full';
+        } else if (wordCount >= 80) {
+          elements.wordStatus.textContent = `${remaining} words remaining`;
+        } else {
+          elements.wordStatus.textContent = `${remaining} remaining`;
+        }
+
+        if (reviewMode) {
+          elements.draftStatus.textContent = 'Review mode keeps your current forward bloom intact above.';
+        } else if (state.saveState === 'draft-saving') {
+          elements.draftStatus.textContent = 'Draft saving locally...';
+        } else if (state.saveState === 'saved') {
+          elements.draftStatus.textContent = 'Draft saved locally.';
+        } else {
+          elements.draftStatus.textContent = 'Drafts save quietly as you write.';
+        }
+
+        const submitReady = canSubmit();
+        elements.submit.disabled = !submitReady;
+        elements.submit.dataset.armed = state.submitArmed ? 'true' : 'false';
+        elements.submitLabel.textContent = state.submitArmed
+          ? reviewMode
+            ? 'Hold to seal revision'
+            : 'Hold to close bloom'
+          : reviewMode
+            ? 'Prepare revision'
+            : 'Prepare bloom closure';
+        elements.submitHint.textContent = submitReady
+          ? state.submitArmed
+            ? 'Hold the button for a beat. Accidental submission is blocked by design.'
+            : 'First prepare, then hold the button to close the bloom.'
+          : 'Write at least one word before preparing the bloom closure.';
+      };
+
+      const render = () => {
+        const reviewMode = state.mode === 'review';
+        const showActive = reviewMode || state.currentOpen;
+        const bloomState = state.transition
+          ? state.transition
+          : state.completed
+            ? 'complete'
+            : reviewMode
+              ? 'review'
+              : showActive
+                ? currentWordCount() >= 80
+                  ? 'near-limit'
+                  : 'active'
+                : 'bud';
+
+        lotusRoot.dataset.mode = state.mode;
+        lotusRoot.dataset.bloomState = bloomState;
+        lotusRoot.dataset.saveState = state.saveState;
+
+        const currentPositionLabel = state.completed
+          ? `All ${questions.length} blooms closed`
+          : reviewMode
+            ? `Reviewing question ${currentQuestionIndex() + 1} of ${questions.length}`
+            : showActive
+              ? `Question ${currentQuestionIndex() + 1} of ${questions.length}`
+              : `${state.answers.length} of ${questions.length} blooms closed`;
+
+        elements.progressLabel.textContent = currentPositionLabel;
+        elements.modeLabel.textContent = reviewMode
+          ? 'Review mode'
+          : state.completed
+            ? 'Completion'
+            : showActive
+              ? 'Forward flow'
+              : state.answers.length
+                ? 'Pause before ascent'
+                : 'Begin when ready';
+
+        elements.navDown.disabled = state.answers.length === 0;
+        elements.navDown.textContent = reviewMode ? 'Go further down' : 'Back down';
+        elements.returnCurrent.hidden = !reviewMode;
+
+        elements.budPanel.hidden = showActive || state.completed;
+        elements.activePanel.hidden = !showActive;
+        elements.completePanel.hidden = !state.completed;
+        elements.errorStatus.hidden = state.saveState !== 'error';
+
+        renderBudCopy();
+        renderNodes();
+
+        if (showActive) {
+          renderActivePanel();
+        }
+      };
+
+      const startCurrentBloom = () => {
+        state.mode = 'forward';
+        state.reviewIndex = null;
+        state.reviewDraft = '';
+        state.currentOpen = true;
+        disarmSubmit();
+        setTransition('opening', () => {
+          render();
+          elements.input.focus();
+          elements.input.setSelectionRange(elements.input.value.length, elements.input.value.length);
+          ensureFocusedBloomVisible();
+        });
+      };
+
+      const enterReview = (index) => {
+        if (index < 0 || index >= state.answers.length) {
+          return;
+        }
+
+        state.mode = 'review';
+        state.reviewIndex = index;
+        state.reviewDraft = state.answers[index].answerText || '';
+        disarmSubmit();
+        setTransition('review', () => {
+          render();
+          elements.input.focus();
+          elements.input.setSelectionRange(elements.input.value.length, elements.input.value.length);
+          ensureFocusedBloomVisible();
+        });
+      };
+
+      const returnToCurrent = () => {
+        state.mode = 'forward';
+        state.reviewIndex = null;
+        state.reviewDraft = '';
+        disarmSubmit();
+        if (state.currentOpen && !state.completed) {
+          setTransition('opening', () => {
+            render();
+            elements.input.focus();
+            elements.input.setSelectionRange(elements.input.value.length, elements.input.value.length);
+            ensureFocusedBloomVisible();
+          });
+        } else {
+          render();
+        }
+      };
+
+      const resetHold = () => {
+        window.clearTimeout(holdTimer);
+        holdTimer = null;
+        holdTriggered = false;
+        elements.submit.dataset.holding = 'false';
+      };
+
+      const finalizeReviewSubmission = () => {
+        const previousState = cloneState(state);
+        const reviewIndex = state.reviewIndex;
+        if (reviewIndex === null || reviewIndex < 0 || reviewIndex >= state.answers.length) {
+          return;
+        }
+
+        const answerText = currentText().trim();
+        state.answers[reviewIndex] = {
+          ...state.answers[reviewIndex],
+          answerText,
+          submittedAt: nowIso(),
+        };
+        state.mode = 'forward';
+        state.reviewIndex = null;
+        state.reviewDraft = '';
+        disarmSubmit();
+        state.saveState = 'idle';
+
+        setTransition('closing', () => {
+          const saved = persistState();
+          if (!saved) {
+            state = previousState;
+            state.mode = 'review';
+            state.reviewIndex = reviewIndex;
+            state.reviewDraft = answerText;
+            state.currentOpen = true;
+          }
+          render();
+        });
+      };
+
+      const finalizeForwardSubmission = () => {
+        const previousState = cloneState(state);
+        const questionIndex = currentQuestionIndex();
+        const question = currentQuestion();
+        const answerText = currentText().trim();
+
+        state.answers = [
+          ...state.answers.slice(0, questionIndex),
+          {
+            id: `${question.id}-${Date.now()}`,
+            questionId: question.id,
+            questionText: question.prompt,
+            answerText,
+            submittedAt: nowIso(),
+          },
+          ...state.answers.slice(questionIndex + 1),
+        ];
+
+        state.forwardDraft = '';
+        state.currentIndex = Math.min(questionIndex + 1, Math.max(0, questions.length - 1));
+        state.completed = state.answers.length >= questions.length;
+        state.currentOpen = false;
+        disarmSubmit();
+        state.saveState = 'idle';
+
+        setTransition('closing', () => {
+          const saved = persistState();
+          if (!saved) {
+            state = previousState;
+            state.currentOpen = true;
+          }
+          render();
+        });
+      };
+
+      const submitActiveBloom = () => {
+        if (!canSubmit()) {
+          return;
+        }
+
+        if (state.mode === 'review') {
+          finalizeReviewSubmission();
+          return;
+        }
+
+        finalizeForwardSubmission();
+      };
+
+      const beginHold = () => {
+        if (!state.submitArmed || !canSubmit()) {
+          return;
+        }
+        window.clearTimeout(holdTimer);
+        holdTriggered = false;
+        elements.submit.dataset.holding = 'true';
+        holdTimer = window.setTimeout(() => {
+          holdTriggered = true;
+          submitActiveBloom();
+          resetHold();
+        }, HOLD_MS);
+      };
+
+      const handleInputChange = () => {
+        const previousValue = currentText();
+        const rawValue = elements.input.value;
+        let nextValue = trimToWordLimit(rawValue, WORD_LIMIT);
+
+        if (countWords(previousValue) >= WORD_LIMIT && rawValue.length > previousValue.length) {
+          nextValue = previousValue;
+        }
+
+        if (nextValue !== elements.input.value) {
+          elements.input.value = nextValue;
+        }
+
+        setCurrentText(nextValue);
+        disarmSubmit();
+
+        if (state.mode === 'forward') {
+          scheduleDraftSave();
+        }
+
+        render();
+      };
+
+      elements.openBloom.addEventListener('click', () => {
+        if (state.completed) {
+          enterReview(Math.max(0, state.answers.length - 1));
+          return;
+        }
+        startCurrentBloom();
+      });
+
+      elements.navDown.addEventListener('click', () => {
+        if (!state.answers.length) {
+          return;
+        }
+        if (state.mode === 'review') {
+          enterReview(Math.max(0, (state.reviewIndex ?? 0) - 1));
+          return;
+        }
+        enterReview(state.answers.length - 1);
+      });
+
+      elements.returnCurrent.addEventListener('click', returnToCurrent);
+      elements.reviewAnswers.addEventListener('click', () => {
+        enterReview(Math.max(0, state.answers.length - 1));
+      });
+
+      elements.input.addEventListener('input', handleInputChange);
+      elements.input.addEventListener('focus', ensureFocusedBloomVisible);
+      elements.input.addEventListener('blur', () => {
+        lotusRoot.style.setProperty('--lotus-keyboard-offset', '0px');
+      });
+
+      elements.submit.addEventListener('click', () => {
+        if (!canSubmit()) {
+          return;
+        }
+        if (!state.submitArmed) {
+          armSubmit();
+          render();
+        }
+      });
+
+      ['pointerdown', 'mousedown'].forEach((eventName) => {
+        elements.submit.addEventListener(eventName, () => {
+          beginHold();
+        });
+      });
+
+      ['pointerup', 'pointerleave', 'pointercancel', 'mouseup', 'mouseleave'].forEach((eventName) => {
+        elements.submit.addEventListener(eventName, () => {
+          resetHold();
+        });
+      });
+
+      elements.submit.addEventListener('keydown', (event) => {
+        if ((event.key === 'Enter' || event.key === ' ') && state.submitArmed) {
+          event.preventDefault();
+          beginHold();
+        }
+      });
+
+      elements.submit.addEventListener('keyup', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          resetHold();
+        }
+      });
+
+      const handlePageHide = () => {
+        flushPendingDraftSave();
+      };
+
+      state = readStoredState();
+      render();
+      syncKeyboardOffset();
+
+      window.addEventListener('pagehide', handlePageHide);
+      window.addEventListener('beforeunload', handlePageHide);
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden') {
+          handlePageHide();
+        }
+      });
+
+      if (window.visualViewport) {
+        viewportResizeHandler = () => {
+          syncKeyboardOffset();
+          if (document.activeElement === elements.input) {
+            ensureFocusedBloomVisible();
+          }
+        };
+        window.visualViewport.addEventListener('resize', viewportResizeHandler);
+      }
+
+      if (state.currentOpen && !state.completed && state.mode === 'forward') {
+        lotusRoot.dataset.bloomState = 'opening';
+        window.setTimeout(() => {
+          lotusRoot.dataset.bloomState = currentWordCount() >= 80 ? 'near-limit' : 'active';
+          render();
+          ensureFocusedBloomVisible();
+        }, 320);
+      }
+    }
+  </script>
+</section>
+
+<style>
+  .lotus-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .lotus-bloom-app {
+    position: relative;
+    min-height: calc(100vh - 4.5rem);
+    isolation: isolate;
+    --lotus-keyboard-offset: 0px;
+  }
+
+  .lotus-bloom-stage {
+    min-height: calc(100vh - 4.5rem);
+    display: grid;
+    grid-template-rows: auto 1fr;
+    padding: 1rem 0 calc(2rem + var(--lotus-keyboard-offset));
+  }
+
+  .lotus-bloom-rail {
+    width: min(1080px, calc(100vw - 2rem));
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 8rem) 1fr minmax(0, 8rem);
+    align-items: start;
+    gap: 1rem;
+  }
+
+  .lotus-rail-copy {
+    text-align: center;
+  }
+
+  .lotus-rail-progress,
+  .lotus-rail-mode {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  .lotus-rail-progress {
+    color: var(--lotus-accent-strong);
+  }
+
+  .lotus-rail-mode {
+    margin-top: 0.35rem;
+    color: var(--lotus-text-soft);
+  }
+
+  .lotus-rail-button {
+    appearance: none;
+    border: 1px solid var(--lotus-panel-border);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.6);
+    color: var(--lotus-text);
+    padding: 0.72rem 1rem;
+    font: inherit;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    transition:
+      border-color 180ms ease,
+      color 180ms ease,
+      opacity 180ms ease,
+      transform 180ms ease;
+  }
+
+  .lotus-rail-button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .lotus-rail-button:not(:disabled):hover {
+    border-color: var(--lotus-panel-border-strong);
+    color: var(--color-moon);
+    transform: translateY(-1px);
+  }
+
+  .lotus-bloom-viewport {
+    width: min(1080px, calc(100vw - 2rem));
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1rem;
+    padding-top: 1rem;
+  }
+
+  .lotus-trust-note {
+    margin: 0;
+    max-width: 42rem;
+    text-align: center;
+    font-size: 0.92rem;
+    line-height: 1.65;
+    color: var(--lotus-text-soft);
+  }
+
+  .lotus-bloom-focus {
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1.1rem;
+    transition:
+      transform 520ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      filter 360ms ease;
+  }
+
+  .lotus-bloom-shell {
+    position: relative;
+    width: min(44rem, calc(100vw - 2rem));
+    min-height: min(36rem, calc(100vh - 14rem));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(1.2rem, 3vw, 2.2rem);
+    transition:
+      transform 520ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      opacity 360ms ease,
+      filter 360ms ease;
+  }
+
+  .lotus-bloom-aura,
+  .lotus-bloom-petal {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .lotus-bloom-aura {
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 50% 30%, rgba(245, 183, 212, 0.34), transparent 38%),
+      radial-gradient(circle at 30% 70%, rgba(206, 233, 220, 0.24), transparent 34%),
+      radial-gradient(circle at 72% 68%, rgba(255, 214, 198, 0.22), transparent 30%);
+    filter: blur(22px);
+    transform: scale(0.92);
+  }
+
+  .lotus-bloom-petal {
+    border-radius: 48% 52% 48% 52% / 58% 58% 42% 42%;
+    background:
+      linear-gradient(180deg, rgba(255, 251, 253, 0.98), rgba(252, 232, 242, 0.92)),
+      radial-gradient(circle at 50% 20%, rgba(255, 255, 255, 0.92), transparent 44%);
+    border: 1px solid rgba(214, 180, 198, 0.56);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.76),
+      0 22px 42px rgba(189, 150, 173, 0.16);
+    transform-origin: center bottom;
+    transition:
+      transform 620ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      opacity 420ms ease,
+      filter 420ms ease;
+  }
+
+  .lotus-bloom-petal-one {
+    inset: 4% 18% 18%;
+    transform: rotate(-16deg);
+  }
+
+  .lotus-bloom-petal-two {
+    inset: 4% 18% 18%;
+    transform: rotate(16deg);
+  }
+
+  .lotus-bloom-petal-three {
+    inset: 12% 24% 10%;
+    transform: rotate(-36deg) scale(0.88);
+  }
+
+  .lotus-bloom-petal-four {
+    inset: 12% 24% 10%;
+    transform: rotate(36deg) scale(0.88);
+  }
+
+  .lotus-panel {
+    position: relative;
+    z-index: 1;
+    width: min(28rem, 100%);
+    padding: clamp(1.5rem, 3vw, 2.1rem);
+    border-radius: 2rem;
+    background: rgba(255, 251, 253, 0.88);
+    border: 1px solid rgba(214, 180, 198, 0.6);
+    box-shadow:
+      0 18px 40px rgba(189, 150, 173, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.78);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .lotus-bloom-title {
+    margin-top: 1rem;
+    max-width: 14ch;
+    text-align: center;
+  }
+
+  .lotus-bloom-copy {
+    margin: 1rem auto 0;
+    max-width: 26rem;
+    text-align: center;
+    color: var(--lotus-text);
+  }
+
+  .lotus-bloom-note {
+    font-size: 0.96rem;
+    line-height: 1.7;
+    color: var(--lotus-text-soft);
+  }
+
+  .lotus-bloom-open {
+    display: inline-flex;
+    margin: 1.5rem auto 0;
+  }
+
+  .lotus-bloom-input {
+    width: 100%;
+    margin-top: 1.25rem;
+    min-height: 11rem;
+    border: 1px solid rgba(214, 180, 198, 0.58);
+    border-radius: 1.4rem;
+    background: rgba(255, 255, 255, 0.78);
+    color: var(--color-moon);
+    padding: 1.15rem 1.2rem;
+    font: inherit;
+    font-size: 1rem;
+    line-height: 1.78;
+    resize: none;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.76);
+  }
+
+  .lotus-bloom-input:focus {
+    outline: none;
+    border-color: rgba(216, 112, 156, 0.46);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.76),
+      0 0 0 4px rgba(216, 112, 156, 0.14);
+  }
+
+  .lotus-bloom-meta {
+    margin-top: 0.95rem;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .lotus-word-status,
+  .lotus-draft-status,
+  .lotus-submit-hint,
+  .lotus-node-overflow,
+  .lotus-error-status {
+    margin: 0;
+    font-size: 0.84rem;
+    line-height: 1.6;
+  }
+
+  .lotus-word-status {
+    color: var(--lotus-accent-strong);
+    font-weight: 600;
+  }
+
+  .lotus-draft-status,
+  .lotus-submit-hint,
+  .lotus-node-overflow {
+    color: var(--lotus-text-soft);
+  }
+
+  .lotus-error-status {
+    margin-top: 0.8rem;
+    color: #b84d74;
+    font-weight: 600;
+  }
+
+  .lotus-submit-shell {
+    margin-top: 1.25rem;
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .lotus-submit-button {
+    position: relative;
+    justify-content: center;
+  }
+
+  .lotus-submit-button[aria-disabled='true'],
+  .lotus-submit-button:disabled {
+    opacity: 0.58;
+    cursor: not-allowed;
+  }
+
+  .lotus-submit-button[data-armed='true'] {
+    box-shadow: 0 18px 34px rgba(216, 112, 156, 0.26);
+  }
+
+  .lotus-submit-button[data-holding='true'] .lotus-submit-progress {
+    transform: scaleX(1);
+  }
+
+  .lotus-submit-progress {
+    position: absolute;
+    inset: auto 0 0;
+    height: 3px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.86), rgba(255, 255, 255, 0.24));
+    transform-origin: left center;
+    transform: scaleX(0);
+    transition: transform 650ms linear;
+  }
+
+  .lotus-complete-actions {
+    margin-top: 1.4rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+
+  .lotus-stalk-column {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .lotus-stalk-line {
+    width: 3px;
+    height: clamp(4.75rem, 12vh, 7.2rem);
+    border-radius: 999px;
+    background:
+      linear-gradient(180deg, rgba(216, 112, 156, 0.12), rgba(174, 213, 188, 0.56), rgba(131, 181, 151, 0.72));
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.22),
+      0 6px 14px rgba(159, 196, 173, 0.12);
+    transition:
+      transform 620ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      opacity 360ms ease;
+  }
+
+  .lotus-node-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.42rem;
+    transition:
+      transform 520ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      opacity 360ms ease;
+  }
+
+  .lotus-node {
+    appearance: none;
+    width: 2.38rem;
+    height: 2.12rem;
+    border: 1px solid rgba(202, 145, 176, 0.42);
+    border-radius: 54% 46% 56% 44% / 68% 68% 32% 32%;
+    background:
+      linear-gradient(180deg, rgba(255, 249, 251, 0.98), rgba(246, 228, 237, 0.94)),
+      radial-gradient(circle at 50% 20%, rgba(255, 255, 255, 0.82), transparent 48%);
+    box-shadow: 0 10px 18px rgba(189, 150, 173, 0.1);
+    transition:
+      transform 220ms ease,
+      border-color 220ms ease,
+      opacity 220ms ease;
+  }
+
+  .lotus-node:hover {
+    transform: translateY(-1px) scale(1.02);
+    border-color: var(--lotus-panel-border-strong);
+  }
+
+  .lotus-node[data-selected='true'] {
+    border-color: rgba(216, 112, 156, 0.56);
+    transform: scale(1.03);
+  }
+
+  .lotus-node[data-depth='7'] {
+    opacity: 0.52;
+  }
+
+  .lotus-node[data-depth='6'] {
+    opacity: 0.6;
+  }
+
+  .lotus-node[data-depth='5'] {
+    opacity: 0.68;
+  }
+
+  .lotus-node[data-depth='4'] {
+    opacity: 0.76;
+  }
+
+  .lotus-node-core {
+    display: block;
+    width: 0.38rem;
+    height: 0.38rem;
+    margin: 0.95rem auto 0;
+    border-radius: 999px;
+    background: rgba(216, 112, 156, 0.34);
+  }
+
+  .lotus-bloom-app[data-mode='review'] .lotus-bloom-aura {
+    background:
+      radial-gradient(circle at 50% 30%, rgba(202, 145, 176, 0.28), transparent 38%),
+      radial-gradient(circle at 30% 70%, rgba(206, 233, 220, 0.18), transparent 34%),
+      radial-gradient(circle at 72% 68%, rgba(235, 221, 228, 0.2), transparent 30%);
+  }
+
+  .lotus-bloom-app[data-mode='review'] .lotus-panel {
+    background: rgba(251, 246, 249, 0.9);
+  }
+
+  .lotus-bloom-app[data-mode='review'] .lotus-bloom-focus {
+    transform: translateY(0.85rem);
+    filter: saturate(0.92);
+  }
+
+  .lotus-bloom-app[data-bloom-state='bud'] .lotus-bloom-shell {
+    transform: translateY(0) scale(0.92);
+  }
+
+  .lotus-bloom-app[data-bloom-state='bud'] .lotus-bloom-petal {
+    opacity: 0.72;
+    transform: translateY(1rem) scale(0.74);
+    filter: saturate(0.9);
+  }
+
+  .lotus-bloom-app[data-bloom-state='opening'] .lotus-bloom-shell,
+  .lotus-bloom-app[data-bloom-state='active'] .lotus-bloom-shell,
+  .lotus-bloom-app[data-bloom-state='near-limit'] .lotus-bloom-shell,
+  .lotus-bloom-app[data-bloom-state='review'] .lotus-bloom-shell,
+  .lotus-bloom-app[data-bloom-state='complete'] .lotus-bloom-shell {
+    transform: translateY(-0.2rem) scale(1);
+  }
+
+  .lotus-bloom-app[data-bloom-state='opening'] .lotus-bloom-petal,
+  .lotus-bloom-app[data-bloom-state='active'] .lotus-bloom-petal,
+  .lotus-bloom-app[data-bloom-state='near-limit'] .lotus-bloom-petal,
+  .lotus-bloom-app[data-bloom-state='review'] .lotus-bloom-petal,
+  .lotus-bloom-app[data-bloom-state='complete'] .lotus-bloom-petal {
+    opacity: 1;
+    filter: saturate(1);
+  }
+
+  .lotus-bloom-app[data-bloom-state='near-limit'] .lotus-bloom-petal {
+    background:
+      linear-gradient(180deg, rgba(255, 248, 251, 0.98), rgba(246, 220, 233, 0.94)),
+      radial-gradient(circle at 50% 20%, rgba(255, 255, 255, 0.92), transparent 44%);
+  }
+
+  .lotus-bloom-app[data-bloom-state='closing'] .lotus-bloom-shell {
+    transform: translateY(0.9rem) scale(0.9);
+    opacity: 0.86;
+  }
+
+  .lotus-bloom-app[data-bloom-state='closing'] .lotus-bloom-petal {
+    transform: translateY(1.25rem) scale(0.72);
+    opacity: 0.72;
+    filter: saturate(0.88);
+  }
+
+  .lotus-bloom-app[data-bloom-state='review'] .lotus-bloom-shell {
+    transform: translateY(0.75rem) scale(0.985);
+  }
+
+  .lotus-bloom-app[data-bloom-state='review'] .lotus-stalk-line {
+    transform: scaleY(1.04) translateY(0.2rem);
+    opacity: 0.92;
+  }
+
+  .lotus-bloom-app[data-bloom-state='review'] .lotus-node-stack {
+    transform: translateY(0.25rem);
+  }
+
+  .lotus-bloom-app[data-bloom-state='closing'] .lotus-stalk-line {
+    transform: scaleY(1.1) translateY(-0.24rem);
+    opacity: 1;
+  }
+
+  .lotus-bloom-app[data-bloom-state='closing'] .lotus-node-stack {
+    transform: translateY(0.2rem);
+  }
+
+  .lotus-bloom-app[data-bloom-state='opening'] .lotus-stalk-line {
+    transform: scaleY(1.03);
+  }
+
+  .lotus-bloom-app[data-save-state='saved'] .lotus-stalk-line {
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.32),
+      0 0 18px rgba(216, 112, 156, 0.18);
+  }
+
+  .lotus-bloom-app[data-save-state='error'] .lotus-panel {
+    border-color: rgba(184, 77, 116, 0.48);
+  }
+
+  @media (max-width: 900px) {
+    .lotus-bloom-rail {
+      grid-template-columns: 1fr;
+      justify-items: center;
+      text-align: center;
+    }
+
+    .lotus-rail-button {
+      width: 100%;
+      max-width: 16rem;
+    }
+
+    .lotus-bloom-shell {
+      min-height: auto;
+    }
+
+    .lotus-panel {
+      width: min(30rem, 100%);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .lotus-bloom-stage {
+      min-height: auto;
+      padding-bottom: 1.25rem;
+    }
+
+    .lotus-bloom-viewport {
+      width: min(100vw - 1rem, 100%);
+    }
+
+    .lotus-bloom-shell {
+      width: min(100%, 24rem);
+      min-height: 30rem;
+      padding: 0.7rem;
+    }
+
+    .lotus-panel {
+      padding: 1.2rem;
+      border-radius: 1.55rem;
+    }
+
+    .lotus-bloom-input {
+      min-height: 9.5rem;
+    }
+
+    .lotus-bloom-meta {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .lotus-submit-shell {
+      gap: 0.45rem;
+    }
+
+    .lotus-stalk-line {
+      height: 4.9rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lotus-bloom-shell,
+    .lotus-bloom-petal,
+    .lotus-stalk-line,
+    .lotus-node,
+    .lotus-rail-button,
+    .lotus-submit-progress {
+      transition: none !important;
+      animation: none !important;
+    }
+  }
+</style>

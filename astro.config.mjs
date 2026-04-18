@@ -1,11 +1,19 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
+import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import { resolveSiteUrl } from './site-config.js';
 
 const site = resolveSiteUrl(process.env);
+const redirectOnlyPaths = new Set([
+  '/gaia/app/',
+  '/astral/',
+  '/astral-year/',
+  '/astral-year/app/',
+  '/astral-year/glossary/',
+]);
 
 export default defineConfig({
   site,
@@ -13,7 +21,16 @@ export default defineConfig({
   legacy: {
     collectionsBackwardsCompat: true,
   },
-  integrations: [mdx(), sitemap()],
+  integrations: [
+    react(),
+    mdx(),
+    sitemap({
+      filter: (page) => {
+        const { pathname } = new URL(page);
+        return !redirectOnlyPaths.has(pathname);
+      },
+    }),
+  ],
   vite: {
     plugins: [tailwindcss()],
   },

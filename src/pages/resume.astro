@@ -1,7 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
 import ResumeSection from '../components/ResumeSection.astro';
-import SectionIntro from '../components/SectionIntro.astro';
 import { pageMeta } from '../data/site';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { isPublishedPaper, sortByYear } from '../lib/content';
@@ -13,27 +12,42 @@ const selectedPublications = papers.filter((entry) => isPublishedPaper(entry)).s
 <BaseLayout
   title={pageMeta.resume.title}
   description={pageMeta.resume.description}
+  pageClass="page-resume"
 >
   <section class="section-shell">
-    <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-      <SectionIntro
-        eyebrow="Resume and CV"
-        title="Professional record, selected publications, and downloads."
-        description="A concise record of governance practice, research operations, publications, and institutional experience."
-      />
 
-      <ul class="bullet-links">
-        <li><a class="link-inline" href="/files/Martin-Lepage-CV-2026.pdf">Download PDF</a></li>
-        <li><a class="link-inline" href="/files/Martin-Lepage-CV-2026.docx">Download DOCX</a></li>
-        <li><a class="link-inline" href="/governance/">Open governance practice</a></li>
-        <li><a class="link-inline" href="/papers/">Read publications</a></li>
-        <li><a class="link-inline" href="/talks/">View talks</a></li>
-        <li><a class="link-inline" href="/contact/">Contact Martin</a></li>
-      </ul>
+    <!-- Document masthead: identity left, downloads right — no hero composition -->
+    <div class="resume-masthead">
+      <div class="resume-identity">
+        <img
+          src="/assets/ml-signature-monogram.svg"
+          alt=""
+          aria-hidden="true"
+          class="resume-monogram"
+        />
+        <div class="resume-name-block">
+          <h1>Martin Lepage, PhD</h1>
+          <p class="resume-subtitle">AI Governance · Research Operations · Strategic Writing</p>
+        </div>
+      </div>
+      <div class="resume-dl-links">
+        <a class="button-primary" href="/files/Martin-Lepage-CV-2026.pdf">Download PDF</a>
+        <a class="button-secondary" href="/files/Martin-Lepage-CV-2026.docx">Download DOCX</a>
+      </div>
     </div>
 
-    <div class="mt-12">
+    <!-- Quick nav: pill links, not bullet list -->
+    <nav class="resume-quick-nav" aria-label="Resume sections">
+      <a href="/governance/">Governance Practice</a>
+      <a href="/papers/">Publications</a>
+      <a href="/talks/">Talks</a>
+      <a href="/projects/">Projects</a>
+      <a href="/contact/">Contact Martin</a>
+    </nav>
+
+    <div class="mt-2">
       <ResumeSection selectedPublications={selectedPublications} />
     </div>
+
   </section>
 </BaseLayout>

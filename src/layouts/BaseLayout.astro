@@ -12,9 +12,11 @@ interface Props {
   canonical?: string;
   ogType?: 'website' | 'article';
   structuredData?: Record<string, unknown> | Record<string, unknown>[];
+  extraStyles?: string[];
+  pageClass?: string;
 }
 
-const { title, description, image, canonical, ogType = 'website', structuredData } = Astro.props;
+const { title, description, image, canonical, ogType = 'website', structuredData, extraStyles = [], pageClass = '' } = Astro.props;
 const pageTitle = title ? (title.includes(siteMeta.title) ? title : `${title} | ${siteMeta.title}`) : siteMeta.title;
 const pageDescription = description ?? siteMeta.description;
 const canonicalUrl = canonical ? buildCanonical(canonical) : buildCanonical(Astro.url.pathname);
@@ -56,6 +58,7 @@ const structuredPayload = [
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/martin-portfolio/index.css" />
+    {extraStyles.map((href) => <link rel="stylesheet" href={href} />)}
     {siteMeta.siteUrl && <link rel="alternate" type="application/rss+xml" title={pageMeta.rss.title} href="/rss.xml" />}
     <link rel="alternate" type="text/plain" title="LLMs context" href="/llms.txt" />
     <link rel="alternate" type="text/plain" title="LLMs full context" href="/llms-full.txt" />
@@ -78,7 +81,7 @@ const structuredPayload = [
     <title>{pageTitle}</title>
     <script is:inline type="application/ld+json" set:html={JSON.stringify(structuredPayload)} />
   </head>
-  <body>
+  <body class:list={[pageClass || undefined]}>
     <a class="skip-link" href="#content">Skip to content</a>
     <div class="site-aurora" aria-hidden="true"></div>
     <div class="site-frame">

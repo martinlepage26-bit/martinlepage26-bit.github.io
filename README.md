@@ -94,38 +94,30 @@ npm run dev:local
 
 This binds to `http://127.0.0.1:4510` with `--strictPort`.
 
-## ECHO Online TTS
+## ECHO Local TTS
 
-Canonical public endpoint:
+`/echo/` is a browser-local voice reader.
+No API key, Worker binding, or backend endpoint is required for playback.
 
-- `https://martinlepage26-bit.github.io/api/echo-tts`
-- site-local path: `/api/echo-tts`
+Consolidated entry points:
 
-`/echo/` should call `/api/echo-tts` only. The Pages Function then proxies to the dedicated Worker backend (`workers/echo-tts-online/`).
+- `/echo/` -> primary app
+- `/ariel/` -> redirect to `/echo/?profile=ariel`
+- `/voice11/` -> redirect to `/echo/?profile=voice11`
 
-### Deploy the ECHO TTS Worker
+Behavior notes:
 
-```bash
-cd workers/echo-tts-online
-npx wrangler deploy
-```
+- Drag-and-drop upload supports `.txt`, `.md`, `.docx`, and `.pdf`.
+- Text extraction and playback run in-browser.
+- Voice selection comes from the browser and operating system (`speechSynthesis`).
+- ECHO, Ariel, and Voice11 act as local delivery presets for rate, pitch, volume, and voice matching heuristics.
+- Draft text and controls persist in local storage for return visits.
 
-Then deploy the site/pages bundle so `/echo/` + `/api/echo-tts` stay in sync:
+Implementation files:
 
-```bash
-npm run build
-npx wrangler pages deploy dist --project-name martin-lepage-site --branch main --commit-dirty=true
-```
-
-The worker uses Cloudflare Workers AI via binding `AI` and defaults to `@cf/deepgram/aura-2-en`.
-
-### Optional worker vars
-
-- `ECHO_TTS_WORKER_URL` (Pages Function upstream override; default points to `echo-tts-online`)
-- `ECHO_TTS_MODEL` (default: `@cf/deepgram/aura-2-en`)
-- `ECHO_TTS_VOICES` (comma-separated voice list for UI)
-- `ECHO_TTS_FORMAT` (default: `mp3`)
-- `ECHO_TTS_ALLOWED_ORIGINS` (comma-separated origins allowed for `POST`)
+- `src/pages/echo/index.astro`
+- `src/scripts/echo-reader.js`
+- `src/styles/echo-standalone.css`
 
 ## Verification
 
@@ -144,7 +136,7 @@ Optional smoke overrides:
 SMOKE_HOST=127.0.0.1 SMOKE_PORT=4520 npm run smoke
 ```
 
-Production metadata now defaults to `https://martinlepage26-bit.github.io`.
+Production metadata now defaults to `https://martin.govern-ai.ca`.
 Set `PUBLIC_SITE_URL` or `SITE_URL` only when you intentionally want to override that origin for a different environment.
 
 ## Editing Workflow
@@ -237,17 +229,18 @@ If deploying from Git:
 2. Create a Cloudflare Pages project from that repo.
 3. Set the build command to `npm run build`.
 4. Set the output directory to `dist`.
-5. The production origin defaults to `https://martinlepage26-bit.github.io`. Set `PUBLIC_SITE_URL` only if you intentionally need a different build origin.
+5. The production origin defaults to `https://martin.govern-ai.ca`. Set `PUBLIC_SITE_URL` only if you intentionally need a different build origin.
 
 ### GitHub Pages
 
-The simplest path is a GitHub Actions workflow that builds Astro and publishes `dist/`.
+This repo includes a GitHub Actions workflow at `.github/workflows/verify.yml` that:
 
-At minimum:
+1. Runs `npm ci`
+2. Runs `npm run check`
+3. Runs `npm run smoke` (which builds the site and verifies preview routes)
+4. Publishes `dist/` to GitHub Pages on successful pushes to `main`
 
-1. Run `npm install`
-2. Run `npm run build`
-3. Deploy the generated `dist/` directory
+To enable deployment the first time, open **Settings -> Pages** and set **Source** to `GitHub Actions`.
 
 If you deploy under a subpath instead of a root domain, add the correct `base` value to `astro.config.mjs`.
 
@@ -264,7 +257,10 @@ Without these external settings, production deploys may proceed from unverified 
 
 ## Maintainer Merge Controls
 
-In-repo enforcement is defined in `.github/workflows/verify.yml` (runs `npm run check` and `npm run smoke` on pull requests and pushes to `main`).
+In-repo enforcement is defined in `.github/workflows/verify.yml`:
+
+1. `Verify / verify` runs `npm run check` and `npm run smoke` on pull requests and pushes to `main`
+2. `Verify / deploy` publishes to GitHub Pages after `verify` passes on `main`
 
 Merge blocking is a GitHub setting, not a repo file. Maintain this manually for `main` under **Settings -> Branches** (or **Settings -> Rules -> Rulesets**):
 
@@ -293,3 +289,13 @@ npm run smoke
 - **Governance gets a dedicated route**: `/governance/` is the professional trust surface for consulting- and documentation-oriented visitors, while `/projects/` remains the wider in-progress archive.
 - **Content collections for maintainability**: new publications, essays, projects, and talks can be added without rewriting page logic.
 - **Honest status language**: manuscript-stage work is clearly distinguished from published work, prototypes, and proposal architecture.
+
+## Source of Truth
+
+The `main` branch is the single source of truth for this repository.
+
+- All production deployments (Cloudflare Pages) are built from `main`
+- All changes must be merged into `main` to be considered production-ready
+- Long-lived divergence from `main` is not allowed
+
+If your local branch differs from `origin/main`, you must reconcile before pushing.

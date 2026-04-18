@@ -2,12 +2,12 @@
 import LotusWorkbench from '../../components/lotus/LotusWorkbench.astro';
 import LotusVectorWorkbench from '../../components/lotus/LotusVectorWorkbench.astro';
 import SectionIntro from '../../components/SectionIntro.astro';
-import { lotusBoundaryCards, lotusSignalGroups, lotusSurfaces } from '../../data/lotus';
+import { lotusBoundaryCards, lotusSignalGroups } from '../../data/lotus';
 import LotusLayout from '../../layouts/LotusLayout.astro';
 import { buildCanonical } from '../../lib/seo';
 
 const pageDescription =
-  'LOTUS is a reflective support and pattern-mapping system that helps people make sense of stress, instability, isolation, blocked options, and social invisibility.';
+  'LOTUS is a reflective support and agency-scoring system for naming how pressure narrows choice, support, meaning, and room to move.';
 
 const structuredData = {
   '@context': 'https://schema.org',
@@ -24,76 +24,57 @@ const structuredData = {
 ---
 
 <LotusLayout title="Lotus" description={pageDescription} canonical="/lotus/" structuredData={structuredData}>
-  <section class="relative overflow-hidden border-b border-[rgba(36,27,23,0.12)]">
-    <div class="section-shell relative lotus-hero-shell">
-      <div class="lotus-hero-orbit lotus-hero-orbit-one"></div>
-      <div class="lotus-hero-orbit lotus-hero-orbit-two"></div>
-      <div class="grid gap-10 lg:grid-cols-[minmax(0,1.08fr)_minmax(320px,0.92fr)] lg:items-end">
-        <div class="relative z-10 max-w-4xl">
-          <p class="eyebrow">Lotus</p>
-          <h1 class="mt-5">When life gets harder to carry, LOTUS helps make the pattern clearer.</h1>
-          <p class="mt-6 max-w-3xl text-lg leading-8 text-slate-100 md:text-xl">
-            LOTUS is a reflective support and pattern-mapping system. It helps people make sense of stress, instability,
-            isolation, blocked options, and social invisibility — by looking at how a person's ability to act can narrow
-            under pressure, and naming where support, clarity, and repair may be needed.
-          </p>
-          <div class="mt-8 flex flex-wrap gap-3">
-            <a class="button-primary" href="#lotus-workbench">Open the workbench</a>
-            <a class="button-secondary" href="/projects/bonded-intelligence-under-constraint/">Read the framework paper</a>
-            <a class="button-secondary" href="/projects/lotus/">Open the project record</a>
-            <a class="button-secondary" href="#lotus-vector">Run the vector model</a>
-          </div>
+  <section class="section-shell border-b border-[rgba(200,145,176,0.22)] lotus-top-section">
+    <div class="grid gap-8 xl:grid-cols-[minmax(0,1.16fr)_minmax(280px,0.84fr)] xl:items-start">
+      <div class="max-w-4xl">
+        <p class="eyebrow">Lotus</p>
+        <h1 class="mt-5">Agency scorer and reflective workbench.</h1>
+        <p class="mt-5 max-w-3xl text-lg leading-8 text-slate-100 md:text-xl">
+          Score a note in the browser, see which pressures rise to the surface, and move straight into the full LOTUS
+          vector model below.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3 lotus-top-actions">
+          <a class="button-primary" href="#lotus-workbench">Start scoring</a>
+          <a class="button-secondary" href="#lotus-vector">Jump to the questions</a>
         </div>
-
-        <div class="veil-panel relative z-10 lotus-hero-card">
-          <p class="eyebrow">What to expect</p>
-          <div class="mt-5 grid gap-4">
-            <div class="lotus-hero-mini-card">
-              <p class="lotus-hero-label">Not a diagnosis</p>
-              <p class="mt-2 text-base leading-7 text-slate-200">
-                LOTUS does not diagnose, predict, or define who you are. It helps create a clearer map of what may be
-                happening — the pressures, gaps, and conditions shaping your options.
-              </p>
-            </div>
-            <div class="lotus-hero-mini-card">
-              <p class="lotus-hero-label">Safety note</p>
-              <p class="mt-2 text-base leading-7 text-slate-200">
-                LOTUS is not crisis care. If you are in immediate danger or thinking of harming yourself, contact local
-                emergency or crisis services right away. LOTUS supports reflection, not emergency response.
-              </p>
-            </div>
-          </div>
-        </div>
+        <p class="mt-4 max-w-2xl lotus-top-note">
+          One route, two depths: a quick reading of the note, then the longer vector model when you need to stay with
+          the shape of the situation.
+        </p>
       </div>
-    </div>
-  </section>
 
-  <section class="section-shell border-y border-[rgba(36,27,23,0.08)] bg-[rgba(251,246,239,0.28)]">
-    <SectionIntro
-      eyebrow="How LOTUS helps"
-      title="Four ways into a clearer picture."
-      description="LOTUS can be used as a reflective workbench, a research tool, a pattern-mapping framework, or a starting point for understanding what kinds of support might actually help."
-    />
-
-    <div class="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-      {lotusSurfaces.map((item) => (
-        <article class="veil-panel h-full">
-          <p class="eyebrow">{item.eyebrow}</p>
-          <h2 class="mt-4 text-[1.08rem] md:text-[1.2rem]">{item.title}</h2>
-          <p class="mt-4 text-base leading-7 text-slate-200">{item.description}</p>
-          <div class="mt-5">
-            <a class="link-inline" href={item.href}>{item.cta}</a>
+      <aside class="veil-panel lotus-orientation-card">
+        <p class="eyebrow">Orientation</p>
+        <div class="mt-5 space-y-4">
+          <div class="lotus-orientation-item">
+            <p class="lotus-orientation-label">In browser</p>
+            <p class="lotus-orientation-copy">
+              Paste a note, score it in place, and read the active signals without stepping into another tool.
+            </p>
           </div>
-        </article>
-      ))}
+          <div class="lotus-orientation-item">
+            <p class="lotus-orientation-label">Full model</p>
+            <p class="lotus-orientation-copy">
+              The longer questions and vector categories stay on this same route, so the quick read and deeper pass stay
+              in one frame.
+            </p>
+          </div>
+          <div class="lotus-orientation-item">
+            <p class="lotus-orientation-label">Bounded use</p>
+            <p class="lotus-orientation-copy">
+              LOTUS is a reflective and analytical aid, not diagnosis, crisis care, or a substitute for human judgment.
+            </p>
+          </div>
+        </div>
+      </aside>
     </div>
   </section>
 
   <section id="lotus-workbench" class="section-shell">
     <SectionIntro
       eyebrow="Workbench"
-      title="Map the pressure points in your own words."
-      description="Paste text — a journal entry, a situation description, a note — and LOTUS identifies which signal groups are present. No text is uploaded or stored. The reading stays in your browser."
+      title="Map the pressure in your own words."
+      description="Paste a journal entry, a situation note, or a working fragment. LOTUS reads for signal groups that gather around constraint, support, meaning, and room to act. The reading stays in your browser."
     />
 
     <div class="mt-12">
@@ -101,22 +82,22 @@ const structuredData = {
     </div>
   </section>
 
-  <section id="lotus-vector" class="section-shell border-y border-[rgba(36,27,23,0.08)] bg-[rgba(251,246,239,0.28)]">
+  <section id="lotus-vector" class="section-shell border-y border-[rgba(200,145,176,0.2)] lotus-alt-section">
     <SectionIntro
       eyebrow="Vector model"
-      title="Rate the pressures and supports. See where agency stands."
-      description="This tool is designed for researchers, clinicians, and practitioners. Rate each dimension of a person's situation — base state, constraints, and scaffolds — and LOTUS computes the effective agency vector using the full formula chain."
+      title="Trace what narrows agency, and what keeps it open."
+      description="For researchers, clinicians, and practitioners who need a structured reading of a situation. Rate base state, constraints, and supports, and LOTUS computes the effective agency vector through the full formula chain."
     />
     <div class="mt-12">
       <LotusVectorWorkbench />
     </div>
   </section>
 
-  <section class="section-shell border-y border-[rgba(36,27,23,0.08)] bg-[rgba(251,246,239,0.28)]">
+  <section class="section-shell border-y border-[rgba(200,145,176,0.2)] lotus-alt-section">
     <SectionIntro
       eyebrow="Signal library"
-      title="Six patterns LOTUS looks for."
-      description="LOTUS reads text for signals across six dimensions of a person's situation. Each group names a different kind of pressure, condition, or capacity — from how choices are made under stress to how meaning and identity hold under load."
+      title="Six patterns LOTUS listens for."
+      description="These are not personality types. They are recurring forms of pressure, condition, and capacity: how choices narrow, how institutions bear down, how execution frays, and how meaning or creative life either holds or thins out."
     />
 
     <div class="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
@@ -129,8 +110,8 @@ const structuredData = {
             </div>
             <span class="lotus-weight-badge">{group.weight}</span>
           </div>
-          <p class="mt-5 text-sm uppercase tracking-[0.18em] text-slate-400">Representative terms</p>
-          <p class="mt-3 text-base leading-7 text-slate-200">{group.terms.slice(0, 5).join(', ')}</p>
+          <p class="mt-5 text-sm uppercase tracking-[0.18em] text-[var(--lotus-text-faint)]">Representative terms</p>
+          <p class="mt-3 text-base leading-7 text-[var(--lotus-text)]">{group.terms.slice(0, 5).join(', ')}</p>
         </article>
       ))}
     </div>
@@ -139,8 +120,8 @@ const structuredData = {
   <section id="lotus-boundary" class="section-shell">
     <SectionIntro
       eyebrow="What LOTUS does not claim"
-      title="LOTUS maps what it can. It does not define who you are."
-      description="Clarity can be a form of support. But interpretation must remain revisable. LOTUS is designed to open understanding, not close it down — and to hold both the human and the structural dimensions without collapsing either."
+      title="LOTUS can clarify a situation. It cannot finish the interpretation."
+      description="A clear read can widen room to act. But any reading remains partial, revisable, and answerable to context. LOTUS is built to support reflection without collapsing the person into the frame."
     />
 
     <div class="mt-12 grid gap-6 lg:grid-cols-3">
@@ -154,48 +135,16 @@ const structuredData = {
   </section>
 
   <style>
-    .lotus-hero-shell {
-      position: relative;
-      isolation: isolate;
+    .lotus-orientation-card {
+      height: fit-content;
     }
 
-    .lotus-hero-orbit {
-      position: absolute;
-      pointer-events: none;
-      border-radius: 999px;
-      border: 1px solid rgba(92, 117, 106, 0.16);
+    .lotus-orientation-item + .lotus-orientation-item {
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 1rem;
     }
 
-    .lotus-hero-orbit-one {
-      width: min(84vw, 960px);
-      height: 19rem;
-      top: -5rem;
-      right: -18rem;
-      transform: rotate(-8deg);
-      background: linear-gradient(90deg, rgba(92, 117, 106, 0.1), rgba(92, 117, 106, 0));
-    }
-
-    .lotus-hero-orbit-two {
-      width: min(48vw, 420px);
-      height: min(48vw, 420px);
-      left: -7rem;
-      bottom: -6rem;
-      background: radial-gradient(circle, rgba(189, 138, 81, 0.14) 0%, rgba(189, 138, 81, 0) 62%);
-    }
-
-    .lotus-hero-card {
-      padding-top: 1.55rem;
-    }
-
-    .lotus-hero-mini-card {
-      border-radius: 1rem;
-      border: 1px solid rgba(36, 27, 23, 0.12);
-      background: linear-gradient(180deg, rgba(251, 246, 239, 0.72), rgba(237, 238, 244, 0.54));
-      padding: 1rem;
-      box-shadow: 0 18px 34px rgba(17, 23, 38, 0.06);
-    }
-
-    .lotus-hero-label {
+    .lotus-orientation-label {
       display: inline-flex;
       align-items: center;
       gap: 0.45rem;
@@ -204,16 +153,35 @@ const structuredData = {
       font-weight: 600;
       letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: #728c7b;
+      color: #cc9967;
     }
 
-    .lotus-hero-label::before {
+    .lotus-orientation-label::before {
       content: '';
       width: 0.55rem;
       height: 0.55rem;
       border-radius: 999px;
-      border: 1px solid rgba(92, 117, 106, 0.36);
-      background: rgba(92, 117, 106, 0.14);
+      border: 1px solid rgba(204, 153, 103, 0.42);
+      background: rgba(204, 153, 103, 0.12);
+    }
+
+    .lotus-orientation-copy {
+      margin-top: 0.55rem;
+      color: var(--lotus-text);
+      font-size: 0.98rem;
+      line-height: 1.7;
+    }
+
+    .lotus-top-actions .button-primary {
+      border-color: rgba(200, 92, 136, 0.78);
+      background: linear-gradient(135deg, #ef9fc0 0%, #d8709c 100%);
+      color: #030508;
+      box-shadow: 0 16px 30px rgba(216, 112, 156, 0.16);
+    }
+
+    .lotus-top-actions .button-primary:hover {
+      background: linear-gradient(135deg, #f3accb 0%, #df7aa6 100%);
+      color: #030508;
     }
 
     .lotus-weight-badge {
@@ -223,11 +191,25 @@ const structuredData = {
       min-width: 2.3rem;
       height: 2.3rem;
       border-radius: 999px;
-      background: rgba(189, 138, 81, 0.12);
-      color: var(--color-heading);
+      border: 1px solid rgba(216, 112, 156, 0.22);
       font-family: var(--font-mono);
       font-size: 0.82rem;
       font-weight: 700;
+      background: rgba(216, 112, 156, 0.1);
+      color: var(--lotus-accent-strong);
+    }
+
+    .lotus-alt-section {
+      background:
+        radial-gradient(circle at 80% 0%, rgba(245, 183, 212, 0.18), transparent 38%),
+        radial-gradient(circle at 18% 100%, rgba(206, 233, 220, 0.14), transparent 36%),
+        rgba(255, 243, 249, 0.52);
+    }
+
+    .lotus-top-note {
+      color: var(--lotus-text-soft);
+      font-size: 0.96rem;
+      line-height: 1.72;
     }
   </style>
 </LotusLayout>

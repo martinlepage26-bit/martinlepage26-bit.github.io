@@ -1,7 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
 import FilterBar from '../../components/FilterBar.astro';
-import PracticeHero from '../../components/PracticeHero.astro';
 import SectionIntro from '../../components/SectionIntro.astro';
 import WritingCard from '../../components/WritingCard.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
@@ -12,53 +11,51 @@ const writings = sortByDate(await getCollection('writings', ({ data }) => !data.
 const allProjects = await getCollection('projects');
 const amazonBooks = sortByTitle(allProjects.filter((project) => /\bamazon\b/i.test(project.data.status)));
 const tags = collectTags(writings);
-const writingLinks = [
-  { label: 'Visit HEXA', url: siteMeta.substack, variant: 'primary' as const },
-  { label: 'Browse books', url: '#books', variant: 'secondary' as const },
-  ...(siteMeta.siteUrl ? [{ label: 'Subscribe by RSS', url: '/rss.xml', variant: 'inline' as const }] : []),
-  { label: 'Contact about editorial work', url: '/contact/', variant: 'inline' as const },
-];
 ---
 
 <BaseLayout
   title={pageMeta.writings.title}
   description={pageMeta.writings.description}
+  pageClass="page-writing"
 >
-  <PracticeHero
-    eyebrow="Writings"
-    title="Essays, criticism, and books."
-    description="This archive holds public prose: essays, notes, criticism, and published books. It is where conceptual work is tested in language meant to travel beyond specialist contexts."
-    details="Academic publication records remain under Publications, and developmental manuscripts remain under Projects. This boundary keeps each archive legible."
-    links={writingLinks}
-    sideEyebrow="Reading path"
-    sideTitle="How this archive is structured."
-    sideDescription="Writings carry the public argument; they do not replace the scholarly archive or the project lab."
-    sidePoints={[
-      'HEXA remains the main outward channel for ongoing publication rhythm.',
-      'Books remain visible here once publication status is confirmed.',
-      'Projects and Publications keep developmental and academic records distinct.',
-    ]}
-    stats={[
-      {
-        eyebrow: 'Essays and notes',
-        value: writings.length,
-        label: 'Writing entries',
-        description: 'Published essays, criticism, notes, and short-form public analysis.',
-      },
-      {
-        eyebrow: 'Books',
-        value: amazonBooks.length,
-        label: 'Published titles',
-        description: 'Self-published books with companion pages and stable outbound links.',
-      },
-      {
-        eyebrow: 'Topics',
-        value: tags.length,
-        label: 'Filter tags',
-        description: 'Searchable themes that track recurring concepts across the archive.',
-      },
-    ]}
-  />
+  <!-- Editorial hero: full-width single-column, no aside panel, no glass -->
+  <section class="writing-editorial-hero">
+    <div class="shell relative">
+      <p class="eyebrow">Writings</p>
+      <h1 class="writing-hero-title">Essays,<br /> criticism,<br /> and books.</h1>
+      <p class="writing-hero-lead">
+        Public prose: essays, notes, criticism, and published books. Where conceptual
+        work is tested in language meant to travel beyond specialist contexts.
+      </p>
+      <p class="writing-hero-detail">
+        Academic records stay under Publications; developmental manuscripts stay under Projects.
+        This boundary keeps each archive legible.
+      </p>
+
+      <!-- Stats as a light ruled row, not panels -->
+      <div class="writing-hero-stats">
+        <div class="writing-hero-stat">
+          <span class="writing-hero-stat-value">{writings.length}</span>
+          <span class="writing-hero-stat-label">Writing entries</span>
+        </div>
+        <div class="writing-hero-stat">
+          <span class="writing-hero-stat-value">{amazonBooks.length}</span>
+          <span class="writing-hero-stat-label">Published books</span>
+        </div>
+        <div class="writing-hero-stat">
+          <span class="writing-hero-stat-value">{tags.length}</span>
+          <span class="writing-hero-stat-label">Filter tags</span>
+        </div>
+      </div>
+
+      <div class="writing-hero-actions">
+        <a class="button-primary" href={siteMeta.substack}>Visit HEXA</a>
+        <a class="button-secondary" href="#books">Browse books</a>
+        {siteMeta.siteUrl && <a class="button-secondary" href="/rss.xml">RSS feed</a>}
+        <a class="button-secondary" href="/contact/">Contact about editorial work</a>
+      </div>
+    </div>
+  </section>
 
   <section class="section-shell">
     <div id="writing-archive">

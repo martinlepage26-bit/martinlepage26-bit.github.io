@@ -1,8 +1,4 @@
 ---
-import '@fontsource-variable/space-grotesk';
-import '@fontsource/ibm-plex-sans/400.css';
-import '@fontsource/ibm-plex-sans/600.css';
-import '../../styles/echo-standalone.css';
 ---
 
 <!doctype html>
@@ -10,17 +6,40 @@ import '../../styles/echo-standalone.css';
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="ECHO standalone page: human-sounding bilingual text-to-speech with masculine, feminine, and non-gendered voice renditions." />
-    <meta name="theme-color" content="#5ba7ff" />
-    <link rel="stylesheet" href="/martin-portfolio/index.css" />
-    <title>ECHO | Standalone Voice Surface</title>
+    <meta
+      name="description"
+      content="ECHO is a browser-native readback deck with file import, visible transport, and live word tracking."
+    />
+    <meta name="theme-color" content="#0b0c0e" />
+    <link rel="stylesheet" href="/echo/echo-standalone.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>ECHO | Browser Voice Reader</title>
   </head>
-  <body class="echo-standalone">
-    <div class="echo-shell">
+  <!--
+    ECHO design lock:
+    Preserve the hardline front-console surface, the intro -> editor -> controls -> readback order,
+    and the black alloy / paper deck / visible-function styling unless an explicit redesign is requested.
+    If this visual contract changes, update the smoke lock markers in scripts/smoke.mjs.
+  -->
+  <body class="echo-standalone" data-echo-page-lock="hardline-reader">
+    <div
+      class="echo-shell"
+      data-echo-app
+      data-echo-page-shell="front-console"
+      data-echo-design-lock="hardline-reader-2026-04-02"
+    >
       <header class="echo-header">
         <a class="echo-brand" href="/echo/">
-          <span class="echo-mark">ECHO</span>
-          <span class="echo-tagline">Standalone Voice Surface</span>
+          <span class="echo-brand-stack">
+            <span class="echo-mark">ECHO</span>
+            <span class="echo-tagline">Browser voice reader</span>
+          </span>
+          <span class="echo-brand-id">Local readback unit</span>
         </a>
         <nav class="echo-nav" aria-label="ECHO navigation">
           <a href="/projects/echo/">Project details</a>
@@ -30,257 +49,354 @@ import '../../styles/echo-standalone.css';
       </header>
 
       <main class="echo-main">
-        <section class="echo-hero">
-          <p class="echo-eyebrow">Text-to-Speech</p>
-          <h1>ECHO</h1>
-          <p>ECHO now runs online-only through a single ECHO API endpoint.</p>
-          <p>No local Python, no local Voice11 bundle, no machine-bound runtime.</p>
-          <div class="echo-actions">
-            <a class="echo-button secondary" href="/projects/echo/">Project details</a>
-            <a class="echo-button secondary" href="mailto:martinlepage.ai@gmail.com">Report synthesis issue</a>
+        <section class="echo-intro" data-echo-lock-block="intro">
+          <div class="echo-intro-copy">
+            <p class="echo-eyebrow">Local Readback Deck</p>
+            <h1>A tougher readback deck for serious draft review.</h1>
+            <p class="echo-intro-lede">
+              Import a note, PDF, or DOCX, tune the delivery, and track each word through a rigid
+              readback layout that keeps source, transport, and output in one frame.
+            </p>
+            <div class="echo-intro-specs">
+              <article class="echo-spec-card">
+                <span class="echo-spec-label">Input</span>
+                <strong>TXT, MD, DOCX, PDF</strong>
+                <p>Pull in rough notes or finished documents without leaving the page.</p>
+              </article>
+              <article class="echo-spec-card">
+                <span class="echo-spec-label">Signal</span>
+                <strong>Local only</strong>
+                <p>The text stays on this device from file load to playback.</p>
+              </article>
+              <article class="echo-spec-card">
+                <span class="echo-spec-label">Readback</span>
+                <strong>Live tracking</strong>
+                <p>Playback progress stays visible instead of slipping behind the controls.</p>
+              </article>
+            </div>
+          </div>
+
+          <div class="echo-intro-stage" aria-hidden="true">
+            <div class="echo-stage-shell">
+              <div class="echo-stage-topline">
+                <span>ECHO-01</span>
+                <span>Front Console</span>
+              </div>
+              <div class="echo-stage-grid">
+                <div class="echo-stage-display">
+                  <span class="echo-stage-label">Status</span>
+                  <strong>Ready</strong>
+                  <p>Voice path armed. Local buffer standing by.</p>
+                </div>
+                <div class="echo-stage-block echo-stage-mark">
+                  <span class="echo-stage-mark-word">ECHO</span>
+                  <span class="echo-stage-mark-line">Readback unit</span>
+                </div>
+                <div class="echo-stage-block echo-stage-meter">
+                  <span class="echo-stage-label">Visible function</span>
+                  <ul class="echo-stage-list">
+                    <li>File intake</li>
+                    <li>Voice bank</li>
+                    <li>Word track</li>
+                  </ul>
+                </div>
+                <div class="echo-stage-block echo-stage-ports">
+                  <span class="echo-stage-label">Local path</span>
+                  <div class="echo-stage-ports-row">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
+                </div>
+              </div>
+              <div class="echo-stage-footer">
+                <span>No upload</span>
+                <span>System voices</span>
+                <span>Live transport</span>
+              </div>
+            </div>
           </div>
         </section>
 
-        <section class="echo-workbench" aria-labelledby="echo-workbench-title">
-          <div class="echo-workbench-head">
-            <p class="echo-eyebrow">Live Composer</p>
-            <h2 id="echo-workbench-title">Generate speech now</h2>
-            <p>Connect to the deployed API endpoint, then render and preview MP3 output in the browser.</p>
-          </div>
+        <section class="echo-grid" aria-labelledby="echo-workbench-title">
+          <section class="echo-panel echo-editor-panel" data-echo-lock-block="editor-panel">
+            <div class="echo-panel-head">
+              <div>
+                <p class="echo-eyebrow">Source</p>
+                <h2 id="echo-workbench-title">Draft Intake</h2>
+              </div>
+              <div class="echo-panel-actions">
+                <button class="echo-ghost-button" type="button" data-echo-sample>Load sample</button>
+                <button class="echo-ghost-button" type="button" data-echo-clear>Clear</button>
+              </div>
+            </div>
+            <p class="echo-panel-summary">
+              Load a file or paste directly into the page. The intake surface stays clear,
+              high-contrast, and easy to scan while you tune the readback.
+            </p>
 
-          <div class="echo-bridge-controls">
-            <label class="echo-field-label" for="echo-bridge-url">API endpoint</label>
-            <input id="echo-bridge-url" class="echo-input" data-echo-bridge type="text" value="/api/echo-tts" spellcheck="false" />
-            <button class="echo-button secondary" type="button" data-echo-refresh>Refresh voices</button>
-            <p class="echo-status" data-echo-status data-tone="info">Waiting for API connection...</p>
-          </div>
+            <div class="echo-editor-surface">
+              <div
+                class="echo-dropzone"
+                data-echo-dropzone
+                tabindex="0"
+                role="button"
+                aria-label="Drop file here or click to choose file"
+              >
+                <div>
+                  <p><strong>Drop a file or load one in.</strong></p>
+                  <p>
+                    Supports <code>.txt</code>, <code>.md</code>, <code>.docx</code>, and
+                    <code>.pdf</code>.
+                  </p>
+                </div>
+                <span class="echo-dropzone-cta">Choose file</span>
+                <input
+                  class="echo-file-input"
+                  data-echo-file-input
+                  type="file"
+                  accept=".txt,.md,.markdown,.docx,.pdf"
+                />
+              </div>
 
-          <div class="echo-form-grid">
-            <label class="echo-field echo-field-full" for="echo-text">
-              <span class="echo-field-label">Text</span>
-              <textarea id="echo-text" class="echo-textarea" data-echo-text rows="8">ECHO is ready in English and French.</textarea>
-            </label>
+              <div class="echo-meta-row">
+                <p class="echo-file-meta" data-echo-file-meta>No file selected yet.</p>
+                <p class="echo-text-meta" data-echo-text-meta>0 words · 0 chars · ~0 min</p>
+              </div>
 
-            <label class="echo-field" for="echo-voice">
-              <span class="echo-field-label">Voice</span>
-              <select id="echo-voice" class="echo-input" data-echo-voice>
-                <option value="">Load voices first</option>
-              </select>
-            </label>
+              <label class="echo-field echo-field-full" for="echo-text">
+                <span class="echo-field-label">Text Body</span>
+                <textarea
+                  id="echo-text"
+                  class="echo-textarea"
+                  data-echo-text
+                  rows="18"
+                  placeholder="Paste writing here or import a file. ECHO keeps the text on this device and reads it back with the voices available in this browser."
+                ></textarea>
+              </label>
+            </div>
+          </section>
 
-            <label class="echo-field" for="echo-rate">
-              <span class="echo-field-label">Rate (-75 to 75)</span>
-              <input id="echo-rate" class="echo-input" data-echo-rate type="number" min="-75" max="75" step="1" value="0" />
-            </label>
+          <aside class="echo-panel echo-side-panel" data-echo-lock-block="controls-panel">
+            <div class="echo-panel-head">
+              <div>
+                <p class="echo-eyebrow">Controls</p>
+                <h2>Control Bank</h2>
+              </div>
+            </div>
+            <p class="echo-panel-summary">
+              Profiles, system voice, tuning, transport, and monitor status stay on one face so
+              playback reads like a single tool instead of a loose stack of controls.
+            </p>
 
-            <label class="echo-field echo-field-full" for="echo-filename">
-              <span class="echo-field-label">File name</span>
-              <input id="echo-filename" class="echo-input" data-echo-filename type="text" value="echo-output" spellcheck="false" />
-            </label>
-          </div>
+            <div class="echo-side-stack">
+              <section class="echo-module">
+                <div class="echo-module-head">
+                  <p class="echo-module-label">Profile Bank</p>
+                </div>
+                <div class="echo-profile-list" role="group" aria-label="ECHO voice profiles">
+                  <button class="echo-profile-chip" type="button" data-echo-profile="echo">ECHO</button>
+                  <button class="echo-profile-chip" type="button" data-echo-profile="ariel">Ariel</button>
+                  <button class="echo-profile-chip" type="button" data-echo-profile="voice11">Voice11</button>
+                </div>
+                <p class="echo-profile-copy" data-echo-profile-copy></p>
+              </section>
 
-          <div class="echo-runner">
-            <button class="echo-button primary" type="button" data-echo-preview>Preview</button>
-            <button class="echo-button secondary" type="button" data-echo-render>Render and download MP3</button>
-          </div>
+              <section class="echo-module">
+                <div class="echo-module-head">
+                  <p class="echo-module-label">Voice Path</p>
+                </div>
+                <label class="echo-field" for="echo-voice">
+                  <span class="echo-field-label">System Voice</span>
+                  <select id="echo-voice" class="echo-input" data-echo-voice></select>
+                </label>
+                <p class="echo-voice-meta" data-echo-voice-meta></p>
+              </section>
 
-          <div class="echo-player" data-echo-player hidden>
-            <audio class="echo-audio" data-echo-audio controls preload="metadata"></audio>
-            <a class="echo-button secondary" data-echo-download href="#">Download last render</a>
-            <p class="echo-note" data-echo-file></p>
-          </div>
+              <section class="echo-module">
+                <div class="echo-module-head">
+                  <p class="echo-module-label">Tuning</p>
+                </div>
+                <div class="echo-slider-stack">
+                  <label class="echo-slider" for="echo-rate">
+                    <span class="echo-slider-label">Rate</span>
+                    <input
+                      id="echo-rate"
+                      class="echo-range"
+                      data-echo-rate
+                      type="range"
+                      min="0.6"
+                      max="1.6"
+                      step="0.05"
+                      value="1"
+                    />
+                    <span class="echo-slider-value" data-echo-rate-value>1.00</span>
+                  </label>
 
-          <div class="echo-lines">
-            <h3>Online setup</h3>
-            <p>Use this site endpoint: <code>/api/echo-tts</code>.</p>
-            <p>It proxies to the dedicated <code>echo-tts-online</code> Worker backend.</p>
-          </div>
+                  <label class="echo-slider" for="echo-pitch">
+                    <span class="echo-slider-label">Pitch</span>
+                    <input
+                      id="echo-pitch"
+                      class="echo-range"
+                      data-echo-pitch
+                      type="range"
+                      min="0.6"
+                      max="1.5"
+                      step="0.05"
+                      value="1"
+                    />
+                    <span class="echo-slider-value" data-echo-pitch-value>1.00</span>
+                  </label>
+
+                  <label class="echo-slider" for="echo-volume">
+                    <span class="echo-slider-label">Volume</span>
+                    <input
+                      id="echo-volume"
+                      class="echo-range"
+                      data-echo-volume
+                      type="range"
+                      min="0.1"
+                      max="1"
+                      step="0.05"
+                      value="1"
+                    />
+                    <span class="echo-slider-value" data-echo-volume-value>1.00</span>
+                  </label>
+                </div>
+              </section>
+
+              <section class="echo-module">
+                <div class="echo-module-head">
+                  <p class="echo-module-label">Monitor</p>
+                </div>
+                <div class="echo-waveform" data-echo-waveform aria-hidden="true"></div>
+                <div class="echo-progress-shell" aria-live="polite">
+                  <p class="echo-status" data-echo-status data-tone="info">Initializing...</p>
+                  <div class="echo-progress-track">
+                    <div class="echo-progress-bar" data-echo-progress></div>
+                  </div>
+                  <p class="echo-progress-label" data-echo-progress-label>Idle</p>
+                </div>
+              </section>
+
+              <section class="echo-module">
+                <div class="echo-module-head">
+                  <p class="echo-module-label">Transport</p>
+                </div>
+                <div class="echo-runner">
+                  <button class="echo-button primary" type="button" data-echo-play>Play</button>
+                  <button class="echo-button secondary" type="button" data-echo-pause>Pause</button>
+                  <button class="echo-button secondary danger" type="button" data-echo-stop>Stop</button>
+                </div>
+              </section>
+            </div>
+          </aside>
+
+          <section
+            class="echo-panel echo-reader-panel"
+            aria-labelledby="echo-reader-title"
+            data-echo-lock-block="readback-panel"
+          >
+            <div class="echo-panel-head">
+              <div>
+                <p class="echo-eyebrow">Readback</p>
+                <h2 id="echo-reader-title">Live Readback</h2>
+              </div>
+            </div>
+            <p class="echo-panel-summary">
+              The active words stay in the foreground while the deck runs, so the readback feels
+              visible, stable, and easy to follow.
+            </p>
+            <div class="echo-output-shell">
+              <div class="echo-output-rail" aria-hidden="true">
+                <span>Word Track</span>
+                <span>On Device</span>
+              </div>
+              <div class="echo-output" data-echo-output></div>
+            </div>
+            <p class="echo-note">
+              Word highlighting depends on browser speech-boundary support and may vary slightly
+              across devices.
+            </p>
+          </section>
+
+          <section
+            class="echo-panel echo-console-panel"
+            aria-labelledby="echo-dictation-title"
+            data-echo-lock-block="dictation-panel"
+          >
+            <div class="echo-panel-head">
+              <div>
+                <p class="echo-eyebrow">Dictation Console</p>
+                <h2 id="echo-dictation-title">Microphone Transcript</h2>
+              </div>
+            </div>
+            <p class="echo-panel-summary">
+              Record directly from the microphone or import an existing clip, send the audio
+              through the ECHO transcription worker, and keep the returned text on a console
+              surface with a markdown export.
+            </p>
+
+            <div class="echo-console-shell">
+              <div class="echo-console-toolbar">
+                <button class="echo-button primary" type="button" data-echo-record>Record</button>
+                <button class="echo-button secondary" type="button" data-echo-audio-load>
+                  Import clip
+                </button>
+                <button class="echo-button secondary danger" type="button" data-echo-record-stop>
+                  Stop
+                </button>
+                <button class="echo-button secondary" type="button" data-echo-transcript-clear>
+                  Clear transcript
+                </button>
+                <button class="echo-button secondary" type="button" data-echo-transcript-download>
+                  Download .md
+                </button>
+                <input
+                  class="echo-file-input"
+                  data-echo-audio-input
+                  type="file"
+                  accept=".m4a,.mp4,.mp3,.wav,.ogg,.webm,audio/*"
+                />
+              </div>
+
+              <div class="echo-console-meta">
+                <p class="echo-status" data-echo-dictation-status data-tone="info">
+                  Microphone idle.
+                </p>
+                <p class="echo-progress-label" data-echo-dictation-meta>
+                  Capture a clip to render transcript text here.
+                </p>
+              </div>
+
+              <div class="echo-console-output-shell">
+                <div class="echo-output-rail" aria-hidden="true">
+                  <span>Transcript Console</span>
+                  <span data-echo-dictation-duration>00:00.0</span>
+                </div>
+                <pre class="echo-console-output" data-echo-dictation-output>
+&gt; microphone standby
+&gt; press Record to capture a voice note
+&gt; export the resulting transcript as markdown when ready</pre
+                >
+              </div>
+
+              <p class="echo-note">
+                Dictation uses the microphone or an imported clip, normalizes M4A-style audio on
+                this device when needed, sends only the resulting clip to the ECHO transcription
+                worker, and keeps the transcript and markdown export on this device after the
+                response returns.
+              </p>
+            </div>
+          </section>
         </section>
       </main>
     </div>
 
-    <script is:inline>
-      (() => {
-        const bridgeInput = document.querySelector('[data-echo-bridge]');
-        const statusNode = document.querySelector('[data-echo-status]');
-        const refreshButton = document.querySelector('[data-echo-refresh]');
-        const textNode = document.querySelector('[data-echo-text]');
-        const voiceNode = document.querySelector('[data-echo-voice]');
-        const rateNode = document.querySelector('[data-echo-rate]');
-        const filenameNode = document.querySelector('[data-echo-filename]');
-        const previewButton = document.querySelector('[data-echo-preview]');
-        const renderButton = document.querySelector('[data-echo-render]');
-        const playerWrap = document.querySelector('[data-echo-player]');
-        const audioNode = document.querySelector('[data-echo-audio]');
-        const downloadNode = document.querySelector('[data-echo-download]');
-        const fileNode = document.querySelector('[data-echo-file]');
+    <script>
+      import { initEchoReaderApp } from '../../scripts/echo-reader.js';
 
-        if (
-          !bridgeInput ||
-          !statusNode ||
-          !refreshButton ||
-          !textNode ||
-          !voiceNode ||
-          !rateNode ||
-          !filenameNode ||
-          !previewButton ||
-          !renderButton ||
-          !playerWrap ||
-          !audioNode ||
-          !downloadNode ||
-          !fileNode
-        ) {
-          return;
-        }
-
-        let activeBlobUrl = null;
-
-        const normalizeBridge = () => {
-          const value = bridgeInput.value.trim() || '/api/echo-tts';
-          if (value.startsWith('/')) {
-            return window.location.origin + value;
-          }
-          return value.replace(/\/+$/, '');
-        };
-
-        const setStatus = (message, tone = 'info') => {
-          statusNode.textContent = message;
-          statusNode.dataset.tone = tone;
-        };
-
-        const parseError = async (response, fallback) => {
-          try {
-            const payload = await response.json();
-            if (payload && typeof payload.error === 'string' && payload.error) {
-              return payload.error;
-            }
-          } catch (error) {
-            console.error(error);
-          }
-          return fallback;
-        };
-
-        const loadVoices = async () => {
-          const base = normalizeBridge();
-          setStatus('Checking API...', 'info');
-
-          try {
-            const configResponse = await fetch(base);
-            if (!configResponse.ok) {
-              const message = await parseError(configResponse, 'Could not load API config.');
-              throw new Error(message);
-            }
-            const configPayload = await configResponse.json();
-            const defaults = configPayload && typeof configPayload.defaults === 'object' ? configPayload.defaults : {};
-            const voices = Array.isArray(defaults.voices) ? defaults.voices : [];
-
-            voiceNode.innerHTML = '';
-            for (const voice of voices) {
-              const option = document.createElement('option');
-              option.value = voice;
-              option.textContent = voice;
-              voiceNode.append(option);
-            }
-
-            if (!voices.length) {
-              throw new Error('API responded but returned zero voices.');
-            }
-
-            const preferredVoice = voices.find((voice) => voice.toLowerCase().startsWith('en-')) || voices[0];
-            voiceNode.value = preferredVoice;
-
-            const backend = typeof configPayload.backend === 'string' ? configPayload.backend : 'ECHO backend';
-            setStatus('Connected to ' + backend + '. Loaded ' + voices.length + ' voices.', 'ok');
-          } catch (error) {
-            console.error(error);
-            setStatus('API unavailable. Verify deployed endpoint and secrets.', 'error');
-          }
-        };
-
-        const render = async (downloadAfterRender) => {
-          const text = textNode.value.trim();
-          if (!text) {
-            setStatus('Enter text before rendering.', 'error');
-            return;
-          }
-
-          const base = normalizeBridge();
-          const payload = {
-            text,
-            voiceId: voiceNode.value,
-            rate: rateNode.value.trim() || '0',
-            filename: filenameNode.value.trim() || 'echo-output',
-          };
-
-          setStatus('Rendering audio...', 'info');
-
-          try {
-            const response = await fetch(base, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(payload),
-            });
-
-            if (!response.ok) {
-              const message = await parseError(response, 'Synthesis failed.');
-              throw new Error(message);
-            }
-
-            const audioBlob = await response.blob();
-            if (activeBlobUrl) {
-              URL.revokeObjectURL(activeBlobUrl);
-            }
-            activeBlobUrl = URL.createObjectURL(audioBlob);
-
-            audioNode.src = activeBlobUrl;
-            playerWrap.hidden = false;
-            downloadNode.href = activeBlobUrl;
-
-            const disposition = response.headers.get('Content-Disposition') || '';
-            const match = disposition.match(/filename="?([^";]+)"?/i);
-            const filename = match && match[1] ? match[1] : 'echo-output.mp3';
-            downloadNode.download = filename;
-
-            const model = response.headers.get('X-Echo-Model') || '';
-            const voice = response.headers.get('X-Echo-Voice') || '';
-            fileNode.textContent = model || voice ? 'Model: ' + model + ' | Voice: ' + voice : '';
-
-            if (downloadAfterRender) {
-              downloadNode.click();
-              setStatus('Render complete. Download started.', 'ok');
-            } else {
-              audioNode.play().catch(() => {});
-              setStatus('Preview ready.', 'ok');
-            }
-          } catch (error) {
-            console.error(error);
-            setStatus(error instanceof Error ? error.message : 'Unknown synthesis error.', 'error');
-          }
-        };
-
-        refreshButton.addEventListener('click', () => {
-          loadVoices();
-        });
-
-        previewButton.addEventListener('click', () => {
-          render(false);
-        });
-
-        renderButton.addEventListener('click', () => {
-          render(true);
-        });
-
-        window.addEventListener('beforeunload', () => {
-          if (activeBlobUrl) {
-            URL.revokeObjectURL(activeBlobUrl);
-            activeBlobUrl = null;
-          }
-        });
-
-        loadVoices();
-      })();
+      initEchoReaderApp();
     </script>
   </body>
 </html>

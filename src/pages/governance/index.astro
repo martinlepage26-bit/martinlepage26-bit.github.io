@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
+import BackgroundTreatment from '../../components/BackgroundTreatment.astro';
 import ContactBlock from '../../components/ContactBlock.astro';
-import PracticeHero from '../../components/PracticeHero.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import SectionIntro from '../../components/SectionIntro.astro';
 import WritingCard from '../../components/WritingCard.astro';
@@ -25,44 +25,82 @@ const governanceWriting = orderEntriesBySlug(allWritings, governanceWritingSlugs
 <BaseLayout
   title={pageMeta.governance.title}
   description={pageMeta.governance.description}
+  pageClass="page-governance"
 >
-  <PracticeHero
-    eyebrow="Governance"
-    title="Governance design for consequential AI systems."
-    description="Governance here means operational accountability: decision rights, evidence chains, escalation logic, and documentation that survives real review. The work draws on clinical trial coordination, AI quality evaluation, and archival discipline."
-    details="This page foregrounds verifiable governance records rather than service slogans. Start here if you need to see how claims, controls, and consequences are actually structured."
-    links={[
-      { label: 'Start a conversation', url: '/contact/', variant: 'primary' },
-      { label: 'Open resume and CV', url: '/resume/', variant: 'secondary' },
-      { label: 'Read governance writings', url: '/writing/', variant: 'inline' },
-      { label: 'Open governance methods atlas', url: '/governance/methods/', variant: 'inline' },
-    ]}
-    sideEyebrow="Best fit"
-    sideTitle="Where this practice is most useful."
-    sideDescription="The strongest results come when institutions need both analytical precision and implementation discipline."
-    sidePoints={governanceFit}
-    stats={[
-      {
-        eyebrow: 'Visible practice',
-        value: governanceProjects.length,
-        label: 'Governance records',
-        description: 'Project entries showing governance as control design and institutional workflow.',
-      },
-      {
-        eyebrow: 'Public argument',
-        value: governanceWriting.length,
-        label: 'Related essays',
-        description: 'Selected writing that clarifies the conceptual stakes behind implementation choices.',
-      },
-      {
-        eyebrow: 'Working mode',
-        value: 'EN/FR',
-        label: 'Languages',
-        description: 'Work delivered in English and French across governance documentation and strategic writing.',
-      },
-    ]}
-  />
+  <!-- Hero: flat formal treatment — no glass panel, hard left-border ruling on title -->
+  <section class="relative overflow-hidden border-b border-[rgba(255,255,255,0.08)]">
+    <BackgroundTreatment variant="hero" />
 
+    <div class="section-shell relative">
+      <div class="grid gap-8 pt-4 xl:grid-cols-[minmax(0,1.18fr)_minmax(19rem,0.82fr)] xl:items-start">
+
+        <!-- Left: raw text, no glass panel -->
+        <div class="hero-copy-panel space-y-5">
+          <p class="eyebrow">Governance</p>
+          <h1 class="max-w-4xl text-[2rem] leading-[1.02] md:text-[3rem]">
+            Governance design for consequential AI systems.
+          </h1>
+          <p class="max-w-3xl text-[1.08rem] leading-8 text-slate-100">
+            Governance here means operational accountability: decision rights, evidence chains,
+            escalation logic, and documentation that survives real review. The work draws on
+            clinical trial coordination, AI quality evaluation, and archival discipline.
+          </p>
+          <p class="max-w-3xl text-base leading-7 text-slate-200">
+            This page foregrounds verifiable governance records rather than service slogans.
+            Start here if you need to see how claims, controls, and consequences are actually structured.
+          </p>
+          <div class="flex flex-wrap gap-3 pt-2">
+            <a class="button-primary" href="/contact/">Start a conversation</a>
+            <a class="button-secondary" href="/resume/">Open resume and CV</a>
+          </div>
+          <ul class="bullet-links pt-1">
+            <li><a class="link-inline" href="/writing/">Read governance writings</a></li>
+            <li><a class="link-inline" href="/governance/methods/">Open governance methods atlas</a></li>
+          </ul>
+        </div>
+
+        <!-- Right: credential/fit aside — kept as veil-panel -->
+        <aside class="veil-panel space-y-4">
+          <p class="eyebrow">Best fit</p>
+          <h2 class="text-[1.2rem] md:text-[1.38rem]">Where this practice is most useful.</h2>
+          <p class="text-base leading-7 text-slate-200">
+            The strongest results come when institutions need both analytical precision and implementation discipline.
+          </p>
+          {governanceFit.length > 0 && (
+            <ul class="space-y-3">
+              {governanceFit.map((point) => (
+                <li class="border-t border-[rgba(17,23,38,0.08)] pt-3 text-base text-slate-200">{point}</li>
+              ))}
+            </ul>
+          )}
+        </aside>
+      </div>
+
+      <!-- Stats: horizontal ruled strip, not card panels -->
+      <div class="governance-stats-strip">
+        <div class="governance-stats-strip-item">
+          <span class="governance-stat-eyebrow">Visible practice</span>
+          <span class="governance-stat-value">{governanceProjects.length}</span>
+          <span class="governance-stat-label">Governance records</span>
+          <p class="governance-stat-desc">Project entries showing governance as control design and institutional workflow.</p>
+        </div>
+        <div class="governance-stats-strip-item">
+          <span class="governance-stat-eyebrow">Public argument</span>
+          <span class="governance-stat-value">{governanceWriting.length}</span>
+          <span class="governance-stat-label">Related essays</span>
+          <p class="governance-stat-desc">Selected writing that clarifies the conceptual stakes behind implementation choices.</p>
+        </div>
+        <div class="governance-stats-strip-item">
+          <span class="governance-stat-eyebrow">Working mode</span>
+          <span class="governance-stat-value">EN/FR</span>
+          <span class="governance-stat-label">Languages</span>
+          <p class="governance-stat-desc">Work delivered in English and French across governance documentation and strategic writing.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Practice areas: left-border ruled, no glass cards -->
   <section class="section-shell">
     <SectionIntro
       eyebrow="Practice areas"
@@ -70,9 +108,9 @@ const governanceWriting = orderEntriesBySlug(allWritings, governanceWritingSlugs
       description="The emphasis is inspectability under pressure: clear authority maps, reviewable evidence, and controls that can be operated by real teams."
     />
 
-    <div class="mt-10 grid gap-4 md:grid-cols-2">
+    <div class="mt-10 grid gap-6 md:grid-cols-2">
       {governancePracticeAreas.map((area) => (
-        <article class="veil-panel h-full">
+        <article class="governance-practice-area">
           <p class="eyebrow">Practice area</p>
           <h2 class="mt-3 text-[1.2rem] md:text-[1.34rem]">{area.title}</h2>
           <p class="mt-4 text-base text-slate-200">{area.description}</p>
@@ -81,7 +119,7 @@ const governanceWriting = orderEntriesBySlug(allWritings, governanceWritingSlugs
     </div>
   </section>
 
-  <section class="section-shell border-y border-[rgba(17,23,38,0.08)] bg-[rgba(251,246,239,0.32)]">
+  <section class="section-shell border-y border-[rgba(255,255,255,0.08)] bg-[rgba(8,11,16,0.72)]">
     <div class="grid gap-8 xl:grid-cols-[minmax(0,1.12fr)_minmax(0,0.88fr)]">
       <div>
         <SectionIntro

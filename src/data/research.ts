@@ -1,20 +1,20 @@
 export const researchProfile =
-  "This site is a selective, high-clarity guide to Martin Lepage's published record, with Academia.edu serving as the wider archive. The research begins in Montreal Pagan communities and queer ritual studies, then extends into media analysis, legitimacy, and governance. Across those domains, the central question remains stable: how do concepts, institutions, and symbols organize what can count as authority?";
+  "The on-site paper line now reads as a fuller archive rather than a thin sampler: 24 paper records spanning queer ritual studies in Montreal, gender and legitimacy work, later media analysis, and the newer governance-method turn. The published spine remains here, while working papers, circulating manuscripts, and confirmation-stage records stay public elsewhere on the site with explicit status.";
 
 export const researchOverview = [
   {
-    title: 'Archive boundary',
+    title: '2014-2020 · Queer ritual, pagan Montreal, and legitimacy',
     body:
-      'This is an editorially disciplined index, not a document dump. Verified publications remain under Publications, while in-progress manuscripts and unresolved bibliographic leads remain under Projects.',
+      'The first major line centers Montreal pagan communities, queer religiosity, gender performance, authenticity, and the social work required to make authority or identity legible.',
   },
   {
-    title: 'Conceptual line',
+    title: '2023-2026 · Media, embodiment, and cultural power',
     body:
-      'Recurring themes include queer and transgender identity, ritual legitimacy, authenticity, gendered power, and institutional authority. The analytic through-line asks how categories become persuasive enough to govern lived experience.',
+      'Later work turns toward popular culture and media objects, asking how power, embodiment, branding, and legitimacy get staged in figures like Korra, Buffy, and the witches of Charmed.',
   },
   {
-    title: 'Research continuity',
+    title: '2026- · Recursive governance, methods, and public tooling',
     body:
-      'The doctoral work on Montreal neopagan communities grounds the later writing on media and governance. The shift in subject matter expands the frame; it does not abandon the original method.',
+      'The newest line translates earlier interpretive training into recursive governance, evidence discipline, and public method surfaces. The subject changes; the question of authority does not.',
   },
 ] as const;

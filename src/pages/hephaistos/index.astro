@@ -438,6 +438,96 @@ const cfg = {
       ::-webkit-scrollbar { width: 6px; }
       ::-webkit-scrollbar-track { background: transparent; }
       ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+      /* Homepage alignment override */
+      :root {
+        --bg:        #030508;
+        --bg2:       rgba(8, 11, 16, 0.84);
+        --bg3:       rgba(255, 255, 255, 0.03);
+        --border:    rgba(255, 255, 255, 0.08);
+        --border2:   rgba(255, 255, 255, 0.16);
+        --amber:     #cc9967;
+        --amber-dim: #b98755;
+        --amber-hi:  #e0ac79;
+        --text:      #f1eeeb;
+        --text2:     #c7ced7;
+        --text3:     #8b94a3;
+        --user-bg:   rgba(16, 24, 31, 0.92);
+        --user-border: rgba(95, 127, 174, 0.28);
+        --user-text: #e8eef7;
+        --asst-bg:   rgba(8, 11, 16, 0.92);
+        --asst-border: rgba(204, 153, 103, 0.28);
+      }
+
+      body {
+        position: relative;
+        background:
+          radial-gradient(circle at 14% 14%, rgba(204, 153, 103, 0.12), transparent 28%),
+          radial-gradient(circle at 86% 10%, rgba(95, 127, 174, 0.12), transparent 24%),
+          linear-gradient(180deg, #090b10 0%, #04070b 42%, #020408 100%);
+        font-family: "DM Sans", system-ui, sans-serif;
+      }
+
+      .h-mark,
+      .welcome-title {
+        font-family: "Cormorant Garamond", Georgia, serif;
+      }
+
+      .h-tagline,
+      .h-nav a,
+      .sidebar-label,
+      .msg-role,
+      .input-hint,
+      .settings-label,
+      .mode-tab,
+      .mode-badge,
+      .chip,
+      .preset-chip {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+      }
+
+      .h-header,
+      .h-sidebar,
+      .settings-panel,
+      .chat-input-bar,
+      .frame-callout,
+      .mode-tabs {
+        background: rgba(8, 11, 16, 0.84);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+      }
+
+      .h-header {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+      }
+
+      .frame-callout,
+      .chat-textarea,
+      .settings-input,
+      .settings-save,
+      .chip,
+      .preset-chip,
+      .mode-tabs,
+      .msg.assistant .msg-bubble,
+      .msg.user .msg-bubble {
+        border-color: rgba(255, 255, 255, 0.08);
+        box-shadow: 0 18px 34px rgba(0, 0, 0, 0.24);
+      }
+
+      .frame-callout {
+        border-left-color: var(--amber);
+      }
+
+      .chat-textarea,
+      .settings-input {
+        color: var(--text);
+      }
+
+      .send-btn {
+        box-shadow: 0 10px 22px rgba(204, 153, 103, 0.24);
+      }
     </style>
   </head>
   <body>
@@ -509,7 +599,11 @@ const cfg = {
           <ul class="skill-list" id="skill-list">
             <li class="skill-item philosopher" data-skill="philosopher">
               <span class="skill-name">Philosopher</span>
-              <span class="skill-sub">Meta-router · Debate Engine</span>
+              <span class="skill-sub">Right arm · Conceptual framing and debate</span>
+            </li>
+            <li class="skill-item" data-skill="power-analyst">
+              <span class="skill-name">Power Analyst</span>
+              <span class="skill-sub">Right arm · Actors, incentives, leverage</span>
             </li>
             <li class="skill-item" data-skill="recursive-governance">
               <span class="skill-name">Recursive Governance</span>
@@ -561,8 +655,8 @@ const cfg = {
             <span class="welcome-glyph">⚒</span>
             <p class="welcome-title">What do you need to build?</p>
             <p class="welcome-sub">
-              Hephaistos routes your request to the right skill. Start anywhere — governance analysis, a manuscript, a red team brief, a brand question.
-              The philosopher skill frames everything.
+              Hephaistos routes your request under a governance-first model. Start anywhere — governance analysis, a manuscript, a red team brief, a brand question.
+              Philosopher and power-analyst frame the work when conceptual or structural pressure is needed.
             </p>
             <div class="welcome-chips">
               <span class="chip" data-prompt="I need to analyze a governance document for authority drift and accountability gaps.">Trace authority drift</span>
@@ -598,16 +692,19 @@ const API_KEY  = cfg.apiKey;
 const BASE_URL = cfg.baseUrl;
 const MODEL    = cfg.model;
 
-const SYSTEM_PROMPT = `You are Hephaistos — an AI skill ecosystem built on the principle that oversight must be earned.
+const SYSTEM_PROMPT = `You are Hephaistos — a governance-primary AI skill ecosystem built on the principle that oversight must be earned.
 
 FRAME (non-negotiable):
 1. Oversight legitimacy: for your feedback to be legitimate, the human's expertise and yours must be comparable or defensibly comparable. You never claim authority the human does not hold.
 2. Skill lineage: you were built from skills the creator already possesses, optimized for machine execution — speed, systematicity, consistency. You amplify. You do not outrank.
 3. Anti-scope-creep: you amplify the user's capabilities but do not expand their scope or substitute for human judgment where responsibility is required.
 4. Anti-capture: you actively resist institutional co-optation, coercive norms, shame-based correction, and forced standardization. User agency and consent are non-negotiable. Warning: cannot destroy the master's house with the master's tools — this tool must never become one of those tools.
+5. Surface boundary: this Martin surface holds Hephaistos narratives, trees, and standalone apps. PHAROS product and service logic belongs on pharos-ai.ca.
 
 Your skill roster (route to the right one automatically; state which skill you are applying and why at the start of each response):
-- Philosopher (meta-router): frames every other skill, holds the Debate Engine, routes cross-domain requests
+- Governance routing rule: governance constraints, admissibility, and bounded claims are primary
+- Philosopher: co-equal right-arm for conceptual framing, debate, and cross-domain routing
+- Power Analyst: co-equal right-arm for actor maps, incentives, hidden rules, and leverage
 - Recursive Governance Method: control extraction from bounded archives, separation of source from generated layer, method lock
 - Qualitative Methods: study design, coding, thematic analysis, ethnography, discourse analysis, positionality
 - Trace Investigator: authority flow, accountability chains, definition drift, handoff mapping
@@ -619,7 +716,7 @@ Your skill roster (route to the right one automatically; state which skill you a
 - Novelist: character arc, plot momentum, POV, scene structure
 - Skill Architect: SKILL.md design, dual-layer architecture, prompt vs context engineering
 
-When you route to a skill, lead with: [Skill: Name] and a single sentence on why this skill applies. Then proceed. If a task spans multiple skills, sequence them and explain the handoff.
+When you route to a skill, lead with: [Skill: Name] and a single sentence on why this skill applies. Then proceed. If a task spans multiple skills, sequence them, explain the handoff, and keep governance first when consequence or boundary is at stake.
 
 Do not moralize. Do not over-explain. Be direct, precise, and accountable. Your analysis must be reconstructable.`;
 

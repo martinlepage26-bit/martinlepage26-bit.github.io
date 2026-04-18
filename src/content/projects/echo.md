@@ -1,15 +1,15 @@
 ---
 title: "ECHO"
-subtitle: "Human-sounding English and French text-to-speech"
+subtitle: "Browser-native draft listening with system voices and live word tracking"
 year: 2026
-status: "TTS model in development"
-description: "A bilingual text-to-speech model focused on natural, human-like voices in English and French, with masculine, feminine, and non-gendered rendition tracks."
+status: "Browser-local reader active"
+description: "A browser-local draft-listening surface with file import, live playback, and ECHO, Ariel, and Voice11 delivery presets."
 role: "Creator"
 outputs:
-  - "Natural speech rhythm and pacing"
-  - "More human-like phrasing and intonation"
-  - "Masculine, feminine, and non-gendered voice rendition profiles"
-  - "English and French voice output with MP3 export"
+  - "Live browser playback with play, pause, and stop controls"
+  - "Word-by-word tracking for listening through drafts"
+  - "Consolidated ECHO, Ariel, and Voice11 delivery presets"
+  - "File import for .txt, .md, .docx, and .pdf with local extraction"
 tags:
   - App in development
   - Text to speech
@@ -24,11 +24,15 @@ links:
     url: "/echo/"
 ---
 
-*ECHO* is a text-to-speech project for generating English and French voices that sound more like real people.
+*ECHO* is a browser-local draft-listening surface for hearing writing back through the voices already installed on a device.
 
-The full phonology and prosody specification is kept in scope and used to inform each rendition profile: masculine, feminine, and non-gendered.
+The current app surface consolidates **ECHO**, **Ariel**, and **Voice11** under one route: `/echo/`.
+It now runs as a live browser reader: import file or paste text -> choose a profile and system voice -> play, pause, or stop with live highlighting.
 
-The current work is focused on voice naturalness: pacing, phrasing, intonation, and connected-speech behavior so output sounds less robotic and more human.
+The profiles shape pacing and tonal intent while the actual voice catalog comes from the browser and operating system. That keeps the route local-first and zero-cost while still supporting English and French when those voices are available on-device.
+
+The current work is focused on revision through listening: hearing cadence, awkward phrasing, and sentence-level rhythm without sending text to a backend.
+This build uses browser speech synthesis and local document extraction, with no paid API requirement.
 
 Source provenance for this import pass:
 

@@ -1,6 +1,5 @@
 ---
 import ContactBlock from '../components/ContactBlock.astro';
-import SectionIntro from '../components/SectionIntro.astro';
 import { pageMeta } from '../data/site';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
@@ -8,23 +7,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 <BaseLayout
   title={pageMeta.contact.title}
   description={pageMeta.contact.description}
+  pageClass="page-contact"
 >
-  <section class="section-shell">
-    <SectionIntro
-      eyebrow="Contact"
-      title="For serious governance, writing, and research work."
-      description="Use the pathways below to route governance engagements, editorial requests, speaking invitations, research collaborations, or media outreach."
-    />
-
-    <div class="mt-8 max-w-3xl">
-      <p class="text-base text-slate-200">
-        A precise first message helps: include context, objective, constraints, and timeline. That makes it easier to
-        return with the right next step, material, or scheduling option.
-      </p>
-    </div>
-
-    <div class="mt-12">
-      <ContactBlock />
-    </div>
-  </section>
+  <!-- Narrow, centered, singular: one page, one action -->
+  <div class="contact-centered">
+    <p class="eyebrow">Contact</p>
+    <h1>For serious work.</h1>
+    <p class="contact-inst">
+      Governance engagements, editorial requests, speaking invitations, research
+      collaborations, and media outreach. A precise first message helps: context,
+      objective, constraints, and timeline.
+    </p>
+    <div class="contact-divider" aria-hidden="true"></div>
+    <ContactBlock />
+  </div>
 </BaseLayout>
