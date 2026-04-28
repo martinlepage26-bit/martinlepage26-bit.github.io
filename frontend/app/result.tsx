@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -46,6 +46,12 @@ export default function Result() {
   const [cardLoading, setCardLoading] = useState(false);
   const [cardVariant, setCardVariant] = useState('data'); // 'data' | 'testimonial' | 'story'
   const [cardUris, setCardUris] = useState({}); // { data?: string, testimonial?: string, story?: string }
+
+  // Invalidate cached PNGs whenever the user switches language — previously-cached
+  // cards were rendered with labels in the old language and must be regenerated.
+  useEffect(() => {
+    setCardUris({});
+  }, [lang]);
 
   if (!chart) {
     return (

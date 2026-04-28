@@ -13,14 +13,17 @@ GAIA is a bilingual (FR/EN) Expo mobile app that inverts classical astrology: in
 - About — GAIA philosophy
 
 ## v1.1 additions
-- **Shareable PNG cards** — `POST /api/share-card` renders 1080×1350 Instagram-portrait posters via Pillow, with bundled Cormorant Garamond + Manrope fonts. Two variants:
-  - `variant='data'` (default): data-rich chart card with element pills and labeled rows (birth date, solar season, civic season, cohort, festival, weather-body imprint).
-  - `variant='testimonial'`: editorial pull-quote card featuring an AI-reading excerpt, decorative gold quote mark, rule + sign attribution, element pills.
-- Frontend `/result` exposes two share buttons:
-  - "Share this chart" (always available) → data card
-  - "Share this reading" (visible only after AI deep reading is generated) → testimonial card built from the reading text
-- Cached per-variant URI on the client so reopening a previously-generated card triggers no duplicate POST.
+- **Shareable PNG cards** — `POST /api/share-card` renders Pillow posters with bundled Cormorant Garamond + Manrope fonts. Three variants:
+  - `variant='data'` (default, 1080×1350): data-rich chart card with element pills and labeled rows.
+  - `variant='testimonial'` (1080×1350): editorial pull-quote card featuring an AI-reading excerpt.
+  - `variant='story'` (1080×1920): Instagram-story sticker — centered, airy, glance-able.
+- Frontend `/result` exposes three share buttons:
+  - "Share this chart" (always) → data card
+  - "Share this reading" (only after AI reading) → testimonial card
+  - "Share as story (9:16)" (always) → story sticker
+- Per-variant URI cache on the client, automatically invalidated on language switch via `useEffect(lang)`.
 - **Strict ISO date validator** on `ChartPayload.birth_date`.
+- **39/39 pytest assertions** across `test_pick_excerpt.py` (21 tests: empty/None/whitespace/unicode/CJK/boundary/parametrized caps), `test_testimonial_variant.py` (10 tests), and `test_story_variant.py` (8 tests).
 - **Full testID coverage** for automated testing.
 
 ## Architecture
