@@ -40,8 +40,8 @@ export function Heading({ children, level = 1 }) {
   return <Text style={style}>{children}</Text>;
 }
 
-export function BodyText({ children, dim, style }) {
-  return <Text style={[styles.body, dim && styles.bodyDim, style]}>{children}</Text>;
+export function BodyText({ children, dim, style, testID }) {
+  return <Text testID={testID} style={[styles.body, dim && styles.bodyDim, style]}>{children}</Text>;
 }
 
 const styles = StyleSheet.create({

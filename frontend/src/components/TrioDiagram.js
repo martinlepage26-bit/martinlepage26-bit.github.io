@@ -68,15 +68,15 @@ export default function TrioDiagram({
       </Svg>
 
       {/* Labels overlay */}
-      <View style={[styles.labelOverlay, { top: 0, alignItems: 'center' }]}>
+      <View style={[styles.topLabel]}>
         <Text style={styles.smallLabel}>{signLabel}</Text>
         <Text style={[styles.nodeName, { color: signColor }]}>{signName}</Text>
       </View>
-      <View style={[styles.labelOverlay, { top: 210, left: 0, width: 150, alignItems: 'center' }]}>
+      <View style={[styles.leftLabel]}>
         <Text style={styles.smallLabel}>{risingLabel}</Text>
         <Text style={[styles.nodeName, { color: risingColor }]} numberOfLines={2}>{risingName}</Text>
       </View>
-      <View style={[styles.labelOverlay, { top: 210, right: 0, width: 150, alignItems: 'center' }]}>
+      <View style={[styles.rightLabel]}>
         <Text style={styles.smallLabel}>{moonLabel}</Text>
         <Text style={[styles.nodeName, { color: moonColor }]} numberOfLines={2}>{moonName}</Text>
       </View>
@@ -91,10 +91,26 @@ const styles = StyleSheet.create({
     height: 320,
     position: 'relative',
   },
-  labelOverlay: {
+  topLabel: {
     position: 'absolute',
+    top: 0,
     left: 0,
     right: 0,
+    alignItems: 'center',
+  },
+  leftLabel: {
+    position: 'absolute',
+    top: 242,
+    left: 0,
+    width: 128,
+    alignItems: 'center',
+  },
+  rightLabel: {
+    position: 'absolute',
+    top: 242,
+    left: 152,
+    width: 128,
+    alignItems: 'center',
   },
   smallLabel: {
     color: COLORS.textMuted,
