@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -19,6 +19,7 @@ import { ChevronLeft, Sparkles, RotateCcw, Share2, Download, X, Quote, Smartphon
 import StarryBackground from '../src/components/StarryBackground.js';
 import LangToggle from '../src/components/LangToggle.js';
 import ElementWheel from '../src/components/ElementWheel.js';
+import TrioDiagram from '../src/components/TrioDiagram.js';
 import { Heading, BodyText, Label, Chip, SectionCard } from '../src/components/UI.js';
 import { useLang } from '../src/context/Lang.js';
 import { COLORS, FONTS } from '../src/theme.js';
@@ -27,7 +28,7 @@ import { chartToPayload } from '../src/lib/chart.js';
 const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
 
 export default function Result() {
-  const { chart: chartRaw } = useLocalSearchParams();
+  const { chart: chartRaw, birth_hour: birthHourParam } = useLocalSearchParams();
   const router = useRouter();
   const { t, lang } = useLang();
 
@@ -39,6 +40,12 @@ export default function Result() {
     }
   }, [chartRaw]);
 
+  const birthHour = useMemo(() => {
+    const raw = Array.isArray(birthHourParam) ? birthHourParam[0] : birthHourParam;
+    const n = raw ? parseInt(raw, 10) : NaN;
+    return Number.isFinite(n) && n >= 0 && n <= 23 ? n : null;
+  }, [birthHourParam]);
+
   const [reading, setReading] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -47,11 +54,68 @@ export default function Result() {
   const [cardVariant, setCardVariant] = useState('data'); // 'data' | 'testimonial' | 'story'
   const [cardUris, setCardUris] = useState({}); // { data?: string, testimonial?: string, story?: string }
 
+  // Birth trio (Sign × Rising × Moon) — fetched only when birthHour is provided.
+  const [trio, setTrio] = useState(null);
+
+  // Today's Gaiascope — fetched once on mount, regenerated on lang change.
+  const [scope, setScope] = useState(null);
+  const [scopeLoading, setScopeLoading] = useState(false);
+  const [scopeError, setScopeError] = useState(null);
+
   // Invalidate cached PNGs whenever the user switches language — previously-cached
   // cards were rendered with labels in the old language and must be regenerated.
   useEffect(() => {
     setCardUris({});
   }, [lang]);
+
+  // Fetch birth trio when we have the birth hour
+  useEffect(() => {
+    if (!chart || birthHour === null) {
+      setTrio(null);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      try {
+        const url = `${BACKEND_URL}/api/daily?on_date=${chart.birth_date}&hour=${birthHour}&lang=${lang}`;
+        const r = await fetch(url);
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const data = await r.json();
+        if (!cancelled) setTrio(data);
+      } catch {
+        if (!cancelled) setTrio(null);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [chart, birthHour, lang]);
+
+  // Fetch Gaiascope for user's birth sign once per lang.
+  const loadGaiascope = useCallback(async () => {
+    if (!chart) return;
+    setScopeLoading(true);
+    setScopeError(null);
+    try {
+      const hour = new Date().getHours();
+      const r = await fetch(`${BACKEND_URL}/api/gaiascope`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ lang, birth_date: chart.birth_date, hour }),
+      });
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      const data = await r.json();
+      setScope(data);
+    } catch (e) {
+      setScopeError(String(e.message || e));
+    } finally {
+      setScopeLoading(false);
+    }
+  }, [chart, lang]);
+
+  useEffect(() => {
+    setScope(null);
+    setScopeError(null);
+    loadGaiascope();
+  }, [loadGaiascope]);
 
   if (!chart) {
     return (
@@ -181,6 +245,101 @@ export default function Result() {
 
           <Animated.View entering={FadeIn.duration(900).delay(200)} style={styles.wheelWrap}>
             <ElementWheel activeElements={chart.elements} size={280} />
+          </Animated.View>
+
+          {/* Birth trio — Sign × Rising × Moon at the user's birth moment */}
+          {trio && trio.rising && trio.moon ? (
+            <Animated.View entering={FadeInDown.duration(700).delay(300)} testID="trio-section">
+              <SectionCard
+                title={lang === 'fr' ? 'TON TRIO DE NAISSANCE' : 'YOUR BIRTH TRIO'}
+              >
+                <BodyText dim>
+                  {lang === 'fr'
+                    ? 'Trois rythmes superposés à l\'instant précis de ta naissance : le signe du mois, le seuil de l\'heure, et la marée lunaire de ce jour-là.'
+                    : 'Three rhythms layered at the exact moment of your birth: the month\'s sign, the hour\'s threshold, and that day\'s lunar tide.'}
+                </BodyText>
+                <View style={{ alignItems: 'center', marginTop: 14, marginBottom: 6 }}>
+                  <TrioDiagram
+                    signLabel={lang === 'fr' ? 'SIGNE' : 'SIGN'}
+                    signName={sign.name}
+                    risingLabel={lang === 'fr' ? 'LEVER' : 'RISING'}
+                    risingName={trio.rising.name}
+                    moonLabel={lang === 'fr' ? 'LUNE' : 'MOON'}
+                    moonName={trio.moon.name}
+                  />
+                </View>
+                <Text style={styles.trioMood}>
+                  {trio.rising.mood}
+                </Text>
+                <Text style={[styles.trioMood, { marginTop: 8 }]}>
+                  {trio.moon.mood}
+                </Text>
+              </SectionCard>
+            </Animated.View>
+          ) : null}
+
+          {/* Daily Gaiascope — personalized horoscope-style advice for today */}
+          <Animated.View entering={FadeInDown.duration(700).delay(350)} testID="gaiascope-section">
+            <SectionCard
+              title={
+                (lang === 'fr' ? 'GAIASCOPE — ' : 'GAIASCOPE — ')
+                + (scope?.today_sign_name
+                  ? (lang === 'fr' ? 'AUJOURD\'HUI' : 'TODAY')
+                  : (lang === 'fr' ? 'AUJOURD\'HUI' : 'TODAY'))
+              }
+            >
+              <Label>
+                {lang === 'fr'
+                  ? `Pour ${sign.name.toUpperCase()}`
+                  : `For ${sign.name.toUpperCase()}`}
+              </Label>
+              {scopeLoading ? (
+                <View style={{ paddingVertical: 12, alignItems: 'flex-start' }}>
+                  <ActivityIndicator color={COLORS.gold} />
+                </View>
+              ) : scope ? (
+                <>
+                  <View style={styles.scopeSubRow} testID="gaiascope-subheader">
+                    <Text style={styles.scopeSub}>
+                      {(lang === 'fr' ? 'Mois : ' : 'Month: ') + scope.today_sign_name}
+                    </Text>
+                    {scope.rising_name ? (
+                      <Text style={styles.scopeSub}>
+                        {(lang === 'fr' ? 'Lever : ' : 'Rising: ') + scope.rising_name}
+                      </Text>
+                    ) : null}
+                    <Text style={styles.scopeSub}>
+                      {(lang === 'fr' ? 'Lune : ' : 'Moon: ') + scope.moon_name}
+                    </Text>
+                  </View>
+                  <BodyText testID="gaiascope-advice" style={{ marginTop: 10, fontStyle: 'italic' }}>
+                    {scope.advice}
+                  </BodyText>
+                  <TouchableOpacity
+                    testID="refresh-gaiascope"
+                    style={styles.scopeRefresh}
+                    onPress={loadGaiascope}
+                    activeOpacity={0.7}
+                  >
+                    <RotateCcw size={12} color={COLORS.textMuted} strokeWidth={1.4} />
+                    <Text style={styles.scopeRefreshText}>
+                      {lang === 'fr' ? 'Nouveau conseil' : 'New advice'}
+                    </Text>
+                  </TouchableOpacity>
+                </>
+              ) : (
+                <TouchableOpacity
+                  testID="retry-gaiascope"
+                  style={styles.scopeRefresh}
+                  onPress={loadGaiascope}
+                  activeOpacity={0.7}
+                >
+                  <Text style={styles.scopeRefreshText}>
+                    {scopeError ? t('error') + ' — ' + (lang === 'fr' ? 'réessayer' : 'retry') : t('deep_reading_loading')}
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </SectionCard>
           </Animated.View>
 
           <Animated.View entering={FadeInDown.duration(700).delay(400)}>
@@ -525,6 +684,41 @@ const styles = StyleSheet.create({
     color: COLORS.terracotta,
     fontFamily: FONTS.bodySemi,
     fontSize: 12,
+    letterSpacing: 2,
+    textTransform: 'uppercase',
+  },
+  trioMood: {
+    color: COLORS.textMuted,
+    fontFamily: FONTS.body,
+    fontSize: 13,
+    lineHeight: 21,
+    fontStyle: 'italic',
+  },
+  scopeSubRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    columnGap: 14,
+    rowGap: 4,
+    marginTop: 6,
+  },
+  scopeSub: {
+    color: COLORS.textMuted,
+    fontFamily: FONTS.bodyMedium,
+    fontSize: 11,
+    letterSpacing: 1.5,
+    textTransform: 'uppercase',
+  },
+  scopeRefresh: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingVertical: 10,
+    marginTop: 12,
+  },
+  scopeRefreshText: {
+    color: COLORS.textMuted,
+    fontFamily: FONTS.bodyMedium,
+    fontSize: 11,
     letterSpacing: 2,
     textTransform: 'uppercase',
   },

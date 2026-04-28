@@ -6,11 +6,15 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
+  Modal,
+  Image,
+  Platform,
+  Share,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import Animated, { FadeInDown, FadeIn } from 'react-native-reanimated';
-import { Compass, Sparkles, BookOpen, LandPlot, CircleDot, Info, Sunrise, Moon, Clock, Sparkle } from 'lucide-react-native';
+import { Compass, Sparkles, BookOpen, LandPlot, CircleDot, Info, Sunrise, Moon, Clock, Sparkle, Share2, Download, X } from 'lucide-react-native';
 
 import StarryBackground from '../src/components/StarryBackground.js';
 import LangToggle from '../src/components/LangToggle.js';
@@ -97,9 +101,91 @@ export default function Home() {
     }
   }, [lang]);
 
+  // Share today's weave as a testimonial-style Pillow card (reuses existing endpoint).
+  const [shareUri, setShareUri] = useState(null);
+  const [shareLoading, setShareLoading] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
+
+  // Reset share state on language change (card labels are lang-scoped).
+  useEffect(() => {
+    setShareUri(null);
+  }, [lang]);
+
+  // Derived display values (hoisted above callbacks that close over them to avoid TDZ)
   const dailyMood = daily ? (lang === 'fr' ? daily.mood_fr : daily.mood_en) : null;
   const dailySign = daily ? SIGNS.find((s) => s.month === daily.month) : null;
   const dailyName = dailySign ? dailySign[lang].name : '';
+
+  const openShareDailyWeave = useCallback(async () => {
+    if (!deepReading || !daily) return;
+    if (shareUri) {
+      setShareOpen(true);
+      return;
+    }
+    setShareLoading(true);
+    try {
+      const today = daily.date; // YYYY-MM-DD
+      // Build a synthetic chart payload from TODAY's values so the testimonial renderer
+      // attributes the quote to today's sign rather than a birth chart.
+      const body = {
+        lang,
+        variant: 'testimonial',
+        reading_excerpt: deepReading,
+        chart: {
+          birth_date: today,
+          hemisphere: 'N',
+          sign_name: dailyName || daily.sign_name,
+          sign_archetype: new Date(today + 'T00:00:00').toLocaleString(lang === 'fr' ? 'fr' : 'en', { month: 'long' }),
+          elements: daily.elements,
+          solar_season: daily.rising?.band === 'dawn' || daily.rising?.band === 'morning' || daily.rising?.band === 'midday' ? 'summer' : 'autumn',
+          civic_season: '—',
+          cohort_position: '—',
+          festival_proximity: '—',
+          weather_imprint: '—',
+        },
+      };
+      const r = await fetch(`${BACKEND_URL}/api/share-card`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      const blob = await r.blob();
+      const reader = new FileReader();
+      const uri = await new Promise((resolve, reject) => {
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+      setShareUri(uri);
+      setShareOpen(true);
+    } catch {
+      /* user-facing error already reflected by deepError if any */
+    } finally {
+      setShareLoading(false);
+    }
+  }, [deepReading, daily, dailyName, lang, shareUri]);
+
+  const handleDownloadShare = useCallback(async () => {
+    if (!shareUri) return;
+    if (Platform.OS === 'web') {
+      const a = document.createElement('a');
+      a.href = shareUri;
+      a.download = `gaia-today-weave.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    } else {
+      try {
+        await Share.share({
+          url: shareUri,
+          message: lang === 'fr' ? 'La lecture GAIA du jour' : "Today's GAIA weave",
+        });
+      } catch {
+        /* cancelled */
+      }
+    }
+  }, [shareUri, lang]);
 
   return (
     <StarryBackground>
@@ -198,13 +284,38 @@ export default function Home() {
 
                 {/* AI-woven reading CTA */}
                 {deepReading ? (
-                  <View testID="daily-deep-text" style={styles.deepReadingWrap}>
-                    {deepReading.split(/\n\n+/).map((para, idx) => (
-                      <Text key={idx} style={styles.deepReadingPara}>
-                        {para.trim()}
-                      </Text>
-                    ))}
-                  </View>
+                  <>
+                    <View testID="daily-deep-text" style={styles.deepReadingWrap}>
+                      {deepReading.split(/\n\n+/).map((para, idx) => (
+                        <Text key={idx} style={styles.deepReadingPara}>
+                          {para.trim()}
+                        </Text>
+                      ))}
+                    </View>
+                    <TouchableOpacity
+                      testID="share-daily-weave"
+                      style={[styles.weaveBtn, shareLoading && styles.ctaGhost, { marginTop: 4 }]}
+                      onPress={openShareDailyWeave}
+                      disabled={shareLoading}
+                      activeOpacity={0.85}
+                    >
+                      {shareLoading ? (
+                        <>
+                          <ActivityIndicator color={COLORS.terracotta} />
+                          <Text style={[styles.weaveBtnText, { color: COLORS.terracotta }]}>
+                            {lang === 'fr' ? 'Composition du témoignage…' : 'Composing testimonial…'}
+                          </Text>
+                        </>
+                      ) : (
+                        <>
+                          <Share2 size={14} color={COLORS.terracotta} strokeWidth={1.6} />
+                          <Text style={[styles.weaveBtnText, { color: COLORS.terracotta }]}>
+                            {lang === 'fr' ? 'Partager la lecture du jour' : 'Share today\'s weave'}
+                          </Text>
+                        </>
+                      )}
+                    </TouchableOpacity>
+                  </>
                 ) : (
                   <TouchableOpacity
                     testID="generate-daily-deep"
@@ -273,6 +384,64 @@ export default function Home() {
 
           <Text style={styles.disclaimer}>{t('disclaimer')}</Text>
         </ScrollView>
+
+        {/* Share modal for today's weave testimonial */}
+        <Modal
+          visible={shareOpen}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setShareOpen(false)}
+        >
+          <View style={styles.modalRoot} testID="daily-share-modal">
+            <TouchableOpacity
+              testID="close-daily-share"
+              style={styles.modalClose}
+              onPress={() => setShareOpen(false)}
+              accessibilityLabel={t('back')}
+            >
+              <X size={22} color={COLORS.text} strokeWidth={1.6} />
+            </TouchableOpacity>
+            <ScrollView
+              contentContainerStyle={styles.modalScroll}
+              showsVerticalScrollIndicator={false}
+            >
+              {shareUri ? (
+                <Image
+                  source={{ uri: shareUri }}
+                  style={styles.dailyCardImage}
+                  resizeMode="contain"
+                  testID="daily-share-image"
+                />
+              ) : null}
+              <TouchableOpacity
+                testID="download-daily-share"
+                style={styles.downloadBtn}
+                activeOpacity={0.85}
+                onPress={handleDownloadShare}
+              >
+                {Platform.OS === 'web' ? (
+                  <Download size={16} color={COLORS.bg} strokeWidth={2} />
+                ) : (
+                  <Share2 size={16} color={COLORS.bg} strokeWidth={2} />
+                )}
+                <Text style={styles.downloadBtnText}>
+                  {Platform.OS === 'web'
+                    ? (lang === 'fr' ? 'Télécharger PNG' : 'Download PNG')
+                    : (lang === 'fr' ? 'Partager' : 'Share')}
+                </Text>
+              </TouchableOpacity>
+              <Text style={styles.modalHint}>
+                {lang === 'fr'
+                  ? (Platform.OS === 'web'
+                      ? 'Astuce : clic-droit pour copier l\'image.'
+                      : 'Astuce : appui long pour enregistrer l\'image.')
+                  : (Platform.OS === 'web'
+                      ? 'Tip: right-click to copy the image.'
+                      : 'Tip: long-press to save the image.')}
+              </Text>
+            </ScrollView>
+          </View>
+        </Modal>
       </SafeAreaView>
     </StarryBackground>
   );
@@ -488,5 +657,62 @@ const styles = StyleSheet.create({
     marginTop: 30,
     textAlign: 'center',
     fontStyle: 'italic',
+  },
+  modalRoot: {
+    flex: 1,
+    backgroundColor: 'rgba(7,9,12,0.96)',
+    padding: 20,
+  },
+  modalClose: {
+    position: 'absolute',
+    top: 44,
+    right: 20,
+    width: 42,
+    height: 42,
+    borderRadius: 999,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: COLORS.borderStrong,
+    backgroundColor: 'rgba(21,25,33,0.8)',
+    zIndex: 10,
+  },
+  modalScroll: {
+    alignItems: 'center',
+    paddingVertical: 60,
+  },
+  dailyCardImage: {
+    width: '100%',
+    maxWidth: 420,
+    aspectRatio: 1080 / 1350,
+    borderRadius: 18,
+    marginBottom: 22,
+    backgroundColor: COLORS.surface,
+  },
+  downloadBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+    backgroundColor: COLORS.gold,
+    paddingVertical: 14,
+    paddingHorizontal: 26,
+    borderRadius: 999,
+    marginBottom: 18,
+  },
+  downloadBtnText: {
+    color: COLORS.bg,
+    fontFamily: FONTS.bodySemi,
+    fontSize: 13,
+    letterSpacing: 2,
+    textTransform: 'uppercase',
+  },
+  modalHint: {
+    color: COLORS.textMuted,
+    fontFamily: FONTS.body,
+    fontSize: 12,
+    fontStyle: 'italic',
+    textAlign: 'center',
+    maxWidth: 320,
   },
 });

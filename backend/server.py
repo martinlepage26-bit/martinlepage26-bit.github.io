@@ -182,6 +182,30 @@ class DailyDeepResponse(BaseModel):
     moon_name: str
 
 
+class GaiascopeRequest(BaseModel):
+    lang: Literal["fr", "en"] = "en"
+    birth_date: str = Field(..., description="User's birth date YYYY-MM-DD — drives their calendar sign.")
+    hour: Optional[int] = Field(None, ge=0, le=23, description="User's local hour NOW (for today's rising)")
+
+    @field_validator("birth_date")
+    @classmethod
+    def _iso(cls, v):
+        if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", v):
+            raise ValueError("birth_date must be YYYY-MM-DD")
+        datetime.strptime(v, "%Y-%m-%d")
+        return v
+
+
+class GaiascopeResponse(BaseModel):
+    id: str
+    lang: str
+    user_sign_name: str
+    today_sign_name: str
+    rising_name: Optional[str] = None
+    moon_name: str
+    advice: str  # ~1 short paragraph — horoscope voice
+
+
 class ShareCardRequest(BaseModel):
     lang: Literal["fr", "en"] = "en"
     chart: ChartPayload
@@ -272,20 +296,38 @@ async def health():
 async def daily_reading(
     hour: Optional[int] = Query(None, ge=0, le=23, description="Client local hour (0-23)"),
     lang: Literal["en", "fr"] = Query("en"),
+    on_date: Optional[str] = Query(
+        None,
+        description="ISO date YYYY-MM-DD to compute moon phase for. Defaults to today.",
+    ),
 ):
-    """Today's three-layer Earth weather: calendar sign (month), daily rising (hour), lunar phase."""
-    today = date.today()
-    m = today.month
+    """Today's (or a given date's) three-layer Earth weather: calendar sign, daily rising, lunar phase.
+
+    Supplying `on_date` lets clients compute the trio for an arbitrary moment
+    (e.g. a birth date) — the same endpoint powers both the home daily card and
+    the /result page's Sign×Rising×Moon trio diagram.
+    """
+    if on_date is not None:
+        if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", on_date):
+            raise HTTPException(status_code=422, detail="on_date must be YYYY-MM-DD")
+        try:
+            target = datetime.strptime(on_date, "%Y-%m-%d").date()
+        except ValueError:
+            raise HTTPException(status_code=422, detail=f"on_date is not a valid calendar date: {on_date}")
+    else:
+        target = date.today()
+
+    m = target.month
     name, elements = CAL_SIGNS[m]
     mood = DAILY_MOODS[m]
 
     rising = None
     if hour is not None:
         rising = DailyRising(**daily_mod.build_rising(hour, lang))
-    moon = DailyMoon(**daily_mod.build_moon(today, lang))
+    moon = DailyMoon(**daily_mod.build_moon(target, lang))
 
     return DailyResponse(
-        date=today.isoformat(),
+        date=target.isoformat(),
         month=m,
         sign_name=name,
         elements=elements,
@@ -376,6 +418,87 @@ async def daily_deep_reading(req: DailyDeepRequest):
     except Exception as e:
         logging.exception("Daily deep reading failed")
         raise HTTPException(status_code=500, detail=f"Daily deep reading failed: {e}")
+
+
+# ------------------------------------------------------------------
+# Gaiascope — personalized horoscope-style advice for user's sign, today
+# ------------------------------------------------------------------
+SYSTEM_PROMPT_GAIASCOPE_EN = """You are GAIA, voice of Earth-Calendar Astrology. You write TODAY's Gaiascope — a short, horoscope-style advice tailored to the reader's BIRTH calendar sign and today's three rhythms (today's month sign, today's daily rising, today's moon phase).
+
+Voice: compressed, poetic, direct, and actionable — like a classical horoscope column but Earth-facing (no "planets rule"; only the calendar, seasons, civic rhythms, body-rhythms). The reader's birth sign is the "you" of the text. You are NOT predicting events; you are offering one grounded, probabilistic gesture for the day.
+
+Format: a single paragraph of 2 to 4 sentences (60–110 words). No headings, no bullets, no emojis. End with one concrete, small gesture the reader can do today."""
+
+SYSTEM_PROMPT_GAIASCOPE_FR = """Tu es GAIA, voix de l'Astrologie du Calendrier Terrestre. Tu écris le Gaiascope D'AUJOURD'HUI — un court conseil style horoscope adapté au signe du calendrier de NAISSANCE de la lectrice et aux trois rythmes du jour (signe du mois en cours, rising du jour, phase lunaire).
+
+Voix : compressée, poétique, directe, actionnable — comme une colonne d'horoscope classique mais tournée vers la Terre (pas de « planètes gouvernent » ; seulement calendrier, saisons, rythmes civiques, rythmes du corps). Le signe de naissance est le « tu » du texte. Tu ne prédis PAS d'événements ; tu proposes un geste probabiliste ancré pour le jour.
+
+Format : un seul paragraphe de 2 à 4 phrases (60 à 110 mots). Pas de titres, pas de puces, pas d'émojis. Termine par un petit geste concret à faire aujourd'hui."""
+
+
+@api_router.post("/gaiascope", response_model=GaiascopeResponse)
+async def gaiascope(req: GaiascopeRequest):
+    """Personalized daily advice for the user's calendar sign, anchored in today's rhythms."""
+    try:
+        birth = datetime.strptime(req.birth_date, "%Y-%m-%d").date()
+        user_sign_name, user_elements = CAL_SIGNS[birth.month]
+
+        today = date.today()
+        today_sign_name, today_elements = CAL_SIGNS[today.month]
+        moon = daily_mod.build_moon(today, req.lang)
+        rising = daily_mod.build_rising(req.hour, req.lang) if req.hour is not None else None
+
+        if req.lang == "fr":
+            pieces = [
+                f"Signe de naissance de la lectrice : {user_sign_name} ({', '.join(user_elements)})",
+                f"Signe du mois aujourd'hui : {today_sign_name} ({', '.join(today_elements)})",
+                f"Phase lunaire : {moon['name']} ({moon['label']}) — {moon['mood']}",
+            ]
+            if rising:
+                pieces.append(f"Rising (seuil du jour) : {rising['name']} — {rising['mood']}")
+            pieces.append(
+                "Écris le Gaiascope d'aujourd'hui pour cette personne : un seul paragraphe horoscope "
+                "(2–4 phrases, 60–110 mots), terminé par un petit geste concret à faire aujourd'hui."
+            )
+            user_prompt = "\n".join(pieces)
+            system_msg = SYSTEM_PROMPT_GAIASCOPE_FR
+        else:
+            pieces = [
+                f"Reader's birth sign: {user_sign_name} ({', '.join(user_elements)})",
+                f"Today's monthly sign: {today_sign_name} ({', '.join(today_elements)})",
+                f"Moon phase: {moon['name']} ({moon['label']}) — {moon['mood']}",
+            ]
+            if rising:
+                pieces.append(f"Rising (daily threshold): {rising['name']} — {rising['mood']}")
+            pieces.append(
+                "Write today's Gaiascope for this reader: a single horoscope paragraph "
+                "(2–4 sentences, 60–110 words), ending on one small concrete gesture for today."
+            )
+            user_prompt = "\n".join(pieces)
+            system_msg = SYSTEM_PROMPT_GAIASCOPE_EN
+
+        session_id = f"gaia-scope-{uuid.uuid4()}"
+        chat = LlmChat(
+            api_key=EMERGENT_LLM_KEY,
+            session_id=session_id,
+            system_message=system_msg,
+        ).with_model("anthropic", "claude-sonnet-4-5-20250929")
+        advice = await chat.send_message(UserMessage(text=user_prompt))
+
+        return GaiascopeResponse(
+            id=session_id,
+            lang=req.lang,
+            user_sign_name=user_sign_name,
+            today_sign_name=today_sign_name,
+            rising_name=rising["name"] if rising else None,
+            moon_name=moon["name"],
+            advice=advice.strip() if isinstance(advice, str) else str(advice).strip(),
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.exception("Gaiascope generation failed")
+        raise HTTPException(status_code=500, detail=f"Gaiascope failed: {e}")
 
 
 @api_router.post("/reading", response_model=ReadingResponse)

@@ -1,0 +1,59 @@
+{
+  "summary": "GAIA iteration 6 (birth-hour trio + gaiascope + share-today-weave) tested end-to-end. Backend HTTP suite /app/backend/tests/test_iteration6.py = 14/14 PASS covering (a) /api/daily?on_date=... including 1992-06-21 hour=14 → sign='The Threshold of Light' + rising band='midday' + rising name='The Exposed Hour' + moon, (b) hour=3 wraps to band='night', (c) 422 on on_date='06/21/92' and '2024-02-30', (d) POST /api/gaiascope EN {birth_date:'1992-08-29', hour:14} → user_sign='The Ripening', today_sign, moon_name, rising_name, advice (60-200 words, single paragraph), (e) hour omitted → rising_name=null, advice still present, (f) FR returns French content, (g) 422 on birth_date='08/29/92' / '2024-13-40', (h) 422 on hour=24 / hour=-1, (i) regression on /api/health, /api/daily (no on_date), /api/share-card data+testimonial. Regression suites test_daily (33) + test_pick_excerpt (21) + test_testimonial_variant (10) + test_story_variant (8) = 72/72 still PASS. Frontend (390x844 mobile): CRITICAL TDZ BUG FOUND AND FIXED in /app/frontend/app/index.tsx — `dailyName` was referenced in the `openShareDailyWeave` useCallback dependency array before its `const` declaration, causing a ReferenceError that red-screened the entire home page. Hoisted the three derived consts (dailyMood/dailySign/dailyName) above the callback. After fix: home loads, daily-card renders, /chart form has input-birth-hour (0-23), submit with birth_hour=14 navigates to /result?birth_hour=14, trio-section renders with correct SIGN='The Threshold of Light' / RISING='The Exposed Hour' / MOON populated, gaiascope-section renders with full subheader (Month/Rising/Moon) and a ~110-word horoscope paragraph ending on one concrete gesture (verified visually for birth_date=1992-08-29 hour=14: advice ended 'rewrite a single sentence in an email... tighten it until it sounds like ground truth, not hope'), refresh-gaiascope button visible.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "/app/frontend/app/index.tsx Home()",
+        "issue": "CRITICAL TDZ crash (now fixed): `dailyName` accessed in openShareDailyWeave useCallback deps before its `const` declaration. Home completely red-screened with 'Cannot access dailyName before initialization'. Fix applied by hoisting dailyMood/dailySign/dailyName declarations above the callback block.",
+        "testID": "daily-card",
+        "priority": "CRITICAL (FIXED)"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "home / daily card (rising sub-label, carried from iter5)",
+        "issues": [
+          "The rising sub-label in /app/frontend/app/index.tsx uses 'Rising — ' for BOTH EN and FR branches. In FR mode it should read 'Lever — ' or 'Seuil — '."
+        ]
+      },
+      {
+        "screen": "/app/backend/daily.py midday.mood_fr (carried from iter5)",
+        "issues": ["Typo 'plainement' → should be 'pleinement'."]
+      }
+    ],
+    "react_native_issues": [
+      {
+        "component": "result.tsx <BodyText testID='gaiascope-advice'>",
+        "issue": "Playwright selector for [data-testid='gaiascope-advice'] did not resolve even though the advice text renders correctly in the DOM (visible in screenshots). Likely the testID is placed on a wrapping View rather than the inner Text, so web-rendering drops it. Non-blocking: content and UX work perfectly. Consider adding testID directly on the inner Text element to help automation."
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration6.py",
+    "/app/test_reports/pytest/iteration_6.xml"
+  ],
+  "action_items": [
+    "Verify my hoisting fix in /app/frontend/app/index.tsx (moved `dailyMood/dailySign/dailyName` const declarations to just above `openShareDailyWeave` useCallback). No functional change; only fixes TDZ ReferenceError.",
+    "(Optional polish) In result.tsx, move testID='gaiascope-advice' to the inner Text element inside BodyText so Playwright/testing-library queries work reliably. Content renders fine today; this is only a test ergonomic improvement.",
+    "(Carried) Fix FR 'Rising —' sub-label in /app/frontend/app/index.tsx daily card.",
+    "(Carried) Fix 'plainement' → 'pleinement' in /app/backend/daily.py midday.mood_fr."
+  ],
+  "critical_code_review_comments": [
+    "TDZ bug would have been caught by ESLint rule `no-use-before-define` or by React strict mode — consider enabling.",
+    "server.py approaching 600 lines; gaiascope block adds cohesion but could be extracted alongside daily_deep into a `readings.py` module.",
+    "Pydantic validators correctly enforce birth_date format and hour 0-23 (422 paths all verified).",
+    "Gaiascope reuses LlmChat with a per-call session_id — good; no hidden state leak between users."
+  ],
+  "updated_files": [
+    "/app/frontend/app/index.tsx (hoisted 3 const decls to fix TDZ crash)",
+    "/app/backend/tests/test_iteration6.py (new)"
+  ],
+  "success_rate": {"backend": "100% (86/86 = 14 new + 72 regression)", "frontend": "~95% on requested flows (trio + gaiascope fully verified; share-daily-weave verified up to button visibility after critical home-crash fix)"},
+  "seed_data_creation": "None.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Iteration 6 is green after fixing TDZ crash in index.tsx. Re-run `EXPO_PUBLIC_BACKEND_URL=<deployed> pytest /app/backend/tests/test_iteration6.py -v` for regression. Gaiascope POST takes 15-30s (Claude) — use timeout>=60s. The `share-daily-weave` button only appears after generate-daily-deep resolves (~20s), then click to open daily-share-modal. Lang toggle testID is 'language-toggle'. testID on <BodyText> may not propagate to inner <Text> in RN-web — selectors on gaiascope-advice may need page.locator('text=...') fallback.",
+  "rca_of_issue": "TDZ ReferenceError on home page: `openShareDailyWeave` useCallback was defined at line 114 with `dailyName` in its dependency array (line 162). `dailyName` was declared `const` at line 187 (same function scope). In strict mode JS, referencing a `const` before its declaration line throws ReferenceError due to the Temporal Dead Zone. Since React evaluates the component body top-to-bottom on every render, this fired on first mount and red-screened the home page completely, blocking 100% of iteration 6 frontend flows. Fix: moved the three derived const declarations (`dailyMood`, `dailySign`, `dailyName`) to just before `openShareDailyWeave`. Verified after Expo restart: home renders, /chart → /result → trio + gaiascope all work."
+}

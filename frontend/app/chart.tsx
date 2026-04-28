@@ -31,6 +31,7 @@ export default function ChartGenerator() {
   const [year, setYear] = useState(String(today.getFullYear() - 25));
   const [month, setMonth] = useState('6');
   const [day, setDay] = useState('21');
+  const [birthHour, setBirthHour] = useState('');
   const [place, setPlace] = useState('');
   const [hemisphere, setHemisphere] = useState('N');
   const [cutoffMonth, setCutoffMonth] = useState('');
@@ -66,6 +67,8 @@ export default function ChartGenerator() {
       const d = parseInt(day, 10);
       const cm = cutoffMonth ? parseInt(cutoffMonth, 10) : null;
       const cd = cutoffDay ? parseInt(cutoffDay, 10) : null;
+      const bh = birthHour.trim() === '' ? null : parseInt(birthHour, 10);
+      const birthHourValid = bh !== null && bh >= 0 && bh <= 23 ? bh : null;
       const chart = buildChart({
         date: new Date(y, m - 1, d).toISOString(),
         hemisphere,
@@ -76,7 +79,10 @@ export default function ChartGenerator() {
       });
       router.push({
         pathname: '/result',
-        params: { chart: JSON.stringify(chart) },
+        params: {
+          chart: JSON.stringify(chart),
+          ...(birthHourValid !== null ? { birth_hour: String(birthHourValid) } : {}),
+        },
       });
     } finally {
       setLoading(false);
@@ -177,6 +183,32 @@ export default function ChartGenerator() {
                 style={[styles.inputText, { paddingTop: 0, paddingBottom: 0 }]}
               />
             </View>
+
+            {/* Birth hour (optional) — unlocks Rising × Moon × Sign trio on /result */}
+            <View style={{ height: 22 }} />
+            <Label>
+              {lang === 'fr' ? 'Heure de naissance (optionnelle)' : 'Birth hour (optional)'}
+            </Label>
+            <View style={styles.dateRow}>
+              <View style={[styles.input, { width: 130 }]}>
+                <Text style={styles.inputLabel}>{lang === 'fr' ? 'Heure 0–23' : 'Hour 0–23'}</Text>
+                <TextInput
+                  testID="input-birth-hour"
+                  value={birthHour}
+                  onChangeText={setBirthHour}
+                  keyboardType="number-pad"
+                  maxLength={2}
+                  placeholder="14"
+                  placeholderTextColor={COLORS.textDim}
+                  style={styles.inputText}
+                />
+              </View>
+            </View>
+            <Text style={styles.hint}>
+              {lang === 'fr'
+                ? 'Active le trio Signe × Rising × Lune dans ta charte. Laisse vide si tu ne sais pas.'
+                : 'Unlocks the Sign × Rising × Moon trio on your chart. Leave empty if unknown.'}
+            </Text>
 
             {/* Hemisphere */}
             <View style={{ height: 22 }} />
