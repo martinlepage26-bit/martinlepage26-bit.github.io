@@ -1,26 +1,32 @@
 """
 GAIA — Earth-Calendar Astrology API.
-Backend provides:
- - POST /api/reading : AI-generated deep personalized reading (Claude Sonnet 4.5)
- - GET  /api/daily   : today's Earth-weather daily modulation reading
- - GET  /api/health  : health check
-"""
-from fastapi import FastAPI, APIRouter, HTTPException
-from fastapi.responses import Response
-from dotenv import load_dotenv
-from starlette.middleware.cors import CORSMiddleware
-import os
-import io
-import logging
-import uuid
-import re
-from pathlib import Path
-from pydantic import BaseModel, Field, field_validator
-from typing import Optional, Literal
-from datetime import datetime, date
 
+Routes:
+ - POST /api/reading     : AI-generated deep personalized reading (Claude Sonnet 4.5)
+ - POST /api/share-card  : 1080×1350 PNG poster (variants: 'data' | 'testimonial')
+ - GET  /api/daily       : today's Earth-weather daily modulation reading
+ - GET  /api/health      : health check
+
+Share-card rendering lives in ./share_cards.py.
+"""
+from __future__ import annotations
+
+import logging
+import os
+import re
+import uuid
+from datetime import date, datetime
+from pathlib import Path
+from typing import Literal, Optional
+
+from dotenv import load_dotenv
 from emergentintegrations.llm.chat import LlmChat, UserMessage
-from PIL import Image, ImageDraw, ImageFont
+from fastapi import APIRouter, FastAPI, HTTPException
+from fastapi.responses import Response
+from pydantic import BaseModel, Field, field_validator
+from starlette.middleware.cors import CORSMiddleware
+
+import share_cards
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / ".env")
@@ -33,7 +39,7 @@ api_router = APIRouter(prefix="/api")
 # ------------------------------------------------------------------
 # Calendar sign table (month -> archetype + elements)
 # ------------------------------------------------------------------
-CAL_SIGNS = {
+CAL_SIGNS: dict[int, tuple[str, list[str]]] = {
     1:  ("The Aftermath Child",    ["Water", "Spirit"]),
     2:  ("The Hidden Signal",      ["Water", "Air"]),
     3:  ("The Thaw",               ["Air", "Water"]),
@@ -98,7 +104,6 @@ class ChartPayload(BaseModel):
     @field_validator("birth_date")
     @classmethod
     def validate_birth_date(cls, v: str) -> str:
-        # Accept strict ISO YYYY-MM-DD, reject anything else early.
         if not isinstance(v, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", v):
             raise ValueError("birth_date must be in ISO format YYYY-MM-DD")
         try:
@@ -129,8 +134,23 @@ class DailyResponse(BaseModel):
     mood_fr: str
 
 
+class ShareCardRequest(BaseModel):
+    lang: Literal["fr", "en"] = "en"
+    chart: ChartPayload
+    variant: Literal["data", "testimonial"] = "data"
+    reading_excerpt: Optional[str] = None
+
+    @field_validator("reading_excerpt")
+    @classmethod
+    def trim_excerpt(cls, v):
+        if v is None:
+            return None
+        v = v.strip()
+        return v if v else None
+
+
 # ------------------------------------------------------------------
-# Prompts
+# Prompts for AI reading
 # ------------------------------------------------------------------
 SYSTEM_PROMPT_EN = """You are GAIA, an oracular voice of Earth-Calendar Astrology — an inverted astrology system where the CALENDAR, SEASONS, and CIVIC RHYTHMS shape the human, not distant planets.
 
@@ -241,203 +261,12 @@ async def generate_reading(req: ReadingRequest):
         raise HTTPException(status_code=500, detail=f"Reading generation failed: {e}")
 
 
-# ------------------------------------------------------------------
-# Share card — Pillow-rendered Instagram-portrait PNG (1080x1350)
-# ------------------------------------------------------------------
-FONTS_DIR = ROOT_DIR / "fonts"
-ELEMENT_COLOR = {
-    "Fire": (194, 122, 98),    # terracotta
-    "Water": (110, 140, 168),  # water blue
-    "Earth": (116, 135, 107),  # moss
-    "Air": (163, 184, 204),    # pale blue
-    "Spirit": (212, 175, 55),  # gold
-    # French fallbacks
-    "Feu": (194, 122, 98),
-    "Eau": (110, 140, 168),
-    "Terre": (116, 135, 107),
-    "Esprit": (212, 175, 55),
-}
-
-
-def _font(name: str, size: int) -> ImageFont.FreeTypeFont:
-    path = FONTS_DIR / name
-    if path.exists():
-        return ImageFont.truetype(str(path), size)
-    # Fallback to default if bundled font is missing
-    return ImageFont.load_default()
-
-
-def _wrap(draw: ImageDraw.ImageDraw, text: str, font, max_w: int) -> list[str]:
-    words = text.split()
-    lines, cur = [], ""
-    for w in words:
-        candidate = (cur + " " + w).strip()
-        if draw.textlength(candidate, font=font) <= max_w:
-            cur = candidate
-        else:
-            if cur:
-                lines.append(cur)
-            cur = w
-    if cur:
-        lines.append(cur)
-    return lines
-
-
-class ShareCardRequest(BaseModel):
-    lang: Literal["fr", "en"] = "en"
-    chart: ChartPayload
-    variant: Literal["data", "testimonial"] = "data"
-    reading_excerpt: Optional[str] = None
-
-    @field_validator("reading_excerpt")
-    @classmethod
-    def trim_excerpt(cls, v):
-        if v is None:
-            return None
-        v = v.strip()
-        return v if v else None
-
-
-def _draw_background(draw: ImageDraw.ImageDraw, W: int, H: int, birth_date: str, sign_name: str):
-    """Shared background: gold nebula bloom top-right, moss glow bottom-left, deterministic starfield."""
-    GOLD = (212, 175, 55)
-    for i, alpha in enumerate(range(55, 0, -2)):
-        r = 460 + i * 10
-        draw.ellipse(
-            (W - 300 - r, -200 - r, W - 300 + r, -200 + r),
-            fill=(*GOLD, max(0, alpha)),
-        )
-    for i, alpha in enumerate(range(45, 0, -2)):
-        r = 440 + i * 10
-        draw.ellipse(
-            (-220 - r, H - 100 - r, -220 + r, H - 100 + r),
-            fill=(116, 135, 107, max(0, alpha)),
-        )
-    import random
-    rnd = random.Random(birth_date + sign_name)
-    for _ in range(220):
-        x = rnd.randint(0, W)
-        y = rnd.randint(0, H)
-        rr = rnd.choice([1, 1, 1, 2, 2, 3])
-        a = rnd.randint(90, 220)
-        draw.ellipse((x - rr, y - rr, x + rr, y + rr), fill=(244, 241, 234, a))
-
-
-def _pick_excerpt(reading: str, max_chars: int = 320) -> str:
-    """Pick the best quotable paragraph from a full AI reading."""
-    if not reading:
-        return ""
-    # Split by blank lines, keep only those that are not too short.
-    paragraphs = [p.strip() for p in re.split(r"\n\n+", reading) if p.strip()]
-    candidates = [p for p in paragraphs if 80 <= len(p) <= max_chars] or paragraphs
-    if not candidates:
-        return ""
-    # Prefer the first substantive paragraph (skip very short openers).
-    chosen = candidates[0]
-    if len(chosen) > max_chars:
-        # Cut at the last sentence-ish break under max_chars
-        cut = chosen[:max_chars]
-        last_stop = max(cut.rfind(". "), cut.rfind("? "), cut.rfind("! "))
-        if last_stop > 120:
-            chosen = cut[: last_stop + 1]
-        else:
-            chosen = cut.rstrip() + "…"
-    return chosen
-
-
-def _render_testimonial(req: ShareCardRequest) -> bytes:
-    """Render an editorial pull-quote card highlighting a reading excerpt."""
-    W, H = 1080, 1350
-    BG = (11, 13, 18)
-    GOLD = (212, 175, 55)
-    TEXT = (244, 241, 234)
-    MUTED = (156, 163, 175)
-
-    img = Image.new("RGB", (W, H), BG)
-    draw = ImageDraw.Draw(img, "RGBA")
-    _draw_background(draw, W, H, req.chart.birth_date, req.chart.sign_name)
-
-    # Header
-    f_brand = _font("CormorantGaramond-Bold.ttf", 44)
-    f_tag = _font("Manrope-Regular.ttf", 18)
-    draw.text((70, 80), "GAIA", font=f_brand, fill=GOLD)
-    tag = "ASTROLOGIE DU CALENDRIER TERRESTRE" if req.lang == "fr" else "EARTH-CALENDAR ASTROLOGY"
-    draw.text((70, 132), tag, font=f_tag, fill=MUTED)
-
-    # Decorative opening quote mark
-    f_quote = _font("CormorantGaramond-Bold.ttf", 240)
-    draw.text((60, 180), "“", font=f_quote, fill=(*GOLD, 170))
-
-    # Excerpt — large serif body
-    excerpt = _pick_excerpt(req.reading_excerpt or "", max_chars=360)
-    if not excerpt:
-        excerpt = (
-            "Un texte est requis pour cette variante." if req.lang == "fr"
-            else "An excerpt is required for this variant."
-        )
-
-    # Pick a font size that fits within ~7 lines and ~900px wide
-    max_w = W - 170
-    for size in (54, 50, 46, 42, 38, 34):
-        f_body = _font("CormorantGaramond-Medium.ttf", size)
-        lines = _wrap(draw, excerpt, f_body, max_w)
-        if len(lines) <= 10:
-            break
-    y = 400
-    line_height = int(size * 1.3)
-    for line in lines[:12]:
-        draw.text((85, y), line, font=f_body, fill=TEXT)
-        y += line_height
-
-    # Rule + attribution block
-    rule_y = y + 40
-    draw.rectangle((85, rule_y, 200, rule_y + 2), fill=GOLD)
-
-    f_attr_label = _font("Manrope-Regular.ttf", 18)
-    f_attr_name = _font("CormorantGaramond-Bold.ttf", 46)
-    f_attr_sub = _font("Manrope-Regular.ttf", 22)
-    draw.text(
-        (85, rule_y + 28),
-        ("SIGNE DU CALENDRIER" if req.lang == "fr" else "CALENDAR SIGN"),
-        font=f_attr_label,
-        fill=MUTED,
-    )
-    draw.text((85, rule_y + 60), req.chart.sign_name, font=f_attr_name, fill=GOLD)
-    draw.text(
-        (85, rule_y + 120),
-        f"{req.chart.sign_archetype}  ·  {req.chart.birth_date}",
-        font=f_attr_sub,
-        fill=TEXT,
-    )
-
-    # Elements row (minimal)
-    chip_y = rule_y + 170
-    cx = 85
-    f_chip = _font("Manrope-SemiBold.ttf", 20)
-    for el in req.chart.elements:
-        color = ELEMENT_COLOR.get(el, GOLD)
-        pw = int(draw.textlength(el.upper(), font=f_chip)) + 36
-        draw.rounded_rectangle((cx, chip_y, cx + pw, chip_y + 42), radius=21, outline=color, width=2)
-        draw.text((cx + 18, chip_y + 8), el.upper(), font=f_chip, fill=color)
-        cx += pw + 10
-
-    # Footer
-    f_foot = _font("Manrope-Regular.ttf", 18)
-    foot = "Le calendrier écrit la personne." if req.lang == "fr" else "The calendar writes the person."
-    draw.text((70, H - 100), foot, font=f_foot, fill=GOLD)
-    draw.text((70, H - 70), "gaia · earth-calendar astrology", font=f_tag, fill=MUTED)
-
-    buf = io.BytesIO()
-    img.save(buf, format="PNG", optimize=True)
-    buf.seek(0)
-    return buf.read()
-
-
 @api_router.post("/share-card")
 async def share_card(req: ShareCardRequest):
-    """Render a 1080x1350 PNG poster for sharing.
-    variant='data' → data-rich chart card (default)
-    variant='testimonial' → editorial pull-quote card featuring `reading_excerpt`.
+    """Render a 1080×1350 PNG poster for sharing.
+
+    variant='data' (default) → data-rich chart card
+    variant='testimonial'    → editorial pull-quote card featuring `reading_excerpt`
     """
     try:
         if req.variant == "testimonial":
@@ -446,150 +275,18 @@ async def share_card(req: ShareCardRequest):
                     status_code=400,
                     detail="reading_excerpt is required for variant='testimonial'",
                 )
-            png_bytes = _render_testimonial(req)
-            return Response(
-                content=png_bytes,
-                media_type="image/png",
-                headers={
-                    "Cache-Control": "no-store",
-                    "Content-Disposition": 'inline; filename="gaia-reading.png"',
-                },
-            )
+            png_bytes = share_cards.render_testimonial(req.chart, req.lang, req.reading_excerpt)
+            filename = "gaia-reading.png"
+        else:
+            png_bytes = share_cards.render_data_card(req.chart, req.lang)
+            filename = "gaia-earthchart.png"
 
-        W, H = 1080, 1350
-        BG = (11, 13, 18)
-        SURFACE = (21, 25, 33)
-        GOLD = (212, 175, 55)
-        TEXT = (244, 241, 234)
-        MUTED = (156, 163, 175)
-
-        img = Image.new("RGB", (W, H), BG)
-        draw = ImageDraw.Draw(img, "RGBA")
-        _draw_background(draw, W, H, req.chart.birth_date, req.chart.sign_name)
-
-        # Header: GAIA wordmark
-        f_brand = _font("CormorantGaramond-Bold.ttf", 56)
-        draw.text((70, 80), "GAIA", font=f_brand, fill=GOLD)
-        f_tag = _font("Manrope-Regular.ttf", 20)
-        draw.text((70, 148), (
-            "ASTROLOGIE DU CALENDRIER TERRESTRE" if req.lang == "fr"
-            else "EARTH-CALENDAR ASTROLOGY"
-        ), font=f_tag, fill=MUTED)
-
-        # Sign title
-        f_small_label = _font("Manrope-Regular.ttf", 22)
-        label = "TON SIGNE DU CALENDRIER" if req.lang == "fr" else "YOUR CALENDAR SIGN"
-        draw.text((70, 260), label, font=f_small_label, fill=MUTED)
-
-        f_h1 = _font("CormorantGaramond-Bold.ttf", 96)
-        sign_lines = _wrap(draw, req.chart.sign_name, f_h1, W - 140)
-        y = 300
-        for line in sign_lines:
-            draw.text((70, y), line, font=f_h1, fill=GOLD)
-            y += 96
-
-        f_sub = _font("Manrope-Regular.ttf", 26)
-        draw.text((70, y + 10), req.chart.sign_archetype, font=f_sub, fill=TEXT)
-        y += 60
-
-        # Elements pills
-        y += 30
-        pill_x = 70
-        f_pill = _font("Manrope-Regular.ttf", 22)
-        for el in req.chart.elements:
-            color = ELEMENT_COLOR.get(el, GOLD)
-            pw = int(draw.textlength(el.upper(), font=f_pill)) + 44
-            ph = 46
-            draw.rounded_rectangle(
-                (pill_x, y, pill_x + pw, y + ph),
-                radius=ph // 2,
-                outline=color,
-                width=2,
-            )
-            draw.text(
-                (pill_x + 22, y + 8),
-                el.upper(),
-                font=f_pill,
-                fill=color,
-            )
-            pill_x += pw + 12
-        y += 70
-
-        # Metadata rows on a subtle surface card
-        card_y = y + 30
-        card_h = 560
-        draw.rounded_rectangle(
-            (50, card_y, W - 50, card_y + card_h),
-            radius=24,
-            fill=(*SURFACE, 220),
-            outline=(*GOLD, 40),
-            width=1,
-        )
-
-        SOLAR_FR = {
-            "winter": "Hiver",
-            "spring": "Printemps",
-            "summer": "Été",
-            "autumn": "Automne",
-        }
-
-        def solar_label(v: str) -> str:
-            if req.lang == "fr":
-                return SOLAR_FR.get(v.lower(), v.capitalize())
-            return v.capitalize()
-
-        rows_en = [
-            ("Birth date", req.chart.birth_date),
-            ("Solar season", solar_label(req.chart.solar_season)),
-            ("Civic season", req.chart.civic_season),
-            ("Cohort", req.chart.cohort_position),
-            ("Festival", req.chart.festival_proximity),
-            ("Weather-body", req.chart.weather_imprint),
-        ]
-        rows_fr = [
-            ("Date de naissance", req.chart.birth_date),
-            ("Saison solaire", solar_label(req.chart.solar_season)),
-            ("Saison civique", req.chart.civic_season),
-            ("Cohorte", req.chart.cohort_position),
-            ("Festival", req.chart.festival_proximity),
-            ("Météo-corps", req.chart.weather_imprint),
-        ]
-        rows = rows_fr if req.lang == "fr" else rows_en
-
-        f_row_label = _font("Manrope-Regular.ttf", 18)
-        f_row_value = _font("Manrope-Regular.ttf", 22)
-        rx = 90
-        ry = card_y + 40
-        for label_txt, value in rows:
-            draw.text((rx, ry), label_txt.upper(), font=f_row_label, fill=MUTED)
-            wrapped = _wrap(draw, value, f_row_value, W - 2 * rx)
-            ty = ry + 28
-            for line in wrapped[:2]:  # keep it tight
-                draw.text((rx, ty), line, font=f_row_value, fill=TEXT)
-                ty += 30
-            ry = ty + 16
-            if ry > card_y + card_h - 60:
-                break
-
-        # Footer
-        f_foot = _font("Manrope-Regular.ttf", 20)
-        foot = (
-            "Le calendrier écrit la personne." if req.lang == "fr"
-            else "The calendar writes the person."
-        )
-        draw.text((70, H - 110), foot, font=f_foot, fill=GOLD)
-        draw.text((70, H - 70), "gaia · earth-calendar astrology", font=f_tag, fill=MUTED)
-
-        # Output PNG bytes
-        buf = io.BytesIO()
-        img.save(buf, format="PNG", optimize=True)
-        buf.seek(0)
         return Response(
-            content=buf.read(),
+            content=png_bytes,
             media_type="image/png",
             headers={
                 "Cache-Control": "no-store",
-                "Content-Disposition": 'inline; filename="gaia-earthchart.png"',
+                "Content-Disposition": f'inline; filename="{filename}"',
             },
         )
     except HTTPException:

@@ -25,8 +25,10 @@ GAIA is a bilingual (FR/EN) Expo mobile app that inverts classical astrology: in
 
 ## Architecture
 - **Backend** (FastAPI + emergentintegrations + Pillow)
+  - `server.py` (316 lines) — routes, Pydantic models, AI prompts
+  - `share_cards.py` (342 lines) — isolated Pillow card renderers with shared helpers (`_draw_background`, `_draw_header`, `_draw_footer`, `_draw_element_pills`, `pick_excerpt`, `_wrap`, `_font`)
   - `POST /api/reading` — Claude Sonnet 4.5, 4–6 paragraph poetic reading (EN/FR)
-  - `POST /api/share-card` — Pillow-rendered PNG poster (1080×1350), bilingual labels
+  - `POST /api/share-card` — thin endpoint dispatching to `share_cards.render_data_card` or `share_cards.render_testimonial`
   - `GET /api/daily` — today's Earth weather
   - `GET /api/health` — probe
 - **Frontend** (Expo Router, RN Web)
