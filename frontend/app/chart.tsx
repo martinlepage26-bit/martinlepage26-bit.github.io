@@ -183,14 +183,14 @@ export default function ChartGenerator() {
             <Label>{t('hemisphere')}</Label>
             <View style={styles.pillRow}>
               <TouchableOpacity
-                testID="hemisphere-n"
+                testID="hemisphere-N"
                 onPress={() => setHemisphere('N')}
                 activeOpacity={0.7}
               >
                 <Pill label={t('north')} active={hemisphere === 'N'} />
               </TouchableOpacity>
               <TouchableOpacity
-                testID="hemisphere-s"
+                testID="hemisphere-S"
                 onPress={() => setHemisphere('S')}
                 activeOpacity={0.7}
               >

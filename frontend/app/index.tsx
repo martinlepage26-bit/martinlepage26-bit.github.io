@@ -100,7 +100,7 @@ export default function Home() {
               <Text style={styles.ctaPrimaryText}>{t('cta_generate')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              testID="cta-explore-link"
+              testID="cta-explore"
               style={styles.ctaGhost}
               activeOpacity={0.7}
               onPress={() => router.push('/signs')}
@@ -110,7 +110,7 @@ export default function Home() {
           </Animated.View>
 
           {/* Today's Earth weather */}
-          <Animated.View entering={FadeInDown.duration(700).delay(300)} style={styles.dailyCard}>
+          <Animated.View entering={FadeInDown.duration(700).delay(300)} style={styles.dailyCard} testID="daily-card">
             <View style={styles.dailyHeader}>
               <Sunrise size={16} color={COLORS.gold} strokeWidth={1.4} />
               <Text style={styles.dailyLabel}>{t('daily_title')}</Text>

@@ -6,11 +6,15 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
+  Modal,
+  Image,
+  Platform,
+  Share,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import Animated, { FadeInDown, FadeIn } from 'react-native-reanimated';
-import { ChevronLeft, Sparkles, RotateCcw } from 'lucide-react-native';
+import { ChevronLeft, Sparkles, RotateCcw, Share2, Download, X } from 'lucide-react-native';
 
 import StarryBackground from '../src/components/StarryBackground.js';
 import LangToggle from '../src/components/LangToggle.js';
@@ -38,6 +42,9 @@ export default function Result() {
   const [reading, setReading] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [cardUri, setCardUri] = useState(null);
+  const [cardLoading, setCardLoading] = useState(false);
+  const [cardOpen, setCardOpen] = useState(false);
 
   if (!chart) {
     return (
@@ -71,6 +78,62 @@ export default function Result() {
       setError(String(e.message || e));
     } finally {
       setLoading(false);
+    }
+  };
+
+  const openShareCard = async () => {
+    if (cardUri) {
+      setCardOpen(true);
+      return;
+    }
+    setCardLoading(true);
+    setError(null);
+    try {
+      const payload = chartToPayload(chart, lang);
+      const r = await fetch(`${BACKEND_URL}/api/share-card`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chart: payload, lang }),
+      });
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      const blob = await r.blob();
+      // Convert blob → base64 data URI so <Image> works on web and native
+      const reader = new FileReader();
+      const uri = await new Promise((resolve, reject) => {
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+      setCardUri(uri);
+      setCardOpen(true);
+    } catch (e) {
+      setError(String(e.message || e));
+    } finally {
+      setCardLoading(false);
+    }
+  };
+
+  const handleShareOrDownload = async () => {
+    if (!cardUri) return;
+    if (Platform.OS === 'web') {
+      // Trigger browser download
+      const a = document.createElement('a');
+      a.href = cardUri;
+      a.download = `gaia-${sign.name.toLowerCase().replace(/\s+/g, '-')}.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    } else {
+      try {
+        await Share.share({
+          url: cardUri,
+          message: lang === 'fr'
+            ? `Ma charte GAIA : ${sign.name}`
+            : `My GAIA chart: ${sign.name}`,
+        });
+      } catch {
+        /* user cancelled */
+      }
     }
   };
 
@@ -148,11 +211,13 @@ export default function Result() {
           <Animated.View entering={FadeInDown.duration(700).delay(600)}>
             {reading ? (
               <SectionCard testID="card-ai-reading" title={t('deep_reading').toUpperCase()}>
-                {reading.split(/\n\n+/).map((para, idx) => (
-                  <BodyText key={idx} style={{ marginBottom: 14 }}>
-                    {para.trim()}
-                  </BodyText>
-                ))}
+                <View testID="deep-reading-text">
+                  {reading.split(/\n\n+/).map((para, idx) => (
+                    <BodyText key={idx} style={{ marginBottom: 14 }}>
+                      {para.trim()}
+                    </BodyText>
+                  ))}
+                </View>
               </SectionCard>
             ) : (
               <TouchableOpacity
@@ -178,6 +243,31 @@ export default function Result() {
             {error ? (
               <Text style={styles.error}>{t('error')} — {error}</Text>
             ) : null}
+
+            {/* Share card CTA */}
+            <TouchableOpacity
+              testID="open-share-card"
+              style={[styles.shareBtn, cardLoading && styles.deepBtnLoading]}
+              onPress={openShareCard}
+              disabled={cardLoading}
+              activeOpacity={0.85}
+            >
+              {cardLoading ? (
+                <>
+                  <ActivityIndicator color={COLORS.terracotta} />
+                  <Text style={styles.shareBtnText}>
+                    {lang === 'fr' ? 'Composition de la carte…' : 'Composing your card…'}
+                  </Text>
+                </>
+              ) : (
+                <>
+                  <Share2 size={15} color={COLORS.terracotta} strokeWidth={1.6} />
+                  <Text style={styles.shareBtnText}>
+                    {lang === 'fr' ? 'Partager cette charte' : 'Share this chart'}
+                  </Text>
+                </>
+              )}
+            </TouchableOpacity>
           </Animated.View>
 
           <TouchableOpacity
@@ -192,6 +282,64 @@ export default function Result() {
 
           <Text style={styles.disclaimer}>{t('disclaimer')}</Text>
         </ScrollView>
+
+        {/* Share-card preview modal */}
+        <Modal
+          visible={cardOpen}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setCardOpen(false)}
+        >
+          <View style={styles.modalRoot} testID="share-card-modal">
+            <TouchableOpacity
+              testID="close-share-card"
+              style={styles.modalClose}
+              onPress={() => setCardOpen(false)}
+              accessibilityLabel={t('back')}
+            >
+              <X size={22} color={COLORS.text} strokeWidth={1.6} />
+            </TouchableOpacity>
+            <ScrollView
+              contentContainerStyle={styles.modalScroll}
+              showsVerticalScrollIndicator={false}
+            >
+              {cardUri ? (
+                <Image
+                  source={{ uri: cardUri }}
+                  style={styles.cardImage}
+                  resizeMode="contain"
+                  testID="share-card-image"
+                />
+              ) : null}
+              <TouchableOpacity
+                testID="download-share-card"
+                style={styles.downloadBtn}
+                activeOpacity={0.85}
+                onPress={handleShareOrDownload}
+              >
+                {Platform.OS === 'web' ? (
+                  <Download size={16} color={COLORS.bg} strokeWidth={2} />
+                ) : (
+                  <Share2 size={16} color={COLORS.bg} strokeWidth={2} />
+                )}
+                <Text style={styles.downloadBtnText}>
+                  {Platform.OS === 'web'
+                    ? (lang === 'fr' ? 'Télécharger PNG' : 'Download PNG')
+                    : (lang === 'fr' ? 'Partager' : 'Share')}
+                </Text>
+              </TouchableOpacity>
+              <Text style={styles.modalHint}>
+                {lang === 'fr'
+                  ? (Platform.OS === 'web'
+                      ? 'Astuce : tu peux aussi clic-droit sur l\'image pour la copier.'
+                      : 'Astuce : appui long sur l\'image pour l\'enregistrer.')
+                  : (Platform.OS === 'web'
+                      ? 'Tip: you can also right-click the image to copy it.'
+                      : 'Tip: long-press the image to save it to your photos.')}
+              </Text>
+            </ScrollView>
+          </View>
+        </Modal>
       </SafeAreaView>
     </StarryBackground>
   );
@@ -294,6 +442,82 @@ const styles = StyleSheet.create({
     fontSize: 13,
     letterSpacing: 2,
     textTransform: 'uppercase',
+  },
+  shareBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+    paddingVertical: 14,
+    borderRadius: 14,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(194,122,98,0.5)',
+    backgroundColor: 'rgba(194,122,98,0.06)',
+    marginBottom: 8,
+  },
+  shareBtnText: {
+    color: COLORS.terracotta,
+    fontFamily: FONTS.bodySemi,
+    fontSize: 12,
+    letterSpacing: 2,
+    textTransform: 'uppercase',
+  },
+  modalRoot: {
+    flex: 1,
+    backgroundColor: 'rgba(7,9,12,0.96)',
+    padding: 20,
+  },
+  modalClose: {
+    position: 'absolute',
+    top: 44,
+    right: 20,
+    width: 42,
+    height: 42,
+    borderRadius: 999,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: COLORS.borderStrong,
+    backgroundColor: 'rgba(21,25,33,0.8)',
+    zIndex: 10,
+  },
+  modalScroll: {
+    alignItems: 'center',
+    paddingVertical: 60,
+  },
+  cardImage: {
+    width: '100%',
+    maxWidth: 420,
+    aspectRatio: 1080 / 1350,
+    borderRadius: 18,
+    marginBottom: 22,
+    backgroundColor: COLORS.surface,
+  },
+  downloadBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+    backgroundColor: COLORS.gold,
+    paddingVertical: 14,
+    paddingHorizontal: 26,
+    borderRadius: 999,
+    marginBottom: 18,
+  },
+  downloadBtnText: {
+    color: COLORS.bg,
+    fontFamily: FONTS.bodySemi,
+    fontSize: 13,
+    letterSpacing: 2,
+    textTransform: 'uppercase',
+  },
+  modalHint: {
+    color: COLORS.textMuted,
+    fontFamily: FONTS.body,
+    fontSize: 12,
+    fontStyle: 'italic',
+    textAlign: 'center',
+    maxWidth: 320,
   },
   error: {
     color: COLORS.terracotta,
