@@ -48,7 +48,7 @@ TIME_BANDS: dict[TimeBand, dict] = {
         "name_en": "The Exposed Hour",
         "name_fr": "L'Heure Exposée",
         "mood_en": "The sun is vertical. Shadows shorten and so do alibis. Be plainly who you are.",
-        "mood_fr": "Le soleil est vertical. Les ombres raccourcissent, les alibis aussi. Sois plainement qui tu es.",
+        "mood_fr": "Le soleil est vertical. Les ombres raccourcissent, les alibis aussi. Sois pleinement qui tu es.",
     },
     "afternoon": {
         "hours": range(15, 18),  # 15:00–17:59

@@ -174,7 +174,7 @@ export default function Home() {
                     <View style={styles.dailyRow}>
                       <Clock size={14} color={COLORS.terracotta} strokeWidth={1.4} />
                       <Text style={[styles.dailySubLabel, { color: COLORS.terracotta }]}>
-                        {lang === 'fr' ? 'Rising — ' : 'Rising — '}{daily.rising.label}
+                        {lang === 'fr' ? 'Lever — ' : 'Rising — '}{daily.rising.label}
                       </Text>
                     </View>
                     <Text style={styles.dailyRisingName}>{daily.rising.name}</Text>
