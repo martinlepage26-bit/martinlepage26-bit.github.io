@@ -13,9 +13,15 @@ GAIA is a bilingual (FR/EN) Expo mobile app that inverts classical astrology: in
 - About — GAIA philosophy
 
 ## v1.1 additions
-- **Shareable PNG card** — `POST /api/share-card` renders a 1080×1350 Instagram-portrait poster via Pillow, using bundled Cormorant Garamond + Manrope fonts. Includes starry field, gold nebula bloom, moss glow, sign title, element pills, chart data rows, bilingual labels. Frontend exposes a Share modal on `/result` with preview image + download/share button (web → PNG download; native → Share API).
-- **Strict ISO date validator** on `ChartPayload.birth_date` (must match `YYYY-MM-DD` and be a real calendar date).
-- **Full testID coverage** for automated testing (cta-explore, daily-card, hemisphere-N/S, deep-reading-text, open-share-card, share-card-modal, share-card-image, download-share-card, close-share-card, plus all nav/form IDs).
+- **Shareable PNG cards** — `POST /api/share-card` renders 1080×1350 Instagram-portrait posters via Pillow, with bundled Cormorant Garamond + Manrope fonts. Two variants:
+  - `variant='data'` (default): data-rich chart card with element pills and labeled rows (birth date, solar season, civic season, cohort, festival, weather-body imprint).
+  - `variant='testimonial'`: editorial pull-quote card featuring an AI-reading excerpt, decorative gold quote mark, rule + sign attribution, element pills.
+- Frontend `/result` exposes two share buttons:
+  - "Share this chart" (always available) → data card
+  - "Share this reading" (visible only after AI deep reading is generated) → testimonial card built from the reading text
+- Cached per-variant URI on the client so reopening a previously-generated card triggers no duplicate POST.
+- **Strict ISO date validator** on `ChartPayload.birth_date`.
+- **Full testID coverage** for automated testing.
 
 ## Architecture
 - **Backend** (FastAPI + emergentintegrations + Pillow)
