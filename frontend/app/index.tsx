@@ -10,7 +10,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import Animated, { FadeInDown, FadeIn } from 'react-native-reanimated';
-import { Compass, Sparkles, BookOpen, LandPlot, CircleDot, Info, Sunrise } from 'lucide-react-native';
+import { Compass, Sparkles, BookOpen, LandPlot, CircleDot, Info, Sunrise, Moon, Clock, Sparkle } from 'lucide-react-native';
 
 import StarryBackground from '../src/components/StarryBackground.js';
 import LangToggle from '../src/components/LangToggle.js';
@@ -45,11 +45,16 @@ export default function Home() {
   const { t, lang } = useLang();
   const [daily, setDaily] = useState(null);
   const [loadingDaily, setLoadingDaily] = useState(true);
+  const [deepReading, setDeepReading] = useState(null);
+  const [deepLoading, setDeepLoading] = useState(false);
+  const [deepError, setDeepError] = useState(null);
 
   const loadDaily = useCallback(async () => {
     setLoadingDaily(true);
     try {
-      const r = await fetch(`${BACKEND_URL}/api/daily`);
+      const hour = new Date().getHours();
+      const qs = new URLSearchParams({ hour: String(hour), lang });
+      const r = await fetch(`${BACKEND_URL}/api/daily?${qs.toString()}`);
       const data = await r.json();
       setDaily(data);
     } catch {
@@ -57,11 +62,40 @@ export default function Home() {
     } finally {
       setLoadingDaily(false);
     }
-  }, []);
+  }, [lang]);
 
   useEffect(() => {
     loadDaily();
+    // Refresh every 5 min so time-band crossings (e.g. 11→12) update automatically.
+    const id = setInterval(loadDaily, 5 * 60 * 1000);
+    return () => clearInterval(id);
   }, [loadDaily]);
+
+  // Reset any previously-generated woven reading whenever the user changes lang.
+  useEffect(() => {
+    setDeepReading(null);
+    setDeepError(null);
+  }, [lang]);
+
+  const generateDeepDaily = useCallback(async () => {
+    setDeepLoading(true);
+    setDeepError(null);
+    try {
+      const hour = new Date().getHours();
+      const r = await fetch(`${BACKEND_URL}/api/daily/deep`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ lang, hour }),
+      });
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      const data = await r.json();
+      setDeepReading(data.text);
+    } catch (e) {
+      setDeepError(String(e.message || e));
+    } finally {
+      setDeepLoading(false);
+    }
+  }, [lang]);
 
   const dailyMood = daily ? (lang === 'fr' ? daily.mood_fr : daily.mood_en) : null;
   const dailySign = daily ? SIGNS.find((s) => s.month === daily.month) : null;
@@ -109,7 +143,7 @@ export default function Home() {
             </TouchableOpacity>
           </Animated.View>
 
-          {/* Today's Earth weather */}
+          {/* Today's Earth weather — 3 layered rhythms */}
           <Animated.View entering={FadeInDown.duration(700).delay(300)} style={styles.dailyCard} testID="daily-card">
             <View style={styles.dailyHeader}>
               <Sunrise size={16} color={COLORS.gold} strokeWidth={1.4} />
@@ -119,13 +153,86 @@ export default function Home() {
               <ActivityIndicator color={COLORS.gold} />
             ) : daily ? (
               <>
-                <Text style={styles.dailySign}>{dailyName}</Text>
-                <View style={styles.chipsRow}>
-                  {daily.elements.map((el) => (
-                    <Chip key={el} label={el} />
-                  ))}
+                {/* Layer 1: Calendar sign (month) */}
+                <View testID="daily-layer-sign" style={styles.dailyLayer}>
+                  <View style={styles.dailyRow}>
+                    <CircleDot size={14} color={COLORS.gold} strokeWidth={1.4} />
+                    <Text style={styles.dailySubLabel}>{t('signs')}</Text>
+                  </View>
+                  <Text style={styles.dailySign}>{dailyName}</Text>
+                  <View style={styles.chipsRow}>
+                    {daily.elements.map((el) => (
+                      <Chip key={el} label={el} />
+                    ))}
+                  </View>
+                  <Text style={styles.dailyMood}>{dailyMood}</Text>
                 </View>
-                <Text style={styles.dailyMood}>{dailyMood}</Text>
+
+                {/* Layer 2: Daily rising (hour of day) */}
+                {daily.rising ? (
+                  <View testID="daily-layer-rising" style={styles.dailyLayer}>
+                    <View style={styles.dailyRow}>
+                      <Clock size={14} color={COLORS.terracotta} strokeWidth={1.4} />
+                      <Text style={[styles.dailySubLabel, { color: COLORS.terracotta }]}>
+                        {lang === 'fr' ? 'Rising — ' : 'Rising — '}{daily.rising.label}
+                      </Text>
+                    </View>
+                    <Text style={styles.dailyRisingName}>{daily.rising.name}</Text>
+                    <Text style={styles.dailyMood}>{daily.rising.mood}</Text>
+                  </View>
+                ) : null}
+
+                {/* Layer 3: Lunar phase */}
+                {daily.moon ? (
+                  <View testID="daily-layer-moon" style={styles.dailyLayer}>
+                    <View style={styles.dailyRow}>
+                      <Moon size={14} color={COLORS.air} strokeWidth={1.4} />
+                      <Text style={[styles.dailySubLabel, { color: COLORS.air }]}>
+                        {lang === 'fr' ? 'Lune — ' : 'Moon — '}{daily.moon.label}
+                      </Text>
+                    </View>
+                    <Text style={styles.dailyMoonName}>{daily.moon.name}</Text>
+                    <Text style={styles.dailyMood}>{daily.moon.mood}</Text>
+                  </View>
+                ) : null}
+
+                {/* AI-woven reading CTA */}
+                {deepReading ? (
+                  <View testID="daily-deep-text" style={styles.deepReadingWrap}>
+                    {deepReading.split(/\n\n+/).map((para, idx) => (
+                      <Text key={idx} style={styles.deepReadingPara}>
+                        {para.trim()}
+                      </Text>
+                    ))}
+                  </View>
+                ) : (
+                  <TouchableOpacity
+                    testID="generate-daily-deep"
+                    style={[styles.weaveBtn, deepLoading && styles.ctaGhost]}
+                    onPress={generateDeepDaily}
+                    disabled={deepLoading}
+                    activeOpacity={0.85}
+                  >
+                    {deepLoading ? (
+                      <>
+                        <ActivityIndicator color={COLORS.gold} />
+                        <Text style={styles.weaveBtnText}>
+                          {lang === 'fr' ? 'Tissage des trois rythmes…' : 'Weaving the three rhythms…'}
+                        </Text>
+                      </>
+                    ) : (
+                      <>
+                        <Sparkle size={14} color={COLORS.gold} strokeWidth={1.6} />
+                        <Text style={styles.weaveBtnText}>
+                          {lang === 'fr' ? 'Tisser la lecture du jour' : 'Weave today\'s reading'}
+                        </Text>
+                      </>
+                    )}
+                  </TouchableOpacity>
+                )}
+                {deepError ? (
+                  <Text style={styles.deepErrorText}>{t('error')}</Text>
+                ) : null}
               </>
             ) : (
               <Text style={styles.dailyMood}>{t('error')}</Text>
@@ -253,10 +360,40 @@ const styles = StyleSheet.create({
     letterSpacing: 3,
     textTransform: 'uppercase',
   },
+  dailyLayer: {
+    paddingVertical: 14,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: COLORS.border,
+  },
+  dailyRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 6,
+  },
+  dailySubLabel: {
+    color: COLORS.gold,
+    fontFamily: FONTS.bodyMedium,
+    fontSize: 10,
+    letterSpacing: 2,
+    textTransform: 'uppercase',
+  },
   dailySign: {
     color: COLORS.text,
     fontFamily: FONTS.serifBold,
     fontSize: 26,
+    marginBottom: 8,
+  },
+  dailyRisingName: {
+    color: COLORS.text,
+    fontFamily: FONTS.serifBold,
+    fontSize: 20,
+    marginBottom: 8,
+  },
+  dailyMoonName: {
+    color: COLORS.text,
+    fontFamily: FONTS.serifBold,
+    fontSize: 20,
     marginBottom: 8,
   },
   chipsRow: {
@@ -267,9 +404,48 @@ const styles = StyleSheet.create({
   dailyMood: {
     color: COLORS.textMuted,
     fontFamily: FONTS.body,
-    fontSize: 15,
-    lineHeight: 24,
+    fontSize: 14,
+    lineHeight: 22,
     fontStyle: 'italic',
+  },
+  weaveBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+    marginTop: 18,
+    paddingVertical: 14,
+    borderRadius: 12,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: COLORS.borderStrong,
+    backgroundColor: 'rgba(212,175,55,0.05)',
+  },
+  weaveBtnText: {
+    color: COLORS.gold,
+    fontFamily: FONTS.bodySemi,
+    fontSize: 12,
+    letterSpacing: 2,
+    textTransform: 'uppercase',
+  },
+  deepReadingWrap: {
+    marginTop: 18,
+    paddingTop: 18,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: COLORS.border,
+  },
+  deepReadingPara: {
+    color: COLORS.text,
+    fontFamily: FONTS.body,
+    fontSize: 14,
+    lineHeight: 23,
+    marginBottom: 14,
+  },
+  deepErrorText: {
+    color: COLORS.terracotta,
+    fontFamily: FONTS.body,
+    fontSize: 12,
+    marginTop: 10,
+    textAlign: 'center',
   },
   linkCard: {
     flexDirection: 'row',

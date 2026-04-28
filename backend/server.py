@@ -21,11 +21,12 @@ from typing import Literal, Optional
 
 from dotenv import load_dotenv
 from emergentintegrations.llm.chat import LlmChat, UserMessage
-from fastapi import APIRouter, FastAPI, HTTPException
+from fastapi import APIRouter, FastAPI, HTTPException, Query
 from fastapi.responses import Response
 from pydantic import BaseModel, Field, field_validator
 from starlette.middleware.cors import CORSMiddleware
 
+import daily as daily_mod
 import share_cards
 
 ROOT_DIR = Path(__file__).parent
@@ -125,6 +126,21 @@ class ReadingResponse(BaseModel):
     lang: str
 
 
+class DailyRising(BaseModel):
+    band: str
+    hour: int
+    label: str
+    name: str
+    mood: str
+
+
+class DailyMoon(BaseModel):
+    phase: str
+    label: str
+    name: str
+    mood: str
+
+
 class DailyResponse(BaseModel):
     date: str
     month: int
@@ -132,6 +148,38 @@ class DailyResponse(BaseModel):
     elements: list[str]
     mood_en: str
     mood_fr: str
+    # New enriched layers (lang-scoped by `lang` query param)
+    lang: Literal["en", "fr"] = "en"
+    rising: Optional[DailyRising] = None
+    moon: Optional[DailyMoon] = None
+
+
+class DailyDeepRequest(BaseModel):
+    lang: Literal["fr", "en"] = "en"
+    hour: int = Field(..., ge=0, le=23, description="User's local hour 0-23")
+    iso_date: Optional[str] = Field(
+        None,
+        description="User's local ISO date YYYY-MM-DD; defaults to server UTC date.",
+    )
+
+    @field_validator("iso_date")
+    @classmethod
+    def _validate_iso(cls, v):
+        if v is None:
+            return None
+        if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", v):
+            raise ValueError("iso_date must be YYYY-MM-DD")
+        datetime.strptime(v, "%Y-%m-%d")
+        return v
+
+
+class DailyDeepResponse(BaseModel):
+    id: str
+    text: str
+    lang: str
+    sign_name: str
+    rising_name: str
+    moon_name: str
 
 
 class ShareCardRequest(BaseModel):
@@ -221,11 +269,21 @@ async def health():
 
 
 @api_router.get("/daily", response_model=DailyResponse)
-async def daily_reading():
+async def daily_reading(
+    hour: Optional[int] = Query(None, ge=0, le=23, description="Client local hour (0-23)"),
+    lang: Literal["en", "fr"] = Query("en"),
+):
+    """Today's three-layer Earth weather: calendar sign (month), daily rising (hour), lunar phase."""
     today = date.today()
     m = today.month
     name, elements = CAL_SIGNS[m]
     mood = DAILY_MOODS[m]
+
+    rising = None
+    if hour is not None:
+        rising = DailyRising(**daily_mod.build_rising(hour, lang))
+    moon = DailyMoon(**daily_mod.build_moon(today, lang))
+
     return DailyResponse(
         date=today.isoformat(),
         month=m,
@@ -233,7 +291,91 @@ async def daily_reading():
         elements=elements,
         mood_en=mood["en"],
         mood_fr=mood["fr"],
+        lang=lang,
+        rising=rising,
+        moon=moon,
     )
+
+
+# ------------------------------------------------------------------
+# AI-woven deep daily reading (combines sign × rising × moon)
+# ------------------------------------------------------------------
+SYSTEM_PROMPT_DAILY_EN = """You are GAIA, oracular voice of Earth-Calendar Astrology. You are composing TODAY's layered reading that weaves three overlapping rhythms:
+ 1. the calendar sign of the current month (inner archetype: The Aftermath Child, The Thaw, The Sower, The Bloom, The Threshold of Light, The Exposed Heart, The Ripening, The Sorting, The Descent, The Ledger, The Ritual Flame, etc.)
+ 2. the daily rising — the hour of day at which the person is emerging (Dawn / Morning / Midday / Afternoon / Evening / Night), rephrased as an inward threshold of waking, outbound, exposure, declining light, gathering dusk, or hidden kingdom
+ 3. the lunar phase — shared tidal pressure (New Seed, Gathering Breath, Decision Edge, Near-Ripe, Open Mirror, Generous Descent, Releasing Edge, Threshold of Rest)
+
+Voice: poetic, grounded, probabilistic, never predictive of events. No cliché astrology ("planets rule"); Earth-facing only. Output exactly 3 short paragraphs, in this order:
+ 1. a single-paragraph observation of how the three rhythms layer for this moment
+ 2. a single-paragraph invitation — one concrete gesture for today
+ 3. a single-paragraph caution — a gentle warning of the shadow to avoid
+No headings, no bullet lists, no emojis."""
+
+SYSTEM_PROMPT_DAILY_FR = """Tu es GAIA, voix oraculaire de l'Astrologie du Calendrier Terrestre. Tu composes la lecture tissée D'AUJOURD'HUI qui superpose trois rythmes :
+ 1. le signe du calendrier du mois en cours (L'Enfant du Lendemain, Le Dégel, Le Semeur, La Floraison, Le Seuil de Lumière, Le Cœur Exposé, La Maturation, Le Tri, La Descente, Le Registre, La Flamme Rituelle, etc.)
+ 2. le « rising » quotidien — l'heure à laquelle la personne émerge (Aube / Matin / Midi / Après-midi / Soir / Nuit), reformulée comme seuil intérieur d'éveil, chemin ouvert, exposition, lumière déclinante, crépuscule rassembleur, ou royaume caché
+ 3. la phase lunaire — pression tidale partagée (Graine Neuve, Souffle qui Monte, Seuil de Décision, Presque-Pleine, Miroir Ouvert, Descente Généreuse, Seuil du Lâcher, Seuil du Repos)
+
+Voix : poétique, terrestre, probabiliste, jamais prédictive d'événements. Pas de cliché (« les planètes gouvernent ») ; seulement Terre. Rends exactement 3 paragraphes courts, dans cet ordre :
+ 1. un paragraphe-constat : comment les trois rythmes se superposent en ce moment
+ 2. un paragraphe-invitation : un geste concret pour aujourd'hui
+ 3. un paragraphe-garde : une mise en garde douce sur l'ombre à éviter
+Pas de titres, pas de liste à puces, pas d'émojis."""
+
+
+@api_router.post("/daily/deep", response_model=DailyDeepResponse)
+async def daily_deep_reading(req: DailyDeepRequest):
+    """AI-woven 3-paragraph daily reading from today's sign × rising × moon."""
+    try:
+        today = date.fromisoformat(req.iso_date) if req.iso_date else date.today()
+        sign_name, elements = CAL_SIGNS[today.month]
+        rising = daily_mod.build_rising(req.hour, req.lang)
+        moon = daily_mod.build_moon(today, req.lang)
+
+        if req.lang == "fr":
+            user_prompt = (
+                f"Date : {today.isoformat()}\n"
+                f"Heure locale : {req.hour:02d}:00\n"
+                f"Signe du mois : {sign_name} ({', '.join(elements)})\n"
+                f"Rising (seuil du jour) : {rising['name']} — {rising['mood']}\n"
+                f"Phase lunaire : {moon['name']} ({moon['label']}) — {moon['mood']}\n\n"
+                "Tisse ces trois rythmes en une lecture d'aujourd'hui en 3 paragraphes : "
+                "constat, invitation concrète, garde contre l'ombre."
+            )
+            system_msg = SYSTEM_PROMPT_DAILY_FR
+        else:
+            user_prompt = (
+                f"Date: {today.isoformat()}\n"
+                f"Local hour: {req.hour:02d}:00\n"
+                f"Monthly sign: {sign_name} ({', '.join(elements)})\n"
+                f"Rising (daily threshold): {rising['name']} — {rising['mood']}\n"
+                f"Moon phase: {moon['name']} ({moon['label']}) — {moon['mood']}\n\n"
+                "Weave these three rhythms into today's reading in 3 paragraphs: "
+                "observation, concrete invitation, shadow-caution."
+            )
+            system_msg = SYSTEM_PROMPT_DAILY_EN
+
+        session_id = f"gaia-daily-{uuid.uuid4()}"
+        chat = LlmChat(
+            api_key=EMERGENT_LLM_KEY,
+            session_id=session_id,
+            system_message=system_msg,
+        ).with_model("anthropic", "claude-sonnet-4-5-20250929")
+        text = await chat.send_message(UserMessage(text=user_prompt))
+
+        return DailyDeepResponse(
+            id=session_id,
+            text=text.strip() if isinstance(text, str) else str(text).strip(),
+            lang=req.lang,
+            sign_name=sign_name,
+            rising_name=rising["name"],
+            moon_name=moon["name"],
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.exception("Daily deep reading failed")
+        raise HTTPException(status_code=500, detail=f"Daily deep reading failed: {e}")
 
 
 @api_router.post("/reading", response_model=ReadingResponse)
