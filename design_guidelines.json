@@ -1,0 +1,97 @@
+{
+  "theme": "Dark",
+  "archetype": "5 (Jewel & Luxury) + 1 (Organic & Earthy)",
+  "colors": {
+    "background_base": "#0B0D12",
+    "background_surface": "#151921",
+    "primary_celestial_gold": "#D4AF37",
+    "secondary_terracotta": "#C27A62",
+    "accent_moss": "#74876B",
+    "accent_air": "#A3B8CC",
+    "text_primary": "#F4F1EA",
+    "text_muted": "#9CA3AF",
+    "border_subtle": "rgba(212, 175, 55, 0.15)"
+  },
+  "typography": {
+    "heading_font": "Cormorant Garamond",
+    "body_font": "Manrope",
+    "styles": {
+      "h1": "text-4xl sm:text-5xl font-serif text-[#D4AF37] tracking-tight",
+      "h2": "text-2xl sm:text-3xl font-serif text-[#F4F1EA] tracking-tight",
+      "h3": "text-xl sm:text-2xl font-serif text-[#F4F1EA]",
+      "body": "text-base font-sans text-[#9CA3AF] leading-relaxed",
+      "label": "text-xs font-sans text-[#9CA3AF] uppercase tracking-[0.2em]"
+    }
+  },
+  "spacing_and_layout": {
+    "philosophy": "Generous Spacing, Optical Alignment, Center-focused for meditative feel",
+    "bento_grid": "Tight gaps (gap-4 or gap-6) for chart stats, wrapped in 1px gold/10 borders",
+    "padding_scale": "p-6 to p-12 for content sections, ensuring breathing room",
+    "surface_strategy": "Crystal Glass (bg-black/40 backdrop-blur-xl) or Neumorphism with 1px gold border"
+  },
+  "motion": {
+    "philosophy": "Breathing, celestial feel. Slow and smooth.",
+    "hover_state": "Slight lift (-translate-y-1), opacity increase, subtle gold glow",
+    "entrance": "Staggered fade-up for chart elements",
+    "background": "Gentle parallax or slow moving grain overlay"
+  },
+  "media": {
+    "images": [
+      {
+        "category": "background_mystical_night",
+        "url": "https://images.unsplash.com/photo-1671132758137-95f9c9f7e1e6?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxODh8MHwxfHNlYXJjaHwxfHxteXN0aWNhbCUyMHN0YXJyeSUyMG5pZ2h0JTIwc2t5JTIwZGFya3xlbnwwfHx8fDE3NzczNDM3Nzd8MA&ixlib=rb-4.1.0&q=85",
+        "description": "Starry night sky, for main celestial background wrapper"
+      },
+      {
+        "category": "texture_earthy",
+        "url": "https://images.unsplash.com/photo-1560131323-29d50e8d1b22?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMjV8MHwxfHNlYXJjaHwxfHxhYnN0cmFjdCUyMGVhcnRoeSUyMHRlcnJhY290dGElMjB0ZXh0dXJlJTIwZGFya3xlbnwwfHx8fDE3NzczNDM3Nzd8MA&ixlib=rb-4.1.0&q=85",
+        "description": "Abstract terracotta texture for earth elements"
+      },
+      {
+        "category": "astrology_wheel",
+        "url": "https://images.unsplash.com/photo-1698738184242-7a3805330b81?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzl8MHwxfHNlYXJjaHwxfHxhc3Ryb2xvZ3klMjBnZW9tZXRyaWMlMjB3aGVlbCUyMGRhcmt8ZW58MHx8fHwxNzc3MzQzNzc3fDA&ixlib=rb-4.1.0&q=85",
+        "description": "Black and white geometric wheel for chart background"
+      }
+    ],
+    "icons": {
+      "library": "lucide-react-native",
+      "style": "Minimalist, fine lines, stroke-width 1.5, matching text or gold color"
+    }
+  },
+  "components": [
+    {
+      "name": "EarthChartWheel",
+      "description": "Circular diagram showing the 5-element wheel and Calendar sign. Uses abstract circles layered over each other.",
+      "styles": "rounded-full border border-[rgba(212,175,55,0.2)] bg-black/40 backdrop-blur-md relative"
+    },
+    {
+      "name": "SignCard",
+      "description": "Card displaying one of the 12 Calendar Signs in the browse section.",
+      "styles": "p-6 rounded-2xl bg-[#151921] border border-[rgba(212,175,55,0.1)] transition-all"
+    },
+    {
+      "name": "ReadingSection",
+      "description": "Container for AI-generated deep reading. Meditative layout.",
+      "styles": "max-w-2xl mx-auto px-4 py-12 text-center"
+    }
+  ],
+  "testing": {
+    "requirements": "All interactive and key informational elements MUST include a data-testid attribute. Use kebab-case, role-based naming.",
+    "examples": [
+      "data-testid='generate-chart-button'",
+      "data-testid='language-toggle-fr'",
+      "data-testid='daily-reading-card'"
+    ]
+  },
+  "instructions_to_main_agent": [
+    "Build as an Expo React Native app using expo-router (.js files, NOT .tsx).",
+    "Implement bilingual support (FR/EN) natively with a context or i18n library.",
+    "No user auth and no database required (ephemeral local state only).",
+    "Ensure backgrounds use a blend of the starry night image (with low opacity) overlayed on deep #0B0D12, accented with seasonal gradients.",
+    "For typography, use expo-font to load 'Cormorant Garamond' and 'Manrope'.",
+    "Use 'lucide-react-native' for icons. No emojis.",
+    "Implement smooth staggered fade-in animations when the Earth Chart generates using React Native Reanimated or similar.",
+    "Ensure padding is generous and avoids standard dense layouts. The app should feel poetic, not like a data-dashboard.",
+    "Apply 'data-testid' to ALL interactive elements (buttons, inputs, toggles, list items) to ensure correct automated testing."
+  ]
+}
