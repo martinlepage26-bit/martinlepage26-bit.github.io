@@ -14,7 +14,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import Animated, { FadeInDown, FadeIn } from 'react-native-reanimated';
-import { ChevronLeft, Sparkles, RotateCcw, Share2, Download, X, Quote } from 'lucide-react-native';
+import { ChevronLeft, Sparkles, RotateCcw, Share2, Download, X, Quote, Smartphone } from 'lucide-react-native';
 
 import StarryBackground from '../src/components/StarryBackground.js';
 import LangToggle from '../src/components/LangToggle.js';
@@ -42,11 +42,10 @@ export default function Result() {
   const [reading, setReading] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [cardUri, setCardUri] = useState(null);
-  const [cardLoading, setCardLoading] = useState(false);
   const [cardOpen, setCardOpen] = useState(false);
-  const [cardVariant, setCardVariant] = useState('data'); // 'data' | 'testimonial'
-  const [readingCardUri, setReadingCardUri] = useState(null);
+  const [cardLoading, setCardLoading] = useState(false);
+  const [cardVariant, setCardVariant] = useState('data'); // 'data' | 'testimonial' | 'story'
+  const [cardUris, setCardUris] = useState({}); // { data?: string, testimonial?: string, story?: string }
 
   if (!chart) {
     return (
@@ -85,8 +84,7 @@ export default function Result() {
 
   const openShareCard = async (variant = 'data') => {
     setCardVariant(variant);
-    const existing = variant === 'testimonial' ? readingCardUri : cardUri;
-    if (existing) {
+    if (cardUris[variant]) {
       setCardOpen(true);
       return;
     }
@@ -113,8 +111,7 @@ export default function Result() {
         reader.onerror = reject;
         reader.readAsDataURL(blob);
       });
-      if (variant === 'testimonial') setReadingCardUri(uri);
-      else setCardUri(uri);
+      setCardUris((prev) => ({ ...prev, [variant]: uri }));
       setCardOpen(true);
     } catch (e) {
       setError(String(e.message || e));
@@ -123,11 +120,12 @@ export default function Result() {
     }
   };
 
-  const activeCardUri = cardVariant === 'testimonial' ? readingCardUri : cardUri;
+  const activeCardUri = cardUris[cardVariant];
+  const activeAspectRatio = cardVariant === 'story' ? 1080 / 1920 : 1080 / 1350;
 
   const handleShareOrDownload = async () => {
     if (!activeCardUri) return;
-    const slug = cardVariant === 'testimonial' ? 'reading' : 'chart';
+    const slug = cardVariant === 'testimonial' ? 'reading' : cardVariant === 'story' ? 'story' : 'chart';
     if (Platform.OS === 'web') {
       const a = document.createElement('a');
       a.href = activeCardUri;
@@ -306,6 +304,30 @@ export default function Result() {
                 )}
               </TouchableOpacity>
             ) : null}
+
+            <TouchableOpacity
+              testID="open-share-story"
+              style={[styles.shareBtn, cardLoading && cardVariant === 'story' && styles.deepBtnLoading]}
+              onPress={() => openShareCard('story')}
+              disabled={cardLoading}
+              activeOpacity={0.85}
+            >
+              {cardLoading && cardVariant === 'story' ? (
+                <>
+                  <ActivityIndicator color={COLORS.moss} />
+                  <Text style={[styles.shareBtnText, { color: COLORS.moss }]}>
+                    {lang === 'fr' ? 'Composition du sticker…' : 'Composing story sticker…'}
+                  </Text>
+                </>
+              ) : (
+                <>
+                  <Smartphone size={15} color={COLORS.moss} strokeWidth={1.6} />
+                  <Text style={[styles.shareBtnText, { color: COLORS.moss }]}>
+                    {lang === 'fr' ? 'Partager en story (9:16)' : 'Share as story (9:16)'}
+                  </Text>
+                </>
+              )}
+            </TouchableOpacity>
           </Animated.View>
 
           <TouchableOpacity
@@ -344,7 +366,7 @@ export default function Result() {
               {activeCardUri ? (
                 <Image
                   source={{ uri: activeCardUri }}
-                  style={styles.cardImage}
+                  style={[styles.cardImage, { aspectRatio: activeAspectRatio }]}
                   resizeMode="contain"
                   testID="share-card-image"
                 />
@@ -526,7 +548,6 @@ const styles = StyleSheet.create({
   cardImage: {
     width: '100%',
     maxWidth: 420,
-    aspectRatio: 1080 / 1350,
     borderRadius: 18,
     marginBottom: 22,
     backgroundColor: COLORS.surface,

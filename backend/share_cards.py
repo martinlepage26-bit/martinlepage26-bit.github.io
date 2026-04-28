@@ -1,11 +1,12 @@
 """
 GAIA — Share-card renderers (Pillow).
 
-Two 1080×1350 PNG variants:
- - `render_data_card(chart, lang)` — data-rich poster with labeled rows
- - `render_testimonial(chart, lang, excerpt)` — editorial pull-quote poster
+Three PNG variants:
+ - `render_data_card(chart, lang)`        — 1080×1350 data-rich poster
+ - `render_testimonial(chart, lang, x)`   — 1080×1350 editorial pull-quote
+ - `render_story_sticker(chart, lang)`    — 1080×1920 Instagram-story sticker
 
-Both variants share a common starry/gold/moss background and bundled
+All variants share a common starry/gold/moss background and bundled
 Cormorant Garamond + Manrope fonts under ./fonts.
 """
 from __future__ import annotations
@@ -23,6 +24,7 @@ from PIL import Image, ImageDraw, ImageFont
 # ------------------------------------------------------------------
 FONTS_DIR = Path(__file__).parent / "fonts"
 CARD_W, CARD_H = 1080, 1350
+STORY_W, STORY_H = 1080, 1920
 
 BG = (11, 13, 18)
 SURFACE = (21, 25, 33)
@@ -339,4 +341,122 @@ def render_testimonial(chart: Any, lang: str, excerpt_source: str) -> bytes:
     )
 
     _draw_footer(draw, CARD_H, lang)
+    return _to_png_bytes(img)
+
+
+# ------------------------------------------------------------------
+# Story-sticker card (Instagram Story, 1080×1920)
+# ------------------------------------------------------------------
+def _center_text(
+    draw: ImageDraw.ImageDraw,
+    text: str,
+    y: int,
+    font,
+    fill,
+    w: int,
+) -> None:
+    """Horizontally center a single line of text at y within width w."""
+    tw = draw.textlength(text, font=font)
+    draw.text(((w - tw) // 2, y), text, font=font, fill=fill)
+
+
+def render_story_sticker(chart: Any, lang: str) -> bytes:
+    """1080×1920 Instagram-story sticker: centered, sparse, glance-able."""
+    w, h = STORY_W, STORY_H
+    img = Image.new("RGB", (w, h), BG)
+    draw = ImageDraw.Draw(img, "RGBA")
+    _draw_background(draw, w, h, chart.birth_date + chart.sign_name)
+
+    # Top brand block (centered)
+    f_brand = _font("CormorantGaramond-Bold.ttf", 64)
+    f_tag = _font("Manrope-Regular.ttf", 20)
+    _center_text(draw, "GAIA", 140, f_brand, GOLD, w)
+    tag = (
+        "ASTROLOGIE DU CALENDRIER TERRESTRE" if lang == "fr"
+        else "EARTH-CALENDAR ASTROLOGY"
+    )
+    _center_text(draw, tag, 220, f_tag, MUTED, w)
+
+    # Small label
+    f_label = _font("Manrope-Regular.ttf", 22)
+    label = "TON SIGNE DU CALENDRIER" if lang == "fr" else "YOUR CALENDAR SIGN"
+    _center_text(draw, label, 560, f_label, MUTED, w)
+
+    # Huge sign name — auto-size to fit width
+    max_w_title = w - 160
+    chosen_size = 72
+    for size in (128, 116, 104, 96, 88, 80, 72):
+        f_h = _font("CormorantGaramond-Bold.ttf", size)
+        if draw.textlength(chart.sign_name, font=f_h) <= max_w_title:
+            chosen_size = size
+            break
+    f_h = _font("CormorantGaramond-Bold.ttf", chosen_size)
+    # If still too wide, wrap to 2 lines
+    title_lines = _wrap(draw, chart.sign_name, f_h, max_w_title)
+    line_h = int(chosen_size * 1.05)
+    title_y = 620
+    for line in title_lines[:2]:
+        _center_text(draw, line, title_y, f_h, GOLD, w)
+        title_y += line_h
+
+    # Subtitle line: archetype · date
+    f_sub = _font("Manrope-Regular.ttf", 28)
+    subtitle = f"{chart.sign_archetype}  \u00b7  {chart.birth_date}"
+    _center_text(draw, subtitle, title_y + 20, f_sub, TEXT, w)
+
+    # Gold rule divider
+    rule_y = title_y + 90
+    rule_w = 140
+    draw.rectangle(((w - rule_w) // 2, rule_y, (w + rule_w) // 2, rule_y + 2), fill=GOLD)
+
+    # Centered element chips
+    f_chip = _font("Manrope-SemiBold.ttf", 22)
+    chips = [el.upper() for el in chart.elements]
+    pad_x, height = 24, 52
+    chip_widths = [int(draw.textlength(c, font=f_chip)) + pad_x * 2 for c in chips]
+    gap = 16
+    row_w = sum(chip_widths) + gap * (len(chips) - 1)
+    cx = (w - row_w) // 2
+    chip_y = rule_y + 46
+    for c, cw in zip(chips, chip_widths):
+        color = ELEMENT_COLOR.get(c.capitalize(), ELEMENT_COLOR.get(c, GOLD))
+        draw.rounded_rectangle(
+            (cx, chip_y, cx + cw, chip_y + height),
+            radius=height // 2,
+            outline=color,
+            width=2,
+        )
+        draw.text((cx + pad_x, chip_y + 12), c, font=f_chip, fill=color)
+        cx += cw + gap
+
+    # Solar season badge underneath
+    f_season_label = _font("Manrope-Regular.ttf", 18)
+    f_season_value = _font("CormorantGaramond-Medium.ttf", 42)
+    season_y = chip_y + 140
+    _center_text(
+        draw,
+        ("SAISON SOLAIRE" if lang == "fr" else "SOLAR SEASON"),
+        season_y,
+        f_season_label,
+        MUTED,
+        w,
+    )
+    _center_text(
+        draw,
+        _solar_label(chart.solar_season, lang),
+        season_y + 30,
+        f_season_value,
+        TEXT,
+        w,
+    )
+
+    # Bottom tagline + brand
+    f_foot = _font("Manrope-Regular.ttf", 22)
+    foot = (
+        "Le calendrier écrit la personne." if lang == "fr"
+        else "The calendar writes the person."
+    )
+    _center_text(draw, foot, h - 200, f_foot, GOLD, w)
+    _center_text(draw, "gaia \u00b7 earth-calendar astrology", h - 150, f_tag, MUTED, w)
+
     return _to_png_bytes(img)

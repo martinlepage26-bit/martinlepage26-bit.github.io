@@ -137,7 +137,7 @@ class DailyResponse(BaseModel):
 class ShareCardRequest(BaseModel):
     lang: Literal["fr", "en"] = "en"
     chart: ChartPayload
-    variant: Literal["data", "testimonial"] = "data"
+    variant: Literal["data", "testimonial", "story"] = "data"
     reading_excerpt: Optional[str] = None
 
     @field_validator("reading_excerpt")
@@ -263,10 +263,11 @@ async def generate_reading(req: ReadingRequest):
 
 @api_router.post("/share-card")
 async def share_card(req: ShareCardRequest):
-    """Render a 1080×1350 PNG poster for sharing.
+    """Render a shareable PNG poster.
 
-    variant='data' (default) → data-rich chart card
-    variant='testimonial'    → editorial pull-quote card featuring `reading_excerpt`
+    variant='data'        (default) → 1080×1350 data-rich chart card
+    variant='testimonial'           → 1080×1350 editorial pull-quote (needs `reading_excerpt`)
+    variant='story'                 → 1080×1920 Instagram-story sticker
     """
     try:
         if req.variant == "testimonial":
@@ -277,6 +278,9 @@ async def share_card(req: ShareCardRequest):
                 )
             png_bytes = share_cards.render_testimonial(req.chart, req.lang, req.reading_excerpt)
             filename = "gaia-reading.png"
+        elif req.variant == "story":
+            png_bytes = share_cards.render_story_sticker(req.chart, req.lang)
+            filename = "gaia-story.png"
         else:
             png_bytes = share_cards.render_data_card(req.chart, req.lang)
             filename = "gaia-earthchart.png"
