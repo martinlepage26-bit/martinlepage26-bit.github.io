@@ -46,9 +46,9 @@ export default function StarryBackground({ children, intensity = 1 }) {
             {SEEDS.map((seed, i) => {
               const cx = seed.x * w;
               const cy = seed.y * h;
-              // star radius 0.4 .. 1.6 px — always tiny
-              const r = 0.4 + seed.s * 1.2;
-              const op = 0.25 + seed.o * 0.7;
+              // star radius 0.15 .. 0.6 px in SVG units; scales gently when SVG canvas upsizes
+              const r = 0.15 + seed.s * 0.45;
+              const op = 0.22 + seed.o * 0.5;
               return <Circle key={i} cx={cx} cy={cy} r={r} fill={COLORS.text} opacity={op} />;
             })}
           </G>

@@ -8,8 +8,8 @@ import { COLORS, ELEMENT_COLORS, FONTS } from '../theme.js';
  */
 export default function ElementWheel({ activeElements = [], size = 260 }) {
   const center = size / 2;
-  const radius = size * 0.42;
-  const innerRadius = size * 0.28;
+  const radius = size * 0.38;
+  const innerRadius = size * 0.25;
   const elements = ['Fire', 'Water', 'Earth', 'Air', 'Spirit'];
   const labelsFr = { Fire: 'Feu', Water: 'Eau', Earth: 'Terre', Air: 'Air', Spirit: 'Esprit' };
 
@@ -24,7 +24,7 @@ export default function ElementWheel({ activeElements = [], size = 260 }) {
 
   return (
     <View style={styles.wrap} pointerEvents="none">
-      <Svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+      <Svg width={size} height={size} viewBox={`-40 -10 ${size + 80} ${size + 20}`}>
         <Defs>
           <LinearGradient id="ring" x1="0%" y1="0%" x2="100%" y2="100%">
             <Stop offset="0%" stopColor={COLORS.gold} stopOpacity="0.6" />
@@ -62,6 +62,10 @@ export default function ElementWheel({ activeElements = [], size = 260 }) {
             // Radial line from inner to outer
             const ix = center + Math.cos(angle) * innerRadius;
             const iy = center + Math.sin(angle) * innerRadius;
+            // Labels sit further from center; widened viewBox gives horizontal padding.
+            const labelOffset = size * 0.11;
+            const lx = center + Math.cos(angle) * (radius + labelOffset);
+            const ly = center + Math.sin(angle) * (radius + labelOffset) + 4;
             return (
               <G key={el}>
                 <Line
@@ -82,10 +86,10 @@ export default function ElementWheel({ activeElements = [], size = 260 }) {
                   strokeWidth={isActive ? 1.2 : 0.8}
                 />
                 <SvgText
-                  x={center + Math.cos(angle) * (radius + 18)}
-                  y={center + Math.sin(angle) * (radius + 18) + 4}
+                  x={lx}
+                  y={ly}
                   fill={isActive ? COLORS.text : COLORS.textMuted}
-                  fontSize="11"
+                  fontSize="10"
                   fontFamily={FONTS.bodySemi}
                   fontWeight="600"
                   textAnchor="middle"
