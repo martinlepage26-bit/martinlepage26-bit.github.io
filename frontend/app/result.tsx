@@ -14,7 +14,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import Animated, { FadeInDown, FadeIn } from 'react-native-reanimated';
-import { ChevronLeft, Sparkles, RotateCcw, Share2, Download, X } from 'lucide-react-native';
+import { ChevronLeft, Sparkles, RotateCcw, Share2, Download, X, Quote } from 'lucide-react-native';
 
 import StarryBackground from '../src/components/StarryBackground.js';
 import LangToggle from '../src/components/LangToggle.js';
@@ -45,6 +45,8 @@ export default function Result() {
   const [cardUri, setCardUri] = useState(null);
   const [cardLoading, setCardLoading] = useState(false);
   const [cardOpen, setCardOpen] = useState(false);
+  const [cardVariant, setCardVariant] = useState('data'); // 'data' | 'testimonial'
+  const [readingCardUri, setReadingCardUri] = useState(null);
 
   if (!chart) {
     return (
@@ -81,8 +83,10 @@ export default function Result() {
     }
   };
 
-  const openShareCard = async () => {
-    if (cardUri) {
+  const openShareCard = async (variant = 'data') => {
+    setCardVariant(variant);
+    const existing = variant === 'testimonial' ? readingCardUri : cardUri;
+    if (existing) {
       setCardOpen(true);
       return;
     }
@@ -90,21 +94,27 @@ export default function Result() {
     setError(null);
     try {
       const payload = chartToPayload(chart, lang);
+      const body = {
+        chart: payload,
+        lang,
+        variant,
+        ...(variant === 'testimonial' ? { reading_excerpt: reading } : {}),
+      };
       const r = await fetch(`${BACKEND_URL}/api/share-card`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chart: payload, lang }),
+        body: JSON.stringify(body),
       });
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
       const blob = await r.blob();
-      // Convert blob → base64 data URI so <Image> works on web and native
       const reader = new FileReader();
       const uri = await new Promise((resolve, reject) => {
         reader.onloadend = () => resolve(reader.result);
         reader.onerror = reject;
         reader.readAsDataURL(blob);
       });
-      setCardUri(uri);
+      if (variant === 'testimonial') setReadingCardUri(uri);
+      else setCardUri(uri);
       setCardOpen(true);
     } catch (e) {
       setError(String(e.message || e));
@@ -113,20 +123,22 @@ export default function Result() {
     }
   };
 
+  const activeCardUri = cardVariant === 'testimonial' ? readingCardUri : cardUri;
+
   const handleShareOrDownload = async () => {
-    if (!cardUri) return;
+    if (!activeCardUri) return;
+    const slug = cardVariant === 'testimonial' ? 'reading' : 'chart';
     if (Platform.OS === 'web') {
-      // Trigger browser download
       const a = document.createElement('a');
-      a.href = cardUri;
-      a.download = `gaia-${sign.name.toLowerCase().replace(/\s+/g, '-')}.png`;
+      a.href = activeCardUri;
+      a.download = `gaia-${slug}-${sign.name.toLowerCase().replace(/\s+/g, '-')}.png`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
     } else {
       try {
         await Share.share({
-          url: cardUri,
+          url: activeCardUri,
           message: lang === 'fr'
             ? `Ma charte GAIA : ${sign.name}`
             : `My GAIA chart: ${sign.name}`,
@@ -244,15 +256,15 @@ export default function Result() {
               <Text style={styles.error}>{t('error')} — {error}</Text>
             ) : null}
 
-            {/* Share card CTA */}
+            {/* Share card CTAs */}
             <TouchableOpacity
               testID="open-share-card"
-              style={[styles.shareBtn, cardLoading && styles.deepBtnLoading]}
-              onPress={openShareCard}
+              style={[styles.shareBtn, cardLoading && cardVariant === 'data' && styles.deepBtnLoading]}
+              onPress={() => openShareCard('data')}
               disabled={cardLoading}
               activeOpacity={0.85}
             >
-              {cardLoading ? (
+              {cardLoading && cardVariant === 'data' ? (
                 <>
                   <ActivityIndicator color={COLORS.terracotta} />
                   <Text style={styles.shareBtnText}>
@@ -268,6 +280,32 @@ export default function Result() {
                 </>
               )}
             </TouchableOpacity>
+
+            {reading ? (
+              <TouchableOpacity
+                testID="open-share-reading"
+                style={[styles.shareBtn, cardLoading && cardVariant === 'testimonial' && styles.deepBtnLoading]}
+                onPress={() => openShareCard('testimonial')}
+                disabled={cardLoading}
+                activeOpacity={0.85}
+              >
+                {cardLoading && cardVariant === 'testimonial' ? (
+                  <>
+                    <ActivityIndicator color={COLORS.gold} />
+                    <Text style={[styles.shareBtnText, { color: COLORS.gold }]}>
+                      {lang === 'fr' ? 'Composition du témoignage…' : 'Composing testimonial…'}
+                    </Text>
+                  </>
+                ) : (
+                  <>
+                    <Quote size={15} color={COLORS.gold} strokeWidth={1.6} />
+                    <Text style={[styles.shareBtnText, { color: COLORS.gold }]}>
+                      {lang === 'fr' ? 'Partager cette lecture' : 'Share this reading'}
+                    </Text>
+                  </>
+                )}
+              </TouchableOpacity>
+            ) : null}
           </Animated.View>
 
           <TouchableOpacity
@@ -303,9 +341,9 @@ export default function Result() {
               contentContainerStyle={styles.modalScroll}
               showsVerticalScrollIndicator={false}
             >
-              {cardUri ? (
+              {activeCardUri ? (
                 <Image
-                  source={{ uri: cardUri }}
+                  source={{ uri: activeCardUri }}
                   style={styles.cardImage}
                   resizeMode="contain"
                   testID="share-card-image"

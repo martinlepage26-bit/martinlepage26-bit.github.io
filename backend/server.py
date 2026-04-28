@@ -286,12 +286,176 @@ def _wrap(draw: ImageDraw.ImageDraw, text: str, font, max_w: int) -> list[str]:
 class ShareCardRequest(BaseModel):
     lang: Literal["fr", "en"] = "en"
     chart: ChartPayload
+    variant: Literal["data", "testimonial"] = "data"
+    reading_excerpt: Optional[str] = None
+
+    @field_validator("reading_excerpt")
+    @classmethod
+    def trim_excerpt(cls, v):
+        if v is None:
+            return None
+        v = v.strip()
+        return v if v else None
+
+
+def _draw_background(draw: ImageDraw.ImageDraw, W: int, H: int, birth_date: str, sign_name: str):
+    """Shared background: gold nebula bloom top-right, moss glow bottom-left, deterministic starfield."""
+    GOLD = (212, 175, 55)
+    for i, alpha in enumerate(range(55, 0, -2)):
+        r = 460 + i * 10
+        draw.ellipse(
+            (W - 300 - r, -200 - r, W - 300 + r, -200 + r),
+            fill=(*GOLD, max(0, alpha)),
+        )
+    for i, alpha in enumerate(range(45, 0, -2)):
+        r = 440 + i * 10
+        draw.ellipse(
+            (-220 - r, H - 100 - r, -220 + r, H - 100 + r),
+            fill=(116, 135, 107, max(0, alpha)),
+        )
+    import random
+    rnd = random.Random(birth_date + sign_name)
+    for _ in range(220):
+        x = rnd.randint(0, W)
+        y = rnd.randint(0, H)
+        rr = rnd.choice([1, 1, 1, 2, 2, 3])
+        a = rnd.randint(90, 220)
+        draw.ellipse((x - rr, y - rr, x + rr, y + rr), fill=(244, 241, 234, a))
+
+
+def _pick_excerpt(reading: str, max_chars: int = 320) -> str:
+    """Pick the best quotable paragraph from a full AI reading."""
+    if not reading:
+        return ""
+    # Split by blank lines, keep only those that are not too short.
+    paragraphs = [p.strip() for p in re.split(r"\n\n+", reading) if p.strip()]
+    candidates = [p for p in paragraphs if 80 <= len(p) <= max_chars] or paragraphs
+    if not candidates:
+        return ""
+    # Prefer the first substantive paragraph (skip very short openers).
+    chosen = candidates[0]
+    if len(chosen) > max_chars:
+        # Cut at the last sentence-ish break under max_chars
+        cut = chosen[:max_chars]
+        last_stop = max(cut.rfind(". "), cut.rfind("? "), cut.rfind("! "))
+        if last_stop > 120:
+            chosen = cut[: last_stop + 1]
+        else:
+            chosen = cut.rstrip() + "…"
+    return chosen
+
+
+def _render_testimonial(req: ShareCardRequest) -> bytes:
+    """Render an editorial pull-quote card highlighting a reading excerpt."""
+    W, H = 1080, 1350
+    BG = (11, 13, 18)
+    GOLD = (212, 175, 55)
+    TEXT = (244, 241, 234)
+    MUTED = (156, 163, 175)
+
+    img = Image.new("RGB", (W, H), BG)
+    draw = ImageDraw.Draw(img, "RGBA")
+    _draw_background(draw, W, H, req.chart.birth_date, req.chart.sign_name)
+
+    # Header
+    f_brand = _font("CormorantGaramond-Bold.ttf", 44)
+    f_tag = _font("Manrope-Regular.ttf", 18)
+    draw.text((70, 80), "GAIA", font=f_brand, fill=GOLD)
+    tag = "ASTROLOGIE DU CALENDRIER TERRESTRE" if req.lang == "fr" else "EARTH-CALENDAR ASTROLOGY"
+    draw.text((70, 132), tag, font=f_tag, fill=MUTED)
+
+    # Decorative opening quote mark
+    f_quote = _font("CormorantGaramond-Bold.ttf", 240)
+    draw.text((60, 180), "“", font=f_quote, fill=(*GOLD, 170))
+
+    # Excerpt — large serif body
+    excerpt = _pick_excerpt(req.reading_excerpt or "", max_chars=360)
+    if not excerpt:
+        excerpt = (
+            "Un texte est requis pour cette variante." if req.lang == "fr"
+            else "An excerpt is required for this variant."
+        )
+
+    # Pick a font size that fits within ~7 lines and ~900px wide
+    max_w = W - 170
+    for size in (54, 50, 46, 42, 38, 34):
+        f_body = _font("CormorantGaramond-Medium.ttf", size)
+        lines = _wrap(draw, excerpt, f_body, max_w)
+        if len(lines) <= 10:
+            break
+    y = 400
+    line_height = int(size * 1.3)
+    for line in lines[:12]:
+        draw.text((85, y), line, font=f_body, fill=TEXT)
+        y += line_height
+
+    # Rule + attribution block
+    rule_y = y + 40
+    draw.rectangle((85, rule_y, 200, rule_y + 2), fill=GOLD)
+
+    f_attr_label = _font("Manrope-Regular.ttf", 18)
+    f_attr_name = _font("CormorantGaramond-Bold.ttf", 46)
+    f_attr_sub = _font("Manrope-Regular.ttf", 22)
+    draw.text(
+        (85, rule_y + 28),
+        ("SIGNE DU CALENDRIER" if req.lang == "fr" else "CALENDAR SIGN"),
+        font=f_attr_label,
+        fill=MUTED,
+    )
+    draw.text((85, rule_y + 60), req.chart.sign_name, font=f_attr_name, fill=GOLD)
+    draw.text(
+        (85, rule_y + 120),
+        f"{req.chart.sign_archetype}  ·  {req.chart.birth_date}",
+        font=f_attr_sub,
+        fill=TEXT,
+    )
+
+    # Elements row (minimal)
+    chip_y = rule_y + 170
+    cx = 85
+    f_chip = _font("Manrope-SemiBold.ttf", 20)
+    for el in req.chart.elements:
+        color = ELEMENT_COLOR.get(el, GOLD)
+        pw = int(draw.textlength(el.upper(), font=f_chip)) + 36
+        draw.rounded_rectangle((cx, chip_y, cx + pw, chip_y + 42), radius=21, outline=color, width=2)
+        draw.text((cx + 18, chip_y + 8), el.upper(), font=f_chip, fill=color)
+        cx += pw + 10
+
+    # Footer
+    f_foot = _font("Manrope-Regular.ttf", 18)
+    foot = "Le calendrier écrit la personne." if req.lang == "fr" else "The calendar writes the person."
+    draw.text((70, H - 100), foot, font=f_foot, fill=GOLD)
+    draw.text((70, H - 70), "gaia · earth-calendar astrology", font=f_tag, fill=MUTED)
+
+    buf = io.BytesIO()
+    img.save(buf, format="PNG", optimize=True)
+    buf.seek(0)
+    return buf.read()
 
 
 @api_router.post("/share-card")
 async def share_card(req: ShareCardRequest):
-    """Render a beautiful 1080x1350 PNG poster of the Earth-chart for sharing."""
+    """Render a 1080x1350 PNG poster for sharing.
+    variant='data' → data-rich chart card (default)
+    variant='testimonial' → editorial pull-quote card featuring `reading_excerpt`.
+    """
     try:
+        if req.variant == "testimonial":
+            if not req.reading_excerpt or not req.reading_excerpt.strip():
+                raise HTTPException(
+                    status_code=400,
+                    detail="reading_excerpt is required for variant='testimonial'",
+                )
+            png_bytes = _render_testimonial(req)
+            return Response(
+                content=png_bytes,
+                media_type="image/png",
+                headers={
+                    "Cache-Control": "no-store",
+                    "Content-Disposition": 'inline; filename="gaia-reading.png"',
+                },
+            )
+
         W, H = 1080, 1350
         BG = (11, 13, 18)
         SURFACE = (21, 25, 33)
@@ -301,31 +465,7 @@ async def share_card(req: ShareCardRequest):
 
         img = Image.new("RGB", (W, H), BG)
         draw = ImageDraw.Draw(img, "RGBA")
-
-        # Soft gold nebula bloom (radial gradient via repeated alpha circles)
-        for i, alpha in enumerate(range(55, 0, -2)):
-            r = 460 + i * 10
-            draw.ellipse(
-                (W - 300 - r, -200 - r, W - 300 + r, -200 + r),
-                fill=(*GOLD, max(0, alpha)),
-            )
-        # Moss glow bottom-left
-        for i, alpha in enumerate(range(45, 0, -2)):
-            r = 440 + i * 10
-            draw.ellipse(
-                (-220 - r, H - 100 - r, -220 + r, H - 100 + r),
-                fill=(116, 135, 107, max(0, alpha)),
-            )
-
-        # Starfield
-        import random
-        rnd = random.Random(req.chart.birth_date + req.chart.sign_name)
-        for _ in range(220):
-            x = rnd.randint(0, W)
-            y = rnd.randint(0, H)
-            rr = rnd.choice([1, 1, 1, 2, 2, 3])
-            a = rnd.randint(90, 220)
-            draw.ellipse((x - rr, y - rr, x + rr, y + rr), fill=(244, 241, 234, a))
+        _draw_background(draw, W, H, req.chart.birth_date, req.chart.sign_name)
 
         # Header: GAIA wordmark
         f_brand = _font("CormorantGaramond-Bold.ttf", 56)
@@ -452,6 +592,8 @@ async def share_card(req: ShareCardRequest):
                 "Content-Disposition": 'inline; filename="gaia-earthchart.png"',
             },
         )
+    except HTTPException:
+        raise
     except Exception as e:
         logging.exception("Share card generation failed")
         raise HTTPException(status_code=500, detail=f"Share card failed: {e}")
