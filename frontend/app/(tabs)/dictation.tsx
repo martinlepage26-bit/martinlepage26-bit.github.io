@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -7,7 +7,6 @@ import {
   ScrollView,
   ActivityIndicator,
   Platform,
-  Alert,
   Share,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -20,11 +19,18 @@ import Animated, {
   Easing,
   cancelAnimation,
 } from 'react-native-reanimated';
-import { Audio } from 'expo-av';
+import {
+  useAudioRecorder,
+  useAudioRecorderState,
+  RecordingPresets,
+  requestRecordingPermissionsAsync,
+  setAudioModeAsync,
+} from 'expo-audio';
 import * as DocumentPicker from 'expo-document-picker';
 import * as Clipboard from 'expo-clipboard';
 import * as Sharing from 'expo-sharing';
 import * as FileSystem from 'expo-file-system/legacy';
+import * as Haptics from 'expo-haptics';
 
 import { colors, mono, sans } from '../../src/theme';
 import { api, STTResponse } from '../../src/api';
@@ -32,22 +38,45 @@ import { formatClock } from '../../src/utils';
 
 type State = 'idle' | 'recording' | 'transcribing' | 'ready';
 
+const h = {
+  light: () => {
+    if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+  },
+  medium: () => {
+    if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {});
+  },
+  heavy: () => {
+    if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy).catch(() => {});
+  },
+  select: () => {
+    if (Platform.OS !== 'web') Haptics.selectionAsync().catch(() => {});
+  },
+  success: () => {
+    if (Platform.OS !== 'web')
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+  },
+  error: () => {
+    if (Platform.OS !== 'web')
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error).catch(() => {});
+  },
+};
+
 export default function DictationScreen() {
   const [state, setState] = useState<State>('idle');
-  const [elapsedMs, setElapsedMs] = useState(0);
   const [transcript, setTranscript] = useState<string>('');
   const [transcriptId, setTranscriptId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
-  const recordingRef = useRef<Audio.Recording | null>(null);
-  const timerRef = useRef<number | null>(null);
-  const startAtRef = useRef<number>(0);
+  const recorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
+  const recState = useAudioRecorderState(recorder, 80);
+  const isRec = !!recState.isRecording;
+  const elapsedMs = recState.durationMillis ?? 0;
 
   // pulse animation
   const pulse = useSharedValue(1);
   useEffect(() => {
-    if (state === 'recording') {
+    if (isRec) {
       pulse.value = withRepeat(
         withTiming(1.15, { duration: 900, easing: Easing.inOut(Easing.ease) }),
         -1,
@@ -57,90 +86,67 @@ export default function DictationScreen() {
       cancelAnimation(pulse);
       pulse.value = withTiming(1, { duration: 200 });
     }
-  }, [state, pulse]);
+  }, [isRec, pulse]);
   const pulseStyle = useAnimatedStyle(() => ({ transform: [{ scale: pulse.value }] }));
 
+  // On unmount safely stop ongoing recording
   useEffect(() => {
     return () => {
-      // cleanup on unmount
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-        timerRef.current = null;
-      }
-      const r = recordingRef.current;
-      if (r) {
-        r.stopAndUnloadAsync().catch(() => {});
-        recordingRef.current = null;
+      if (recorder.isRecording) {
+        recorder.stop().catch(() => {});
       }
     };
-  }, []);
-
-  const startTimer = useCallback(() => {
-    startAtRef.current = Date.now();
-    setElapsedMs(0);
-    if (timerRef.current) clearInterval(timerRef.current);
-    timerRef.current = setInterval(() => {
-      setElapsedMs(Date.now() - startAtRef.current);
-    }, 50) as unknown as number;
-  }, []);
-
-  const stopTimer = useCallback(() => {
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-      timerRef.current = null;
-    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onRecord = useCallback(async () => {
     setError(null);
-    if (state === 'recording') {
-      // stop and transcribe
+
+    // Stop flow
+    if (isRec) {
       try {
-        const r = recordingRef.current;
-        if (!r) return;
-        stopTimer();
+        h.medium();
         setState('transcribing');
-        await r.stopAndUnloadAsync();
-        const uri = r.getURI();
-        recordingRef.current = null;
+        await recorder.stop();
+        const uri = recorder.uri;
         if (!uri) throw new Error('No audio captured.');
         await runTranscribe(uri, `capture-${Date.now()}.m4a`);
       } catch (e: any) {
+        h.error();
         setError(e?.message || 'Recording stop failed');
         setState('idle');
       }
       return;
     }
 
-    if (state === 'ready' || state === 'idle') {
-      try {
-        const perm = await Audio.requestPermissionsAsync();
-        if (!perm.granted) {
-          setError('Microphone permission denied.');
-          return;
-        }
-        await Audio.setAudioModeAsync({
-          allowsRecordingIOS: true,
-          playsInSilentModeIOS: true,
-          staysActiveInBackground: false,
-        });
-
-        setTranscript('');
-        setTranscriptId(null);
-        setCopied(false);
-
-        const rec = new Audio.Recording();
-        await rec.prepareToRecordAsync(Audio.RecordingOptionsPresets.HIGH_QUALITY);
-        await rec.startAsync();
-        recordingRef.current = rec;
-        setState('recording');
-        startTimer();
-      } catch (e: any) {
-        setError(e?.message || 'Could not start recording');
-        setState('idle');
+    // Start flow
+    try {
+      const perm = await requestRecordingPermissionsAsync();
+      if (!perm.granted) {
+        setError('Microphone permission denied.');
+        h.error();
+        return;
       }
+      await setAudioModeAsync({
+        playsInSilentMode: true,
+        allowsRecording: true,
+      });
+
+      setTranscript('');
+      setTranscriptId(null);
+      setCopied(false);
+
+      await recorder.prepareToRecordAsync();
+      recorder.record();
+      h.success();
+      setState('recording');
+    } catch (e: any) {
+      h.error();
+      setError(e?.message || 'Could not start recording');
+      setState('idle');
     }
-  }, [state, startTimer, stopTimer]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isRec, recorder]);
 
   const runTranscribe = useCallback(async (uri: string, filename: string) => {
     try {
@@ -158,13 +164,16 @@ export default function DictationScreen() {
       setTranscript(r.transcript || '');
       setTranscriptId(r.id);
       setState('ready');
+      h.success();
     } catch (e: any) {
+      h.error();
       setError(e?.message || 'Transcription failed');
       setState('idle');
     }
   }, []);
 
   const onImport = useCallback(async () => {
+    h.light();
     setError(null);
     try {
       const res = await DocumentPicker.getDocumentAsync({
@@ -176,7 +185,6 @@ export default function DictationScreen() {
       const a = res.assets[0];
       setTranscript('');
       setTranscriptId(null);
-      setElapsedMs(0);
       await runTranscribe(a.uri, a.name || 'import.mp3');
     } catch (e: any) {
       setError(e?.message || 'Import failed');
@@ -185,38 +193,36 @@ export default function DictationScreen() {
   }, [runTranscribe]);
 
   const onClear = useCallback(async () => {
-    if (state === 'recording') {
-      const r = recordingRef.current;
-      if (r) {
-        try { await r.stopAndUnloadAsync(); } catch {}
-      }
-      recordingRef.current = null;
-      stopTimer();
+    h.select();
+    if (isRec) {
+      try {
+        await recorder.stop();
+      } catch {}
     }
     setTranscript('');
     setTranscriptId(null);
     setError(null);
-    setElapsedMs(0);
     setState('idle');
     setCopied(false);
-  }, [state, stopTimer]);
+  }, [isRec, recorder]);
 
   const onCopy = useCallback(async () => {
     if (!transcript) return;
     try {
       await Clipboard.setStringAsync(toMarkdown(transcript));
       setCopied(true);
+      h.success();
       setTimeout(() => setCopied(false), 1600);
     } catch {}
   }, [transcript]);
 
   const onExport = useCallback(async () => {
     if (!transcript) return;
+    h.medium();
     const md = toMarkdown(transcript);
     const fname = `echo-transcript-${Date.now()}.md`;
     if (Platform.OS === 'web') {
       try {
-        // browser download
         // eslint-disable-next-line no-undef
         const blob = new Blob([md], { type: 'text/markdown' });
         // eslint-disable-next-line no-undef
@@ -276,8 +282,8 @@ export default function DictationScreen() {
           <Text style={styles.sectionTitle}>Dictation</Text>
           <View style={{ flex: 1 }} />
           <View style={styles.pill}>
-            <View style={[styles.pillDot, state === 'recording' && { backgroundColor: colors.red }]} />
-            <Text style={styles.pillTxt}>{state === 'recording' ? 'LIVE' : 'IDLE'}</Text>
+            <View style={[styles.pillDot, isRec && { backgroundColor: colors.red }]} />
+            <Text style={styles.pillTxt}>{isRec ? 'LIVE' : 'IDLE'}</Text>
           </View>
         </View>
         <Text style={styles.tagline}>Record or import audio. Get a transcript back.</Text>
@@ -298,14 +304,14 @@ export default function DictationScreen() {
               disabled={state === 'transcribing'}
               style={[
                 styles.recordBtn,
-                state === 'recording' && styles.recordBtnActive,
+                isRec && styles.recordBtnActive,
                 state === 'transcribing' && { opacity: 0.6 },
               ]}
               testID="record-button"
             >
               {state === 'transcribing' ? (
                 <ActivityIndicator color={colors.amber} size="large" />
-              ) : state === 'recording' ? (
+              ) : isRec ? (
                 <View style={styles.stopSquare} />
               ) : (
                 <Ionicons name="mic" size={34} color={colors.amber} />
@@ -324,7 +330,7 @@ export default function DictationScreen() {
           <View style={styles.secondaryRow}>
             <TouchableOpacity
               onPress={onImport}
-              disabled={state === 'recording' || state === 'transcribing'}
+              disabled={isRec || state === 'transcribing'}
               style={styles.ghostBtn}
               testID="import-audio-button"
             >
@@ -382,12 +388,12 @@ export default function DictationScreen() {
             <View style={styles.transcriptMeta}>
               <Text style={styles.metaTxt}>
                 {wordCount} words · {transcript.length} chars
+                {transcriptId ? ` · #${transcriptId.slice(0, 6)}` : ''}
               </Text>
             </View>
           ) : null}
         </View>
 
-        {/* Export row */}
         {transcript ? (
           <View style={styles.exportRow}>
             <TouchableOpacity
@@ -464,9 +470,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
   },
   pillDot: { width: 5, height: 5, backgroundColor: colors.textMuted },
-  pillTxt: {
-    fontFamily: mono, fontSize: 9.5, letterSpacing: 2, color: colors.textMuted,
-  },
+  pillTxt: { fontFamily: mono, fontSize: 9.5, letterSpacing: 2, color: colors.textMuted },
 
   stage: {
     alignItems: 'center', marginTop: 22,
@@ -486,12 +490,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.panel,
     alignItems: 'center', justifyContent: 'center',
   },
-  recordBtnActive: {
-    borderColor: colors.red, backgroundColor: 'rgba(239,68,68,0.08)',
-  },
-  stopSquare: {
-    width: 28, height: 28, backgroundColor: colors.red,
-  },
+  recordBtnActive: { borderColor: colors.red, backgroundColor: 'rgba(239,68,68,0.08)' },
+  stopSquare: { width: 28, height: 28, backgroundColor: colors.red },
 
   clock: {
     fontFamily: mono, fontSize: 30, letterSpacing: 2, color: colors.textPrimary,
@@ -501,9 +501,7 @@ const styles = StyleSheet.create({
     fontFamily: mono, fontSize: 11, letterSpacing: 2, color: colors.textMuted,
     marginTop: 8, textTransform: 'uppercase',
   },
-  secondaryRow: {
-    flexDirection: 'row', gap: 10, marginTop: 22,
-  },
+  secondaryRow: { flexDirection: 'row', gap: 10, marginTop: 22 },
   ghostBtn: {
     flexDirection: 'row', alignItems: 'center', gap: 6,
     paddingHorizontal: 12, paddingVertical: 10,
@@ -526,18 +524,10 @@ const styles = StyleSheet.create({
   },
   consoleDots: { flexDirection: 'row', gap: 6 },
   consoleDot: { width: 8, height: 8, borderRadius: 4 },
-  consoleTitle: {
-    fontFamily: mono, fontSize: 10, letterSpacing: 2, color: colors.textMuted,
-  },
-  consoleBody: {
-    paddingHorizontal: 14, paddingVertical: 16, minHeight: 140,
-  },
-  consoleLine: {
-    fontFamily: mono, fontSize: 13, lineHeight: 22, color: colors.amber,
-  },
-  transcriptText: {
-    fontFamily: mono, fontSize: 14, lineHeight: 24, color: colors.textPrimary,
-  },
+  consoleTitle: { fontFamily: mono, fontSize: 10, letterSpacing: 2, color: colors.textMuted },
+  consoleBody: { paddingHorizontal: 14, paddingVertical: 16, minHeight: 140 },
+  consoleLine: { fontFamily: mono, fontSize: 13, lineHeight: 22, color: colors.amber },
+  transcriptText: { fontFamily: mono, fontSize: 14, lineHeight: 24, color: colors.textPrimary },
   transcriptMeta: {
     borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.border,
     paddingHorizontal: 14, paddingVertical: 8,

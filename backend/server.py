@@ -424,6 +424,22 @@ async def list_transcripts():
     return [Transcript(**r) for r in rows]
 
 
+@api_router.delete("/drafts/{draft_id}")
+async def delete_draft(draft_id: str):
+    res = await db.drafts.delete_one({"id": draft_id})
+    if res.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Draft not found")
+    return {"deleted": res.deleted_count, "id": draft_id}
+
+
+@api_router.delete("/transcripts/{transcript_id}")
+async def delete_transcript(transcript_id: str):
+    res = await db.transcripts.delete_one({"id": transcript_id})
+    if res.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Transcript not found")
+    return {"deleted": res.deleted_count, "id": transcript_id}
+
+
 # ------------------------------------------------------------------------------
 # Wire router + middleware
 # ------------------------------------------------------------------------------

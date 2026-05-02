@@ -43,7 +43,7 @@
       ],
       "expo-web-browser",
       [
-        "expo-av",
+        "expo-audio",
         {
           "microphonePermission": "Record voice notes to transcribe into text"
         }

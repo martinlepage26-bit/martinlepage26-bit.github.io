@@ -6,21 +6,46 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
-  Alert,
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
   Keyboard,
   TouchableWithoutFeedback,
+  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { Audio } from 'expo-av';
+import {
+  useAudioPlayer,
+  useAudioPlayerStatus,
+  setAudioModeAsync,
+  type AudioPlayer,
+  type AudioStatus,
+} from 'expo-audio';
 import * as DocumentPicker from 'expo-document-picker';
+import * as Haptics from 'expo-haptics';
 
 import { colors, mono, type, sans } from '../../src/theme';
 import { api, Voice, WordTiming } from '../../src/api';
 import { wordAndCharCount, truncateMiddle } from '../../src/utils';
+import { pendingDraft } from '../../src/store';
+
+const h = {
+  light: () => {
+    if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+  },
+  medium: () => {
+    if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {});
+  },
+  select: () => {
+    if (Platform.OS !== 'web') Haptics.selectionAsync().catch(() => {});
+  },
+  success: () => {
+    if (Platform.OS !== 'web')
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+  },
+};
 
 export default function ReadbackScreen() {
   const [text, setText] = useState('');
@@ -31,16 +56,21 @@ export default function ReadbackScreen() {
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [filename, setFilename] = useState<string | null>(null);
+  const [saveHint, setSaveHint] = useState<string | null>(null);
 
+  const [audioUri, setAudioUri] = useState<string | null>(null);
   const [words, setWords] = useState<WordTiming[]>([]);
   const [activeIdx, setActiveIdx] = useState<number>(-1);
-  const [positionMs, setPositionMs] = useState<number>(0);
-  const [durationMs, setDurationMs] = useState<number>(0);
-  const [isPlaying, setIsPlaying] = useState(false);
 
-  const soundRef = useRef<Audio.Sound | null>(null);
+  const player: AudioPlayer = useAudioPlayer(audioUri ? { uri: audioUri } : null, 80);
+  const status: AudioStatus = useAudioPlayerStatus(player);
+  const isPlaying = !!status?.playing;
+  const positionMs = Math.max(0, Math.round((status?.currentTime ?? 0) * 1000));
+  const durationMs = Math.max(0, Math.round((status?.duration ?? 0) * 1000));
+
   const wordsRef = useRef<WordTiming[]>([]);
   wordsRef.current = words;
+  const lastActiveRef = useRef<number>(-1);
 
   const { words: wc, chars: cc, mins } = wordAndCharCount(text);
 
@@ -55,58 +85,98 @@ export default function ReadbackScreen() {
         console.warn('voices fetch failed', e);
       }
       try {
-        await Audio.setAudioModeAsync({
-          allowsRecordingIOS: false,
-          playsInSilentModeIOS: true,
-          staysActiveInBackground: false,
-          shouldDuckAndroid: true,
-        });
+        await setAudioModeAsync({ playsInSilentMode: true, allowsRecording: false });
       } catch {}
     })();
-
-    return () => {
-      const s = soundRef.current;
-      if (s) {
-        s.unloadAsync().catch(() => {});
-        soundRef.current = null;
-      }
-    };
   }, []);
+
+  // Load pending draft from Library on focus
+  useFocusEffect(
+    useCallback(() => {
+      const pending = pendingDraft.consume();
+      if (pending?.text != null) {
+        setText(pending.text);
+        setFilename(pending.title || null);
+        setError(null);
+        resetAudio();
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+  );
+
+  // ------------------------ Playback-driven word tracking + haptic
+  useEffect(() => {
+    const ws = wordsRef.current;
+    if (!ws.length || !audioUri) return;
+    const t = positionMs / 1000;
+    let idx = -1;
+    for (let i = 0; i < ws.length; i++) {
+      if (t >= ws[i].start && t <= ws[i].end) {
+        idx = i;
+        break;
+      }
+      if (t < ws[i].start) {
+        idx = Math.max(0, i - 1);
+        break;
+      }
+    }
+    if (idx === -1 && t >= ws[ws.length - 1].end) idx = ws.length - 1;
+    if (idx !== lastActiveRef.current) {
+      lastActiveRef.current = idx;
+      setActiveIdx(idx);
+      // haptic on sentence-ending punctuation only (avoid spam)
+      if (isPlaying && idx >= 0) {
+        const w = ws[idx].word;
+        if (w && /[.!?,;:]$/.test(w)) h.select();
+      }
+    }
+  }, [positionMs, audioUri, isPlaying]);
+
+  // When playback finishes
+  useEffect(() => {
+    if (status?.didJustFinish) {
+      setActiveIdx(-1);
+      lastActiveRef.current = -1;
+      h.light();
+    }
+  }, [status?.didJustFinish]);
+
+  // ------------------------ Helpers
+  const resetAudio = useCallback(() => {
+    try {
+      player.pause();
+    } catch {}
+    setAudioUri(null);
+    setWords([]);
+    setActiveIdx(-1);
+    lastActiveRef.current = -1;
+  }, [player]);
 
   // ------------------------ Actions
   const onLoadSample = useCallback(async () => {
+    h.select();
     try {
       const r = await api.getSampleText();
       setText(r.text);
       setFilename(null);
       setError(null);
-      await resetAudio();
+      resetAudio();
     } catch (e: any) {
       setError(e?.message || 'Failed to load sample');
     }
-  }, []);
+  }, [resetAudio]);
 
-  const onClear = useCallback(async () => {
+  const onClear = useCallback(() => {
+    h.select();
     setText('');
     setFilename(null);
     setError(null);
-    await resetAudio();
-  }, []);
-
-  const resetAudio = useCallback(async () => {
-    const s = soundRef.current;
-    if (s) {
-      try { await s.unloadAsync(); } catch {}
-    }
-    soundRef.current = null;
-    setIsPlaying(false);
-    setActiveIdx(-1);
-    setPositionMs(0);
-    setDurationMs(0);
-    setWords([]);
-  }, []);
+    setSaveHint(null);
+    resetAudio();
+  }, [resetAudio]);
 
   const onImport = useCallback(async () => {
+    h.light();
     try {
       setError(null);
       const res = await DocumentPicker.getDocumentAsync({
@@ -137,41 +207,14 @@ export default function ReadbackScreen() {
         a.mimeType || 'application/octet-stream'
       );
       setText(parsed.text || '');
-      await resetAudio();
+      resetAudio();
+      h.success();
     } catch (e: any) {
       setError(e?.message || 'File import failed');
     } finally {
       setLoading(false);
     }
   }, [resetAudio]);
-
-  const onStatusUpdate = useCallback((status: any) => {
-    if (!status?.isLoaded) return;
-    const pos = status.positionMillis ?? 0;
-    const dur = status.durationMillis ?? 0;
-    setPositionMs(pos);
-    if (dur) setDurationMs(dur);
-    setIsPlaying(!!status.isPlaying);
-
-    // Resolve active word by time
-    const t = pos / 1000;
-    const ws = wordsRef.current;
-    if (!ws.length) return;
-    // Use linear scan (tiny), could binary-search if ever huge
-    let idx = -1;
-    for (let i = 0; i < ws.length; i++) {
-      if (t >= ws[i].start && t <= ws[i].end) { idx = i; break; }
-      if (t < ws[i].start) { idx = Math.max(0, i - 1); break; }
-    }
-    if (idx === -1 && t >= ws[ws.length - 1].end) idx = ws.length - 1;
-    setActiveIdx(idx);
-
-    if (status.didJustFinish) {
-      setIsPlaying(false);
-      setActiveIdx(-1);
-      setPositionMs(0);
-    }
-  }, []);
 
   const onPlay = useCallback(async () => {
     setError(null);
@@ -180,57 +223,78 @@ export default function ReadbackScreen() {
       setError('Paste text or import a file first.');
       return;
     }
-
-    // If sound is loaded already, just resume
-    const s = soundRef.current;
-    if (s) {
+    // If audio already generated, toggle play/pause
+    if (audioUri) {
       try {
-        const status = await s.getStatusAsync();
-        if (status.isLoaded) {
-          if (status.isPlaying) {
-            await s.pauseAsync();
-          } else {
-            await s.playAsync();
-          }
-          return;
+        if (isPlaying) {
+          player.pause();
+          h.light();
+        } else {
+          player.play();
+          h.medium();
         }
       } catch {}
+      return;
     }
-
     try {
       setGenerating(true);
+      h.light();
       const r = await api.generateTTS(t, voiceId, speed);
       setWords(r.words);
       setActiveIdx(-1);
+      lastActiveRef.current = -1;
       const uri = `data:${r.mime};base64,${r.audio_base64}`;
-      const { sound } = await Audio.Sound.createAsync(
-        { uri },
-        { shouldPlay: true, progressUpdateIntervalMillis: 60 },
-        onStatusUpdate
-      );
-      soundRef.current = sound;
+      setAudioUri(uri);
+      // Start playback shortly after source becomes available
+      setTimeout(() => {
+        try {
+          player.play();
+          h.medium();
+        } catch {}
+      }, 120);
     } catch (e: any) {
       setError(e?.message || 'Readback failed');
     } finally {
       setGenerating(false);
     }
-  }, [text, voiceId, speed, onStatusUpdate]);
+  }, [text, voiceId, speed, audioUri, isPlaying, player]);
 
-  const onStop = useCallback(async () => {
-    const s = soundRef.current;
-    if (s) {
-      try { await s.stopAsync(); } catch {}
-      try { await s.unloadAsync(); } catch {}
-    }
-    soundRef.current = null;
-    setIsPlaying(false);
+  const onStop = useCallback(() => {
+    h.medium();
+    try {
+      player.pause();
+      player.seekTo(0);
+    } catch {}
     setActiveIdx(-1);
-    setPositionMs(0);
-  }, []);
+    lastActiveRef.current = -1;
+    // Also discard generated audio so next PLAY regenerates with latest text/voice/speed
+    setAudioUri(null);
+    setWords([]);
+  }, [player]);
+
+  const onSaveDraft = useCallback(async () => {
+    const t = text.trim();
+    if (!t) {
+      setError('Nothing to save — paste or import text first.');
+      return;
+    }
+    try {
+      const title =
+        filename?.replace(/\.(txt|md|pdf|docx)$/i, '') ||
+        t.split(/\s+/).slice(0, 6).join(' ').slice(0, 60) ||
+        'Untitled draft';
+      await api.saveDraft(title, t);
+      setSaveHint('Saved to Library');
+      h.success();
+      setTimeout(() => setSaveHint(null), 2000);
+    } catch (e: any) {
+      setError(e?.message || 'Save failed');
+    }
+  }, [text, filename]);
 
   // When text, voice, or speed changes, invalidate existing audio
   useEffect(() => {
-    if (soundRef.current) {
+    if (audioUri) {
       resetAudio();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -239,7 +303,6 @@ export default function ReadbackScreen() {
   const progress = durationMs > 0 ? Math.min(1, positionMs / durationMs) : 0;
   const selectedVoice = voices.find((v) => v.id === voiceId);
 
-  // ---- Render word-by-word highlight view when words are available
   const readbackContent = useMemo(() => {
     if (!words.length) {
       return (
@@ -271,7 +334,6 @@ export default function ReadbackScreen() {
       <KeyboardAvoidingView
         style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
           <View style={styles.flex}>
@@ -312,6 +374,14 @@ export default function ReadbackScreen() {
                       <Text style={styles.toolBtnTxt}>SAMPLE</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
+                      onPress={onSaveDraft}
+                      style={styles.toolBtn}
+                      testID="save-draft-button"
+                    >
+                      <Ionicons name="bookmark-outline" size={12} color={colors.amber} />
+                      <Text style={[styles.toolBtnTxt, { color: colors.amber }]}>SAVE</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
                       onPress={onClear}
                       style={styles.toolBtn}
                       testID="clear-button"
@@ -343,12 +413,14 @@ export default function ReadbackScreen() {
                   )}
                 </TouchableOpacity>
 
-                {/* Text input */}
                 <View style={styles.textFieldWrap}>
                   <Text style={styles.miniLabel}>Text Body</Text>
                   <TextInput
                     value={text}
-                    onChangeText={(v) => { setText(v); if (soundRef.current) resetAudio(); }}
+                    onChangeText={(v) => {
+                      setText(v);
+                      if (audioUri) resetAudio();
+                    }}
                     multiline
                     placeholder="Paste notes, drafts, or finished docs…"
                     placeholderTextColor={colors.textFaint}
@@ -363,6 +435,13 @@ export default function ReadbackScreen() {
                   <StatCell label="Chars" value={String(cc)} />
                   <StatCell label="Est" value={`${mins} min`} />
                 </View>
+
+                {saveHint ? (
+                  <View style={styles.saveToast} testID="save-toast">
+                    <Ionicons name="checkmark-circle" size={12} color={colors.emerald} />
+                    <Text style={styles.saveToastTxt}>{saveHint}</Text>
+                  </View>
+                ) : null}
               </View>
 
               {/* Voice picker */}
@@ -383,7 +462,10 @@ export default function ReadbackScreen() {
                     return (
                       <TouchableOpacity
                         key={v.id}
-                        onPress={() => setVoiceId(v.id)}
+                        onPress={() => {
+                          h.select();
+                          setVoiceId(v.id);
+                        }}
                         style={[styles.voiceChip, active && styles.voiceChipActive]}
                         testID={`voice-chip-${v.id}`}
                       >
@@ -404,7 +486,10 @@ export default function ReadbackScreen() {
                     {[0.75, 1.0, 1.25, 1.5].map((s) => (
                       <TouchableOpacity
                         key={s}
-                        onPress={() => setSpeed(s)}
+                        onPress={() => {
+                          h.select();
+                          setSpeed(s);
+                        }}
                         style={[styles.speedChip, speed === s && styles.speedChipActive]}
                         testID={`speed-${s}`}
                       >
@@ -527,9 +612,7 @@ const styles = StyleSheet.create({
     fontFamily: mono, fontSize: 13, color: colors.textSecondary,
     letterSpacing: 2, textTransform: 'uppercase',
   },
-  tagline: {
-    fontFamily: sans, fontSize: 15, color: colors.textSecondary, marginTop: 8,
-  },
+  tagline: { fontFamily: sans, fontSize: 15, color: colors.textSecondary, marginTop: 8 },
   pill: {
     flexDirection: 'row', alignItems: 'center', gap: 6,
     paddingHorizontal: 8, paddingVertical: 4,
@@ -542,9 +625,7 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth, borderColor: colors.border,
   },
   pillDot: { width: 5, height: 5, backgroundColor: colors.textMuted },
-  pillTxt: {
-    fontFamily: mono, fontSize: 9.5, letterSpacing: 2, color: colors.textMuted,
-  },
+  pillTxt: { fontFamily: mono, fontSize: 9.5, letterSpacing: 2, color: colors.textMuted },
 
   panel: {
     backgroundColor: colors.surface,
@@ -608,6 +689,13 @@ const styles = StyleSheet.create({
   statValue: {
     fontFamily: mono, fontSize: 14, color: colors.textPrimary, marginTop: 3,
   },
+
+  saveToast: {
+    flexDirection: 'row', alignItems: 'center', gap: 6,
+    marginTop: 10, paddingHorizontal: 10, paddingVertical: 7,
+    backgroundColor: 'rgba(74,222,128,0.06)', borderLeftWidth: 2, borderLeftColor: colors.emerald,
+  },
+  saveToastTxt: { fontFamily: mono, fontSize: 11, letterSpacing: 1.4, color: colors.emerald },
 
   voiceRow: { gap: 8, paddingRight: 8 },
   voiceChip: {

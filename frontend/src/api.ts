@@ -18,6 +18,18 @@ export type STTResponse = {
   created_at: string;
   duration?: number | null;
 };
+export type DraftRow = {
+  id: string;
+  title: string;
+  text: string;
+  created_at: string;
+};
+export type TranscriptRow = {
+  id: string;
+  text: string;
+  duration?: number | null;
+  created_at: string;
+};
 export type ParseFileResponse = {
   text: string;
   filename: string;
@@ -64,6 +76,20 @@ export const api = {
     }
     return (await res.json()) as STTResponse;
   },
+
+  listDrafts: () => jfetch<DraftRow[]>('/drafts'),
+  saveDraft: (title: string, text: string) =>
+    jfetch<DraftRow>('/drafts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, text }),
+    }),
+  deleteDraft: (id: string) =>
+    jfetch<{ deleted: number; id: string }>(`/drafts/${id}`, { method: 'DELETE' }),
+
+  listTranscripts: () => jfetch<TranscriptRow[]>('/transcripts'),
+  deleteTranscript: (id: string) =>
+    jfetch<{ deleted: number; id: string }>(`/transcripts/${id}`, { method: 'DELETE' }),
 
   parseFile: async (uri: string, filename: string, mime: string) => {
     const form = new FormData();

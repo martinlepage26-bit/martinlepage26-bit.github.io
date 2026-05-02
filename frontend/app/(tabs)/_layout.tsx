@@ -53,6 +53,19 @@ export default function TabsLayout() {
           tabBarLabel: ({ focused }) => <TabLabel label="DICTATION" focused={focused} />,
         }}
       />
+      <Tabs.Screen
+        name="library"
+        options={{
+          title: 'Library',
+          tabBarIcon: ({ color, focused }) => (
+            <View style={styles.iconWrap}>
+              <Ionicons name="albums-outline" size={20} color={color} />
+              {focused ? <View style={styles.activeDot} /> : null}
+            </View>
+          ),
+          tabBarLabel: ({ focused }) => <TabLabel label="LIBRARY" focused={focused} />,
+        }}
+      />
     </Tabs>
   );
 }
