@@ -1,0 +1,89 @@
+{
+  "theme": "DARK",
+  "archetype": "Retro-Futurism (Terminal / Console Muted Dark)",
+  "design_philosophy": "ECHO requires a focused, calm, distraction-free environment. Use a muted dark 'terminal/console' aesthetic with monospace typography hints. Eliminate rounded corners for panels, favor 1px borders, and use a technical, low-contrast UI chrome to let the primary text and readback highlights shine.",
+  "typography": {
+    "font_families": {
+      "heading": "IBM Plex Mono, JetBrains Mono, monospace",
+      "body": "IBM Plex Sans, Inter, sans-serif",
+      "captions": "JetBrains Mono, IBM Plex Mono, monospace"
+    },
+    "scale": {
+      "h1": "text-2xl sm:text-3xl font-mono tracking-tighter text-slate-200",
+      "h2": "text-xl sm:text-2xl font-mono tracking-tight text-slate-300",
+      "body": "text-base sm:text-lg text-slate-300 leading-relaxed font-sans",
+      "captions": "text-[10px] sm:text-xs uppercase tracking-[0.2em] text-slate-500 font-mono",
+      "console_prompt": "text-sm font-mono text-amber-500/80"
+    }
+  },
+  "colors": {
+    "background": {
+      "base": "bg-[#0A0A0E]",
+      "surface": "bg-[#111116]",
+      "panel_active": "bg-[#16161D]"
+    },
+    "text": {
+      "primary": "text-slate-200",
+      "secondary": "text-slate-400",
+      "muted": "text-slate-500",
+      "highlight": "text-amber-400"
+    },
+    "border": {
+      "default": "border-slate-800",
+      "focus": "border-slate-600",
+      "dashed": "border-dashed border-slate-700"
+    },
+    "accent": {
+      "primary": "bg-slate-800 text-slate-200",
+      "hover": "hover:bg-slate-700",
+      "amber_highlight": "bg-amber-500/10 text-amber-500",
+      "record_button": "bg-red-500/10 text-red-500 border-red-500/30",
+      "record_active": "bg-red-500 text-white shadow-[0_0_15px_rgba(239,68,68,0.5)]"
+    }
+  },
+  "spacing_and_layout": {
+    "mobile_first": "Design as a mobile web app. Use max-w-md mx-auto on desktop to preserve the mobile layout proportions.",
+    "padding": "Generous internal padding for reading clarity. p-4 to p-6 for main content blocks.",
+    "navigation": "Fixed bottom tab bar for mobile switching between 'Readback' and 'Dictation'. backdrop-blur-md bg-[#0A0A0E]/80 border-t border-slate-800.",
+    "dividers": "1px solid border-slate-800. No heavy dropshadows."
+  },
+  "micro_themes": [
+    "Grid Borders (The 'Technical' Look): Expose structural edges with border-b and border-slate-800.",
+    "Retro-Futurism: Deep dark background, monospace fonts, small uppercase tech labels, pure minimal chrome."
+  ],
+  "components": {
+    "text_intake": "Custom text area: bg-transparent border-none focus:ring-0 resize-none text-slate-300. Give it height to fill available space.",
+    "file_dropzone": "Dashed border (border-dashed border-slate-700), bg-[#111116]. Hover state changes to border-slate-500 bg-[#16161D].",
+    "dictation_console": "Visual block resembling a terminal window. p-4 border border-slate-800 bg-[#0A0A0E]. Use `>_` prompts for instruction text.",
+    "buttons": {
+      "standard": "rounded-none border border-slate-800 bg-[#111116] hover:bg-slate-800 text-xs font-mono tracking-widest uppercase",
+      "record": "rounded-full w-16 h-16 flex items-center justify-center transition-all duration-300. Red tint for stop/record."
+    },
+    "readback_highlight": "Live readback word highlight should use a distinct background and text color shift (e.g. bg-amber-500/20 text-amber-300)."
+  },
+  "motion": {
+    "standard": "transition-all duration-200 ease-in-out.",
+    "highlight": "Fast color transition for word-by-word highlight (duration-75) to avoid lagging behind speech.",
+    "record_pulse": "Subtle scale and opacity pulse when recording is active."
+  },
+  "media": {
+    "image_urls": [
+      {
+        "url": "https://images.pexels.com/photos/20818843/pexels-photo-20818843.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "description": "Minimalistic textured black fabric. Use as an ultra-low opacity (e.g. 2-5%) fixed background overlay to give a tactile 'matte' terminal feel, avoiding pure flat digital black.",
+        "category": "background_texture"
+      }
+    ]
+  },
+  "testing": {
+    "data_testid_rules": "All interactive elements MUST include a kebab-case, role-based data-testid attribute. Examples: `data-testid=\"import-file-button\"`, `data-testid=\"record-dictation-button\"`, `data-testid=\"tts-play-button\"`."
+  },
+  "instructions_to_main_agent": [
+    "TECH STACK ENFORCEMENT: The prompt mentions 'Expo React Native mobile app' but your environment explicitly requires 'React js, Tailwind, shadcn/ui primitives'. Build a responsive React JS web app that visually and functionally mimics a native mobile app (e.g., max-w-md mx-auto container, bottom tab navigation, full height panes).",
+    "AESTHETIC: Strictly adhere to the muted dark terminal/console aesthetic. Use Shadcn components but override their default rounded corners (`rounded-none` or `rounded-sm`) and remove heavy shadows. Use `font-mono` for UI labels, tabs, and buttons.",
+    "LAYOUT: Implement a bottom tab navigation (Readback / Dictation).",
+    "READBACK PANEL: Must include a file drop zone/import button, a large textarea for text intake with a word counter, voice profile selector, transport controls, and dynamic word-by-word highlighting styling.",
+    "DICTATION PANEL: Must include a central circular record button, a stylized terminal window for the transcript, and timestamp/status labels (`> microphone standby`, etc.).",
+    "ICONS: Use lucide-react or @phosphor-icons/react for clean, crisp, monoline technical icons."
+  ]
+}
