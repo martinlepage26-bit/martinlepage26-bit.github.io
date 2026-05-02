@@ -49,6 +49,40 @@ const canonical = `/projects/${slug}/`;
 const project = entryKind === 'project' ? (entry as ProjectEntry) : undefined;
 const paper = entryKind === 'paper' ? (entry as PaperEntry) : undefined;
 const isSignalManuscript = slug === 'from-ai-anxiety-to-recursive-governance-under-constraint' && Boolean(project);
+const pairedSurface =
+  project && slug === 'astral'
+    ? {
+        eyebrow: 'Paired surface',
+        title: 'GAIA grounds the baseline. LOTUS shows how much of it gets used under pressure.',
+        body: 'Treat GAIA as the orientation layer and LOTUS as the deployment layer. The shared hub keeps both visible as one mobile-ready stack.',
+        links: [
+          { label: 'Open GAIA', url: '/gaia/' },
+          { label: 'Open LOTUS', url: '/lotus/' },
+          { label: 'Open shared hub', url: '/projects/gaia-lotus/' },
+        ],
+      }
+    : project && slug === 'lotus'
+      ? {
+          eyebrow: 'Paired surface',
+          title: 'LOTUS measures deployment. GAIA grounds the baseline first.',
+          body: 'Read LOTUS as the agency layer in the same stack. The shared hub keeps the baseline and deployment surfaces in one frame.',
+          links: [
+            { label: 'Open LOTUS', url: '/lotus/' },
+            { label: 'Open GAIA', url: '/gaia/' },
+            { label: 'Open shared hub', url: '/projects/gaia-lotus/' },
+          ],
+        }
+      : project && slug === 'gaia-lotus'
+        ? {
+            eyebrow: 'Paired surface',
+            title: 'GAIA / LOTUS is the front door for the two-app power stack.',
+            body: 'Use this hub when you want the baseline layer and the agency layer visible together before you choose a route.',
+            links: [
+              { label: 'Open GAIA', url: '/gaia/' },
+              { label: 'Open LOTUS', url: '/lotus/' },
+            ],
+          }
+        : undefined;
 const publicDir = fileURLToPath(new URL('../../../public/', import.meta.url));
 const projectImagePath = project ? join(publicDir, project.data.image.replace(/^\/+/, '')) : undefined;
 const hasProjectImage = Boolean(projectImagePath && existsSync(projectImagePath));
@@ -128,6 +162,27 @@ const structuredData = isSignalManuscript && project
         </div>
 
         <aside class="space-y-6">
+          {pairedSurface && (
+            <section class="veil-panel">
+              <p class="eyebrow">{pairedSurface.eyebrow}</p>
+              <h2 class="mt-4 text-[1.08rem] md:text-[1.18rem]">{pairedSurface.title}</h2>
+              <p class="mt-4 text-base leading-7 text-slate-200">{pairedSurface.body}</p>
+              <ul class="bullet-links mt-5">
+                {pairedSurface.links.map((link) => (
+                  <li>
+                    <a
+                      class="link-inline"
+                      href={link.url}
+                      target={opensInNewWindow(link.url) ? '_blank' : undefined}
+                      rel={opensInNewWindow(link.url) ? 'noopener noreferrer' : undefined}
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
           <section class="veil-panel">
             <p class="eyebrow">Role</p>
             <p class="mt-4 text-base text-slate-200">{project.data.role}</p>

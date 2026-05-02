@@ -117,6 +117,7 @@ export const navigation = [
 
 export const publicProjectOrder = [
   'lotus',
+  'gaia-lotus',
   'echo',
   'scriptorium',
   'astral',

@@ -22,6 +22,10 @@ imageAlt: "A local-first agency scorer and reflective workbench."
 links:
   - label: "Open LOTUS"
     url: "/lotus/"
+  - label: "Open GAIA"
+    url: "/gaia/"
+  - label: "Open shared hub"
+    url: "/projects/gaia-lotus/"
   - label: "Read the framework paper"
     url: "/projects/bonded-intelligence-under-constraint/"
   - label: "GitHub repo"
@@ -31,5 +35,7 @@ links:
 *LOTUS* is the public agency-scoring line. The `/lotus/` route keeps the quick workbench, the deeper vector model, and the signal library in one place so reflection does not break into disconnected tools.
 
 It is built for naming pressure without collapsing a person into diagnosis: what narrows agency, what support remains, and where the interpretive boundary should stay in place.
+
+GAIA is the paired grounding surface. If GAIA names the Earth-bond baseline, LOTUS asks how much of that baseline is actually used when pressure rises. The shared hub is the cleanest way to see the two surfaces as one system before you choose a route.
 
 Older companion-route experiments are no longer the public shape of the product. The current surface is *LOTUS* itself.

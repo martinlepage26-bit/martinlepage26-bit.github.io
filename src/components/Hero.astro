@@ -3,10 +3,10 @@ import { heroFacts } from '../data/site';
 import BackgroundTreatment from './BackgroundTreatment.astro';
 
 const appButtons = [
+  { label: 'GAIA', href: '/gaia/', popupName: 'mlStandaloneGaia' },
   { label: 'LOTUS', href: '/lotus/', popupName: 'mlStandaloneLotus' },
   { label: 'ECHO', href: '/echo/', popupName: 'mlStandaloneEcho' },
   { label: 'SCRIPTO', href: '/scripto/', popupName: 'mlStandaloneScripto' },
-  { label: 'GAIA', href: '/gaia/', popupName: 'mlStandaloneGaia' },
   { label: 'Dr.Sort', href: '/dr-sort/', popupName: 'mlStandaloneDrSort' },
 ] as const;
 
@@ -48,6 +48,9 @@ const popupFeatures =
           </a>
         ))}
       </div>
+      <p class="mt-4 max-w-3xl text-sm leading-7 text-slate-300">
+        GAIA grounds the baseline. LOTUS reads how much of that baseline is actually used when pressure rises.
+      </p>
       <ul class="bullet-links mt-6">
         <li><a class="link-inline" href="/contact/">Start a conversation</a></li>
         <li><a class="link-inline" href="/writing/">Read public writing</a></li>

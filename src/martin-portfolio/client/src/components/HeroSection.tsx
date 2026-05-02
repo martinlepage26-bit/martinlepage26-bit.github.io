@@ -9,9 +9,9 @@ const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663476813471/hqNg7w
 
 const apps = [
   { name: "LOTUS", href: "https://martin.govern-ai.ca/lotus/" },
+  { name: "GAIA", href: "https://martin.govern-ai.ca/gaia/" },
   { name: "ECHO", href: "https://martin.govern-ai.ca/echo/" },
   { name: "SCRIPTO", href: "https://martin.govern-ai.ca/scripto/" },
-  { name: "GAIA", href: "https://martin.govern-ai.ca/gaia/" },
   { name: "Dr.Sort", href: "https://martin.govern-ai.ca/dr-sort/" },
 ];
 
@@ -156,7 +156,7 @@ export default function HeroSection() {
             >
               The site keeps the fuller paper line in view, names the research genealogies that connect queer ritual
               studies to media analysis and recursive governance, and gives each of the five public apps a distinct
-              role.
+              role. GAIA grounds the baseline, and LOTUS measures how much of that baseline gets used under pressure.
             </motion.p>
 
             {/* CTA Buttons */}

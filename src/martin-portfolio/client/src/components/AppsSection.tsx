@@ -12,9 +12,17 @@ const apps = [
     name: "LOTUS",
     tagline: "Agency scorer and reflective workbench",
     focus: "Notes, vector passes, and signal-library reading",
-    desc: "Local-first note scoring and vector analysis for situations where pressure, support, meaning, and room to move need clearer shape.",
+    desc: "Local-first note scoring and vector analysis for situations where pressure, support, meaning, and room to move need clearer shape. Works after GAIA grounds the baseline.",
     href: "https://martin.govern-ai.ca/lotus/",
     tag: "Agency",
+  },
+  {
+    name: "GAIA",
+    tagline: "Grounded gaialogy reading surface",
+    focus: "Sign profiles, glossary, and daily modulation",
+    desc: "The public app line built from Breath of the Astral Year, translating sign grammar into grounded seasonal and daily readings. It sets the baseline that LOTUS then measures under pressure.",
+    href: "https://martin.govern-ai.ca/gaia/",
+    tag: "Gaialogy",
   },
   {
     name: "ECHO",
@@ -31,14 +39,6 @@ const apps = [
     desc: "Turns topics, archives, and governance problems into bounded writing packets with claim mapping, recursive checks, control extraction, and export.",
     href: "https://martin.govern-ai.ca/scripto/",
     tag: "Packet builder",
-  },
-  {
-    name: "GAIA",
-    tagline: "Grounded gaialogy reading surface",
-    focus: "Sign profiles, glossary, and daily modulation",
-    desc: "The public app line built from Breath of the Astral Year, translating sign grammar into grounded seasonal and daily readings without drifting into distant sky mechanics.",
-    href: "https://martin.govern-ai.ca/gaia/",
-    tag: "Gaialogy",
   },
   {
     name: "Dr.Sort",
@@ -139,9 +139,63 @@ export default function AppsSection() {
           </p>
         </motion.div>
 
+        <AnimatedCard delay={0.12}>
+          <div
+            className="veil-panel"
+            style={{
+              marginTop: "1.5rem",
+              border: "1px solid oklch(0.72 0.09 65 / 18%)",
+              background: "linear-gradient(180deg, oklch(0.15 0.015 255 / 92%) 0%, oklch(0.11 0.012 255 / 96%) 100%)",
+            }}
+          >
+            <div style={{ display: "grid", gap: "1rem", gridTemplateColumns: "1fr", alignItems: "start" }} className="lg:grid-cols-[minmax(0,1.2fr)_auto]">
+              <div>
+                <p className="eyebrow">Power pair</p>
+                <h3
+                  style={{
+                    fontFamily: "'Cormorant Garamond', serif",
+                    fontWeight: 600,
+                    fontSize: "clamp(1.25rem, 2.2vw, 1.7rem)",
+                    color: "oklch(0.93 0.008 65)",
+                    marginTop: "0.8rem",
+                    lineHeight: 1.15,
+                    maxWidth: "28rem",
+                  }}
+                >
+                  GAIA sets the baseline. LOTUS measures how much of it gets used under pressure.
+                </h3>
+                <p
+                  style={{
+                    marginTop: "0.8rem",
+                    maxWidth: "44rem",
+                    fontSize: "0.88rem",
+                    lineHeight: 1.75,
+                    color: "oklch(0.62 0.015 255)",
+                  }}
+                >
+                  Read them as one system with two jobs: GAIA grounds the Earth-bond context and available power, then
+                  LOTUS asks how that power is deployed, blocked, or recovered when the situation tightens.
+                </p>
+              </div>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", minWidth: "13rem" }}>
+                <a href="https://martin.govern-ai.ca/gaia/" target="_blank" rel="noopener noreferrer" className="btn-primary" style={{ justifyContent: "center" }}>
+                  Open GAIA
+                </a>
+                <a href="https://martin.govern-ai.ca/lotus/" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ justifyContent: "center" }}>
+                  Open LOTUS
+                </a>
+                <a href="https://martin.govern-ai.ca/projects/gaia-lotus/" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ justifyContent: "center" }}>
+                  Open shared hub
+                </a>
+              </div>
+            </div>
+          </div>
+        </AnimatedCard>
+
         <div
           style={{
-            marginTop: "2.5rem",
+            marginTop: "1.75rem",
             display: "grid",
             gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
             gap: "1rem",
@@ -270,8 +324,9 @@ export default function AppsSection() {
                 color: "oklch(0.62 0.015 255)",
               }}
             >
-              These five live on Martin&apos;s public surface. PHAROS, COMPASSai, and AurorA remain on the PHAROS
-              surface, so the app family stays legible instead of collapsing into one blurred product story.
+              These five live on Martin&apos;s public surface. GAIA grounds the baseline; LOTUS measures deployment.
+              PHAROS, COMPASSai, and AurorA remain on the PHAROS surface, so the app family stays legible instead of
+              collapsing into one blurred product story.
             </p>
           </div>
         </AnimatedCard>
