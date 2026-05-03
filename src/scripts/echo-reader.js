@@ -33,7 +33,6 @@ const RECORDING_MIME_CANDIDATES = [
   'audio/mp4',
   'audio/ogg;codecs=opus',
 ];
-const IMPORT_AUDIO_ACCEPT = '.m4a,.mp4,.mp3,.wav,.ogg,.webm,audio/*';
 const NORMALIZED_TRANSCRIPTION_SAMPLE_RATE = 16000;
 
 const SUPPORTED_EXTENSIONS = new Set(['txt', 'md', 'markdown', 'docx', 'pdf']);
@@ -876,7 +875,7 @@ export function initEchoReaderApp() {
       };
     }
 
-    const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
+    const AudioContextCtor = window.AudioContext || window['webkitAudioContext'];
     if (typeof AudioContextCtor !== 'function') {
       throw new Error('This browser cannot normalize M4A audio yet. Use WAV, MP3, WebM, or another browser.');
     }
