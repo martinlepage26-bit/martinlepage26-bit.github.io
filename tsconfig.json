@@ -1,5 +1,19 @@
 {
   "extends": "astro/tsconfigs/strict",
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist", "src/martin-portfolio", "src/martin-portfolio/**"]
+  "exclude": [
+    "dist",
+    "docs",
+    "docs/**",
+    "public",
+    "public/**",
+    "src/components/lotus",
+    "src/components/lotus/**",
+    "src/components/paperdiff",
+    "src/components/paperdiff/**",
+    "src/pages/dr-sort",
+    "src/pages/dr-sort/**",
+    "src/martin-portfolio",
+    "src/martin-portfolio/**"
+  ]
 }
